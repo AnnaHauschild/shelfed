@@ -18,14 +18,6 @@ export const POSTER_SIZE_SMALL = 'w342';
 // v4 "API Read Access Token" (Bearer). Set in .env (see .env.example).
 export const TMDB_ACCESS_TOKEN = process.env.EXPO_PUBLIC_TMDB_ACCESS_TOKEN ?? '';
 
-// Only surface movies with at least this many votes so the deck shows titles a
-// user has a realistic chance of recognising (better lifetime recall).
-export const FEED_MIN_VOTE_COUNT = 300;
-
-// TV shows accrue far fewer votes than films on TMDB, so series use a much lower
-// bar (otherwise the deck runs dry almost immediately).
-export const TV_FEED_MIN_VOTE_COUNT = 40;
-
 // Region used for streaming availability (TMDB watch/providers via JustWatch).
 export const WATCH_REGION = 'DE';
 

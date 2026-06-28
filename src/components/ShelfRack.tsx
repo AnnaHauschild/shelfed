@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, {
@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { PosterImage } from '@/components/PosterImage';
 import { StoredMovie } from '@/repositories';
-import { colors, fonts, spacing } from '@/theme';
+import { colors, spacing } from '@/theme';
 
 const SPINE_PALETTE = [
   '#7a3527', // brick
@@ -293,19 +293,6 @@ const styles = StyleSheet.create({
   },
   bandSilver: {
     backgroundColor: 'rgba(220, 220, 220, 0.35)',
-  },
-  titleHolder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    color: '#f3e7d2',
-    fontFamily: fonts.heading,
-    fontSize: 11,
-    letterSpacing: 0.3,
-    transform: [{ rotate: '-90deg' }],
-    textAlign: 'center',
   },
   badges: {
     position: 'absolute',

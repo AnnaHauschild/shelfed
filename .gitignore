@@ -38,3 +38,7 @@ yarn-error.*
 
 # local SQLite / build artifacts
 *.db
+
+# local preview artifacts
+shelf-bg-preview.html
+
