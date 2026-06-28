@@ -95,6 +95,16 @@ export function ShelfBackground({
         </View>
         {/* Wide soft pool of lamplight on the wall. */}
         <View style={styles.lampPool} pointerEvents="none" />
+        {/* Small trailing plant hanging from the upper-left of the wall. */}
+        <View style={styles.hangingPlant} pointerEvents="none">
+          <View style={styles.plantPot} />
+          <View style={[styles.plantLeaf, styles.plantLeaf1]} />
+          <View style={[styles.plantLeaf, styles.plantLeaf2]} />
+          <View style={[styles.plantLeaf, styles.plantLeaf3]} />
+          <View style={[styles.plantLeaf, styles.plantLeaf4]} />
+          <View style={[styles.plantLeaf, styles.plantLeaf5]} />
+          <View style={[styles.plantLeaf, styles.plantLeaf6]} />
+        </View>
         {/* Subtle vignette to keep foreground content readable. */}
         <LinearGradient
           colors={[
@@ -351,4 +361,37 @@ const styles = StyleSheet.create({
     borderRadius: 240,
     backgroundColor: 'rgba(255, 200, 110, 0.10)',
   },
+  // --- 'wall' variant: small trailing plant in the upper-left corner. ---
+  hangingPlant: {
+    position: 'absolute',
+    top: 0,
+    left: 28,
+    width: 70,
+    height: 120,
+  },
+  plantPot: {
+    position: 'absolute',
+    top: 0,
+    left: 18,
+    width: 34,
+    height: 18,
+    backgroundColor: '#5a3a22',
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
+  },
+  plantLeaf: {
+    position: 'absolute',
+    width: 14,
+    height: 22,
+    borderRadius: 14,
+    backgroundColor: '#4f6b35',
+  },
+  plantLeaf1: { top: 14, left: 6, transform: [{ rotate: '-35deg' }], backgroundColor: '#7a9658' },
+  plantLeaf2: { top: 22, left: 44, transform: [{ rotate: '40deg' }] },
+  plantLeaf3: { top: 38, left: 2, transform: [{ rotate: '-55deg' }] },
+  plantLeaf4: { top: 50, left: 50, transform: [{ rotate: '60deg' }], backgroundColor: '#7a9658' },
+  plantLeaf5: { top: 68, left: 10, transform: [{ rotate: '-30deg' }] },
+  plantLeaf6: { top: 86, left: 38, transform: [{ rotate: '50deg' }], backgroundColor: '#7a9658' },
 });
