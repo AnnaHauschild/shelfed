@@ -128,9 +128,18 @@ function docToMovie(d: OlSearchDoc): Movie {
   };
 }
 
+// Fisher-Yates shuffle (in-place, returns the same array for chaining).
+function shuffle<T>(arr: T[]): T[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 /**
  * One page of the book swipe feed. With a subject it browses that single genre;
- * without one it rotates through the default subjects.
+ * without one it picks a random subject so the deck mixes genres across pages.
  */
 export async function fetchBookFeedPage(
   page: number,
@@ -144,12 +153,14 @@ export async function fetchBookFeedPage(
   if (subject) parts.push(`subject:${subject}`);
   if (years) parts.push(`first_publish_year:[${years.from} TO ${years.to}]`);
   if (parts.length === 0) {
-    // No filters: rotate through the curated subject list so the deck varies.
-    const rotating = BOOK_SUBJECTS[page % BOOK_SUBJECTS.length];
+    // No filters: pick a random subject so the deck jumps between genres.
+    const rotating =
+      BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
     parts.push(`subject:${rotating}`);
   }
   const query = parts.join(' AND ');
-  return searchBooks(query, page);
+  const result = await searchBooks(query, page);
+  return { ...result, movies: shuffle(result.movies) };
 }
 
 /** Free-text book search (Open Library /search.json). */
