@@ -14,6 +14,7 @@ import { FilterSheet } from '@/components/FilterSheet';
 import { GenreChips } from '@/components/GenreChips';
 import { LoadingReel } from '@/components/LoadingReel';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
+import { ShelfBackground } from '@/components/ShelfBackground';
 import { SwipeDeck } from '@/components/SwipeDeck';
 import { useMediaType } from '@/context/MediaTypeProvider';
 import { useGenres } from '@/hooks/useGenres';
@@ -100,6 +101,7 @@ export default function DiscoverScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
+      <ShelfBackground />
       <View style={styles.header}>
         <Text style={styles.brand}>Shelfed</Text>
         <Text style={styles.tagline}>
@@ -293,6 +295,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: spacing.md,
+    zIndex: 2,
   },
   switcherRow: {
     flexDirection: 'row',
@@ -339,14 +342,13 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   brand: {
-    color: colors.amberBright,
+    color: colors.paper,
     fontFamily: fonts.display,
     fontSize: 34,
-    textTransform: 'uppercase',
-    letterSpacing: 3,
+    letterSpacing: 0.5,
   },
   tagline: {
-    color: colors.textOnDarkMuted,
+    color: 'rgba(243, 231, 210, 0.75)',
     fontFamily: fonts.body,
     fontSize: 13,
   },
