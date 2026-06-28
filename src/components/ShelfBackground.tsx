@@ -361,13 +361,13 @@ const styles = StyleSheet.create({
     borderRadius: 240,
     backgroundColor: 'rgba(255, 200, 110, 0.10)',
   },
-  // --- 'wall' variant: small trailing plant in the upper-left corner. ---
+  // --- 'wall' variant: small trailing plant tucked under the lamp (right). ---
   hangingPlant: {
     position: 'absolute',
-    top: 0,
-    left: 28,
+    top: 110,
+    right: 18,
     width: 70,
-    height: 120,
+    height: 130,
   },
   plantPot: {
     position: 'absolute',

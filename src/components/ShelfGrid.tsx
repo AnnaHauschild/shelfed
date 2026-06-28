@@ -100,7 +100,12 @@ export function ShelfGrid({
         <Text style={styles.title}>
           {type === 'watched' ? `${watchedLabel(mediaType)} Shelf` : title}
         </Text>
-        <Text style={[styles.count, { color: accent }]}>
+        <Text
+          style={[
+            styles.count,
+            { color: accent === colors.watched ? '#3d5520' : accent },
+          ]}
+        >
           {sortedMovies.length}
         </Text>
       </View>
@@ -268,7 +273,8 @@ const styles = StyleSheet.create({
   count: {
     fontFamily: fonts.display,
     fontSize: 22,
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    marginRight: 50,
+    textShadowColor: 'rgba(0, 0, 0, 0.55)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 5,
   },
