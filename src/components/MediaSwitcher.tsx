@@ -39,7 +39,7 @@ export function MediaSwitcher() {
             <Ionicons
               name={opt.icon}
               size={14}
-              color={active ? colors.textOnPaper : colors.textOnDarkMuted}
+              color={active ? colors.background : colors.textOnDarkMuted}
             />
             <Text style={[styles.pillText, active && styles.pillTextActive]}>
               {opt.label}
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   pillTextActive: {
-    color: colors.textOnPaper,
+    color: colors.background,
   },
   pressed: {
     transform: [{ scale: 0.94 }],

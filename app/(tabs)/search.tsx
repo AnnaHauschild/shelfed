@@ -21,6 +21,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
 import { colors, fonts, radius, spacing } from '@/theme';
+import { ShelfBackground } from '@/components/ShelfBackground';
 
 /** Manual movie search: find a title, then add it to any shelf. */
 export default function SearchScreen() {
@@ -41,6 +42,7 @@ export default function SearchScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
+      <ShelfBackground />
       <Text style={styles.brand}>Search</Text>
       <View style={styles.switcherRow}>
         <MediaSwitcher />

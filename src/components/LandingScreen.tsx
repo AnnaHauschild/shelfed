@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { MediaType } from '@/api/types';
 import { useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
+import { ShelfBackground } from './ShelfBackground';
 
 interface Category {
   type: MediaType | null;
@@ -48,6 +49,7 @@ export function LandingScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.xxl }]}>
+      <ShelfBackground />
       <Text style={styles.brand}>Shelfed</Text>
       <Text style={styles.tagline}>Pick a shelf to browse</Text>
 
@@ -88,10 +90,11 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   brand: {
-    color: colors.maroon,
+    color: colors.amberBright,
     fontFamily: fonts.display,
-    fontSize: 44,
-    letterSpacing: 0.5,
+    fontSize: 40,
+    textTransform: 'uppercase',
+    letterSpacing: 3,
   },
   tagline: {
     color: colors.textOnDarkMuted,
@@ -133,7 +136,8 @@ const styles = StyleSheet.create({
     color: colors.textOnDark,
     fontFamily: fonts.display,
     fontSize: 22,
-    letterSpacing: 0.2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   cardBlurb: {
     color: colors.textOnDarkMuted,

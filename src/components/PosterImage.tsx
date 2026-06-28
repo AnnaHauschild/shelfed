@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   letterbox: {
-    backgroundColor: '#ecddc1',
+    backgroundColor: '#120a04',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
