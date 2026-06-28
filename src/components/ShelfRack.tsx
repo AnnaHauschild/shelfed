@@ -176,12 +176,12 @@ function BookSpine({
           />
         )}
 
-        {/* Vertical scrim so the title stays legible over any artwork. */}
+        {/* Very light scrim at top/bottom so the binding caps blend in. */}
         <LinearGradient
           colors={[
-            'rgba(0,0,0,0.55)',
-            'rgba(0,0,0,0.25)',
-            'rgba(0,0,0,0.55)',
+            'rgba(0,0,0,0.35)',
+            'rgba(0,0,0,0)',
+            'rgba(0,0,0,0.35)',
           ]}
           locations={[0, 0.5, 1]}
           style={StyleSheet.absoluteFill}
@@ -199,21 +199,17 @@ function BookSpine({
         {isBook ? (
           <>
             <View style={[styles.band, styles.bandGold]} />
-            <View style={[styles.band, styles.bandGold, { top: undefined, bottom: 32 }]} />
+            <View
+              style={[
+                styles.band,
+                styles.bandGold,
+                { top: undefined, bottom: 32 },
+              ]}
+            />
           </>
         ) : (
           <View style={[styles.band, styles.bandSilver]} />
         )}
-
-        {/* Vertical title. */}
-        <View style={styles.titleHolder}>
-          <Text
-            numberOfLines={1}
-            style={[styles.title, { width: SHELF_HEIGHT - 32 }]}
-          >
-            {movie.title}
-          </Text>
-        </View>
 
         {/* Tiny badge dots at the very top for star/heart. */}
         {(watchlisted || favorite) && (

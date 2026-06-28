@@ -83,7 +83,7 @@ export function ShelfBackground({
     return (
       <View style={styles.root} pointerEvents="none">
         <LinearGradient
-          colors={['#7a4a22', '#5a3618', '#3e2410']}
+          colors={['#5a3618', '#3e2410', '#28180b']}
           locations={[0, 0.55, 1]}
           style={StyleSheet.absoluteFill}
         />
@@ -98,8 +98,8 @@ export function ShelfBackground({
         {/* Subtle vignette to keep foreground content readable. */}
         <LinearGradient
           colors={[
-            `rgba(28, 18, 8, ${dim * 0.5})`,
-            `rgba(28, 18, 8, ${dim * 0.85})`,
+            `rgba(15, 9, 4, ${dim * 0.6})`,
+            `rgba(15, 9, 4, ${dim * 1.0})`,
           ]}
           locations={[0, 1]}
           style={StyleSheet.absoluteFill}
