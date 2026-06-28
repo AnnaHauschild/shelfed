@@ -1,4 +1,4 @@
-import { ERA_OPTIONS, WATCH_REGION } from '@/constants/config';
+import { ERA_OPTIONS, ERA_WINDOWS, WATCH_REGION } from '@/constants/config';
 import { GENRE_FALLBACK } from '@/constants/genres';
 import {
   BOOK_GENRE_OPTIONS,
@@ -127,11 +127,23 @@ export interface FeedPage {
   nextPage: number | null;
 }
 
+// Fisher-Yates shuffle (in-place, returns the same array for chaining).
+function shuffle<T>(arr: T[]): T[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 /**
  * Fetches one page of the discovery feed for the swipe deck.
  *
  * Strategy:
- *  - Sort by popularity so well-known titles surface first.
+ *  - When the user picks no era, rotate through decades in random order so the
+ *    feed jumps across eras instead of marching from oldest to newest.
+ *  - Sort by popularity within the decade, then shuffle the page so the user
+ *    doesn't always see the same blockbuster at the top.
  *  - Only constrain by era/genre/country when the user explicitly picks one.
  *  - Drop movies without a poster, since the poster is central to the UX.
  */
@@ -165,6 +177,8 @@ export async function fetchFeedPage(
   const genreMap = await loadGenres(mediaType);
 
   if (mediaType === 'tv') {
+    // No explicit era → pick a random decade per page so the feed mixes eras.
+    const tvWindow = eraWindow ?? ERA_WINDOWS[Math.floor(Math.random() * ERA_WINDOWS.length)];
     const data = await tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
       include_adult: false,
       language: 'en-US',
@@ -172,34 +186,36 @@ export async function fetchFeedPage(
       with_genres: genre,
       without_genres: TV_EXCLUDED_GENRES,
       with_origin_country: country,
-      'first_air_date.gte': eraWindow?.gte,
-      'first_air_date.lte': eraWindow?.lte,
+      'first_air_date.gte': tvWindow.gte,
+      'first_air_date.lte': tvWindow.lte,
       page,
     });
 
-    const movies = data.results
-      .filter((m) => m.poster_path)
-      .map((m) => toTv(m, genreMap));
+    const movies = shuffle(
+      data.results.filter((m) => m.poster_path).map((m) => toTv(m, genreMap)),
+    );
 
     const nextPage = page < data.total_pages ? page + 1 : null;
     return { movies, nextPage };
   }
 
+  // No explicit era → random decade per page so the feed jumps across eras.
+  const movieWindow = eraWindow ?? ERA_WINDOWS[Math.floor(Math.random() * ERA_WINDOWS.length)];
   const data = await tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
     include_adult: false,
     include_video: false,
     language: 'en-US',
     sort_by: 'popularity.desc',
-    'primary_release_date.gte': eraWindow?.gte,
-    'primary_release_date.lte': eraWindow?.lte,
+    'primary_release_date.gte': movieWindow.gte,
+    'primary_release_date.lte': movieWindow.lte,
     with_genres: genre,
     with_origin_country: country,
     page,
   });
 
-  const movies = data.results
-    .filter((m) => m.poster_path)
-    .map((m) => toMovie(m, genreMap));
+  const movies = shuffle(
+    data.results.filter((m) => m.poster_path).map((m) => toMovie(m, genreMap)),
+  );
 
   const nextPage = page < data.total_pages ? page + 1 : null;
   return { movies, nextPage };
