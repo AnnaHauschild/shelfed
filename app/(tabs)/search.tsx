@@ -75,12 +75,7 @@ export default function SearchScreen() {
         )}
       </View>
 
-      {trimmed.length < 2 ? (
-        <Centered
-          icon="search-outline"
-          text="Type at least two letters to search the catalog."
-        />
-      ) : isLoading ? (
+      {trimmed.length < 2 ? null : isLoading ? (
         <ActivityIndicator style={styles.loader} color={colors.amber} size="large" />
       ) : isError ? (
         <Centered
