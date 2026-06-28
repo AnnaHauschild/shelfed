@@ -261,10 +261,16 @@ const styles = StyleSheet.create({
     fontFamily: fonts.display,
     fontSize: 26,
     letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.55)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 6,
   },
   count: {
     fontFamily: fonts.display,
     fontSize: 22,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 5,
   },
   sortBar: {
     flexDirection: 'row',

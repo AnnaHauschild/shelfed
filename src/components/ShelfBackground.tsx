@@ -20,18 +20,18 @@ interface CubbyContent {
 }
 
 const BOOK_PALETTE = [
-  '#a7563d', // terracotta
-  '#7a3527', // brick
-  '#5e7a3c', // sage
-  '#3f6079', // dusty teal
-  '#d8a548', // brass
-  '#8a5a2b', // cinnamon
-  '#b89b73', // taupe
-  '#2c4a3a', // forest
+  '#7a4836', // muted brick
+  '#6e5436', // walnut
+  '#506a3a', // muted sage
+  '#3e5466', // dusty teal
+  '#a17b3f', // muted brass
+  '#7a5a36', // cinnamon
+  '#9a8a6e', // taupe
+  '#3a4e3a', // muted forest
 ];
 
-const LEAF_GREEN = '#4f6b35';
-const LEAF_GREEN_LIGHT = '#7a9658';
+const LEAF_GREEN = '#42583a';
+const LEAF_GREEN_LIGHT = '#5e7048';
 
 /** Deterministic pseudo-random in [0, 1) from a small integer seed. */
 function rand(seed: number): number {
@@ -48,10 +48,11 @@ function buildLayout(cols: number, rowsCount: number): CubbyContent[][] {
     for (let c = 0; c < cols; c++) {
       const roll = rand(i * 7 + 3);
       let kind: ItemKind;
-      if (roll < 0.55) kind = 'book';
+      // Heavier weighting on books + empties keeps the wall calm.
+      if (roll < 0.62) kind = 'book';
       else if (roll < 0.7) kind = 'lamp';
-      else if (roll < 0.82) kind = 'leaf';
-      else if (roll < 0.92) kind = 'photo';
+      else if (roll < 0.78) kind = 'leaf';
+      else if (roll < 0.85) kind = 'photo';
       else kind = 'empty';
       row.push({ kind, seed: i });
       i++;
@@ -65,14 +66,14 @@ function buildLayout(cols: number, rowsCount: number): CubbyContent[][] {
  * Stylised "Tiny Desk" bookshelf wall used as a soft background behind the
  * swipe deck. Pure RN views + gradients — no images required.
  */
-export function ShelfBackground({ columns = 4, rows = 5, dim = 0.55 }: Props) {
+export function ShelfBackground({ columns = 4, rows = 5, dim = 0.7 }: Props) {
   const layout = useMemo(() => buildLayout(columns, rows), [columns, rows]);
 
   return (
     <View style={styles.root} pointerEvents="none">
       {/* Warm wood wall tone behind the cubbies. */}
       <LinearGradient
-        colors={['#7a4a22', '#5a3618', '#3e2410']}
+        colors={['#5e3a1b', '#4a2c14', '#34200e']}
         locations={[0, 0.55, 1]}
         style={StyleSheet.absoluteFill}
       />
@@ -192,8 +193,8 @@ function Photo({ seed }: { seed: number }) {
   );
 }
 
-const CUBBY_BG = '#2a1808';
-const FRAME_COLOR = '#7a4a22';
+const CUBBY_BG = '#1f1407';
+const FRAME_COLOR = '#5e3a1b';
 
 const styles = StyleSheet.create({
   root: {
@@ -239,7 +240,7 @@ const styles = StyleSheet.create({
   lampShade: {
     width: '55%',
     height: '32%',
-    backgroundColor: '#f0d28c',
+    backgroundColor: '#c9a86e',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 3,
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
     width: '90%',
     height: '70%',
     bottom: '15%',
-    backgroundColor: 'rgba(255, 210, 120, 0.32)',
+    backgroundColor: 'rgba(255, 210, 120, 0.16)',
     borderRadius: 100,
   },
   lampBase: {

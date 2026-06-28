@@ -342,11 +342,17 @@ const styles = StyleSheet.create({
     fontFamily: fonts.display,
     fontSize: 34,
     letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.55)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 6,
   },
   tagline: {
-    color: 'rgba(243, 231, 210, 0.75)',
+    color: 'rgba(243, 231, 210, 0.78)',
     fontFamily: fonts.body,
     fontSize: 13,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   demoBanner: {
     flexDirection: 'row',
