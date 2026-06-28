@@ -1,10 +1,4 @@
-import {
-  ERA_OPTIONS,
-  ERA_WINDOWS,
-  FEED_MIN_VOTE_COUNT,
-  TV_FEED_MIN_VOTE_COUNT,
-  WATCH_REGION,
-} from '@/constants/config';
+import { ERA_OPTIONS, WATCH_REGION } from '@/constants/config';
 import { GENRE_FALLBACK } from '@/constants/genres';
 import {
   BOOK_GENRE_OPTIONS,
@@ -137,10 +131,8 @@ export interface FeedPage {
  * Fetches one page of the discovery feed for the swipe deck.
  *
  * Strategy:
- *  - Rotate the release-date window per page (ERA_WINDOWS) so the deck mixes
- *    decades — important because the goal is recalling a *lifetime* of movies.
- *  - Sort by popularity and require a minimum vote count so titles are
- *    recognisable rather than obscure.
+ *  - Sort by popularity so well-known titles surface first.
+ *  - Only constrain by era/genre/country when the user explicitly picks one.
  *  - Drop movies without a poster, since the poster is central to the UX.
  */
 export async function fetchFeedPage(
@@ -173,13 +165,10 @@ export async function fetchFeedPage(
   const genreMap = await loadGenres(mediaType);
 
   if (mediaType === 'tv') {
-    // TV's catalogue is thinner per decade, so we only apply a date window when
-    // the user explicitly picks one; otherwise we walk the popular catalogue.
     const data = await tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
       include_adult: false,
       language: 'en-US',
       sort_by: 'popularity.desc',
-      'vote_count.gte': TV_FEED_MIN_VOTE_COUNT,
       with_genres: genre,
       without_genres: TV_EXCLUDED_GENRES,
       with_origin_country: country,
@@ -196,16 +185,13 @@ export async function fetchFeedPage(
     return { movies, nextPage };
   }
 
-  // Movies: use the chosen era, or rotate decades when none is selected.
-  const movieWindow = eraWindow ?? ERA_WINDOWS[page % ERA_WINDOWS.length];
   const data = await tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
     include_adult: false,
     include_video: false,
     language: 'en-US',
     sort_by: 'popularity.desc',
-    'vote_count.gte': FEED_MIN_VOTE_COUNT,
-    'primary_release_date.gte': movieWindow.gte,
-    'primary_release_date.lte': movieWindow.lte,
+    'primary_release_date.gte': eraWindow?.gte,
+    'primary_release_date.lte': eraWindow?.lte,
     with_genres: genre,
     with_origin_country: country,
     page,
