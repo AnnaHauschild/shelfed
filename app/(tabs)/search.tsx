@@ -56,7 +56,9 @@ export default function SearchScreen() {
           placeholder={
             mediaType === 'tv'
               ? 'Find a series by title…'
-              : 'Find a movie by title…'
+              : mediaType === 'book'
+                ? 'Find a book by title…'
+                : 'Find a movie by title…'
           }
           placeholderTextColor={colors.textOnDarkMuted}
           style={styles.input}
