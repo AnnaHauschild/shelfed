@@ -365,8 +365,8 @@ export function SwipeDeck({
   return (
     <View style={styles.deck}>
       <LinearGradient
-        colors={['transparent', 'rgba(217, 165, 49, 0.10)', 'transparent']}
-        locations={[0.18, 0.5, 0.82]}
+        colors={['rgba(216, 165, 72, 0.22)', 'rgba(216, 165, 72, 0.05)', 'transparent']}
+        locations={[0, 0.45, 1]}
         style={styles.glow}
         pointerEvents="none"
       />
@@ -406,7 +406,7 @@ export function SwipeDeck({
           onPress={handleUndo}
           hitSlop={8}
         >
-          <Ionicons name="arrow-undo" size={16} color={colors.textOnDark} />
+          <Ionicons name="arrow-undo" size={16} color={colors.paper} />
           <Text style={styles.undoText}>Undo</Text>
         </AnimatedPressable>
       )}
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   undoText: {
-    color: colors.textOnDark,
+    color: colors.paper,
     fontFamily: fonts.label,
     fontSize: 13,
     textTransform: 'uppercase',

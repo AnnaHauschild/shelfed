@@ -1,39 +1,40 @@
 /**
- * Sepia / 90s-videothek colour palette. Warm browns, amber glow and faded
- * maroon evoke a dim DVD-rental store at night.
+ * Tiny Desk palette. Warm cream paper, walnut wood, brass lamp glow and a
+ * soft brick accent — like a cosy office crammed with books and a goose-neck
+ * desk lamp.
  */
 export const colors = {
-  // Backgrounds.
-  background: '#1d140c',
-  surface: '#2b1d12',
-  surfaceRaised: '#3a281a',
+  // Backgrounds — cream paper instead of dark vault.
+  background: '#f3e7d2',
+  surface: '#ebdcc1',
+  surfaceRaised: '#ffffff',
 
-  // "Paper" tones for cards / labels.
-  paper: '#f4e4c1',
-  paperShade: '#e6d2a8',
+  // "Paper" tones for cards / labels (kept for cross-component compatibility).
+  paper: '#fbf3e2',
+  paperShade: '#ecddc1',
 
-  // Accents.
-  amber: '#c8862b',
-  amberBright: '#e0a23c',
-  maroon: '#7c2f1e',
-  rust: '#a8482a',
+  // Accents — warm walnut + brass.
+  amber: '#b3873d', // brass
+  amberBright: '#d8a548', // bright brass lamp glow
+  maroon: '#7a3527', // brick
+  rust: '#a7563d', // terracotta
 
-  // Text.
-  textOnDark: '#f4e4c1',
-  textOnDarkMuted: '#b89b73',
-  textOnPaper: '#3a281a',
-  textOnPaperMuted: '#7a5c3a',
+  // Text — dark espresso on cream, walnut for muted.
+  textOnDark: '#2c1d10', // historical name kept; now "primary text"
+  textOnDarkMuted: '#6a4f33', // walnut muted
+  textOnPaper: '#2c1d10',
+  textOnPaperMuted: '#6a4f33',
 
-  // Swipe / action feedback.
-  watched: '#6f8f3a', // mossy green — "I've seen it"
-  skip: '#a8482a', // rust — "skip / not seen"
-  star: '#d9a531', // watchlist
-  favorite: '#b23a48', // favourite heart
+  // Swipe / action feedback — botanical and earthy.
+  watched: '#5e7a3c', // sage / fern leaf
+  skip: '#a7563d', // terracotta
+  star: '#d8a548', // brass
+  favorite: '#a93b3b', // muted brick red
 
   // Lines and shadow.
-  border: '#5a4128',
+  border: '#caa872', // walnut edge
   shadow: '#000000',
-  scrim: 'rgba(15, 9, 4, 0.85)',
+  scrim: 'rgba(46, 30, 16, 0.55)',
 } as const;
 
 export type AppColors = typeof colors;

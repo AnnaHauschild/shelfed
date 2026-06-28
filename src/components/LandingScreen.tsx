@@ -88,11 +88,10 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   brand: {
-    color: colors.amberBright,
+    color: colors.maroon,
     fontFamily: fonts.display,
-    fontSize: 40,
-    textTransform: 'uppercase',
-    letterSpacing: 3,
+    fontSize: 44,
+    letterSpacing: 0.5,
   },
   tagline: {
     color: colors.textOnDarkMuted,
@@ -134,8 +133,7 @@ const styles = StyleSheet.create({
     color: colors.textOnDark,
     fontFamily: fonts.display,
     fontSize: 22,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.2,
   },
   cardBlurb: {
     color: colors.textOnDarkMuted,

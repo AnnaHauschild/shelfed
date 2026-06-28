@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.amberBright,
   },
   doneText: {
-    color: colors.background,
+    color: colors.textOnPaper,
     fontFamily: fonts.label,
     fontSize: 13,
     textTransform: 'uppercase',
