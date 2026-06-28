@@ -10,6 +10,12 @@ interface Props {
   rows?: number;
   /** 0..1 — how much the whole wall is dimmed so foreground content pops. */
   dim?: number;
+  /**
+   * 'cubbies' (default) renders the full bookshelf grid; 'wall' renders only
+   * the warm wood backdrop with a single hanging lamp — a calmer surface for
+   * screens like the Shelf where the actual book spines do the heavy lifting.
+   */
+  variant?: 'cubbies' | 'wall';
 }
 
 type ItemKind = 'book' | 'lamp' | 'leaf' | 'photo' | 'empty';
@@ -65,8 +71,42 @@ function buildLayout(cols: number, rowsCount: number): CubbyContent[][] {
  * Stylised "Tiny Desk" bookshelf wall used as a soft background behind the
  * swipe deck. Pure RN views + gradients — no images required.
  */
-export function ShelfBackground({ columns = 4, rows = 5, dim = 0.55 }: Props) {
+export function ShelfBackground({
+  columns = 4,
+  rows = 5,
+  dim = 0.55,
+  variant = 'cubbies',
+}: Props) {
   const layout = useMemo(() => buildLayout(columns, rows), [columns, rows]);
+
+  if (variant === 'wall') {
+    return (
+      <View style={styles.root} pointerEvents="none">
+        <LinearGradient
+          colors={['#7a4a22', '#5a3618', '#3e2410']}
+          locations={[0, 0.55, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+        {/* Hanging lamp in the upper-right — casts a soft warm pool. */}
+        <View style={styles.hangingLamp} pointerEvents="none">
+          <View style={styles.hangingCord} />
+          <View style={styles.hangingShade} />
+          <View style={styles.hangingGlow} />
+        </View>
+        {/* Wide soft pool of lamplight on the wall. */}
+        <View style={styles.lampPool} pointerEvents="none" />
+        {/* Subtle vignette to keep foreground content readable. */}
+        <LinearGradient
+          colors={[
+            `rgba(28, 18, 8, ${dim * 0.5})`,
+            `rgba(28, 18, 8, ${dim * 0.85})`,
+          ]}
+          locations={[0, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root} pointerEvents="none">
@@ -272,5 +312,43 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     borderWidth: 1,
     borderColor: '#f3e7d2',
+  },
+  // --- 'wall' variant: hanging lamp in the upper-right corner. ---
+  hangingLamp: {
+    position: 'absolute',
+    top: 0,
+    right: 24,
+    alignItems: 'center',
+  },
+  hangingCord: {
+    width: 2,
+    height: 60,
+    backgroundColor: '#2a1808',
+  },
+  hangingShade: {
+    width: 78,
+    height: 46,
+    backgroundColor: '#f0d28c',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+  },
+  hangingGlow: {
+    position: 'absolute',
+    top: 50,
+    width: 140,
+    height: 90,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255, 210, 120, 0.30)',
+  },
+  lampPool: {
+    position: 'absolute',
+    top: 40,
+    right: -40,
+    width: 320,
+    height: 320,
+    borderRadius: 240,
+    backgroundColor: 'rgba(255, 200, 110, 0.10)',
   },
 });

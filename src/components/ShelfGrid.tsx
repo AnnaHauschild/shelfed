@@ -94,7 +94,7 @@ export function ShelfGrid({
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
-      <ShelfBackground />
+      <ShelfBackground variant="wall" />
       <View style={styles.header}>
         <Ionicons name={icon} size={22} color={accent} />
         <Text style={styles.title}>
