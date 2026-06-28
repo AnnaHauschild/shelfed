@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import {
   Dimensions,
-  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,10 +9,10 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { POSTER_SIZE_SMALL } from '@/constants/config';
 import { watchedLabel } from '@/constants/labels';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { useMovieDetails } from '@/components/MovieDetailsProvider';
+import { ShelfRack } from '@/components/ShelfRack';
 import { Skeleton } from '@/components/Skeleton';
 import { useMediaType } from '@/context/MediaTypeProvider';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
@@ -21,14 +20,10 @@ import { useShelf } from '@/hooks/useShelf';
 import { InteractionType, StoredMovie } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { EmptyState } from './EmptyState';
-import { PosterImage } from './PosterImage';
 
-const NUM_COLUMNS = 3;
 const H_PADDING = spacing.lg;
-const GAP = spacing.md;
 const { width } = Dimensions.get('window');
-const TILE_WIDTH =
-  (width - H_PADDING * 2 - GAP * (NUM_COLUMNS - 1)) / NUM_COLUMNS;
+const CONTAINER_WIDTH = width - H_PADDING * 2;
 
 /** Ways the user can order a shelf. */
 type SortKey = 'recent' | 'rating' | 'title' | 'year';
@@ -95,41 +90,6 @@ export function ShelfGrid({
     () => applySort(visibleMovies, sort),
     [visibleMovies, sort],
   );
-
-  const renderItem = ({ item }: { item: StoredMovie }) => {
-    const isWatchlisted = states.isWatchlisted(item.id);
-    const isFavorite = states.isFavorite(item.id);
-    return (
-      <Pressable style={styles.tile} onPress={() => open(item)}>
-        <View>
-          <PosterImage
-            posterPath={item.posterPath}
-            title={item.title}
-            size={POSTER_SIZE_SMALL}
-            style={styles.poster}
-          />
-          {(isWatchlisted || isFavorite) && (
-            <View style={styles.badges}>
-              {isWatchlisted && (
-                <View style={styles.badge}>
-                  <Ionicons name="star" size={11} color={colors.star} />
-                </View>
-              )}
-              {isFavorite && (
-                <View style={styles.badge}>
-                  <Ionicons name="heart" size={11} color={colors.favorite} />
-                </View>
-              )}
-            </View>
-          )}
-        </View>
-        <Text style={styles.tileTitle} numberOfLines={1}>
-          {item.title}
-        </Text>
-        {item.year != null && <Text style={styles.tileYear}>{item.year}</Text>}
-      </Pressable>
-    );
-  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
@@ -214,15 +174,18 @@ export function ShelfGrid({
           message={`No ${genre} titles on this shelf yet.`}
         />
       ) : (
-        <FlatList
-          data={sortedMovies}
-          keyExtractor={(item) => String(item.id)}
-          numColumns={NUM_COLUMNS}
-          renderItem={renderItem}
-          columnWrapperStyle={styles.row}
+        <ScrollView
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
-        />
+        >
+          <ShelfRack
+            movies={sortedMovies}
+            onOpen={open}
+            isWatchlisted={(id) => states.isWatchlisted(id)}
+            isFavorite={(id) => states.isFavorite(id)}
+            containerWidth={CONTAINER_WIDTH}
+          />
+        </ScrollView>
       )}
     </View>
   );
@@ -341,66 +304,16 @@ const styles = StyleSheet.create({
   skeletonGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: GAP,
+    gap: spacing.md,
   },
   skeletonTile: {
-    width: TILE_WIDTH,
-    height: TILE_WIDTH * 1.5,
-    borderRadius: radius.md,
+    width: 32,
+    height: 160,
+    borderRadius: radius.sm,
     borderWidth: 1,
     borderColor: colors.border,
   },
   list: {
     paddingBottom: spacing.xxl,
-  },
-  row: {
-    gap: GAP,
-    marginBottom: spacing.lg,
-  },
-  tile: {
-    width: TILE_WIDTH,
-  },
-  poster: {
-    width: TILE_WIDTH,
-    height: TILE_WIDTH * 1.5,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
-    // Subtle "spine on a shelf" depth.
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  badges: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    flexDirection: 'row',
-    gap: 4,
-  },
-  badge: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.scrim,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  tileTitle: {
-    color: colors.textOnDarkMuted,
-    fontFamily: fonts.label,
-    fontSize: 12,
-    marginTop: spacing.xs,
-    textTransform: 'uppercase',
-  },
-  tileYear: {
-    color: colors.textOnPaperMuted,
-    fontFamily: fonts.body,
-    fontSize: 11,
   },
 });

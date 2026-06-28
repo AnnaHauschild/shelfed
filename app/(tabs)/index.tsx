@@ -154,7 +154,6 @@ export default function DiscoverScreen() {
         {isLoading ? (
           <Centered>
             <LoadingReel />
-            <Text style={styles.muted}>Loading the reels…</Text>
           </Centered>
         ) : isError ? (
           <SetupOrError error={error} onRetry={() => refetch()} />
