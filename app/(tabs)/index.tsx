@@ -179,10 +179,7 @@ export default function DiscoverScreen() {
             {exhausted && (
               <Centered pointerEvents="none">
                 {isFetchingNextPage ? (
-                  <>
-                    <LoadingReel size={44} />
-                    <Text style={styles.muted}>Rewinding more tapes…</Text>
-                  </>
+                  <LoadingReel size={44} />
                 ) : (
                   <>
                     <Ionicons

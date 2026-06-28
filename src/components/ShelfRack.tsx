@@ -9,8 +9,9 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { PosterImage } from '@/components/PosterImage';
 import { StoredMovie } from '@/repositories';
-import { colors, fonts, radius, spacing } from '@/theme';
+import { colors, fonts, spacing } from '@/theme';
 
 const SPINE_PALETTE = [
   '#7a3527', // brick
@@ -128,7 +129,9 @@ function BookSpine({
   const lift = useSharedValue(0);
   const tilt = useSharedValue(0);
 
-  const color = SPINE_PALETTE[hash(movie.id) % SPINE_PALETTE.length];
+  const fallbackColor =
+    SPINE_PALETTE[hash(movie.id) % SPINE_PALETTE.length];
+  const isBook = movie.mediaType === 'book';
 
   const handlePress = () => {
     lift.value = withSequence(
@@ -155,17 +158,52 @@ function BookSpine({
       <Animated.View
         style={[
           styles.spine,
-          { width, height: SHELF_HEIGHT, backgroundColor: color },
+          {
+            width,
+            height: SHELF_HEIGHT,
+            backgroundColor: fallbackColor,
+            borderColor: isBook ? '#1a0d04' : '#0a0a0a',
+          },
           animatedStyle,
         ]}
       >
+        {/* Poster as the spine's "skin" — unique colours per item. */}
+        {movie.posterPath && (
+          <PosterImage
+            posterPath={movie.posterPath}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+          />
+        )}
+
+        {/* Vertical scrim so the title stays legible over any artwork. */}
+        <LinearGradient
+          colors={[
+            'rgba(0,0,0,0.55)',
+            'rgba(0,0,0,0.25)',
+            'rgba(0,0,0,0.55)',
+          ]}
+          locations={[0, 0.5, 1]}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+
         {/* Top + bottom darker caps for "binding" depth. */}
         <View style={[styles.cap, styles.capTop]} />
         <View style={[styles.cap, styles.capBottom]} />
+
         {/* Thin highlight stripe down one edge to suggest paper pages. */}
         <View style={styles.pages} />
-        {/* Decorative gold band near the top. */}
-        <View style={styles.band} />
+
+        {/* Decorative gold band only on books — DVDs get a thin silver foil. */}
+        {isBook ? (
+          <>
+            <View style={[styles.band, styles.bandGold]} />
+            <View style={[styles.band, styles.bandGold, { top: undefined, bottom: 32 }]} />
+          </>
+        ) : (
+          <View style={[styles.band, styles.bandSilver]} />
+        )}
 
         {/* Vertical title. */}
         <View style={styles.titleHolder}>
@@ -252,8 +290,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 24,
-    height: 4,
-    backgroundColor: 'rgba(216, 165, 72, 0.55)',
+    height: 3,
+  },
+  bandGold: {
+    backgroundColor: 'rgba(216, 165, 72, 0.75)',
+  },
+  bandSilver: {
+    backgroundColor: 'rgba(220, 220, 220, 0.35)',
   },
   titleHolder: {
     flex: 1,

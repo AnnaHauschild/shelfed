@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { watchedLabel } from '@/constants/labels';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { useMovieDetails } from '@/components/MovieDetailsProvider';
+import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
 import { Skeleton } from '@/components/Skeleton';
 import { useMediaType } from '@/context/MediaTypeProvider';
@@ -93,6 +94,7 @@ export function ShelfGrid({
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
+      <ShelfBackground />
       <View style={styles.header}>
         <Ionicons name={icon} size={22} color={accent} />
         <Text style={styles.title}>
@@ -246,18 +248,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     marginBottom: spacing.lg,
+    zIndex: 2,
   },
   switcherRow: {
     flexDirection: 'row',
     marginBottom: spacing.lg,
+    zIndex: 2,
   },
   title: {
     flex: 1,
-    color: colors.textOnDark,
+    color: colors.paper,
     fontFamily: fonts.display,
     fontSize: 26,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   count: {
     fontFamily: fonts.display,
