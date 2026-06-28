@@ -1,0 +1,333 @@
+import { Image } from 'expo-image';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Movie } from '@/api/types';
+import { POSTER_SIZE_SMALL } from '@/constants/config';
+import { useMovieCast } from '@/hooks/useMovieCast';
+import { useMovieTrailer } from '@/hooks/useMovieTrailer';
+import { useBookDescription } from '@/hooks/useBookDescription';
+import { useWatchProviders } from '@/hooks/useWatchProviders';
+import { colors, fonts, radius, spacing } from '@/theme';
+import { PosterImage } from './PosterImage';
+
+/**
+ * Cleans a TMDB character label for display: strips annotations like "(voice)"
+ * or "(uncredited)" and drops non-roles such as a documentary "Self". Returns
+ * an empty string when there is no real character name worth showing.
+ */
+function displayCharacter(raw: string): string {
+  const cleaned = raw.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim();
+  if (!cleaned) return '';
+  if (/^(self|himself|herself|themselves)$/i.test(cleaned)) return '';
+  return cleaned;
+}
+
+interface Props {
+  movie: Movie;
+  /** Action buttons rendered under the synopsis (e.g. in the details modal). */
+  children?: React.ReactNode;
+}
+
+/**
+ * Presentational "back of the card" details: poster, title, year, rating,
+ * genres, synopsis and top-billed cast. Reused by the swipe-card flip and the
+ * details modal, so it stays background-agnostic (its parent provides the
+ * surface + framing).
+ */
+export function MovieDetails({ movie, children }: Props) {
+  const isBook = movie.mediaType === 'book';
+  const { data: cast } = useMovieCast(movie.id, movie.mediaType);
+  const { data: trailerUrl } = useMovieTrailer(movie.id, movie.mediaType);
+  const { data: bookDesc } = useBookDescription(movie.id, isBook);
+  const { data: watch } = useWatchProviders(movie.id, movie.mediaType);
+
+  const description = isBook ? bookDesc ?? '' : movie.overview;
+  const overview =
+    description && description.length > 0
+      ? description
+      : 'No description available for this title.';
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerRow}>
+        <PosterImage
+          posterPath={movie.posterPath}
+          title={movie.title}
+          size={POSTER_SIZE_SMALL}
+          style={styles.poster}
+        />
+        <View style={styles.headerInfo}>
+          <Text style={styles.title} numberOfLines={3}>
+            {movie.title}
+          </Text>
+          <View style={styles.metaRow}>
+            {movie.year != null && <Text style={styles.meta}>{movie.year}</Text>}
+            {movie.voteAverage > 0 && (
+              <View style={styles.rating}>
+                <Ionicons name="star" size={13} color={colors.amberBright} />
+                <Text style={styles.meta}>{movie.voteAverage.toFixed(1)}</Text>
+              </View>
+            )}
+          </View>
+          {movie.genres.length > 0 && (
+            <View style={styles.genreRow}>
+              {movie.genres.slice(0, 3).map((g) => (
+                <View key={g} style={styles.genreChip}>
+                  <Text style={styles.genreText}>{g}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+          {movie.authors && movie.authors.length > 0 && (
+            <Text style={styles.author} numberOfLines={2}>
+              {movie.authors.join(', ')}
+            </Text>
+          )}
+        </View>
+      </View>
+
+      {trailerUrl && (
+        <Pressable
+          style={styles.trailerButton}
+          onPress={() => {
+            Linking.openURL(trailerUrl).catch(() => {});
+          }}
+        >
+          <Ionicons name="play-circle" size={18} color={colors.amberBright} />
+          <Text style={styles.trailerText}>Watch Trailer</Text>
+        </Pressable>
+      )}
+
+      <ScrollView
+        style={styles.overviewScroll}
+        contentContainerStyle={styles.overviewContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {watch && watch.providers.length > 0 && (
+          <View style={styles.watchSection}>
+            <Text style={styles.sectionLabel}>Where to watch</Text>
+            <View style={styles.providerRow}>
+              {watch.providers.slice(0, 8).map((p) => (
+                <Pressable
+                  key={p.id}
+                  onPress={() => {
+                    if (watch.link) Linking.openURL(watch.link).catch(() => {});
+                  }}
+                >
+                  {p.logoUrl && (
+                    <Image
+                      source={{ uri: p.logoUrl }}
+                      style={styles.providerLogo}
+                      contentFit="contain"
+                    />
+                  )}
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        )}
+
+        <Text style={styles.sectionLabel}>Synopsis</Text>
+        <Text style={styles.overview}>{overview}</Text>
+
+        {cast && cast.length > 0 && (
+          <>
+            <Text style={[styles.sectionLabel, styles.castLabel]}>Cast</Text>
+            {cast.map((member) => {
+              const age =
+                movie.year != null && member.birthYear != null
+                  ? movie.year - member.birthYear
+                  : null;
+              const character = displayCharacter(member.character);
+              return (
+                <View key={member.id} style={styles.castRow}>
+                  <View style={styles.castNameRow}>
+                    <Text style={styles.castName} numberOfLines={1}>
+                      {member.name}
+                    </Text>
+                    {age != null && age > 0 && (
+                      <Text style={styles.castAge}>{`(${age})`}</Text>
+                    )}
+                  </View>
+                  {character.length > 0 && (
+                    <Text style={styles.castCharacter} numberOfLines={1}>
+                      {character}
+                    </Text>
+                  )}
+                </View>
+              );
+            })}
+          </>
+        )}
+      </ScrollView>
+
+      {children}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: spacing.lg,
+    gap: spacing.md,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  poster: {
+    width: 96,
+    height: 144,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceRaised,
+  },
+  headerInfo: {
+    flex: 1,
+    gap: spacing.xs,
+  },
+  title: {
+    color: colors.textOnDark,
+    fontFamily: fonts.display,
+    fontSize: 24,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  meta: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 14,
+  },
+  author: {
+    color: colors.amber,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    marginTop: 2,
+  },
+  genreRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    marginTop: spacing.xs,
+  },
+  genreChip: {
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+  },
+  genreText: {
+    color: colors.amber,
+    fontFamily: fonts.label,
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  trailerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceRaised,
+  },
+  trailerText: {
+    color: colors.textOnDark,
+    fontFamily: fonts.label,
+    fontSize: 13,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  overviewScroll: {
+    flex: 1,
+  },
+  overviewContent: {
+    paddingBottom: spacing.sm,
+  },
+  sectionLabel: {
+    color: colors.amber,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: spacing.xs,
+  },
+  overview: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 21,
+  },
+  watchSection: {
+    marginBottom: spacing.lg,
+  },
+  providerRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  providerLogo: {
+    width: 42,
+    height: 42,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surfaceRaised,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  castLabel: {
+    marginTop: spacing.lg,
+  },
+  castRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: spacing.md,
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  castNameRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 6,
+  },
+  castName: {
+    flexShrink: 1,
+    color: colors.textOnDark,
+    fontFamily: fonts.label,
+    fontSize: 13,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  castAge: {
+    color: colors.amber,
+    fontFamily: fonts.body,
+    fontSize: 12,
+  },
+  castCharacter: {
+    flexShrink: 1,
+    textAlign: 'right',
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 13,
+  },
+});

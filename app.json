@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Shelfed",
+    "slug": "shelfed",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "shelfed",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shelfed.app"
+    },
+    "android": {
+      "package": "com.shelfed.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-sqlite",
+      "expo-splash-screen"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
