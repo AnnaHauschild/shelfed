@@ -1,0 +1,159 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Shelfed Icon Preview</title>
+<style>
+  body{margin:0;background:#1d140c;color:#f4e4c1;font-family:-apple-system,Segoe UI,sans-serif;
+       display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px}
+  h1{margin:0;font-weight:300;letter-spacing:6px;color:#c8862b}
+  .grid{display:grid;grid-template-columns:repeat(3,auto);gap:32px;align-items:end}
+  .tile{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .tile small{color:#8a7a5a;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+  canvas{border-radius:22%;box-shadow:0 8px 30px rgba(0,0,0,.6);background:#000}
+  button{background:#c8862b;color:#1d140c;border:0;padding:10px 18px;border-radius:8px;
+         font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;font-size:12px}
+  button:hover{background:#e1a045}
+  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+</style></head>
+<body>
+  <h1>SHELFED · APP ICON</h1>
+  <div class="grid">
+    <div class="tile">
+      <canvas id="c180" width="180" height="180"></canvas>
+      <small>180 · iOS preview</small>
+    </div>
+    <div class="tile">
+      <canvas id="c512" width="512" height="512"></canvas>
+      <small>512</small>
+    </div>
+    <div class="tile">
+      <canvas id="c1024" width="1024" height="1024"></canvas>
+      <small>1024 · store master</small>
+    </div>
+  </div>
+  <div class="row">
+    <button onclick="dl(1024,'icon.png')">Download icon.png (1024)</button>
+    <button onclick="dl(1024,'adaptive-foreground.png',true)">Download Android foreground</button>
+  </div>
+
+<script>
+function rng(seed){return function(){seed=(seed*9301+49297)%233280;return seed/233280}}
+
+function drawIcon(ctx, S, opts){
+  const transparent = !!(opts && opts.transparent);
+
+  // background wood
+  if(!transparent){
+    const bg = ctx.createLinearGradient(0,0,0,S);
+    bg.addColorStop(0,'#5a3618');
+    bg.addColorStop(0.55,'#3e2410');
+    bg.addColorStop(1,'#28180b');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,S,S);
+
+    // subtle wood grain
+    ctx.globalAlpha = .12;
+    for(let i=0;i<24;i++){
+      ctx.fillStyle = i%2 ? '#7a4a22' : '#2a1607';
+      ctx.fillRect(0, (S/24)*i, S, 1);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // shelf cubby frame
+  const pad = S*0.10;
+  const inner = S - pad*2;
+  ctx.strokeStyle = '#2a1607';
+  ctx.lineWidth = S*0.025;
+  ctx.strokeRect(pad,pad,inner,inner);
+
+  // top wooden rail (warm highlight)
+  const rail = ctx.createLinearGradient(0,pad,0,pad + S*0.04);
+  rail.addColorStop(0,'#8c5a2a');
+  rail.addColorStop(1,'#5a3618');
+  ctx.fillStyle = rail;
+  ctx.fillRect(pad, pad, inner, S*0.04);
+
+  // bottom shelf board
+  ctx.fillStyle = '#3a2010';
+  ctx.fillRect(pad, S - pad - S*0.04, inner, S*0.04);
+
+  // books
+  const baseY = S - pad - S*0.04;
+  const topY  = pad + S*0.04 + S*0.03;
+  const left  = pad + S*0.05;
+  const right = S - pad - S*0.05;
+  const span  = right - left;
+
+  // palette: same vibe as BOOK_PALETTE in app
+  const books = [
+    {w:0.14, color:'#8a3a2a', band:'#c8862b', tilt: 0},   // burgundy
+    {w:0.12, color:'#c8862b', band:'#1d140c', tilt: 0},   // amber
+    {w:0.10, color:'#3e5a2a', band:'#c8862b', tilt: 6},   // sage
+    {w:0.13, color:'#2a4a6a', band:'#c8862b', tilt: 0},   // navy
+    {w:0.11, color:'#6a4a2a', band:'#f4e4c1', tilt: -4},  // tan
+  ];
+
+  let x = left;
+  for(const b of books){
+    const bw = b.w * span;
+    const bh = baseY - topY;
+    ctx.save();
+    // anchor at base for tilt
+    ctx.translate(x + bw/2, baseY);
+    ctx.rotate((b.tilt * Math.PI)/180);
+    ctx.translate(-(bw/2), -bh);
+
+    // spine
+    ctx.fillStyle = b.color;
+    ctx.fillRect(0,0,bw,bh);
+    // top edge highlight
+    const top = ctx.createLinearGradient(0,0,0,bh*0.15);
+    top.addColorStop(0,'rgba(255,255,255,.18)');
+    top.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle = top;
+    ctx.fillRect(0,0,bw,bh*0.15);
+
+    // gold bands
+    ctx.fillStyle = b.band;
+    ctx.fillRect(0, bh*0.30, bw, bh*0.025);
+    ctx.fillRect(0, bh*0.36, bw, bh*0.025);
+
+    // bottom shadow
+    const shd = ctx.createLinearGradient(0,bh*0.85,0,bh);
+    shd.addColorStop(0,'rgba(0,0,0,0)');
+    shd.addColorStop(1,'rgba(0,0,0,.35)');
+    ctx.fillStyle = shd;
+    ctx.fillRect(0,bh*0.85,bw,bh*0.15);
+
+    ctx.restore();
+
+    x += bw + span*0.012;
+  }
+
+  // soft inner vignette
+  if(!transparent){
+    const r = ctx.createRadialGradient(S/2,S/2,S*0.25, S/2,S/2,S*0.7);
+    r.addColorStop(0,'rgba(0,0,0,0)');
+    r.addColorStop(1,'rgba(0,0,0,.45)');
+    ctx.fillStyle = r;
+    ctx.fillRect(0,0,S,S);
+  }
+}
+
+function paint(id){
+  const c = document.getElementById(id);
+  const ctx = c.getContext('2d');
+  drawIcon(ctx, c.width);
+}
+paint('c180'); paint('c512'); paint('c1024');
+
+function dl(size, name, transparent){
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  drawIcon(c.getContext('2d'), size, {transparent});
+  const a = document.createElement('a');
+  a.download = name;
+  a.href = c.toDataURL('image/png');
+  a.click();
+}
+</script>
+</body></html>

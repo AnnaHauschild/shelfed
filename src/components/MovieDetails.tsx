@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '@/api/types';
 import { POSTER_SIZE_SMALL } from '@/constants/config';
+import { useProfile } from '@/context/ProfileProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
 import { useMovieTrailer } from '@/hooks/useMovieTrailer';
 import { useBookDescription } from '@/hooks/useBookDescription';
@@ -22,6 +23,24 @@ function displayCharacter(raw: string): string {
   return cleaned;
 }
 
+/** Public web URL for a movie/series/book, used in share messages. */
+function shareUrl(movie: Movie): string {
+  if (movie.mediaType === 'book') return `https://openlibrary.org/works/${movie.id}`;
+  if (movie.mediaType === 'tv') return `https://www.themoviedb.org/tv/${movie.id}`;
+  return `https://www.themoviedb.org/movie/${movie.id}`;
+}
+
+async function shareMovie(movie: Movie, name: string | null): Promise<void> {
+  const year = movie.year != null ? ` (${movie.year})` : '';
+  const lead = name ? `${name} recommends:` : 'Check this out:';
+  const message = `${lead} ${movie.title}${year}\n${shareUrl(movie)}`;
+  try {
+    await Share.share({ message, title: movie.title });
+  } catch {
+    // user cancelled or share unavailable — nothing to do
+  }
+}
+
 interface Props {
   movie: Movie;
   /** Action buttons rendered under the synopsis (e.g. in the details modal). */
@@ -36,6 +55,7 @@ interface Props {
  */
 export function MovieDetails({ movie, children }: Props) {
   const isBook = movie.mediaType === 'book';
+  const { name } = useProfile();
   const { data: cast } = useMovieCast(movie.id, movie.mediaType);
   const { data: trailerUrl } = useMovieTrailer(movie.id, movie.mediaType);
   const { data: bookDesc } = useBookDescription(movie.id, isBook);
@@ -86,17 +106,28 @@ export function MovieDetails({ movie, children }: Props) {
         </View>
       </View>
 
-      {trailerUrl && (
+      <View style={styles.actionRow}>
+        {trailerUrl && (
+          <Pressable
+            style={[styles.trailerButton, styles.actionFill]}
+            onPress={() => {
+              Linking.openURL(trailerUrl).catch(() => {});
+            }}
+          >
+            <Ionicons name="play-circle" size={18} color={colors.amberBright} />
+            <Text style={styles.trailerText}>Watch Trailer</Text>
+          </Pressable>
+        )}
         <Pressable
-          style={styles.trailerButton}
+          style={[styles.trailerButton, trailerUrl ? styles.shareCompact : styles.actionFill]}
           onPress={() => {
-            Linking.openURL(trailerUrl).catch(() => {});
+            shareMovie(movie, name);
           }}
         >
-          <Ionicons name="play-circle" size={18} color={colors.amberBright} />
-          <Text style={styles.trailerText}>Watch Trailer</Text>
+          <Ionicons name="share-outline" size={18} color={colors.amberBright} />
+          {!trailerUrl && <Text style={styles.trailerText}>Share</Text>}
         </Pressable>
-      )}
+      </View>
 
       <ScrollView
         style={styles.overviewScroll}
@@ -236,6 +267,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  actionFill: {
+    flex: 1,
+  },
+  shareCompact: {
+    paddingHorizontal: spacing.md,
   },
   trailerButton: {
     flexDirection: 'row',

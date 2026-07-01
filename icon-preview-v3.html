@@ -1,0 +1,197 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Shelfed Icon · screenshot match</title>
+<style>
+  body{margin:0;background:#1d140c;color:#f4e4c1;font-family:-apple-system,Segoe UI,sans-serif;
+       display:flex;flex-direction:column;align-items:center;gap:32px;padding:32px}
+  h1{margin:0;font-weight:300;letter-spacing:6px;color:#c8862b;font-size:18px}
+  .grid{display:grid;grid-template-columns:repeat(3,auto);gap:24px;align-items:end}
+  .tile{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .tile small{color:#8a7a5a;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+  canvas{border-radius:22%;box-shadow:0 8px 30px rgba(0,0,0,.6);background:#000}
+  button{background:#c8862b;color:#1d140c;border:0;padding:10px 18px;border-radius:8px;
+         font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;font-size:12px}
+  button:hover{background:#e1a045}
+  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .home{display:flex;gap:18px;background:#000;padding:24px;border-radius:24px;align-items:center}
+  .home canvas{width:60px;height:60px;border-radius:14px}
+  .home small{color:#8a7a5a;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+</style></head>
+<body>
+  <h1>SHELFED · APP ICON · MATCH</h1>
+
+  <div class="grid">
+    <div class="tile"><canvas id="c180" width="180" height="180"></canvas><small>180</small></div>
+    <div class="tile"><canvas id="c512" width="512" height="512"></canvas><small>512</small></div>
+    <div class="tile"><canvas id="c1024" width="1024" height="1024"></canvas><small>1024 · store master</small></div>
+  </div>
+
+  <div class="home">
+    <canvas id="cHome" width="180" height="180"></canvas>
+    <small>Home-Screen-Test (60×60)</small>
+  </div>
+
+  <div class="row">
+    <button onclick="dl(1024,'icon.png')">Download icon.png (1024)</button>
+  </div>
+
+<script>
+const BOOK_PALETTE = ['#a7563d','#7a3527','#5e7a3c','#3f6079','#d8a548','#8a5a2b','#b89b73','#2c4a3a'];
+const LEAF_GREEN = '#4f6b35';
+const LEAF_GREEN_LIGHT = '#7a9658';
+function rand(seed){const x=Math.sin(seed*9301+49297)*233280;return x-Math.floor(x)}
+
+function paintBooks(ctx, x, y, w, h, seed){
+  const n = 4 + Math.floor(rand(seed+11)*4);
+  const widths=[]; let total=0;
+  for(let i=0;i<n;i++){const ww=9+rand(seed+i*17)*8; widths.push(ww); total+=ww}
+  const gap = w*0.015;
+  const usable = w - gap*(n-1);
+  let cx = x;
+  for(let i=0;i<n;i++){
+    const bw = (widths[i]/total) * usable;
+    const bh = h * (0.55 + rand(seed+i*23)*0.40);
+    const tilt = rand(seed+i*41)<0.15 ? (rand(seed+i)-0.5)*8 : 0;
+    const color = BOOK_PALETTE[Math.floor(rand(seed*31+i)*BOOK_PALETTE.length)];
+    ctx.save();
+    ctx.translate(cx + bw/2, y + h);
+    ctx.rotate(tilt*Math.PI/180);
+    ctx.translate(-bw/2, -bh);
+    ctx.fillStyle = color;
+    ctx.fillRect(0,0,bw,bh);
+    const top = ctx.createLinearGradient(0,0,0,bh*0.18);
+    top.addColorStop(0,'rgba(255,255,255,.18)');
+    top.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle = top; ctx.fillRect(0,0,bw,bh*0.18);
+    ctx.fillStyle = '#d8a548';
+    ctx.fillRect(0,bh*0.30,bw,bh*0.025);
+    ctx.fillRect(0,bh*0.36,bw,bh*0.025);
+    const bs = ctx.createLinearGradient(0,bh*0.85,0,bh);
+    bs.addColorStop(0,'rgba(0,0,0,0)');
+    bs.addColorStop(1,'rgba(0,0,0,.4)');
+    ctx.fillStyle = bs; ctx.fillRect(0,bh*0.85,bw,bh*0.15);
+    ctx.restore();
+    cx += bw + gap;
+  }
+}
+function paintLeaves(ctx, x, y, w, h, seed){
+  for(let i=0;i<5;i++){
+    const lx = x + (0.12 + rand(seed+i*13)*0.65)*w;
+    const ly = y + (0.10 + rand(seed+i*19)*0.55)*h;
+    const sz = (0.10 + rand(seed+i*7)*0.06)*w;
+    const rot = rand(seed+i)*Math.PI*2;
+    ctx.save();
+    ctx.translate(lx,ly);
+    ctx.rotate(rot);
+    ctx.fillStyle = i%2===0 ? LEAF_GREEN : LEAF_GREEN_LIGHT;
+    ctx.beginPath();
+    ctx.ellipse(0,0,sz/2,sz*0.7,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+function paintPhoto(ctx, x, y, w, h, seed){
+  const pw = w*0.55, ph = h*0.78;
+  const px = x + (w-pw)/2, py = y + (h-ph)/2;
+  // amber egg/photo
+  ctx.fillStyle = '#b89b73';
+  ctx.beginPath();
+  // rounded "egg" shape
+  ctx.moveTo(px + pw/2, py);
+  ctx.bezierCurveTo(px+pw*1.05, py, px+pw*1.05, py+ph, px+pw/2, py+ph);
+  ctx.bezierCurveTo(px-pw*0.05, py+ph, px-pw*0.05, py, px+pw/2, py);
+  ctx.fill();
+  // highlight
+  ctx.fillStyle = 'rgba(240,210,140,0.7)';
+  ctx.beginPath();
+  ctx.ellipse(px+pw*0.65, py+ph*0.25, pw*0.18, ph*0.18, 0, 0, Math.PI*2);
+  ctx.fill();
+}
+
+// Frame + cubby drawing
+function paintWoodWall(ctx, S){
+  const wood = ctx.createLinearGradient(0,0,0,S);
+  wood.addColorStop(0,'#7a4a22');
+  wood.addColorStop(0.55,'#5a3618');
+  wood.addColorStop(1,'#3e2410');
+  ctx.fillStyle = wood;
+  ctx.fillRect(0,0,S,S);
+}
+function paintCubbyInterior(ctx, x, y, w, h){
+  ctx.fillStyle = '#2a1808';
+  ctx.fillRect(x,y,w,h);
+  const sh = ctx.createLinearGradient(0,y,0,y+h);
+  sh.addColorStop(0,'rgba(0,0,0,.55)');
+  sh.addColorStop(0.25,'rgba(0,0,0,0)');
+  sh.addColorStop(1,'rgba(0,0,0,.45)');
+  ctx.fillStyle = sh;
+  ctx.fillRect(x,y,w,h);
+}
+function paintVignette(ctx, S){
+  // Match the cubby variant in the app: a darkening band rather than a strong vignette
+  const v = ctx.createLinearGradient(0,0,0,S);
+  v.addColorStop(0,'rgba(28,18,8,0.385)');
+  v.addColorStop(0.5,'rgba(28,18,8,0.55)');
+  v.addColorStop(1,'rgba(28,18,8,0.385)');
+  ctx.fillStyle = v;
+  ctx.fillRect(0,0,S,S);
+}
+
+// MAIN: 4 cols × 2 rows, matching the screenshot
+function drawIcon(ctx, S){
+  paintWoodWall(ctx, S);
+
+  const cols = 4, rows = 2;
+  const outer = S*0.05;
+  const div = S*0.018;
+  const cellW = (S - 2*outer - div*(cols-1)) / cols;
+  const cellH = (S - 2*outer - div*(rows-1)) / rows;
+
+  // Top row: books, leaves, photo, leaves
+  // Bottom row: 4 × books with different seeds → different palettes
+  const cells = [
+    {kind:'books', seed:9},
+    {kind:'leaf',  seed:23},
+    {kind:'photo', seed:41},
+    {kind:'leaf',  seed:67},
+    {kind:'books', seed:101},
+    {kind:'books', seed:131},
+    {kind:'books', seed:167},
+    {kind:'books', seed:199},
+  ];
+
+  for(let i=0;i<cells.length;i++){
+    const col = i % cols, row = Math.floor(i / cols);
+    const x = outer + col*(cellW+div);
+    const y = outer + row*(cellH+div);
+    // frame: a tiny dark border (the seams between cubbies)
+    ctx.fillStyle = '#3e2410';
+    ctx.fillRect(x-div/2, y-div/2, cellW+div, cellH+div);
+    paintCubbyInterior(ctx, x, y, cellW, cellH);
+    const padX = cellW*0.08, padY = cellH*0.08;
+    const ix = x+padX, iy = y+padY, iw = cellW-2*padX, ih = cellH-2*padY;
+    const k = cells[i];
+    if(k.kind==='books') paintBooks(ctx, ix, iy, iw, ih, k.seed);
+    if(k.kind==='leaf')  paintLeaves(ctx, x, y, cellW, cellH, k.seed);
+    if(k.kind==='photo') paintPhoto(ctx, ix, iy, iw, ih, k.seed);
+  }
+
+  paintVignette(ctx, S);
+}
+
+function paint(id){
+  const c = document.getElementById(id);
+  drawIcon(c.getContext('2d'), c.width);
+}
+paint('c180'); paint('c512'); paint('c1024'); paint('cHome');
+
+function dl(size, name){
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  drawIcon(c.getContext('2d'), size);
+  const a = document.createElement('a');
+  a.download = name;
+  a.href = c.toDataURL('image/png');
+  a.click();
+}
+</script>
+</body></html>

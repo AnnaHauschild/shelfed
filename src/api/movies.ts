@@ -2,6 +2,7 @@ import { ERA_OPTIONS, ERA_WINDOWS, WATCH_REGION } from '@/constants/config';
 import { GENRE_FALLBACK } from '@/constants/genres';
 import {
   BOOK_GENRE_OPTIONS,
+  fetchBookById,
   fetchBookFeedPage,
   searchBooks,
 } from './openLibrary';
@@ -51,6 +52,39 @@ export async function loadGenres(
 // TV "genres" that aren't really series (news + talk/late-night shows).
 const TV_EXCLUDED_GENRE_IDS = ['10763', '10767'];
 const TV_EXCLUDED_GENRES = TV_EXCLUDED_GENRE_IDS.join(',');
+
+// Default decade rotation for the TV feed when the user hasn't picked an era.
+// Pre-2000 series catalogues are sparse on TMDB and the post-Netflix golden
+// age is what most users want to swipe through, so we skip the 70s/80s
+// entirely and weight the recent decades twice as heavily.
+const TV_DEFAULT_WINDOWS: { gte: string; lte: string }[] = [
+  { gte: '1990-01-01', lte: '1999-12-31' },
+  { gte: '2000-01-01', lte: '2009-12-31' },
+  { gte: '2010-01-01', lte: '2019-12-31' },
+  { gte: '2010-01-01', lte: '2019-12-31' },
+  { gte: '2020-01-01', lte: '2029-12-31' },
+  { gte: '2020-01-01', lte: '2029-12-31' },
+];
+
+// TMDB keyword ids to block softcore/erotica that slips past `include_adult`.
+// 190370 erotic movie · 155477 softcore · 211603 erotica · 13059 pornography
+// 207928 sexploitation · 244828 erotic horror · 263110 erotic film · 6152 nudity
+// 11322 female nudity · 270718 erotic thriller · 1568 sex · 165531 erotic
+const EXCLUDED_KEYWORDS = [
+  '190370', '155477', '211603', '13059', '207928',
+  '244828', '263110', '6152', '11322', '270718',
+  '1568', '165531',
+].join(',');
+
+// Last-resort title blocklist: catches the obvious cases (mostly 70s/80s
+// European softcore) that aren't tagged with any of the keywords above.
+const EROTIC_TITLE_PATTERN =
+  /\b(erotic|erotica|softcore|sex(y|ploitation)?|nymph|orgy|orgies|emanuelle|emmanuelle|lolita|porn|XXX|nude|naked|sins?\sof|caligula|decameron)\b/i;
+
+/** True if a title looks like it shouldn't appear on Shelfed. */
+function isLikelyErotic(title: string | undefined | null): boolean {
+  return !!title && EROTIC_TITLE_PATTERN.test(title);
+}
 
 /** Selectable genres for the Discover filter (TMDB genres or book subjects). */
 export async function getGenreOptions(
@@ -177,14 +211,17 @@ export async function fetchFeedPage(
   const genreMap = await loadGenres(mediaType);
 
   if (mediaType === 'tv') {
-    // No explicit era → pick a random decade per page so the feed mixes eras.
-    const tvWindow = eraWindow ?? ERA_WINDOWS[Math.floor(Math.random() * ERA_WINDOWS.length)];
+    // No explicit era → weighted-random recent decade (skips 70s/80s by default).
+    const tvWindow =
+      eraWindow ??
+      TV_DEFAULT_WINDOWS[Math.floor(Math.random() * TV_DEFAULT_WINDOWS.length)];
     const data = await tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
       include_adult: false,
       language: 'en-US',
       sort_by: 'popularity.desc',
       with_genres: genre,
       without_genres: TV_EXCLUDED_GENRES,
+      without_keywords: EXCLUDED_KEYWORDS,
       with_origin_country: country,
       'first_air_date.gte': tvWindow.gte,
       'first_air_date.lte': tvWindow.lte,
@@ -192,7 +229,10 @@ export async function fetchFeedPage(
     });
 
     const movies = shuffle(
-      data.results.filter((m) => m.poster_path).map((m) => toTv(m, genreMap)),
+      data.results
+        .filter((m) => m.poster_path)
+        .filter((m) => !isLikelyErotic(m.name) && !isLikelyErotic(m.original_name))
+        .map((m) => toTv(m, genreMap)),
     );
 
     const nextPage = page < data.total_pages ? page + 1 : null;
@@ -209,12 +249,18 @@ export async function fetchFeedPage(
     'primary_release_date.gte': movieWindow.gte,
     'primary_release_date.lte': movieWindow.lte,
     with_genres: genre,
+    without_keywords: EXCLUDED_KEYWORDS,
+    certification_country: 'US',
+    'certification.lte': 'R',
     with_origin_country: country,
     page,
   });
 
   const movies = shuffle(
-    data.results.filter((m) => m.poster_path).map((m) => toMovie(m, genreMap)),
+    data.results
+      .filter((m) => m.poster_path)
+      .filter((m) => !isLikelyErotic(m.title) && !isLikelyErotic(m.original_title))
+      .map((m) => toMovie(m, genreMap)),
   );
 
   const nextPage = page < data.total_pages ? page + 1 : null;
@@ -385,4 +431,33 @@ export async function searchMovies(
 
   const nextPage = page < data.total_pages ? page + 1 : null;
   return { movies, nextPage };
+}
+
+/**
+ * Fetches a single title by id (used by share-link deeplinks).
+ * Returns null when the lookup fails so the caller can fall back silently.
+ */
+export async function fetchMediaById(
+  mediaType: MediaType,
+  id: string,
+): Promise<Movie | null> {
+  if (mediaType === 'book') return fetchBookById(id);
+  if (!hasTmdbToken()) return null;
+  try {
+    const genreMap = await loadGenres(mediaType);
+    if (mediaType === 'tv') {
+      const raw = await tmdbGet<TmdbTv & { genres?: TmdbGenre[] }>(
+        `/tv/${id}`,
+        { language: 'en-US' },
+      );
+      return toTv({ ...raw, genre_ids: (raw.genres ?? []).map((g) => g.id) }, genreMap);
+    }
+    const raw = await tmdbGet<TmdbMovie & { genres?: TmdbGenre[] }>(
+      `/movie/${id}`,
+      { language: 'en-US' },
+    );
+    return toMovie({ ...raw, genre_ids: (raw.genres ?? []).map((g) => g.id) }, genreMap);
+  } catch {
+    return null;
+  }
 }

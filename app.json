@@ -5,13 +5,24 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "shelfed",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.shelfed.app"
+      "bundleIdentifier": "com.shelfed.app",
+      "buildNumber": "1",
+      "icon": "./assets/icon.png",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "com.shelfed.app"
+      "package": "com.shelfed.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#1d140c"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -21,10 +32,24 @@
       "expo-router",
       "expo-font",
       "expo-sqlite",
-      "expo-splash-screen"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#1d140c"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6337b7f5-b755-4de5-8bad-0dadb1ae9e12"
+      }
     }
   }
 }

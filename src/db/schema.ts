@@ -47,6 +47,11 @@ export const SCHEMA_STATEMENTS: string[] = [
 
   `CREATE INDEX IF NOT EXISTS idx_interactions_type ON interactions(media_type, type);`,
   `CREATE INDEX IF NOT EXISTS idx_interactions_movie ON interactions(media_type, movie_id);`,
+
+  `CREATE TABLE IF NOT EXISTS settings (
+     key   TEXT PRIMARY KEY,
+     value TEXT NOT NULL
+   );`,
 ];
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;

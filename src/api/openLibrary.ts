@@ -57,7 +57,11 @@ interface OlSearchResponse {
 }
 
 interface OlWorkDetails {
+  title?: string;
   description?: string | { value: string };
+  covers?: (number | null)[];
+  subjects?: string[];
+  first_publish_date?: string;
 }
 
 async function olGet<T>(path: string): Promise<T> {
@@ -152,14 +156,20 @@ export async function fetchBookFeedPage(
   const parts: string[] = [];
   if (subject) parts.push(`subject:${subject}`);
   if (years) parts.push(`first_publish_year:[${years.from} TO ${years.to}]`);
-  if (parts.length === 0) {
-    // No filters: pick a random subject so the deck jumps between genres.
+  const noUserFilter = parts.length === 0;
+  if (noUserFilter) {
+    // OL search rejects bare `q=*`; we pick a random subject for breadth and
+    // sort by readinglog so each subject still surfaces its popular books.
     const rotating =
       BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
     parts.push(`subject:${rotating}`);
   }
   const query = parts.join(' AND ');
-  const result = await searchBooks(query, page);
+  const result = await searchBooks(
+    query,
+    page,
+    noUserFilter ? 'readinglog' : undefined,
+  );
   return { ...result, movies: shuffle(result.movies) };
 }
 
@@ -167,12 +177,14 @@ export async function fetchBookFeedPage(
 export async function searchBooks(
   query: string,
   page: number,
+  sort?: string,
 ): Promise<FeedPage> {
   const offset = (page - 1) * PAGE_SIZE;
   const fields =
     'key,title,author_name,first_publish_year,cover_i,ratings_average,ratings_count,subject';
+  const sortParam = sort ? `&sort=${encodeURIComponent(sort)}` : '';
   const data = await olGet<OlSearchResponse>(
-    `/search.json?q=${encodeURIComponent(query)}&fields=${fields}&limit=${PAGE_SIZE}&offset=${offset}`,
+    `/search.json?q=${encodeURIComponent(query)}&fields=${fields}&limit=${PAGE_SIZE}&offset=${offset}${sortParam}`,
   );
 
   const movies = data.docs.filter((d) => d.cover_i).map(docToMovie);
@@ -189,4 +201,34 @@ export async function fetchBookDescription(
   return typeof data.description === 'string'
     ? data.description
     : data.description.value;
+}
+
+/** Fetches a single book by its work id (used for deeplinks). */
+export async function fetchBookById(bookId: string): Promise<Movie | null> {
+  try {
+    const data = await olGet<OlWorkDetails>(`/works/${bookId}.json`);
+    if (!data.title) return null;
+    const cover = data.covers?.find((c): c is number => typeof c === 'number') ?? null;
+    const yearMatch = data.first_publish_date?.match(/\d{4}/);
+    const description = typeof data.description === 'string'
+      ? data.description
+      : data.description?.value ?? '';
+    return {
+      id: bookId,
+      title: data.title,
+      year: yearMatch ? Number(yearMatch[0]) : null,
+      genreIds: [],
+      genres: toGenreLabels(data.subjects),
+      posterPath: coverUrl(cover),
+      backdropPath: null,
+      overview: description,
+      voteAverage: 0,
+      voteCount: 0,
+      popularity: 0,
+      authors: [],
+      mediaType: 'book',
+    };
+  } catch {
+    return null;
+  }
 }

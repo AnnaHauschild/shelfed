@@ -1,0 +1,223 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Shelfed Icon Preview v2</title>
+<style>
+  body{margin:0;background:#1d140c;color:#f4e4c1;font-family:-apple-system,Segoe UI,sans-serif;
+       display:flex;flex-direction:column;align-items:center;gap:32px;padding:32px}
+  h1{margin:0;font-weight:300;letter-spacing:6px;color:#c8862b;font-size:18px}
+  h2{margin:0;font-weight:400;letter-spacing:2px;color:#c8862b;font-size:12px;text-transform:uppercase}
+  .variant{display:flex;flex-direction:column;align-items:center;gap:16px;
+           background:#28180b;padding:24px;border-radius:16px;border:1px solid #3e2410}
+  .grid{display:grid;grid-template-columns:repeat(3,auto);gap:24px;align-items:end}
+  .tile{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .tile small{color:#8a7a5a;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+  canvas{border-radius:22%;box-shadow:0 8px 30px rgba(0,0,0,.6);background:#000}
+  button{background:#c8862b;color:#1d140c;border:0;padding:10px 18px;border-radius:8px;
+         font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;font-size:12px}
+  button:hover{background:#e1a045}
+  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .side{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+</style></head>
+<body>
+  <h1>SHELFED · APP ICON · V2</h1>
+
+<div class="side">
+  <div class="variant">
+    <h2>A · Single Cubby (5 books)</h2>
+    <div class="grid">
+      <div class="tile"><canvas id="a180" width="180" height="180"></canvas><small>180</small></div>
+      <div class="tile"><canvas id="a512" width="512" height="512"></canvas><small>512</small></div>
+      <div class="tile"><canvas id="a1024" width="1024" height="1024"></canvas><small>1024</small></div>
+    </div>
+    <button onclick="dl('A',1024,'icon-A.png')">Download A (1024)</button>
+  </div>
+
+  <div class="variant">
+    <h2>B · 2×2 Mini Grid (books + photo + plant)</h2>
+    <div class="grid">
+      <div class="tile"><canvas id="b180" width="180" height="180"></canvas><small>180</small></div>
+      <div class="tile"><canvas id="b512" width="512" height="512"></canvas><small>512</small></div>
+      <div class="tile"><canvas id="b1024" width="1024" height="1024"></canvas><small>1024</small></div>
+    </div>
+    <button onclick="dl('B',1024,'icon-B.png')">Download B (1024)</button>
+  </div>
+</div>
+
+<script>
+// ---- shared palette from the app ----
+const BOOK_PALETTE = ['#a7563d','#7a3527','#5e7a3c','#3f6079','#d8a548','#8a5a2b','#b89b73','#2c4a3a'];
+const LEAF_GREEN = '#4f6b35';
+const LEAF_GREEN_LIGHT = '#7a9658';
+
+function rand(seed){const x=Math.sin(seed*9301+49297)*233280;return x-Math.floor(x)}
+
+// ---- shared painters ----
+function paintWoodFrame(ctx, x, y, w, h){
+  // outer wood block
+  const wood = ctx.createLinearGradient(0,y,0,y+h);
+  wood.addColorStop(0,'#7a4a22');
+  wood.addColorStop(0.55,'#5a3618');
+  wood.addColorStop(1,'#3e2410');
+  ctx.fillStyle = wood;
+  ctx.fillRect(x,y,w,h);
+}
+function paintCubby(ctx, x, y, w, h){
+  // dark interior
+  ctx.fillStyle = '#2a1808';
+  ctx.fillRect(x,y,w,h);
+  // inner shadow
+  const sh = ctx.createLinearGradient(0,y,0,y+h);
+  sh.addColorStop(0,'rgba(0,0,0,.55)');
+  sh.addColorStop(0.25,'rgba(0,0,0,0)');
+  sh.addColorStop(1,'rgba(0,0,0,.45)');
+  ctx.fillStyle = sh;
+  ctx.fillRect(x,y,w,h);
+}
+function paintBooks(ctx, x, y, w, h, seed, count){
+  const n = count ?? (4 + Math.floor(rand(seed+11)*4));
+  // total widths in %
+  const widths=[]; let total=0;
+  for(let i=0;i<n;i++){const ww=9+rand(seed+i*17)*8; widths.push(ww); total+=ww}
+  const gap = w*0.012;
+  const usable = w - gap*(n-1);
+  let cx = x;
+  for(let i=0;i<n;i++){
+    const bw = (widths[i]/total) * usable;
+    const bh = h * (0.65 + rand(seed+i*23)*0.30);
+    const tilt = rand(seed+i*41)<0.18 ? (rand(seed+i)-0.5)*10 : 0;
+    const color = BOOK_PALETTE[Math.floor(rand(seed*31+i)*BOOK_PALETTE.length)];
+
+    ctx.save();
+    ctx.translate(cx + bw/2, y + h);
+    ctx.rotate(tilt*Math.PI/180);
+    ctx.translate(-bw/2, -bh);
+
+    // spine
+    ctx.fillStyle = color;
+    ctx.fillRect(0,0,bw,bh);
+    // top highlight
+    const top = ctx.createLinearGradient(0,0,0,bh*0.18);
+    top.addColorStop(0,'rgba(255,255,255,.20)');
+    top.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle = top; ctx.fillRect(0,0,bw,bh*0.18);
+    // gold bands
+    ctx.fillStyle = '#d8a548';
+    ctx.fillRect(0,bh*0.30,bw,bh*0.025);
+    ctx.fillRect(0,bh*0.36,bw,bh*0.025);
+    // bottom shadow
+    const bs = ctx.createLinearGradient(0,bh*0.85,0,bh);
+    bs.addColorStop(0,'rgba(0,0,0,0)');
+    bs.addColorStop(1,'rgba(0,0,0,.4)');
+    ctx.fillStyle = bs; ctx.fillRect(0,bh*0.85,bw,bh*0.15);
+    ctx.restore();
+
+    cx += bw + gap;
+  }
+}
+function paintLeaves(ctx, x, y, w, h, seed){
+  for(let i=0;i<6;i++){
+    const lx = x + (0.10 + rand(seed+i*13)*0.70)*w;
+    const ly = y + (0.05 + rand(seed+i*19)*0.60)*h;
+    const sz = (0.06 + rand(seed+i*7)*0.05)*w;
+    const rot = rand(seed+i)*Math.PI*2;
+    ctx.save();
+    ctx.translate(lx,ly);
+    ctx.rotate(rot);
+    ctx.fillStyle = i%2===0 ? LEAF_GREEN : LEAF_GREEN_LIGHT;
+    ctx.beginPath();
+    ctx.ellipse(0,0,sz/2,sz*0.7,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+function paintPhoto(ctx, x, y, w, h, color){
+  const pw = w*0.78, ph = h*0.78;
+  const px = x + (w-pw)/2, py = y + (h-ph)/2;
+  // amber frame
+  ctx.fillStyle = '#f0d28c';
+  ctx.beginPath();
+  ctx.roundRect(px-w*0.02, py-h*0.02, pw+w*0.04, ph+h*0.04, w*0.06);
+  ctx.fill();
+  // photo
+  ctx.fillStyle = color || '#b89b73';
+  ctx.beginPath();
+  ctx.roundRect(px, py, pw, ph, w*0.04);
+  ctx.fill();
+}
+function paintVignette(ctx, S){
+  const r = ctx.createRadialGradient(S/2,S/2,S*0.25,S/2,S/2,S*0.7);
+  r.addColorStop(0,'rgba(0,0,0,0)');
+  r.addColorStop(1,'rgba(0,0,0,.45)');
+  ctx.fillStyle = r;
+  ctx.fillRect(0,0,S,S);
+}
+
+// ---- VARIANT A: single big cubby ----
+function drawA(ctx, S){
+  // wood background fills the whole canvas
+  paintWoodFrame(ctx, 0, 0, S, S);
+  // thick frame
+  const pad = S*0.08;
+  ctx.fillStyle = '#3e2410';
+  ctx.fillRect(pad-S*0.012, pad-S*0.012, S-2*(pad-S*0.012), S-2*(pad-S*0.012));
+  // cubby interior
+  const inset = pad;
+  paintCubby(ctx, inset, inset, S-2*inset, S-2*inset);
+  // books inside cubby (5)
+  const bx = inset + S*0.04, by = inset + S*0.04;
+  const bw = S - 2*inset - S*0.08, bh = S - 2*inset - S*0.08;
+  paintBooks(ctx, bx, by, bw, bh, 17, 5);
+  paintVignette(ctx, S);
+}
+
+// ---- VARIANT B: 2x2 mini grid ----
+function drawB(ctx, S){
+  paintWoodFrame(ctx, 0, 0, S, S);
+  // 2x2 layout with thick wood dividers
+  const outer = S*0.06;
+  const div = S*0.028;
+  const cellSize = (S - 2*outer - div) / 2;
+
+  const cells = [
+    {kind:'photo',  seed:5,  color:'#b89b73'},  // top-left: egg/photo
+    {kind:'leaf',   seed:13},                   // top-right: plant
+    {kind:'books',  seed:31, count:5},          // bottom-left: books
+    {kind:'books',  seed:47, count:5},          // bottom-right: books (different palette via seed)
+  ];
+
+  for(let i=0;i<4;i++){
+    const col = i%2, row = Math.floor(i/2);
+    const x = outer + col*(cellSize+div);
+    const y = outer + row*(cellSize+div);
+    // cubby frame outline
+    ctx.fillStyle = '#3e2410';
+    ctx.fillRect(x-div/2,y-div/2,cellSize+div,cellSize+div);
+    paintCubby(ctx, x, y, cellSize, cellSize);
+    const cell = cells[i];
+    const inner = cellSize * 0.86;
+    const offset = (cellSize-inner)/2;
+    if(cell.kind === 'books') paintBooks(ctx, x+offset, y+offset, inner, inner, cell.seed, cell.count);
+    if(cell.kind === 'leaf')  paintLeaves(ctx, x, y, cellSize, cellSize, cell.seed);
+    if(cell.kind === 'photo') paintPhoto(ctx, x+offset, y+offset, inner, inner, cell.color);
+  }
+  paintVignette(ctx, S);
+}
+
+function paint(id, fn){
+  const c = document.getElementById(id);
+  fn(c.getContext('2d'), c.width);
+}
+
+paint('a180', drawA); paint('a512', drawA); paint('a1024', drawA);
+paint('b180', drawB); paint('b512', drawB); paint('b1024', drawB);
+
+function dl(which, size, name){
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  (which==='A' ? drawA : drawB)(c.getContext('2d'), size);
+  const a = document.createElement('a');
+  a.download = name;
+  a.href = c.toDataURL('image/png');
+  a.click();
+}
+</script>
+</body></html>
