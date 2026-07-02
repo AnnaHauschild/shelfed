@@ -245,8 +245,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     gap: spacing.md,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
     alignItems: 'center',
+    // Subtle dark scrim so titles stay readable against the busy shelf.
+    backgroundColor: 'rgba(20, 12, 6, 0.72)',
+    borderRadius: radius.md,
+    padding: spacing.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(122, 74, 34, 0.35)',
   },
   thumb: {
     width: 60,

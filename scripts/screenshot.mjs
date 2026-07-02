@@ -55,8 +55,8 @@ async function typeQuery(text) {
   await input.click({ force: true });
   await input.fill('');
   await input.type(text, { delay: 40 });
-  // Debounced search fires after 350ms; wait for results.
-  await page.waitForTimeout(2500);
+  // Debounced search fires after 350ms; wait for results AND poster images.
+  await page.waitForTimeout(4500);
 }
 
 // ---- 01 Landing ------------------------------------------------------------
