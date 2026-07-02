@@ -64,6 +64,7 @@ export function FeatureHeader({
       </View>
 
       <View style={[styles.hangingLamp, { top: topInset - 4 }]}>
+        <View style={styles.hangingGlow} />
         <View style={styles.hangingCord} />
         <View style={styles.hangingShade} />
       </View>
@@ -138,7 +139,18 @@ const styles = StyleSheet.create({
   hangingLamp: {
     position: 'absolute',
     left: 96,
+    width: 64,
     alignItems: 'center',
+    overflow: 'visible',
+  },
+  hangingGlow: {
+    position: 'absolute',
+    left: 32 - 100,
+    top: 30,
+    width: 200,
+    height: 120,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255, 220, 130, 0.09)',
   },
   hangingCord: {
     width: 2,
@@ -153,14 +165,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
-  },
-  hangingGlow: {
-    position: 'absolute',
-    top: 26,
-    width: 140,
-    height: 80,
-    borderRadius: 80,
-    backgroundColor: 'rgba(255, 210, 130, 0.12)',
   },
   plantWrap: {
     width: 44,
