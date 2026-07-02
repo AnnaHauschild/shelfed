@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   featureText: {
     flex: 1,
     paddingLeft: 14,
+    marginBottom: 4,
   },
   featureBooks: {
     flexDirection: 'row',
@@ -145,11 +146,11 @@ const styles = StyleSheet.create({
   },
   hangingGlow: {
     position: 'absolute',
-    left: 32 - 100,
-    top: 30,
-    width: 200,
-    height: 120,
-    borderRadius: 100,
+    left: 32 - 80,
+    top: 16,
+    width: 160,
+    height: 88,
+    borderRadius: 80,
     backgroundColor: 'rgba(255, 220, 130, 0.09)',
   },
   hangingCord: {
