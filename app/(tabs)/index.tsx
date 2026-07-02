@@ -102,10 +102,10 @@ export default function DiscoverScreen() {
   const headerHeight = insets.top + 200;
   const tagline =
     mediaType === 'tv'
-      ? "Swipe the series you've watched"
+      ? 'Swipe your series'
       : mediaType === 'book'
-        ? "Swipe the books you've read"
-        : "Swipe the films you've watched";
+        ? 'Swipe your books'
+        : 'Swipe your films';
 
   return (
     <View style={[styles.container, { paddingTop: headerHeight + spacing.md }]}>

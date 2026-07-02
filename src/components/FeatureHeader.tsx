@@ -128,11 +128,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: 10,
-    backgroundColor: '#3e2410',
-    borderTopWidth: 2,
-    borderTopColor: '#7a4a22',
-    borderBottomWidth: 1,
+    height: 14,
+    backgroundColor: '#5a3618',
+    borderTopWidth: 3,
+    borderTopColor: '#8a5828',
+    borderBottomWidth: 2,
     borderBottomColor: '#1a0e05',
   },
   hangingLamp: {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   hangingCord: {
     width: 2,
     height: 20,
-    backgroundColor: '#2a1808',
+    backgroundColor: '#6a4020',
   },
   hangingShade: {
     width: 64,
