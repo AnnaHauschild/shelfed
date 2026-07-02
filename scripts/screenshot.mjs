@@ -1,0 +1,110 @@
+import { chromium } from 'playwright';
+import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+
+// Render at natural iPhone 6.9" logical size; DPR=3 -> 1290x2796 PNG (App Store compliant)
+const WIDTH = 430;
+const HEIGHT = 932;
+const DPR = 3;
+
+const OUT = 'C:/Users/ahauschild/shelfed/store/screenshots';
+mkdirSync(OUT, { recursive: true });
+
+const browser = await chromium.launch();
+const context = await browser.newContext({
+  viewport: { width: WIDTH, height: HEIGHT },
+  deviceScaleFactor: DPR,
+  isMobile: true,
+  hasTouch: true,
+  userAgent:
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+});
+const page = await context.newPage();
+
+async function shot(name, extraWait = 1200) {
+  await page.waitForTimeout(extraWait);
+  const out = join(OUT, `${name}.png`);
+  await page.screenshot({ path: out, fullPage: false });
+  console.log('saved', out);
+}
+
+async function clickCard(blurb) {
+  const card = page
+    .locator('div')
+    .filter({ hasText: new RegExp(`^${blurb}$`) })
+    .locator('xpath=ancestor-or-self::div[contains(@class,"r-cursor-1loqt21")][1]');
+  await card.first().waitFor({ state: 'visible', timeout: 5000 });
+  await card.first().click({ force: true });
+}
+
+async function goHome() {
+  await page.goto('http://localhost:8081', { waitUntil: 'networkidle', timeout: 60000 });
+  await page.waitForTimeout(2500);
+}
+
+async function openSearchTab() {
+  const tab = page.getByText('Search', { exact: true }).first();
+  await tab.waitFor({ state: 'visible', timeout: 5000 });
+  await tab.click({ force: true });
+  await page.waitForTimeout(1200);
+}
+
+async function typeQuery(text) {
+  const input = page.locator('input').first();
+  await input.waitFor({ state: 'visible', timeout: 5000 });
+  await input.click({ force: true });
+  await input.fill('');
+  await input.type(text, { delay: 40 });
+  // Debounced search fires after 350ms; wait for results.
+  await page.waitForTimeout(2500);
+}
+
+// ---- 01 Landing ------------------------------------------------------------
+await page.goto('http://localhost:8081', { waitUntil: 'networkidle', timeout: 60000 });
+await page.waitForTimeout(3500);
+await shot('01-landing');
+
+// ---- 02 Movies discover deck + 03 Movie details ---------------------------
+try {
+  await clickCard('Recall the films of a lifetime');
+  await page.waitForTimeout(4000);
+  await shot('02-movies');
+
+  try {
+    const first = page.locator('img').first();
+    await first.click({ force: true, timeout: 3000 });
+    await page.waitForTimeout(1500);
+    await shot('03-movie-details');
+  } catch (e) {
+    console.log('no movie detail:', e.message);
+  }
+} catch (e) {
+  console.log('movies flow failed:', e.message);
+}
+
+// ---- 04 Books (search "Sapiens" — guaranteed strong hero title) -----------
+try {
+  await goHome();
+  await clickCard('Remember the books you have read');
+  await page.waitForTimeout(3500);
+  await openSearchTab();
+  await typeQuery('Sapiens');
+  await shot('04-books', 800);
+} catch (e) {
+  console.log('books flow failed:', e.message);
+}
+
+// ---- 05 Series (search "Breaking Bad" — prestige hero title) --------------
+try {
+  await goHome();
+  await clickCard('Track the shows you have binged');
+  await page.waitForTimeout(3500);
+  await openSearchTab();
+  await typeQuery('Breaking Bad');
+  await shot('05-series', 800);
+} catch (e) {
+  console.log('series flow failed:', e.message);
+}
+
+await browser.close();
+console.log('done');
