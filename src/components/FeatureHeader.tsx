@@ -27,7 +27,7 @@ export function FeatureHeader({
       />
       <View style={[styles.featureRow, { paddingTop: topInset + spacing.md }]}>
         <View style={styles.featureText}>
-          <Text style={styles.brand}>{title}</Text>
+          <Text style={styles.brand} numberOfLines={1}>{title}</Text>
           {tagline ? <Text style={styles.tagline}>{tagline}</Text> : null}
         </View>
         <View style={styles.plantWrap}>
