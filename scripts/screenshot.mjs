@@ -2,12 +2,13 @@ import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-// Render at natural iPhone 6.9" logical size; DPR=3 -> 1290x2796 PNG (App Store compliant)
-const WIDTH = 430;
-const HEIGHT = 932;
-const DPR = 3;
+// Render at natural iPhone 6.9" logical size; DPR=3 -> 1290x2796 PNG (App Store compliant).
+// Override via env vars to produce other sizes, e.g. a 9:16 set for Google Play.
+const WIDTH = Number(process.env.SHOT_WIDTH ?? 430);
+const HEIGHT = Number(process.env.SHOT_HEIGHT ?? 932);
+const DPR = Number(process.env.SHOT_DPR ?? 3);
 
-const OUT = 'C:/Users/ahauschild/shelfed/store/screenshots';
+const OUT = process.env.SHOT_OUT ?? 'C:/Users/ahauschild/shelfed/store/screenshots';
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();
