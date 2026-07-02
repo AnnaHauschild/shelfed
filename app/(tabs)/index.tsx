@@ -15,6 +15,7 @@ import { GenreChips } from '@/components/GenreChips';
 import { LoadingReel } from '@/components/LoadingReel';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { ShelfBackground } from '@/components/ShelfBackground';
+import { FeatureHeader } from '@/components/FeatureHeader';
 import { SwipeDeck } from '@/components/SwipeDeck';
 import { useMediaType } from '@/context/MediaTypeProvider';
 import { useGenres } from '@/hooks/useGenres';
@@ -98,19 +99,19 @@ export default function DiscoverScreen() {
   }, [topIndex, movies.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const exhausted = movies.length > 0 && topIndex >= movies.length;
+  const headerHeight = insets.top + 200;
+  const tagline =
+    mediaType === 'tv'
+      ? "Swipe the series you've watched"
+      : mediaType === 'book'
+        ? "Swipe the books you've read"
+        : "Swipe the films you've watched";
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
+    <View style={[styles.container, { paddingTop: headerHeight + spacing.md }]}>
       <ShelfBackground />
+      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} />
       <View style={styles.header}>
-        <Text style={styles.brand}>Shelfed</Text>
-        <Text style={styles.tagline}>
-          {mediaType === 'tv'
-            ? "Swipe the series you've watched"
-            : mediaType === 'book'
-              ? "Swipe the books you've read"
-              : "Swipe the films you've watched"}
-        </Text>
         <View style={styles.switcherRow}>
           <MediaSwitcher />
           <Pressable

@@ -64,19 +64,25 @@ await page.goto('http://localhost:8081', { waitUntil: 'networkidle', timeout: 60
 await page.waitForTimeout(3500);
 await shot('01-landing');
 
-// ---- 02 Movies discover deck + 03 Movie details ---------------------------
+// ---- 02 Movies discover deck + 03 Movie details (feature: The Sheep Detectives) ----
 try {
   await clickCard('Recall the films of a lifetime');
   await page.waitForTimeout(4000);
   await shot('02-movies');
 
+  // For the details screenshot, search a specific curated title so it's always
+  // the same movie in the store listing.
   try {
-    const first = page.locator('img').first();
-    await first.click({ force: true, timeout: 3000 });
-    await page.waitForTimeout(1500);
+    await openSearchTab();
+    await typeQuery('The Sheep Detectives');
+    // Click the title text of the first search result to open the details modal.
+    const titleCell = page.getByText('THE SHEEP DETECTIVES', { exact: false }).first();
+    await titleCell.waitFor({ state: 'visible', timeout: 5000 });
+    await titleCell.click({ force: true });
+    await page.waitForTimeout(2500);
     await shot('03-movie-details');
   } catch (e) {
-    console.log('no movie detail:', e.message);
+    console.log('sheep detectives search failed:', e.message);
   }
 } catch (e) {
   console.log('movies flow failed:', e.message);

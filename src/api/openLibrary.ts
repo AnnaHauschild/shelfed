@@ -20,6 +20,43 @@ const BOOK_SUBJECTS = [
   'biography',
 ];
 
+// Default year rotation for the book feed when the user hasn't picked an era.
+// Older books catalogue heavily on OL, so we weight recent decades to keep the
+// deck feeling fresh — mirrors the TV_DEFAULT_WINDOWS approach in movies.ts.
+// Slots: any (1), 1980+ (2), 2000+ (2)  →  ~20% classics / ~40% modern / ~40% current.
+const BOOK_DEFAULT_YEAR_WINDOWS: { from: number; to: number }[] = [
+  { from: 1900, to: 2029 },
+  { from: 1980, to: 2029 },
+  { from: 1980, to: 2029 },
+  { from: 2000, to: 2029 },
+  { from: 2000, to: 2029 },
+];
+
+// Open Library returns many textbook-style entries (study guides, SparkNotes,
+// exam prep) that aren't the leisure reading Shelfed is for. Filter both by
+// subject (via search query NOT clauses) and by title as a safety net.
+const OL_EXCLUDED_SUBJECTS = [
+  'study guides',
+  'study aids',
+  'sparknotes',
+  'cliffsnotes',
+  'examinations',
+  'notes, examinations, etc',
+  'outlines, syllabi, etc',
+  'literature textbooks',
+];
+
+const STUDY_GUIDE_TITLE_PATTERN =
+  /\b(study\s*guide|sparknotes?|cliffs?\s*notes|readers?'?\s*guide|teachers?'?\s*guide|summary\s+(and|of)|analysis\s+of|book\s*notes|literature\s*guide|workbook|exam\s*(prep|preparation))\b/i;
+
+function isStudyGuide(doc: OlSearchDoc): boolean {
+  if (STUDY_GUIDE_TITLE_PATTERN.test(doc.title)) return true;
+  const subjects = (doc.subject ?? []).map((s) => s.toLowerCase());
+  return subjects.some((s) =>
+    OL_EXCLUDED_SUBJECTS.some((bad) => s.includes(bad)),
+  );
+}
+
 /** Book "genres" for the Discover filter (the subjects we browse). */
 export const BOOK_GENRE_OPTIONS = BOOK_SUBJECTS.map((s) => ({
   id: s,
@@ -144,6 +181,8 @@ function shuffle<T>(arr: T[]): T[] {
 /**
  * One page of the book swipe feed. With a subject it browses that single genre;
  * without one it picks a random subject so the deck mixes genres across pages.
+ * When no era is picked, biases toward recent decades so classics show up
+ * occasionally rather than dominating.
  */
 export async function fetchBookFeedPage(
   page: number,
@@ -155,20 +194,31 @@ export async function fetchBookFeedPage(
   // for noticeably better covers than /subjects/{subject}.json.
   const parts: string[] = [];
   if (subject) parts.push(`subject:${subject}`);
-  if (years) parts.push(`first_publish_year:[${years.from} TO ${years.to}]`);
-  const noUserFilter = parts.length === 0;
-  if (noUserFilter) {
+  const effectiveYears =
+    years ??
+    BOOK_DEFAULT_YEAR_WINDOWS[
+      Math.floor(Math.random() * BOOK_DEFAULT_YEAR_WINDOWS.length)
+    ];
+  parts.push(
+    `first_publish_year:[${effectiveYears.from} TO ${effectiveYears.to}]`,
+  );
+  const noUserSubject = !subject;
+  if (noUserSubject) {
     // OL search rejects bare `q=*`; we pick a random subject for breadth and
     // sort by readinglog so each subject still surfaces its popular books.
     const rotating =
       BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
     parts.push(`subject:${rotating}`);
   }
+  // Exclude study-guide / textbook subjects at the query level.
+  for (const bad of OL_EXCLUDED_SUBJECTS) {
+    parts.push(`NOT subject:"${bad}"`);
+  }
   const query = parts.join(' AND ');
   const result = await searchBooks(
     query,
     page,
-    noUserFilter ? 'readinglog' : undefined,
+    noUserSubject ? 'readinglog' : undefined,
   );
   return { ...result, movies: shuffle(result.movies) };
 }
@@ -187,7 +237,10 @@ export async function searchBooks(
     `/search.json?q=${encodeURIComponent(query)}&fields=${fields}&limit=${PAGE_SIZE}&offset=${offset}${sortParam}`,
   );
 
-  const movies = data.docs.filter((d) => d.cover_i).map(docToMovie);
+  const movies = data.docs
+    .filter((d) => d.cover_i)
+    .filter((d) => !isStudyGuide(d))
+    .map(docToMovie);
   const hasMore = offset + PAGE_SIZE < data.numFound;
   return { movies, nextPage: hasMore ? page + 1 : null };
 }

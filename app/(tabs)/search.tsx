@@ -22,6 +22,7 @@ import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ShelfBackground } from '@/components/ShelfBackground';
+import { FeatureHeader } from '@/components/FeatureHeader';
 
 /** Manual movie search: find a title, then add it to any shelf. */
 export default function SearchScreen() {
@@ -39,11 +40,18 @@ export default function SearchScreen() {
   const { data, isLoading, isError, error } = useMovieSearch(query);
   const results = useMemo(() => data?.movies ?? [], [data]);
   const trimmed = query.trim();
+  const headerHeight = insets.top + 200;
+  const tagline =
+    mediaType === 'tv'
+      ? 'Find any series'
+      : mediaType === 'book'
+        ? 'Find any book'
+        : 'Find any movie';
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + spacing.md }]}>
+    <View style={[styles.container, { paddingTop: headerHeight + spacing.md }]}>
       <ShelfBackground />
-      <Text style={styles.brand}>Search</Text>
+      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} />
       <View style={styles.switcherRow}>
         <MediaSwitcher />
       </View>

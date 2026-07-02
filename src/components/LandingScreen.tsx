@@ -18,6 +18,7 @@ import { useProfile } from '@/context/ProfileProvider';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { AboutModal } from './AboutModal';
 import { ShelfBackground } from './ShelfBackground';
+import { FeatureHeader } from './FeatureHeader';
 
 interface Category {
   type: MediaType | null;
@@ -70,7 +71,11 @@ export function LandingScreen() {
       <ShelfBackground />
 
       {/* Feature-graphic-style header: warm wood band with title + books on a plank. */}
-      <FeatureHeader height={headerHeight} topInset={insets.top} />
+      <FeatureHeader
+        height={headerHeight}
+        topInset={insets.top}
+        tagline="Your lifelong collection."
+      />
 
       <View style={[styles.content, { paddingTop: headerHeight + spacing.lg }]}>
         <Pressable style={styles.profilePill} onPress={() => setEditing(true)} hitSlop={8}>
@@ -102,83 +107,7 @@ export function LandingScreen() {
   );
 }
 
-// Warm dark-wood header band matching the store feature graphic: title on the
-// left, a row of standing book spines on the right, and a shelf plank as the
-// bottom edge.
-function FeatureHeader({ height, topInset }: { height: number; topInset: number }) {
-  return (
-    <View
-      style={[styles.featureHeader, { height }]}
-      pointerEvents="none"
-    >
-      <LinearGradient
-        colors={['#3e2410', '#28180b', '#1a0e05']}
-        locations={[0, 0.7, 1]}
-        style={StyleSheet.absoluteFill}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      />
-      <View style={[styles.featureRow, { paddingTop: topInset + spacing.md }]}>
-        <View style={styles.featureText}>
-          <Text style={styles.brand}>Shelfed</Text>
-          <Text style={styles.tagline}>Your lifelong collection.</Text>
-        </View>
-        {/* Small potted plant sitting between the title and the book row. */}
-        <View style={styles.plantWrap}>
-          <View style={styles.plantLeaf1} />
-          <View style={styles.plantLeaf2} />
-          <View style={styles.plantLeaf3} />
-          <View style={styles.plantPot} />
-        </View>
-        <View style={styles.featureBooks}>
-          {FEATURE_SPINES.map((s, i) => (
-            <View
-              key={i}
-              style={{
-                width: s.w,
-                height: s.h,
-                backgroundColor: s.color,
-                marginLeft: 2,
-                borderTopLeftRadius: 2,
-                borderTopRightRadius: 2,
-                overflow: 'hidden',
-              }}
-            >
-              <View style={styles.spineHighlight} />
-              {s.band ? <View style={styles.spineBand} /> : null}
-              <LinearGradient
-                colors={['rgba(255,255,255,0.10)', 'rgba(0,0,0,0.28)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={StyleSheet.absoluteFill}
-              />
-            </View>
-          ))}
-        </View>
-      </View>
 
-      {/* Hanging lamp above the title — casts a warm glow onto "Shelfed". */}
-      <View style={[styles.hangingLamp, { top: topInset - 4 }]}>
-        <View style={styles.hangingCord} />
-        <View style={styles.hangingShade} />
-        <View style={styles.hangingGlow} />
-      </View>
-
-      {/* Shelf plank as the bottom edge of the header. */}
-      <View style={styles.featurePlank} />
-    </View>
-  );
-}
-
-// Static, curated row of book spines matching the store feature graphic.
-const FEATURE_SPINES = [
-  { color: '#a7563d', w: 20, h: 128, band: true },
-  { color: '#5e7a3c', w: 24, h: 148, band: true },
-  { color: '#3f6079', w: 22, h: 138, band: true },
-  { color: '#d8a548', w: 20, h: 120, band: false },
-  { color: '#8a5a2b', w: 24, h: 158, band: true },
-  { color: '#2c4a3a', w: 22, h: 140, band: true },
-];
 
 function CategoryCard({
   category,
@@ -417,7 +346,8 @@ const styles = StyleSheet.create({
   tagline: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 11,
+    letterSpacing: 0.2,
     marginTop: spacing.xs,
   },
   cards: {
