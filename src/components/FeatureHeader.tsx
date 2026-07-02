@@ -145,11 +145,11 @@ const styles = StyleSheet.create({
   },
   hangingGlow: {
     position: 'absolute',
-    left: 32 - 100,
-    top: 30,
-    width: 200,
-    height: 120,
-    borderRadius: 100,
+    left: 32 - 70,
+    top: 48,
+    width: 140,
+    height: 84,
+    borderRadius: 70,
     backgroundColor: 'rgba(255, 220, 130, 0.09)',
   },
   hangingCord: {
