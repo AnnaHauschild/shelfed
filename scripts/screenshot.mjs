@@ -75,15 +75,15 @@ try {
   // the same movie in the store listing.
   try {
     await openSearchTab();
-    await typeQuery('The Sheep Detectives');
+    await typeQuery('Interstellar');
     // Click the title text of the first search result to open the details modal.
-    const titleCell = page.getByText('THE SHEEP DETECTIVES', { exact: false }).first();
+    const titleCell = page.getByText('INTERSTELLAR', { exact: false }).first();
     await titleCell.waitFor({ state: 'visible', timeout: 5000 });
     await titleCell.click({ force: true });
     await page.waitForTimeout(2500);
     await shot('03-movie-details');
   } catch (e) {
-    console.log('sheep detectives search failed:', e.message);
+    console.log('interstellar search failed:', e.message);
   }
 } catch (e) {
   console.log('movies flow failed:', e.message);

@@ -42,3 +42,6 @@ yarn-error.*
 # local preview artifacts
 shelf-bg-preview.html
 
+
+# Local build artifacts (.aab/.ipa)
+/build/
