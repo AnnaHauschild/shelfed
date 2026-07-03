@@ -10,12 +10,46 @@ export function FeatureHeader({
   topInset,
   title = 'Shelfed',
   tagline,
+  compact = false,
 }: {
   height: number;
   topInset: number;
   title?: string;
   tagline?: string;
+  /** Slim variant for functional screens (Discover/Search): just the wordmark
+   *  + tagline over the wood band, so the content below gets the space. */
+  compact?: boolean;
 }) {
+  if (compact) {
+    return (
+      <View style={[styles.featureHeader, { height }]} pointerEvents="none">
+        <LinearGradient
+          colors={['#3e2410', '#28180b', '#1a0e05']}
+          locations={[0, 0.7, 1]}
+          style={StyleSheet.absoluteFill}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        />
+        <View style={[styles.compactRow, { paddingTop: topInset + spacing.xs }]}>
+          <Text
+            style={styles.compactBrand}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+          >
+            {title}
+          </Text>
+          {tagline ? (
+            <Text style={styles.compactTagline} numberOfLines={1}>
+              {tagline}
+            </Text>
+          ) : null}
+        </View>
+        <View style={styles.featurePlank} />
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.featureHeader, { height }]} pointerEvents="none">
       <LinearGradient
@@ -236,5 +270,28 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 0.2,
     marginTop: spacing.xs,
+  },
+  compactRow: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: spacing.lg,
+    paddingBottom: 18,
+  },
+  compactBrand: {
+    color: colors.paper,
+    fontFamily: Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia' }),
+    fontWeight: 'bold',
+    fontSize: 24,
+    letterSpacing: -0.3,
+    textShadowColor: 'rgba(0, 0, 0, 0.6)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  compactTagline: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    letterSpacing: 0.2,
+    marginTop: 1,
   },
 });

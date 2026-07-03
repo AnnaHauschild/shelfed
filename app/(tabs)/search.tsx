@@ -40,7 +40,7 @@ export default function SearchScreen() {
   const { data, isLoading, isError, error } = useMovieSearch(query);
   const results = useMemo(() => data?.movies ?? [], [data]);
   const trimmed = query.trim();
-  const headerHeight = insets.top + 200;
+  const headerHeight = insets.top + 80;
   const tagline =
     mediaType === 'tv'
       ? 'Find any series'
@@ -51,7 +51,7 @@ export default function SearchScreen() {
   return (
     <View style={[styles.container, { paddingTop: headerHeight + spacing.md }]}>
       <ShelfBackground />
-      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} />
+      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} compact />
       <View style={styles.switcherRow}>
         <MediaSwitcher />
       </View>

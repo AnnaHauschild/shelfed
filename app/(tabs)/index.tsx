@@ -99,7 +99,7 @@ export default function DiscoverScreen() {
   }, [topIndex, movies.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const exhausted = movies.length > 0 && topIndex >= movies.length;
-  const headerHeight = insets.top + 200;
+  const headerHeight = insets.top + 80;
   const tagline =
     mediaType === 'tv'
       ? 'Swipe your series'
@@ -110,7 +110,7 @@ export default function DiscoverScreen() {
   return (
     <View style={[styles.container, { paddingTop: headerHeight + spacing.md }]}>
       <ShelfBackground />
-      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} />
+      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} compact />
       <View style={styles.header}>
         <View style={styles.switcherRow}>
           <MediaSwitcher />
