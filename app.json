@@ -20,7 +20,7 @@
       "package": "com.shelfed.app",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1d140c"
       }
     },
