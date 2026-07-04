@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { Linking, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { GestureDetector, type GestureType } from 'react-native-gesture-handler';
 import { Movie } from '@/api/types';
 import { POSTER_SIZE_SMALL } from '@/constants/config';
 import { useProfile } from '@/context/ProfileProvider';
@@ -45,6 +46,9 @@ interface Props {
   movie: Movie;
   /** Action buttons rendered under the synopsis (e.g. in the details modal). */
   children?: React.ReactNode;
+  /** When provided (details modal), the poster/title header becomes a drag zone
+   *  to pull the sheet down. The parent wires it to a pan gesture. */
+  dragGesture?: GestureType;
 }
 
 /**
@@ -53,7 +57,7 @@ interface Props {
  * details modal, so it stays background-agnostic (its parent provides the
  * surface + framing).
  */
-export function MovieDetails({ movie, children }: Props) {
+export function MovieDetails({ movie, children, dragGesture }: Props) {
   const isBook = movie.mediaType === 'book';
   const { name } = useProfile();
   const { data: cast } = useMovieCast(movie.id, movie.mediaType);
@@ -67,8 +71,7 @@ export function MovieDetails({ movie, children }: Props) {
       ? description
       : 'No description available for this title.';
 
-  return (
-    <View style={styles.container}>
+  const header = (
       <View style={styles.headerRow}>
         <PosterImage
           posterPath={movie.posterPath}
@@ -105,6 +108,15 @@ export function MovieDetails({ movie, children }: Props) {
           )}
         </View>
       </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      {dragGesture ? (
+        <GestureDetector gesture={dragGesture}>{header}</GestureDetector>
+      ) : (
+        header
+      )}
 
       <View style={styles.actionRow}>
         {trailerUrl && (

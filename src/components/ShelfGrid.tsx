@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { watchedLabel } from '@/constants/labels';
+import { mediaPlural, watchedLabel } from '@/constants/labels';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { useMovieDetails } from '@/components/MovieDetailsProvider';
 import { ShelfBackground } from '@/components/ShelfBackground';
@@ -165,7 +165,11 @@ export function ShelfGrid({
           ))}
         </View>
       ) : movies.length === 0 ? (
-        <EmptyState icon={icon} title={emptyTitle} message={emptyMessage} />
+        <EmptyState
+          icon={icon}
+          title={emptyTitle}
+          message={emptyMessage.replace('{noun}', mediaPlural(mediaType))}
+        />
       ) : visibleMovies.length === 0 ? (
         <EmptyState
           icon="pricetag-outline"

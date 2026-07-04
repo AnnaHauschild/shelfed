@@ -64,10 +64,14 @@ export function LandingScreen() {
   const [editing, setEditing] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
 
-  const headerHeight = insets.top + 200;
+  // Header = exactly one shelf row (measured screen / 5), matching Discover/Search,
+  // so 4 equal cubbies always show below it on any device (no per-format tuning).
+  const [screenH, setScreenH] = useState(0);
+  const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
+  const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
 
   return (
-    <View style={styles.root}>
+    <View style={styles.root} onLayout={(e) => setScreenH(e.nativeEvent.layout.height)}>
       <ShelfBackground />
 
       {/* Feature-graphic-style header: warm wood band with title + books on a plank. */}
@@ -75,6 +79,7 @@ export function LandingScreen() {
         height={headerHeight}
         topInset={insets.top}
         tagline="Your lifelong collection."
+        scale={0.55}
       />
 
       <View style={[styles.content, { paddingTop: headerHeight + spacing.lg }]}>

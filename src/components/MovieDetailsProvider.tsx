@@ -1,12 +1,22 @@
-import { createContext, useCallback, useContext, useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { Dimensions, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import { Movie } from '@/api/types';
-import { watchedLabel } from '@/constants/labels';
+import { watchedLabel, WATCHLIST_LABEL } from '@/constants/labels';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { MovieDetails } from './MovieDetails';
+
+const SCREEN_H = Dimensions.get('window').height;
 
 interface DetailsContextValue {
   /** Opens the shared details modal for a movie. */
@@ -56,14 +66,48 @@ function DetailsModal({
   const { toggleWatched, toggleWatchlist, toggleFavorite } = useInteractions();
   const states = useInteractionStates();
 
+  const translateY = useSharedValue(0);
+  // Reset the drag offset whenever a new movie opens.
+  useEffect(() => {
+    if (movie) translateY.value = 0;
+  }, [movie, translateY]);
+
+  const sheetStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  // Build a fresh drag-to-dismiss gesture. Used on BOTH the grab handle and the
+  // card's poster/title header, so the sheet can be pulled down from either.
+  const buildDismiss = () =>
+    Gesture.Pan()
+      .onUpdate((e) => {
+        translateY.value = Math.max(0, e.translationY);
+      })
+      .onEnd((e) => {
+        if (e.translationY > 140 || e.velocityY > 900) {
+          translateY.value = withTiming(SCREEN_H, { duration: 220 }, (finished) => {
+            if (finished) runOnJS(onClose)();
+          });
+        } else {
+          translateY.value = withSpring(0, { damping: 22, stiffness: 220 });
+        }
+      });
+  const handleDrag = buildDismiss();
+  const headerDrag = buildDismiss();
+
   if (!movie) return null;
 
   return (
     <Modal visible animationType="slide" transparent onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={styles.sheet}>
-        <View style={styles.handle} />
-        <MovieDetails movie={movie}>
+      <GestureHandlerRootView style={styles.modalRoot}>
+        <Pressable style={styles.backdrop} onPress={onClose} />
+        <Animated.View style={[styles.sheet, sheetStyle]}>
+          <GestureDetector gesture={handleDrag}>
+            <View style={styles.handleZone}>
+              <View style={styles.handle} />
+            </View>
+          </GestureDetector>
+          <MovieDetails movie={movie} dragGesture={headerDrag}>
           <View style={styles.actions}>
             <DetailAction
               label={watchedLabel(movie.mediaType)}
@@ -74,7 +118,7 @@ function DetailsModal({
               onPress={() => toggleWatched(movie)}
             />
             <DetailAction
-              label="Watchlist"
+              label={WATCHLIST_LABEL}
               color={colors.star}
               icon="star-outline"
               activeIcon="star"
@@ -99,7 +143,8 @@ function DetailsModal({
           <Ionicons name="close" size={18} color={colors.textOnDarkMuted} />
           <Text style={styles.closeText}>Close</Text>
         </Pressable>
-      </View>
+        </Animated.View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -155,6 +200,9 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.lg,
     paddingTop: spacing.sm,
   },
+  modalRoot: {
+    flex: 1,
+  },
   handle: {
     width: 44,
     height: 4,
@@ -162,6 +210,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
     alignSelf: 'center',
     marginBottom: spacing.xs,
+  },
+  handleZone: {
+    alignItems: 'center',
+    paddingTop: spacing.xs,
+    paddingBottom: spacing.sm,
   },
   actions: {
     flexDirection: 'row',

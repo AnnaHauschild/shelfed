@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors, fonts, spacing } from '@/theme';
 
@@ -11,6 +11,7 @@ export function FeatureHeader({
   title = 'Shelfed',
   tagline,
   compact = false,
+  scale = 1,
 }: {
   height: number;
   topInset: number;
@@ -19,6 +20,9 @@ export function FeatureHeader({
   /** Slim variant for functional screens (Discover/Search): just the wordmark
    *  + tagline over the wood band, so the content below gets the space. */
   compact?: boolean;
+  /** Uniform scale for the decorations (books, plant, lamp) in the full header,
+   *  so functional screens can use a shorter band. 1 = full size (Landing). */
+  scale?: number;
 }) {
   if (compact) {
     return (
@@ -71,7 +75,7 @@ export function FeatureHeader({
           </Text>
           {tagline ? <Text style={styles.tagline}>{tagline}</Text> : null}
         </View>
-        <View style={styles.plantWrap}>
+        <View style={[styles.plantWrap, { transform: [{ scale }], transformOrigin: 'center bottom' }]}>
           <View style={styles.plantLeaf1} />
           <View style={styles.plantLeaf2} />
           <View style={styles.plantLeaf3} />
@@ -82,10 +86,10 @@ export function FeatureHeader({
             <View
               key={i}
               style={{
-                width: s.w,
-                height: s.h,
+                width: s.w * scale,
+                height: s.h * scale,
                 backgroundColor: s.color,
-                marginLeft: 2,
+                marginLeft: 2 * scale,
                 borderTopLeftRadius: 2,
                 borderTopRightRadius: 2,
                 overflow: 'hidden',
@@ -104,7 +108,7 @@ export function FeatureHeader({
         </View>
       </View>
 
-      <View style={[styles.hangingLamp, { top: topInset - 4 }]}>
+      <View style={[styles.hangingLamp, { top: topInset - 4, transform: [{ scale }], transformOrigin: 'center top' }]}>
         <View style={styles.hangingGlow} />
         <View style={styles.hangingCord} />
         <View style={styles.hangingShade} />
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 88,
     borderRadius: 80,
-    backgroundColor: 'rgba(255, 220, 130, 0.09)',
+    backgroundColor: 'rgba(255, 220, 130, 0.12)',
   },
   hangingCord: {
     width: 2,
@@ -256,10 +260,9 @@ const styles = StyleSheet.create({
   },
   brand: {
     color: colors.paper,
-    fontFamily: Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia' }),
-    fontWeight: 'bold',
-    fontSize: 38,
-    letterSpacing: -0.5,
+    fontFamily: fonts.display,
+    fontSize: 34,
+    letterSpacing: 0.5,
     textShadowColor: 'rgba(0, 0, 0, 0.6)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
@@ -269,7 +272,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 11,
     letterSpacing: 0.2,
-    marginTop: spacing.xs,
+    marginTop: -2,
   },
   compactRow: {
     flex: 1,
@@ -279,10 +282,9 @@ const styles = StyleSheet.create({
   },
   compactBrand: {
     color: colors.paper,
-    fontFamily: Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia' }),
-    fontWeight: 'bold',
+    fontFamily: fonts.display,
     fontSize: 24,
-    letterSpacing: -0.3,
+    letterSpacing: 0.5,
     textShadowColor: 'rgba(0, 0, 0, 0.6)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,

@@ -10,6 +10,8 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
+  withSequence,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
@@ -32,6 +34,10 @@ const OUT_DISTANCE = width * 1.5;
 // A fast flick also commits even if the threshold wasn't reached.
 const VELOCITY_THRESHOLD = 800;
 
+// The onboarding auto-nudge plays at most once per app session (module-level,
+// resets on relaunch) so only the FIRST card demos the swipe, not every card.
+let nudgeShownThisSession = false;
+
 interface Props {
   cards: Movie[];
   initialIndex?: number;
@@ -47,6 +53,8 @@ interface Props {
   isFavorite?: (movie: Movie) => boolean;
   /** Reports the new top-card index after each swipe (for prefetching). */
   onIndexChange?: (index: number) => void;
+  /** Play the one-time swipe-direction onboarding nudge on the top card. */
+  hint?: boolean;
 }
 
 interface TopCardProps {
@@ -60,6 +68,8 @@ interface TopCardProps {
   /** Deck-owned value mirroring this card's horizontal drag, used to fade the
    *  Undo button in/out together with the swipe. */
   dragX: SharedValue<number>;
+  /** Deck-driven onboarding wiggle offset added to this card's position. */
+  demoX: SharedValue<number>;
 }
 
 /**
@@ -78,6 +88,7 @@ function TopCard({
   isWatchlisted,
   isFavorite,
   dragX,
+  demoX,
 }: TopCardProps) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -145,15 +156,16 @@ function TopCard({
   }, [isFlipped, commit, toggleFlip, translateX, translateY, dragX]);
 
   const cardStyle = useAnimatedStyle(() => {
+    const x = translateX.value + demoX.value;
     const rotate = interpolate(
-      translateX.value,
+      x,
       [-width, 0, width],
       [-12, 0, 12],
       Extrapolation.CLAMP,
     );
     return {
       transform: [
-        { translateX: translateX.value },
+        { translateX: x },
         { translateY: translateY.value },
         { rotate: `${rotate}deg` },
       ],
@@ -177,7 +189,7 @@ function TopCard({
   // Dim the poster while swiping so the stamp reads clearly on top of it.
   const dimStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      Math.abs(translateX.value),
+      Math.abs(translateX.value + demoX.value),
       [0, SWIPE_THRESHOLD],
       [0, 0.55],
       Extrapolation.CLAMP,
@@ -188,7 +200,7 @@ function TopCard({
   // clash with the WATCHED/SKIP stamp.
   const buttonsStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      Math.abs(translateX.value),
+      Math.abs(translateX.value + demoX.value),
       [0, SWIPE_THRESHOLD * 0.6],
       [1, 0],
       Extrapolation.CLAMP,
@@ -197,7 +209,7 @@ function TopCard({
 
   const watchedStampStyle = useAnimatedStyle(() => {
     const p = interpolate(
-      translateX.value,
+      translateX.value + demoX.value,
       [0, SWIPE_THRESHOLD],
       [0, 1],
       Extrapolation.CLAMP,
@@ -207,7 +219,7 @@ function TopCard({
 
   const skipStampStyle = useAnimatedStyle(() => {
     const p = interpolate(
-      translateX.value,
+      translateX.value + demoX.value,
       [-SWIPE_THRESHOLD, 0],
       [1, 0],
       Extrapolation.CLAMP,
@@ -300,6 +312,7 @@ export function SwipeDeck({
   isWatchlisted,
   isFavorite,
   onIndexChange,
+  hint = false,
 }: Props) {
   const [index, setIndex] = useState(initialIndex);
   const [history, setHistory] = useState<
@@ -308,6 +321,56 @@ export function SwipeDeck({
   // Mirrors the active card's horizontal drag so the Undo button can fade out
   // during a swipe and back in afterwards (like the Star/Heart buttons).
   const dragX = useSharedValue(0);
+  // Onboarding demo, deck-driven so the (white) side arrows and the card wiggle
+  // stay in sync. Phase A = arrows alone L-R-L-R; Phase B = card wiggles L-R-L-R.
+  const demoX = useSharedValue(0);
+  const arrowLeft = useSharedValue(0);
+  const arrowRight = useSharedValue(0);
+  useEffect(() => {
+    if (!hint || nudgeShownThisSession) return;
+    nudgeShownThisSession = true;
+    // Phase A — arrows highlight alone: left, right, left, right.
+    arrowLeft.value = withSequence(
+      withTiming(1, { duration: 160 }),
+      withTiming(1, { duration: 260 }),
+      withTiming(0, { duration: 160 }),
+      withDelay(
+        420,
+        withSequence(
+          withTiming(1, { duration: 160 }),
+          withTiming(1, { duration: 260 }),
+          withTiming(0, { duration: 160 }),
+        ),
+      ),
+    );
+    arrowRight.value = withDelay(
+      420,
+      withSequence(
+        withTiming(1, { duration: 160 }),
+        withTiming(1, { duration: 260 }),
+        withTiming(0, { duration: 160 }),
+        withDelay(
+          420,
+          withSequence(
+            withTiming(1, { duration: 160 }),
+            withTiming(1, { duration: 260 }),
+            withTiming(0, { duration: 160 }),
+          ),
+        ),
+      ),
+    );
+    // Phase B — the poster wiggles left, right, left, right (bigger + slower).
+    demoX.value = withDelay(
+      2100,
+      withSequence(
+        withTiming(-80, { duration: 560 }),
+        withTiming(80, { duration: 660 }),
+        withTiming(-80, { duration: 660 }),
+        withTiming(80, { duration: 660 }),
+        withTiming(0, { duration: 460 }),
+      ),
+    );
+  }, [hint, arrowLeft, arrowRight, demoX]);
 
   const advance = useCallback(
     (handler: (movie: Movie) => void, movie: Movie, type: InteractionType) => {
@@ -325,7 +388,10 @@ export function SwipeDeck({
     onIndexChange?.(index);
     // Reset the drag mirror so the Undo button is fully visible on a new card.
     dragX.value = 0;
-  }, [index, onIndexChange, dragX]);
+    demoX.value = 0;
+    arrowLeft.value = 0;
+    arrowRight.value = 0;
+  }, [index, onIndexChange, dragX, demoX, arrowLeft, arrowRight]);
 
   const handleRight = useCallback(
     (movie: Movie) => advance(onSwipeRight, movie, 'watched'),
@@ -356,6 +422,9 @@ export function SwipeDeck({
     ),
   }));
 
+  const arrowLeftStyle = useAnimatedStyle(() => ({ opacity: arrowLeft.value }));
+  const arrowRightStyle = useAnimatedStyle(() => ({ opacity: arrowRight.value }));
+
   // Active card + two upcoming, rendered back-to-front so the top card is last.
   const visible = cards
     .slice(index, index + 3)
@@ -382,6 +451,7 @@ export function SwipeDeck({
             isWatchlisted={isWatchlisted?.(movie) ?? false}
             isFavorite={isFavorite?.(movie) ?? false}
             dragX={dragX}
+            demoX={demoX}
           />
         ) : (
           <View
@@ -399,6 +469,17 @@ export function SwipeDeck({
           </View>
         ),
       )}
+
+      <Animated.View style={[styles.hintLeft, arrowLeftStyle]} pointerEvents="none">
+        <View style={styles.hintBadge}>
+          <Ionicons name="arrow-back" size={34} color={colors.paper} />
+        </View>
+      </Animated.View>
+      <Animated.View style={[styles.hintRight, arrowRightStyle]} pointerEvents="none">
+        <View style={styles.hintBadge}>
+          <Ionicons name="arrow-forward" size={34} color={colors.paper} />
+        </View>
+      </Animated.View>
 
       {history.length > 0 && (
         <AnimatedPressable
@@ -484,5 +565,29 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textTransform: 'uppercase',
     letterSpacing: 1,
+  },
+  hintLeft: {
+    position: 'absolute',
+    left: spacing.sm,
+    top: '50%',
+    marginTop: -28,
+    zIndex: 5,
+  },
+  hintRight: {
+    position: 'absolute',
+    right: spacing.sm,
+    top: '50%',
+    marginTop: -28,
+    zIndex: 5,
+  },
+  hintBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.scrim,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 });

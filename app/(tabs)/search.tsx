@@ -40,7 +40,11 @@ export default function SearchScreen() {
   const { data, isLoading, isError, error } = useMovieSearch(query);
   const results = useMemo(() => data?.movies ?? [], [data]);
   const trimmed = query.trim();
-  const headerHeight = insets.top + 80;
+  // See Discover: header = exactly one shelf row (measured screen / 5) so 4 equal
+  // cubbies always show below it, device-independent.
+  const [screenH, setScreenH] = useState(0);
+  const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
+  const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
   const tagline =
     mediaType === 'tv'
       ? 'Find any series'
@@ -49,9 +53,12 @@ export default function SearchScreen() {
         : 'Find any movie';
 
   return (
-    <View style={[styles.container, { paddingTop: headerHeight + spacing.md }]}>
+    <View
+      style={[styles.container, { paddingTop: headerHeight + spacing.md }]}
+      onLayout={(e) => setScreenH(e.nativeEvent.layout.height)}
+    >
       <ShelfBackground />
-      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} compact />
+      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} scale={0.55} />
       <View style={styles.switcherRow}>
         <MediaSwitcher />
       </View>

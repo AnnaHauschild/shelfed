@@ -11,7 +11,7 @@ export default function FavoritesScreen() {
       accent={colors.favorite}
       filterable
       emptyTitle="No favorites yet"
-      emptyMessage="Tap the heart on a card to mark the movies you love most."
+      emptyMessage="Tap the heart on a card to mark the {noun} you love most."
     />
   );
 }

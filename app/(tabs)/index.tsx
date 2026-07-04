@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -9,7 +9,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { TmdbError, hasTmdbToken } from '@/api/tmdb';
 import { COUNTRY_OPTIONS, ERA_OPTIONS } from '@/constants/config';
-import { watchedLabel } from '@/constants/labels';
 import { FilterSheet } from '@/components/FilterSheet';
 import { GenreChips } from '@/components/GenreChips';
 import { LoadingReel } from '@/components/LoadingReel';
@@ -22,7 +21,21 @@ import { useGenres } from '@/hooks/useGenres';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieFeed } from '@/hooks/useMovieFeed';
+import { getSetting, setSetting } from '@/db/settings';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
+
+// --- Swipe onboarding hint --------------------------------------------------
+// Big blinking arrows teach the swipe directions, then get out of the way.
+//   'first5'    = show for the first 5 swipes ever (persisted), then never again.
+//   'everyOpen' = show at the start of each app launch (first few swipes of the
+//                 session), then hide until the next launch.
+// Flip SWIPE_HINT_MODE to try the other behaviour.
+type SwipeHintMode = 'first5' | 'everyOpen';
+const SWIPE_HINT_MODE: SwipeHintMode = 'everyOpen';
+const SWIPE_HINT_LIMIT = SWIPE_HINT_MODE === 'first5' ? 5 : 3;
+const SWIPE_HINT_KEY = 'swipeHintCount';
+// Session counter for 'everyOpen' (resets when the app process restarts).
+let sessionSwipeCount = 0;
 
 export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
@@ -66,6 +79,34 @@ export default function DiscoverScreen() {
 
   const [topIndex, setTopIndex] = useState(0);
 
+  // Swipe-direction onboarding hint (see SWIPE_HINT_MODE above). null = not yet
+  // loaded (first5 reads a persisted count); everyOpen uses the session counter.
+  const [hintCount, setHintCount] = useState<number | null>(
+    SWIPE_HINT_MODE === 'everyOpen' ? sessionSwipeCount : null,
+  );
+  useEffect(() => {
+    if (SWIPE_HINT_MODE !== 'first5') return;
+    let alive = true;
+    getSetting(SWIPE_HINT_KEY).then((v) => {
+      if (alive) setHintCount(v ? parseInt(v, 10) || 0 : 0);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const hintActive = hintCount != null && hintCount < SWIPE_HINT_LIMIT;
+  const bumpHint = useCallback(() => {
+    setHintCount((c) => {
+      const next = (c ?? 0) + 1;
+      if (SWIPE_HINT_MODE === 'first5') {
+        setSetting(SWIPE_HINT_KEY, String(next)).catch(() => {});
+      } else {
+        sessionSwipeCount = next;
+      }
+      return next;
+    });
+  }, []);
+
   // When no TMDB token is set we serve a built-in demo feed; surface that so the
   // user knows how to unlock the full catalog.
   const isDemo = !hasTmdbToken();
@@ -99,7 +140,13 @@ export default function DiscoverScreen() {
   }, [topIndex, movies.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const exhausted = movies.length > 0 && topIndex >= movies.length;
-  const headerHeight = insets.top + 80;
+  // ShelfBackground draws 5 equal rows over the full screen (grid padding 6).
+  // Derive the header height from the measured screen so it covers exactly the
+  // top row -> 4 equal cubbies always show below it, on any device (no per-format
+  // pixel tweaking). Falls back to an estimate until the first layout pass.
+  const [screenH, setScreenH] = useState(0);
+  const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
+  const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
   const tagline =
     mediaType === 'tv'
       ? 'Swipe your series'
@@ -108,9 +155,12 @@ export default function DiscoverScreen() {
         : 'Swipe your films';
 
   return (
-    <View style={[styles.container, { paddingTop: headerHeight + spacing.md }]}>
+    <View
+      style={[styles.container, { paddingTop: headerHeight + spacing.xs }]}
+      onLayout={(e) => setScreenH(e.nativeEvent.layout.height)}
+    >
       <ShelfBackground />
-      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} compact />
+      <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} scale={0.55} />
       <View style={styles.header}>
         <View style={styles.switcherRow}>
           <MediaSwitcher />
@@ -168,14 +218,21 @@ export default function DiscoverScreen() {
             <SwipeDeck
               key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}`}
               cards={movies}
-              onSwipeRight={markWatched}
-              onSwipeLeft={skip}
+              onSwipeRight={(movie) => {
+                markWatched(movie);
+                bumpHint();
+              }}
+              onSwipeLeft={(movie) => {
+                skip(movie);
+                bumpHint();
+              }}
               onStar={toggleWatchlist}
               onHeart={toggleFavorite}
               onUndo={(movie, type) => undo(movie.id, type, movie.mediaType)}
               isWatchlisted={(movie) => states.isWatchlisted(movie.id)}
               isFavorite={(movie) => states.isFavorite(movie.id)}
               onIndexChange={setTopIndex}
+              hint={hintActive}
             />
             {exhausted && (
               <Centered pointerEvents="none">
@@ -199,18 +256,8 @@ export default function DiscoverScreen() {
         )}
       </View>
 
-      {/* Swipe direction legend. */}
-      <View style={styles.legend}>
-        <View style={styles.legendItem}>
-          <Ionicons name="arrow-back" size={16} color={colors.skip} />
-          <Text style={styles.legendText}>Skip</Text>
-        </View>
-        <View style={styles.legendItem}>
-          <Text style={styles.legendText}>{watchedLabel(mediaType)}</Text>
-          <Ionicons name="arrow-forward" size={16} color={colors.watched} />
-        </View>
-      </View>
-
+      {/* Swipe hint arrows live on the sides at mid-height (see styles), so the
+          card can use the full height down to the tab bar. */}
       <FilterSheet
         visible={filtersOpen}
         onClose={() => setFiltersOpen(false)}
@@ -291,14 +338,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   header: {
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
     zIndex: 2,
   },
   switcherRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
   filterButton: {
     flexDirection: 'row',
@@ -374,7 +421,8 @@ const styles = StyleSheet.create({
   },
   deckArea: {
     flex: 1,
-    marginVertical: spacing.md,
+    marginTop: spacing.sm,
+    marginBottom: spacing.lg,
   },
   centered: {
     ...absoluteFill,
@@ -408,23 +456,6 @@ const styles = StyleSheet.create({
     color: colors.background,
     fontFamily: fonts.label,
     fontSize: 15,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  legend: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  legendText: {
-    color: colors.textOnDarkMuted,
-    fontFamily: fonts.label,
-    fontSize: 13,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },

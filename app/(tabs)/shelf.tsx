@@ -11,7 +11,7 @@ export default function WatchedShelfScreen() {
       accent={colors.watched}
       filterable
       emptyTitle="Your shelf is empty"
-      emptyMessage="Swipe right on movies you've seen to start building your lifetime shelf."
+      emptyMessage="Swipe right on the {noun} you've already enjoyed to start building your lifetime shelf."
     />
   );
 }
