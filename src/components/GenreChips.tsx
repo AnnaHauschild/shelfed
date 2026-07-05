@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts, radius, spacing } from '@/theme';
 
 interface Option {
@@ -12,27 +12,29 @@ interface Props {
   selected: string | null;
   onSelect: (id: string | null) => void;
   accent?: string;
+  /**
+   * When true the chips wrap onto multiple rows (a top-down menu you scroll
+   * vertically) instead of a single horizontal row you scroll sideways.
+   */
+  wrap?: boolean;
 }
 
 /**
- * Horizontal row of genre chips with an "All" reset, used to filter a feed by
- * genre. Generic over the option list so it works for movie/TV genres and book
- * subjects alike.
+ * Row of genre chips with an "All" reset, used to filter a feed by genre.
+ * Generic over the option list so it works for movie/TV genres and book
+ * subjects alike. Horizontal-scrolling by default, or wrapping when `wrap`.
  */
 export function GenreChips({
   options,
   selected,
   onSelect,
   accent = colors.amberBright,
+  wrap = false,
 }: Props) {
   if (options.length === 0) return null;
 
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.row}
-    >
+  const chips = (
+    <>
       <Chip
         label="All"
         active={selected === null}
@@ -45,9 +47,25 @@ export function GenreChips({
           label={o.name}
           active={selected === o.id}
           accent={accent}
-          onPress={() => onSelect(o.id)}
+          // Tapping the active chip again clears the filter (toggle), so the
+          // user doesn't have to reach for "All".
+          onPress={() => onSelect(selected === o.id ? null : o.id)}
         />
       ))}
+    </>
+  );
+
+  if (wrap) {
+    return <View style={styles.wrapRow}>{chips}</View>;
+  }
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.row}
+    >
+      {chips}
     </ScrollView>
   );
 }
@@ -86,6 +104,11 @@ const styles = StyleSheet.create({
   row: {
     gap: spacing.sm,
     paddingRight: spacing.lg,
+  },
+  wrapRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
   },
   chip: {
     paddingHorizontal: spacing.md,

@@ -53,9 +53,11 @@ export default function SearchScreen() {
         : 'Find any movie';
 
   return (
-    <View
+    <Pressable
       style={[styles.container, { paddingTop: headerHeight + spacing.md }]}
       onLayout={(e) => setScreenH(e.nativeEvent.layout.height)}
+      onPress={() => Keyboard.dismiss()}
+      accessible={false}
     >
       <ShelfBackground />
       <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} scale={0.55} />
@@ -112,7 +114,7 @@ export default function SearchScreen() {
           showsVerticalScrollIndicator={false}
         />
       )}
-    </View>
+    </Pressable>
   );
 }
 

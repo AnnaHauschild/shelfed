@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
+  Easing,
   Extrapolation,
   interpolate,
   runOnJS,
@@ -11,6 +12,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
+  withRepeat,
   withSequence,
   withSpring,
   withTiming,
@@ -34,10 +36,6 @@ const OUT_DISTANCE = width * 1.5;
 // A fast flick also commits even if the threshold wasn't reached.
 const VELOCITY_THRESHOLD = 800;
 
-// The onboarding auto-nudge plays at most once per app session (module-level,
-// resets on relaunch) so only the FIRST card demos the swipe, not every card.
-let nudgeShownThisSession = false;
-
 interface Props {
   cards: Movie[];
   initialIndex?: number;
@@ -53,8 +51,10 @@ interface Props {
   isFavorite?: (movie: Movie) => boolean;
   /** Reports the new top-card index after each swipe (for prefetching). */
   onIndexChange?: (index: number) => void;
-  /** Play the one-time swipe-direction onboarding nudge on the top card. */
+  /** Show the big blinking swipe-direction onboarding arrows. */
   hint?: boolean;
+  /** Bump this to replay the onboarding (e.g. on every Discover focus). */
+  replay?: number;
 }
 
 interface TopCardProps {
@@ -313,6 +313,7 @@ export function SwipeDeck({
   isFavorite,
   onIndexChange,
   hint = false,
+  replay = 0,
 }: Props) {
   const [index, setIndex] = useState(initialIndex);
   const [history, setHistory] = useState<
@@ -327,50 +328,62 @@ export function SwipeDeck({
   const arrowLeft = useSharedValue(0);
   const arrowRight = useSharedValue(0);
   useEffect(() => {
-    if (!hint || nudgeShownThisSession) return;
-    nudgeShownThisSession = true;
-    // Phase A — arrows highlight alone: left, right, left, right.
-    arrowLeft.value = withSequence(
-      withTiming(1, { duration: 160 }),
-      withTiming(1, { duration: 260 }),
-      withTiming(0, { duration: 160 }),
-      withDelay(
-        420,
-        withSequence(
-          withTiming(1, { duration: 160 }),
-          withTiming(1, { duration: 260 }),
-          withTiming(0, { duration: 160 }),
-        ),
+    if (!hint) return;
+    // Restart cleanly (also lets it replay via `replay`).
+    arrowLeft.value = 0;
+    arrowRight.value = 0;
+    demoX.value = 0;
+    // Give the user ~1.5s to look at the screen before the tutorial starts.
+    const START = 1500;
+    const glide = () =>
+      withTiming(1, { duration: 950, easing: Easing.out(Easing.cubic) });
+    // Phase A — red arrow LEFT then green arrow RIGHT, ~2s pause, then repeat.
+    arrowLeft.value = withDelay(
+      START,
+      withSequence(
+        glide(),
+        withTiming(0, { duration: 0 }),
+        withDelay(3050, glide()),
+        withTiming(0, { duration: 0 }),
       ),
     );
     arrowRight.value = withDelay(
-      420,
+      START + 1050,
       withSequence(
-        withTiming(1, { duration: 160 }),
-        withTiming(1, { duration: 260 }),
-        withTiming(0, { duration: 160 }),
-        withDelay(
-          420,
-          withSequence(
-            withTiming(1, { duration: 160 }),
-            withTiming(1, { duration: 260 }),
-            withTiming(0, { duration: 160 }),
-          ),
-        ),
+        glide(),
+        withTiming(0, { duration: 0 }),
+        withDelay(3050, glide()),
+        withTiming(0, { duration: 0 }),
       ),
     );
-    // Phase B — the poster wiggles left, right, left, right (bigger + slower).
+    // Phase B — the poster does one slow, natural swipe: drifts left (a little
+    // further, like a real finger drag), eases back to centre, drifts right and
+    // eases back. Then a 2s pause (no interaction) before it repeats.
+    const outLeft = () =>
+      withTiming(-130, { duration: 1000, easing: Easing.inOut(Easing.cubic) });
+    const outRight = () =>
+      withTiming(105, { duration: 1000, easing: Easing.inOut(Easing.cubic) });
+    const back = () =>
+      withDelay(
+        220,
+        withTiming(0, { duration: 800, easing: Easing.inOut(Easing.cubic) }),
+      );
     demoX.value = withDelay(
-      2100,
-      withSequence(
-        withTiming(-80, { duration: 560 }),
-        withTiming(80, { duration: 660 }),
-        withTiming(-80, { duration: 660 }),
-        withTiming(80, { duration: 660 }),
-        withTiming(0, { duration: 460 }),
+      START + 6200,
+      withRepeat(
+        withSequence(
+          outLeft(),
+          back(),
+          outRight(),
+          back(),
+          // 2s pause with no movement before the loop starts over.
+          withDelay(2000, withTiming(0, { duration: 0 })),
+        ),
+        -1,
+        false,
       ),
     );
-  }, [hint, arrowLeft, arrowRight, demoX]);
+  }, [hint, replay, arrowLeft, arrowRight, demoX]);
 
   const advance = useCallback(
     (handler: (movie: Movie) => void, movie: Movie, type: InteractionType) => {
@@ -422,8 +435,28 @@ export function SwipeDeck({
     ),
   }));
 
-  const arrowLeftStyle = useAnimatedStyle(() => ({ opacity: arrowLeft.value }));
-  const arrowRightStyle = useAnimatedStyle(() => ({ opacity: arrowRight.value }));
+  const arrowLeftStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      arrowLeft.value,
+      [0, 0.15, 0.8, 1],
+      [0, 1, 1, 0],
+      Extrapolation.CLAMP,
+    ),
+    transform: [
+      { translateX: interpolate(arrowLeft.value, [0, 1], [120, -40], Extrapolation.CLAMP) },
+    ],
+  }));
+  const arrowRightStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      arrowRight.value,
+      [0, 0.15, 0.8, 1],
+      [0, 1, 1, 0],
+      Extrapolation.CLAMP,
+    ),
+    transform: [
+      { translateX: interpolate(arrowRight.value, [0, 1], [-120, 40], Extrapolation.CLAMP) },
+    ],
+  }));
 
   // Active card + two upcoming, rendered back-to-front so the top card is last.
   const visible = cards
@@ -472,12 +505,12 @@ export function SwipeDeck({
 
       <Animated.View style={[styles.hintLeft, arrowLeftStyle]} pointerEvents="none">
         <View style={styles.hintBadge}>
-          <Ionicons name="arrow-back" size={34} color={colors.paper} />
+          <Ionicons name="arrow-back" size={34} color={colors.skip} />
         </View>
       </Animated.View>
       <Animated.View style={[styles.hintRight, arrowRightStyle]} pointerEvents="none">
         <View style={styles.hintBadge}>
-          <Ionicons name="arrow-forward" size={34} color={colors.paper} />
+          <Ionicons name="arrow-forward" size={34} color={colors.watched} />
         </View>
       </Animated.View>
 

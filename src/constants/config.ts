@@ -82,6 +82,7 @@ export const COUNTRY_OPTIONS: { id: string; name: string }[] = [
   { id: 'JP', name: 'Japan' },
   { id: 'KR', name: 'Korea' },
   { id: 'IN', name: 'India' },
+  { id: 'BR', name: 'Brazil' },
   { id: 'SE', name: 'Sweden' },
   { id: 'DK', name: 'Denmark' },
   { id: 'CA', name: 'Canada' },

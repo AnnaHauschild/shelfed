@@ -11,6 +11,7 @@ export default function WatchlistScreen() {
       icon="star"
       accent={colors.star}
       filterable
+      moods
       emptyTitle="Nothing saved yet"
       emptyMessage="Tap the star on a card to save the {noun} you want for later."
     />

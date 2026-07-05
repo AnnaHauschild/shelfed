@@ -19,6 +19,20 @@ export class TmdbError extends Error {
 /** Whether a TMDB token is configured. Used to show a setup hint in the UI. */
 export const hasTmdbToken = (): boolean => TMDB_ACCESS_TOKEN.length > 0;
 
+// The selected content language (a TMDB language tag like 'de-DE'). Set from the
+// LanguageProvider; defaults to English so the API works before it loads.
+let contentLang = 'en-US';
+
+/** Sets the TMDB content language used for localized titles + overviews. */
+export function setContentLanguage(tag: string): void {
+  contentLang = tag;
+}
+
+/** The current TMDB content-language tag (default 'en-US'). */
+export function contentLanguage(): string {
+  return contentLang;
+}
+
 type QueryValue = string | number | boolean | undefined;
 
 // Built manually instead of using URL/URLSearchParams, whose implementations

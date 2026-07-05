@@ -1,3 +1,4 @@
+import { COLLECTIONS } from '@/constants/collections';
 import { ERA_OPTIONS, ERA_WINDOWS, WATCH_REGION } from '@/constants/config';
 import { GENRE_FALLBACK } from '@/constants/genres';
 import {
@@ -6,8 +7,9 @@ import {
   fetchBookFeedPage,
   searchBooks,
 } from './openLibrary';
+import mustSeeData from './mustSee.json';
 import { SAMPLE_MOVIES } from './sampleMovies';
-import { hasTmdbToken, posterUrl, tmdbGet } from './tmdb';
+import { contentLanguage, hasTmdbToken, posterUrl, tmdbGet } from './tmdb';
 import {
   CastMember,
   MediaType,
@@ -84,6 +86,87 @@ const EROTIC_TITLE_PATTERN =
 /** True if a title looks like it shouldn't appear on Shelfed. */
 function isLikelyErotic(title: string | undefined | null): boolean {
   return !!title && EROTIC_TITLE_PATTERN.test(title);
+}
+
+// Resolved TMDB keyword-name -> id cache (a keyword id never changes, so this
+// is safe for the whole session). `null` = looked up but not found.
+const keywordIdCache = new Map<string, string | null>();
+
+/**
+ * Resolves a list of TMDB keyword *names* to a `with_keywords` value, looking
+ * each one up via /search/keyword (cached). Ids are OR-combined (pipe) so a
+ * collection matches any of its keywords. We prefer an exact name match and
+ * otherwise a keyword whose name contains the query, to avoid tagging the feed
+ * with an unrelated keyword; unresolved names are simply skipped.
+ */
+async function resolveKeywordIds(
+  names: string[],
+): Promise<string | undefined> {
+  const ids: string[] = [];
+  for (const name of names) {
+    const key = name.toLowerCase().trim();
+    let id = keywordIdCache.get(key);
+    if (id === undefined) {
+      id = null;
+      try {
+        const data = await tmdbGet<{ results: { id: number; name: string }[] }>(
+          '/search/keyword',
+          { query: name },
+        );
+        const exact = data.results.find((r) => r.name.toLowerCase() === key);
+        const best =
+          exact ?? data.results.find((r) => r.name.toLowerCase().includes(key));
+        if (best) id = String(best.id);
+      } catch {
+        id = null;
+      }
+      keywordIdCache.set(key, id);
+    }
+    if (id) ids.push(id);
+  }
+  return ids.length ? ids.join('|') : undefined;
+}
+
+/** A person match from the actor search (used by the Discover actor filter). */
+export interface PersonHit {
+  id: string;
+  name: string;
+  /** Most notable title, shown as a disambiguation hint. */
+  knownFor?: string;
+  /** TMDB profile image path (or null when the person has no photo). */
+  profilePath: string | null;
+}
+
+interface TmdbPersonSearchResult {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for?: { title?: string; name?: string }[];
+}
+
+/**
+ * Searches TMDB people by name for the actor filter, returning the top matches
+ * with a "known for" hint so the user can tell namesakes apart.
+ */
+export async function searchPeople(query: string): Promise<PersonHit[]> {
+  const q = query.trim();
+  if (!q || !hasTmdbToken()) return [];
+  try {
+    const data = await tmdbGet<TmdbPagedResponse<TmdbPersonSearchResult>>(
+      '/search/person',
+      { query: q, include_adult: false, language: 'en-US' },
+    );
+    return data.results.slice(0, 8).map((p) => ({
+      id: String(p.id),
+      name: p.name,
+      profilePath: p.profile_path,
+      knownFor: p.known_for
+        ?.map((k) => k.title ?? k.name)
+        .filter((t): t is string => Boolean(t))[0],
+    }));
+  } catch {
+    return [];
+  }
 }
 
 /** Selectable genres for the Discover filter (TMDB genres or book subjects). */
@@ -170,6 +253,27 @@ function shuffle<T>(arr: T[]): T[] {
   return arr;
 }
 
+// --- Must-See curated list --------------------------------------------------
+// The "1001 movies you must see" IMDb export, resolved once to TMDB and bundled
+// as JSON (see scripts/build-mustsee.mjs). Because the data ships with the app,
+// this feed loads instantly and works fully offline.
+export const MUST_SEE_ID = 'must-see';
+export const MUST_SEE_LABEL = 'Must Watch Once in Life';
+const MUST_SEE_MOVIES = mustSeeData as unknown as Movie[];
+export const MUST_SEE_COUNT = MUST_SEE_MOVIES.length;
+const MUST_SEE_PAGE_SIZE = 18;
+// Shuffled once per session so the curated feed jumps across eras (like the
+// rest of Discover) while keeping a stable order as the user pages through it.
+let mustSeeOrder: Movie[] | null = null;
+function fetchMustSeePage(page: number): FeedPage {
+  if (!mustSeeOrder) mustSeeOrder = shuffle([...MUST_SEE_MOVIES]);
+  const start = (page - 1) * MUST_SEE_PAGE_SIZE;
+  const movies = mustSeeOrder.slice(start, start + MUST_SEE_PAGE_SIZE);
+  const nextPage =
+    start + MUST_SEE_PAGE_SIZE < mustSeeOrder.length ? page + 1 : null;
+  return { movies, nextPage };
+}
+
 /**
  * Fetches one page of the discovery feed for the swipe deck.
  *
@@ -187,10 +291,21 @@ export async function fetchFeedPage(
   genre?: string,
   eraId?: string,
   country?: string,
+  collectionId?: string,
+  actorId?: string,
 ): Promise<FeedPage> {
-  const eraWindow = eraId ? ERA_OPTIONS.find((e) => e.id === eraId) : undefined;
+  // The bundled Must-See list bypasses TMDB entirely (instant + offline).
+  if (mediaType === 'movie' && collectionId === MUST_SEE_ID) {
+    return fetchMustSeePage(page);
+  }
 
-  // Books come from Open Library (no TMDB token needed).
+  const eraWindow = eraId ? ERA_OPTIONS.find((e) => e.id === eraId) : undefined;
+  const collection = collectionId
+    ? COLLECTIONS.find((c) => c.id === collectionId)
+    : undefined;
+
+  // Books come from Open Library (no TMDB token needed). Collections are a
+  // TMDB-keyword concept, so they don't apply to the book feed.
   if (mediaType === 'book') {
     const years = eraWindow
       ? {
@@ -210,21 +325,47 @@ export async function fetchFeedPage(
 
   const genreMap = await loadGenres(mediaType);
 
+  // Merge the selected collection's constraints with the user's own filters.
+  // Genre: AND the collection's genres with the user's pick. Keyword: resolve
+  // the collection's keyword names. Language/country: the collection overrides.
+  const withKeywords = collection?.keywords
+    ? await resolveKeywordIds(collection.keywords)
+    : undefined;
+  const withGenres =
+    [genre, collection?.genres?.join(',')].filter(Boolean).join(',') ||
+    undefined;
+  const originalLanguage = collection?.language;
+  const originCountry = collection?.country ?? country;
+  // A collection, a country or an actor filter is niche, so when one is active
+  // (and the user hasn't pinned a specific era) we search the FULL catalogue
+  // instead of a single random decade, and drop the US-certification
+  // requirement — that filter only returns titles with a US rating, which
+  // excludes most foreign / niche films (K-dramas, Brazilian cinema, etc.).
+  // The erotic keyword + title guards still apply.
+  const broaden = !!collection || !!originCountry || !!actorId;
+
   if (mediaType === 'tv') {
-    // No explicit era → weighted-random recent decade (skips 70s/80s by default).
+    // No explicit era → weighted-random recent decade (skips 70s/80s by
+    // default); a niche filter widens this to the whole catalogue.
     const tvWindow =
       eraWindow ??
-      TV_DEFAULT_WINDOWS[Math.floor(Math.random() * TV_DEFAULT_WINDOWS.length)];
+      (broaden
+        ? undefined
+        : TV_DEFAULT_WINDOWS[
+            Math.floor(Math.random() * TV_DEFAULT_WINDOWS.length)
+          ]);
     const data = await tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
       include_adult: false,
-      language: 'en-US',
+      language: contentLanguage(),
       sort_by: 'popularity.desc',
-      with_genres: genre,
+      with_genres: withGenres,
       without_genres: TV_EXCLUDED_GENRES,
       without_keywords: EXCLUDED_KEYWORDS,
-      with_origin_country: country,
-      'first_air_date.gte': tvWindow.gte,
-      'first_air_date.lte': tvWindow.lte,
+      with_keywords: withKeywords,
+      with_original_language: originalLanguage,
+      with_origin_country: originCountry,
+      'first_air_date.gte': tvWindow?.gte,
+      'first_air_date.lte': tvWindow?.lte,
       page,
     });
 
@@ -239,20 +380,29 @@ export async function fetchFeedPage(
     return { movies, nextPage };
   }
 
-  // No explicit era → random decade per page so the feed jumps across eras.
-  const movieWindow = eraWindow ?? ERA_WINDOWS[Math.floor(Math.random() * ERA_WINDOWS.length)];
+  // No explicit era → random decade per page so the feed jumps across eras; a
+  // niche filter (collection / country / actor) widens this to the whole
+  // catalogue (those are sparse when clamped to a single decade).
+  const movieWindow =
+    eraWindow ??
+    (broaden
+      ? undefined
+      : ERA_WINDOWS[Math.floor(Math.random() * ERA_WINDOWS.length)]);
   const data = await tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
     include_adult: false,
     include_video: false,
-    language: 'en-US',
+    language: contentLanguage(),
     sort_by: 'popularity.desc',
-    'primary_release_date.gte': movieWindow.gte,
-    'primary_release_date.lte': movieWindow.lte,
-    with_genres: genre,
+    'primary_release_date.gte': movieWindow?.gte,
+    'primary_release_date.lte': movieWindow?.lte,
+    with_genres: withGenres,
     without_keywords: EXCLUDED_KEYWORDS,
-    certification_country: 'US',
-    'certification.lte': 'R',
-    with_origin_country: country,
+    with_keywords: withKeywords,
+    with_original_language: originalLanguage,
+    with_cast: actorId,
+    certification_country: broaden ? undefined : 'US',
+    'certification.lte': broaden ? undefined : 'R',
+    with_origin_country: originCountry,
     page,
   });
 
@@ -303,7 +453,13 @@ export async function fetchMovieCast(
       } catch {
         // A failed/missing lookup just omits the age for that actor.
       }
-      return { id: c.id, name: c.name, character: c.character, birthYear };
+      return {
+        id: c.id,
+        name: c.name,
+        character: c.character,
+        birthYear,
+        profilePath: c.profile_path,
+      };
     }),
   );
 }
@@ -408,7 +564,7 @@ export async function searchMovies(
     const data = await tmdbGet<TmdbPagedResponse<TmdbTv>>('/search/tv', {
       query: q,
       include_adult: false,
-      language: 'en-US',
+      language: contentLanguage(),
       page,
     });
     const movies = data.results
@@ -421,7 +577,7 @@ export async function searchMovies(
   const data = await tmdbGet<TmdbPagedResponse<TmdbMovie>>('/search/movie', {
     query: q,
     include_adult: false,
-    language: 'en-US',
+    language: contentLanguage(),
     page,
   });
 
@@ -448,13 +604,13 @@ export async function fetchMediaById(
     if (mediaType === 'tv') {
       const raw = await tmdbGet<TmdbTv & { genres?: TmdbGenre[] }>(
         `/tv/${id}`,
-        { language: 'en-US' },
+        { language: contentLanguage() },
       );
       return toTv({ ...raw, genre_ids: (raw.genres ?? []).map((g) => g.id) }, genreMap);
     }
     const raw = await tmdbGet<TmdbMovie & { genres?: TmdbGenre[] }>(
       `/movie/${id}`,
-      { language: 'en-US' },
+      { language: contentLanguage() },
     );
     return toMovie({ ...raw, genre_ids: (raw.genres ?? []).map((g) => g.id) }, genreMap);
   } catch {

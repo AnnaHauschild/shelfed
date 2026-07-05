@@ -3,6 +3,7 @@ import { Linking, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'r
 import { Ionicons } from '@expo/vector-icons';
 import { GestureDetector, type GestureType } from 'react-native-gesture-handler';
 import { Movie } from '@/api/types';
+import { posterUrl } from '@/api/tmdb';
 import { POSTER_SIZE_SMALL } from '@/constants/config';
 import { useProfile } from '@/context/ProfileProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
@@ -49,6 +50,10 @@ interface Props {
   /** When provided (details modal), the poster/title header becomes a drag zone
    *  to pull the sheet down. The parent wires it to a pan gesture. */
   dragGesture?: GestureType;
+  /** Opens the note post-it (details modal only). */
+  onOpenNote?: () => void;
+  /** Whether this title already has a saved note (lights the note button). */
+  hasNote?: boolean;
 }
 
 /**
@@ -57,7 +62,7 @@ interface Props {
  * details modal, so it stays background-agnostic (its parent provides the
  * surface + framing).
  */
-export function MovieDetails({ movie, children, dragGesture }: Props) {
+export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote }: Props) {
   const isBook = movie.mediaType === 'book';
   const { name } = useProfile();
   const { data: cast } = useMovieCast(movie.id, movie.mediaType);
@@ -130,6 +135,18 @@ export function MovieDetails({ movie, children, dragGesture }: Props) {
             <Text style={styles.trailerText}>Watch Trailer</Text>
           </Pressable>
         )}
+        {onOpenNote && (
+          <Pressable
+            style={[styles.trailerButton, styles.shareCompact]}
+            onPress={onOpenNote}
+          >
+            <Ionicons
+              name={hasNote ? 'reader' : 'reader-outline'}
+              size={18}
+              color={colors.amberBright}
+            />
+          </Pressable>
+        )}
         <Pressable
           style={[styles.trailerButton, trailerUrl ? styles.shareCompact : styles.actionFill]}
           onPress={() => {
@@ -182,8 +199,24 @@ export function MovieDetails({ movie, children, dragGesture }: Props) {
                   ? movie.year - member.birthYear
                   : null;
               const character = displayCharacter(member.character);
+              const photo = posterUrl(member.profilePath, POSTER_SIZE_SMALL);
               return (
                 <View key={member.id} style={styles.castRow}>
+                  {photo ? (
+                    <Image
+                      source={{ uri: photo }}
+                      style={styles.castAvatar}
+                      contentFit="cover"
+                    />
+                  ) : (
+                    <View style={[styles.castAvatar, styles.castAvatarFallback]}>
+                      <Ionicons
+                        name="person"
+                        size={18}
+                        color={colors.textOnDarkMuted}
+                      />
+                    </View>
+                  )}
                   <View style={styles.castNameRow}>
                     <Text style={styles.castName} numberOfLines={1}>
                       {member.name}
@@ -356,6 +389,18 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
+  },
+  castAvatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.background,
+  },
+  castAvatarFallback: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   castNameRow: {
     flex: 1,

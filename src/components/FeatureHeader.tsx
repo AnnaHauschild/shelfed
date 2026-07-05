@@ -12,6 +12,8 @@ export function FeatureHeader({
   tagline,
   compact = false,
   scale = 1,
+  centerLamp = false,
+  brandSize = 34,
 }: {
   height: number;
   topInset: number;
@@ -23,6 +25,12 @@ export function FeatureHeader({
   /** Uniform scale for the decorations (books, plant, lamp) in the full header,
    *  so functional screens can use a shorter band. 1 = full size (Landing). */
   scale?: number;
+  /** Center the hanging lamp and left-align the wordmark (Discover), instead of
+   *  lamp-left / wordmark-right (Landing). */
+  centerLamp?: boolean;
+  /** Font size of the "Shelfed" wordmark (default 34; smaller on functional
+   *  screens). */
+  brandSize?: number;
 }) {
   if (compact) {
     return (
@@ -64,9 +72,9 @@ export function FeatureHeader({
         end={{ x: 1, y: 1 }}
       />
       <View style={[styles.featureRow, { paddingTop: topInset + spacing.md }]}>
-        <View style={styles.featureText}>
+        <View style={[styles.featureText, centerLamp && styles.featureTextLeft]}>
           <Text
-            style={styles.brand}
+            style={[styles.brand, { fontSize: brandSize }]}
             numberOfLines={1}
             adjustsFontSizeToFit
             minimumFontScale={0.5}
@@ -108,7 +116,13 @@ export function FeatureHeader({
         </View>
       </View>
 
-      <View style={[styles.hangingLamp, { top: topInset - 4, transform: [{ scale }], transformOrigin: 'center top' }]}>
+      <View
+        style={[
+          styles.hangingLamp,
+          centerLamp && styles.hangingLampCenter,
+          { top: topInset - 4, transform: [{ scale }], transformOrigin: 'center top' },
+        ]}
+      >
         <View style={styles.hangingGlow} />
         <View style={styles.hangingCord} />
         <View style={styles.hangingShade} />
@@ -146,8 +160,11 @@ const styles = StyleSheet.create({
   },
   featureText: {
     flex: 1,
-    paddingLeft: 14,
+    paddingLeft: 28,
     marginBottom: 4,
+  },
+  featureTextLeft: {
+    paddingLeft: 14,
   },
   featureBooks: {
     flexDirection: 'row',
@@ -184,19 +201,23 @@ const styles = StyleSheet.create({
   },
   hangingLamp: {
     position: 'absolute',
-    left: 96,
+    left: 68,
     width: 64,
     alignItems: 'center',
     overflow: 'visible',
   },
+  hangingLampCenter: {
+    left: '50%',
+    marginLeft: -32,
+  },
   hangingGlow: {
     position: 'absolute',
-    left: 32 - 80,
-    top: 16,
-    width: 160,
-    height: 88,
-    borderRadius: 80,
-    backgroundColor: 'rgba(255, 220, 130, 0.12)',
+    left: 32 - 95,
+    top: 14,
+    width: 190,
+    height: 106,
+    borderRadius: 95,
+    backgroundColor: 'rgba(255, 220, 130, 0.16)',
   },
   hangingCord: {
     width: 2,

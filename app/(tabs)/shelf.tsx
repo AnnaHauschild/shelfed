@@ -10,6 +10,7 @@ export default function WatchedShelfScreen() {
       icon="albums"
       accent={colors.watched}
       filterable
+      moods
       emptyTitle="Your shelf is empty"
       emptyMessage="Swipe right on the {noun} you've already enjoyed to start building your lifetime shelf."
     />

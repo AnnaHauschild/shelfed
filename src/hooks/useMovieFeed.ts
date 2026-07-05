@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchFeedPage } from '@/api/movies';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useMediaType } from '@/context/MediaTypeProvider';
 import { interactionRepository } from '@/repositories';
 
@@ -10,13 +11,29 @@ import { interactionRepository } from '@/repositories';
  * user has already interacted with, so cards are never shown twice — even across
  * app restarts (the "seen" set is read from SQLite).
  */
-export function useMovieFeed(genre?: string, era?: string, country?: string) {
+export function useMovieFeed(
+  genre?: string,
+  era?: string,
+  country?: string,
+  collection?: string,
+  actor?: string,
+) {
   const mediaType = useMediaType();
+  const { language } = useLanguage();
   return useInfiniteQuery({
-    queryKey: ['movie-feed', mediaType, genre ?? null, era ?? null, country ?? null],
+    queryKey: [
+      'movie-feed',
+      mediaType,
+      language,
+      genre ?? null,
+      era ?? null,
+      country ?? null,
+      collection ?? null,
+      actor ?? null,
+    ],
     queryFn: async ({ pageParam }) => {
       const [page, seen] = await Promise.all([
-        fetchFeedPage(pageParam, mediaType, genre, era, country),
+        fetchFeedPage(pageParam, mediaType, genre, era, country, collection, actor),
         interactionRepository.getSeenIds(mediaType),
       ]);
       return {

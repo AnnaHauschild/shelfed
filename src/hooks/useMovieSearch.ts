@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { searchMovies } from '@/api/movies';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useMediaType } from '@/context/MediaTypeProvider';
 
 /**
@@ -9,9 +10,10 @@ import { useMediaType } from '@/context/MediaTypeProvider';
  */
 export function useMovieSearch(query: string) {
   const mediaType = useMediaType();
+  const { language } = useLanguage();
   const q = query.trim();
   return useQuery({
-    queryKey: ['search', mediaType, q],
+    queryKey: ['search', mediaType, language, q],
     queryFn: () => searchMovies(q, mediaType),
     enabled: q.length >= 2,
     staleTime: 1000 * 60 * 5,

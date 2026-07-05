@@ -10,6 +10,7 @@ export default function FavoritesScreen() {
       icon="heart"
       accent={colors.favorite}
       filterable
+      moods
       emptyTitle="No favorites yet"
       emptyMessage="Tap the heart on a card to mark the {noun} you love most."
     />

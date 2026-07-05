@@ -15,6 +15,7 @@ import {
   MovieDetailsProvider,
   useMovieDetails,
 } from '@/components/MovieDetailsProvider';
+import { LanguageProvider } from '@/context/LanguageProvider';
 import {
   MediaTypeProvider,
   useMediaTypeControls,
@@ -57,6 +58,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
+          <LanguageProvider>
           <ProfileProvider>
             <MediaTypeProvider>
               <StatusBar style="light" />
@@ -74,6 +76,7 @@ export default function RootLayout() {
               <LandingGate />
             </MediaTypeProvider>
           </ProfileProvider>
+          </LanguageProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

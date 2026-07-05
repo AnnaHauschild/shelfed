@@ -11,9 +11,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Movie } from '@/api/types';
 import { watchedLabel, WATCHLIST_LABEL } from '@/constants/labels';
+import { MOOD_LABEL } from '@/constants/moods';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
+import { useNote } from '@/hooks/useNotes';
+import { useLanguage } from '@/context/LanguageProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
+import { AddToMoodSheet } from './AddToMoodSheet';
+import { NoteSheet } from './NoteSheet';
 import { MovieDetails } from './MovieDetails';
 
 const SCREEN_H = Dimensions.get('window').height;
@@ -65,11 +70,22 @@ function DetailsModal({
 }) {
   const { toggleWatched, toggleWatchlist, toggleFavorite } = useInteractions();
   const states = useInteractionStates();
+  const { text } = useLanguage();
+  const [moodSheetOpen, setMoodSheetOpen] = useState(false);
+  const [noteOpen, setNoteOpen] = useState(false);
+  const { data: noteText } = useNote(
+    movie?.id ?? '',
+    movie?.mediaType ?? 'movie',
+  );
 
   const translateY = useSharedValue(0);
   // Reset the drag offset whenever a new movie opens.
   useEffect(() => {
-    if (movie) translateY.value = 0;
+    if (movie) {
+      translateY.value = 0;
+      setMoodSheetOpen(false);
+      setNoteOpen(false);
+    }
   }, [movie, translateY]);
 
   const sheetStyle = useAnimatedStyle(() => ({
@@ -107,7 +123,12 @@ function DetailsModal({
               <View style={styles.handle} />
             </View>
           </GestureDetector>
-          <MovieDetails movie={movie} dragGesture={headerDrag}>
+          <MovieDetails
+            movie={movie}
+            dragGesture={headerDrag}
+            onOpenNote={() => setNoteOpen(true)}
+            hasNote={(noteText ?? '').length > 0}
+          >
           <View style={styles.actions}>
             <DetailAction
               label={watchedLabel(movie.mediaType)}
@@ -133,10 +154,16 @@ function DetailsModal({
               active={states.isFavorite(movie.id)}
               onPress={() => toggleFavorite(movie)}
             />
+            <DetailAction
+              label={MOOD_LABEL}
+              color={colors.amberBright}
+              icon="color-palette-outline"
+              activeIcon="color-palette"
+              active={false}
+              onPress={() => setMoodSheetOpen(true)}
+            />
           </View>
-          <Text style={styles.hint}>
-            Tap a lit icon again to remove it from that list.
-          </Text>
+          <Text style={styles.hint}>{text.removeHint}</Text>
         </MovieDetails>
 
         <Pressable style={styles.closeButton} onPress={onClose} hitSlop={8}>
@@ -144,6 +171,16 @@ function DetailsModal({
           <Text style={styles.closeText}>Close</Text>
         </Pressable>
         </Animated.View>
+        <AddToMoodSheet
+          movie={movie}
+          visible={moodSheetOpen}
+          onClose={() => setMoodSheetOpen(false)}
+        />
+        <NoteSheet
+          movie={movie}
+          visible={noteOpen}
+          onClose={() => setNoteOpen(false)}
+        />
       </GestureHandlerRootView>
     </Modal>
   );

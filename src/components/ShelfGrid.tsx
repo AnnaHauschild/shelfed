@@ -11,6 +11,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mediaPlural, watchedLabel } from '@/constants/labels';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
+import { ShelfMenu, ShelfMenuSection } from '@/components/ShelfMenu';
+import { MoodShelf } from '@/components/MoodShelf';
 import { useMovieDetails } from '@/components/MovieDetailsProvider';
 import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
@@ -45,6 +47,8 @@ interface Props {
   emptyMessage: string;
   /** Show genre filter chips to organise the shelf into categories. */
   filterable?: boolean;
+  /** Show the “Moods” menu (personal, curated sub-shelves). Watched shelf only. */
+  moods?: boolean;
 }
 
 /**
@@ -64,6 +68,7 @@ export function ShelfGrid({
   emptyTitle,
   emptyMessage,
   filterable = false,
+  moods = false,
 }: Props) {
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
@@ -72,6 +77,8 @@ export function ShelfGrid({
   const states = useInteractionStates();
   const [genre, setGenre] = useState<string | null>(null);
   const [sort, setSort] = useState<SortKey>('recent');
+  const [menuSection, setMenuSection] = useState<ShelfMenuSection | null>(null);
+  const [activeMoodId, setActiveMoodId] = useState<number | null>(null);
 
   const movies = useMemo(() => data ?? [], [data]);
 
@@ -106,57 +113,37 @@ export function ShelfGrid({
         <MediaSwitcher />
       </View>
 
-      {movies.length > 1 && (
-        <View style={styles.sortBar}>
-          <Ionicons
-            name="swap-vertical"
-            size={14}
-            color={colors.textOnDarkMuted}
+      <View style={styles.controlsRow}>
+        <ControlButton
+          icon="swap-vertical"
+          label={
+            sort !== 'recent'
+              ? SORT_OPTIONS.find((o) => o.key === sort)?.label ?? 'Sort'
+              : 'Sort'
+          }
+          active={sort !== 'recent'}
+          accent={accent}
+          onPress={() => setMenuSection('sort')}
+        />
+        {filterable && (
+          <ControlButton
+            icon="pricetags-outline"
+            label={genre ?? 'Genre'}
+            active={genre !== null}
+            accent={accent}
+            onPress={() => setMenuSection('genre')}
           />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chips}
-            style={styles.sortScroll}
-          >
-            {SORT_OPTIONS.map((opt) => (
-              <CategoryChip
-                key={opt.key}
-                label={opt.label}
-                active={sort === opt.key}
-                accent={accent}
-                onPress={() => setSort(opt.key)}
-              />
-            ))}
-          </ScrollView>
-        </View>
-      )}
-
-      {filterable && genres.length > 0 && (
-        <View style={styles.chipsWrapper}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chips}
-          >
-            <CategoryChip
-              label="All"
-              active={genre === null}
-              accent={accent}
-              onPress={() => setGenre(null)}
-            />
-            {genres.map((g) => (
-              <CategoryChip
-                key={g}
-                label={g}
-                active={genre === g}
-                accent={accent}
-                onPress={() => setGenre(g)}
-              />
-            ))}
-          </ScrollView>
-        </View>
-      )}
+        )}
+        {moods && (
+          <ControlButton
+            icon="color-palette-outline"
+            label="Mood"
+            active={false}
+            accent={accent}
+            onPress={() => setMenuSection('moods')}
+          />
+        )}
+      </View>
 
       {isLoading ? (
         <View style={styles.skeletonGrid}>
@@ -190,16 +177,42 @@ export function ShelfGrid({
           />
         </ScrollView>
       )}
+
+      <ShelfMenu
+        section={menuSection}
+        onClose={() => setMenuSection(null)}
+        accent={accent}
+        sortOptions={SORT_OPTIONS}
+        sort={sort}
+        onSortChange={(key) => setSort(key as SortKey)}
+        genres={filterable ? genres : undefined}
+        genre={genre}
+        onGenreChange={setGenre}
+        onOpenMood={(id) => {
+          setMenuSection(null);
+          setActiveMoodId(id);
+        }}
+      />
+      {moods && (
+        <MoodShelf
+          moodId={activeMoodId}
+          sourceType={type}
+          onClose={() => setActiveMoodId(null)}
+        />
+      )}
     </View>
   );
 }
 
-function CategoryChip({
+/** A tappable pill under the media switcher that opens one menu section. */
+function ControlButton({
+  icon,
   label,
   active,
   accent,
   onPress,
 }: {
+  icon: keyof typeof Ionicons.glyphMap;
   label: string;
   active: boolean;
   accent: string;
@@ -208,13 +221,20 @@ function CategoryChip({
   return (
     <Pressable
       onPress={onPress}
+      hitSlop={4}
       style={({ pressed }) => [
-        styles.chip,
-        active && { borderColor: accent, backgroundColor: `${accent}22` },
-        pressed && styles.chipPressed,
+        styles.controlButton,
+        active && { borderColor: accent },
+        pressed && styles.controlButtonPressed,
       ]}
     >
-      <Text style={[styles.chipText, active && { color: accent }]}>{label}</Text>
+      <Ionicons name={icon} size={15} color={active ? accent : colors.paper} />
+      <Text
+        style={[styles.controlButtonText, active && { color: accent }]}
+        numberOfLines={1}
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -253,6 +273,13 @@ const styles = StyleSheet.create({
   },
   switcherRow: {
     flexDirection: 'row',
+    marginBottom: spacing.sm,
+    zIndex: 2,
+  },
+  controlsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
     marginBottom: spacing.lg,
     zIndex: 2,
   },
@@ -266,23 +293,10 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,
   },
-  sortBar: {
+  controlButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
-  },
-  sortScroll: {
-    flexShrink: 1,
-  },
-  chipsWrapper: {
-    marginBottom: spacing.lg,
-  },
-  chips: {
-    gap: spacing.sm,
-    paddingRight: spacing.lg,
-  },
-  chip: {
+    gap: 5,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderRadius: radius.xl,
@@ -290,15 +304,15 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.surfaceRaised,
   },
-  chipText: {
-    color: colors.textOnDarkMuted,
+  controlButtonText: {
+    color: colors.paper,
     fontFamily: fonts.label,
     fontSize: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    maxWidth: 120,
   },
-  chipPressed: {
-    transform: [{ scale: 0.94 }],
+  controlButtonPressed: {
     opacity: 0.85,
   },
   loader: {

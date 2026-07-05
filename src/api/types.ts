@@ -121,6 +121,8 @@ export interface CastMember {
   character: string;
   /** Year of birth (from TMDB /person), for showing age at release. */
   birthYear: number | null;
+  /** TMDB profile image path (or null when the actor has no photo). */
+  profilePath: string | null;
 }
 
 /**

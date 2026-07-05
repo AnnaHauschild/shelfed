@@ -79,8 +79,8 @@ function IconButton({
 
   const handlePress = () => {
     scale.value = withSequence(
-      withTiming(1.3, { duration: 120 }),
-      withSpring(1, { damping: 6 }),
+      withTiming(1.18, { duration: 100 }),
+      withSpring(1, { damping: 14, stiffness: 200 }),
     );
     onPress();
   };

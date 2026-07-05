@@ -48,10 +48,42 @@ export const SCHEMA_STATEMENTS: string[] = [
   `CREATE INDEX IF NOT EXISTS idx_interactions_type ON interactions(media_type, type);`,
   `CREATE INDEX IF NOT EXISTS idx_interactions_movie ON interactions(media_type, movie_id);`,
 
+  // User-defined "Moods": personal, hand-curated shelves that are subsets of the
+  // watched shelf (e.g. "Guilty Pleasure", "Childhood", "Comfort"). A mood can
+  // hold titles of any media type.
+  `CREATE TABLE IF NOT EXISTS collections (
+     id         INTEGER PRIMARY KEY AUTOINCREMENT,
+     name       TEXT    NOT NULL,
+     emoji      TEXT    NOT NULL DEFAULT '🎬',
+     sort_order INTEGER NOT NULL DEFAULT 0,
+     created_at INTEGER NOT NULL
+   );`,
+
+  `CREATE TABLE IF NOT EXISTS collection_items (
+     collection_id INTEGER NOT NULL,
+     media_type    TEXT    NOT NULL DEFAULT 'movie',
+     movie_id      INTEGER NOT NULL,
+     added_at      INTEGER NOT NULL,
+     PRIMARY KEY (collection_id, media_type, movie_id),
+     FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE,
+     FOREIGN KEY (media_type, movie_id) REFERENCES movies(media_type, id) ON DELETE CASCADE
+   );`,
+
+  `CREATE INDEX IF NOT EXISTS idx_collection_items_collection ON collection_items(collection_id);`,
+
+  // Free-text notes the user writes about a title (a "post-it" per movie).
+  `CREATE TABLE IF NOT EXISTS notes (
+     media_type TEXT    NOT NULL DEFAULT 'movie',
+     movie_id   INTEGER NOT NULL,
+     text       TEXT    NOT NULL,
+     updated_at INTEGER NOT NULL,
+     PRIMARY KEY (media_type, movie_id)
+   );`,
+
   `CREATE TABLE IF NOT EXISTS settings (
      key   TEXT PRIMARY KEY,
      value TEXT NOT NULL
    );`,
 ];
 
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 5;

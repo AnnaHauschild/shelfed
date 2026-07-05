@@ -19,6 +19,7 @@ import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { AboutModal } from './AboutModal';
 import { ShelfBackground } from './ShelfBackground';
 import { FeatureHeader } from './FeatureHeader';
+import { LanguagePicker } from './LanguagePicker';
 
 interface Category {
   type: MediaType | null;
@@ -83,13 +84,16 @@ export function LandingScreen() {
       />
 
       <View style={[styles.content, { paddingTop: headerHeight + spacing.lg }]}>
-        <Pressable style={styles.profilePill} onPress={() => setEditing(true)} hitSlop={8}>
-          <Ionicons name="person-circle-outline" size={18} color={colors.textOnPaper} />
-          <Text style={styles.profileText}>
-            {name ? `Hi, ${name}` : 'Tap to set your name'}
-          </Text>
-          <Ionicons name="pencil" size={12} color={colors.textOnPaperMuted} />
-        </Pressable>
+        <View style={styles.topRow}>
+          <Pressable style={styles.profilePill} onPress={() => setEditing(true)} hitSlop={8}>
+            <Ionicons name="person-circle-outline" size={18} color={colors.textOnPaper} />
+            <Text style={styles.profileText}>
+              {name ? `Hi, ${name}` : 'Tap to set your name'}
+            </Text>
+            <Ionicons name="pencil" size={12} color={colors.textOnPaperMuted} />
+          </Pressable>
+          <LanguagePicker />
+        </View>
 
         <View style={styles.cards}>
           {CATEGORIES.map((c) => (
@@ -402,6 +406,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.75,
   },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
+  },
   profilePill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -413,7 +423,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.paperShade,
     backgroundColor: colors.paper,
-    marginBottom: spacing.lg,
   },
   profileText: {
     color: colors.textOnPaper,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -8,6 +8,9 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { TmdbError, hasTmdbToken } from '@/api/tmdb';
+import { MUST_SEE_ID } from '@/api/movies';
+import { type SelectedActor } from '@/components/ActorFilter';
+import { collectionsFor } from '@/constants/collections';
 import { COUNTRY_OPTIONS, ERA_OPTIONS } from '@/constants/config';
 import { FilterSheet } from '@/components/FilterSheet';
 import { GenreChips } from '@/components/GenreChips';
@@ -16,7 +19,7 @@ import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { ShelfBackground } from '@/components/ShelfBackground';
 import { FeatureHeader } from '@/components/FeatureHeader';
 import { SwipeDeck } from '@/components/SwipeDeck';
-import { useMediaType } from '@/context/MediaTypeProvider';
+import { useMediaType, useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useGenres } from '@/hooks/useGenres';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
@@ -25,24 +28,21 @@ import { getSetting, setSetting } from '@/db/settings';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 
 // --- Swipe onboarding hint --------------------------------------------------
-// Big blinking arrows teach the swipe directions, then get out of the way.
-//   'first5'    = show for the first 5 swipes ever (persisted), then never again.
-//   'everyOpen' = show at the start of each app launch (first few swipes of the
-//                 session), then hide until the next launch.
-// Flip SWIPE_HINT_MODE to try the other behaviour.
-type SwipeHintMode = 'first5' | 'everyOpen';
-const SWIPE_HINT_MODE: SwipeHintMode = 'everyOpen';
-const SWIPE_HINT_LIMIT = SWIPE_HINT_MODE === 'first5' ? 5 : 3;
-const SWIPE_HINT_KEY = 'swipeHintCount';
-// Session counter for 'everyOpen' (resets when the app process restarts).
-let sessionSwipeCount = 0;
+// Arrows + a demo card wiggle teach the swipe directions. Shown only ONCE — the
+// very first time the app is ever opened (persisted in the settings store).
+// After that it never appears again.
+const SWIPE_HINT_KEY = 'swipeHintSeen';
 
 export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
+  const { chosen } = useMediaTypeControls();
   const [genre, setGenre] = useState<string | null>(null);
   const [era, setEra] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
+  const [collection, setCollection] = useState<string | null>(null);
+  const [actor, setActor] = useState<SelectedActor | null>(null);
+  const [mustSee, setMustSee] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Filters differ per category, so clear them all when switching.
@@ -50,15 +50,73 @@ export default function DiscoverScreen() {
     setGenre(null);
     setEra(null);
     setCountry(null);
+    setCollection(null);
+    setActor(null);
+    setMustSee(false);
   }, [mediaType]);
 
   const eraOptions = useMemo(
     () => ERA_OPTIONS.map((e) => ({ id: e.id, name: e.label })),
     [],
   );
+  // Curated collections split into "Genre" (what it is) and "Vibe" (how it
+  // feels). Both are keyword-based and use the `collection` state.
+  const genreCollections = useMemo(
+    () => collectionsFor(mediaType, 'genre'),
+    [mediaType],
+  );
+  const vibeOptions = useMemo(
+    () => collectionsFor(mediaType, 'vibe'),
+    [mediaType],
+  );
   const { data: genreOptions } = useGenres(mediaType);
+  // Genre section = genre collections + TMDB genres, sorted A–Z. Vibe section is
+  // its own list. Single choice across everything: picking a collection sets
+  // `collection`, picking a TMDB genre sets `genre`, each clears the other.
+  const genreFilterOptions = useMemo(
+    () =>
+      [...genreCollections, ...(genreOptions ?? [])].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      ),
+    [genreCollections, genreOptions],
+  );
+  const isCollectionId = (id: string) =>
+    genreCollections.some((c) => c.id === id) ||
+    vibeOptions.some((c) => c.id === id);
+  const selectGenreOrCollection = (id: string | null) => {
+    if (id == null) {
+      setGenre(null);
+      setCollection(null);
+      return;
+    }
+    setMustSee(false);
+    if (isCollectionId(id)) {
+      setCollection(id);
+      setGenre(null);
+    } else {
+      setGenre(id);
+      setCollection(null);
+    }
+  };
+  // Must-See is a self-contained curated feed, so it's exclusive: turning it on
+  // clears every other filter, and picking any other filter turns it off.
+  const selectMustSee = (value: boolean) => {
+    setMustSee(value);
+    if (value) {
+      setGenre(null);
+      setCollection(null);
+      setEra(null);
+      setCountry(null);
+      setActor(null);
+    }
+  };
   const activeFilterCount =
-    (genre ? 1 : 0) + (era ? 1 : 0) + (country ? 1 : 0);
+    (genre ? 1 : 0) +
+    (era ? 1 : 0) +
+    (country ? 1 : 0) +
+    (collection ? 1 : 0) +
+    (actor ? 1 : 0) +
+    (mustSee ? 1 : 0);
   const {
     data,
     isLoading,
@@ -72,6 +130,8 @@ export default function DiscoverScreen() {
     genre ?? undefined,
     era ?? undefined,
     country ?? undefined,
+    mustSee ? MUST_SEE_ID : collection ?? undefined,
+    actor?.id ?? undefined,
   );
   const { markWatched, skip, toggleWatchlist, toggleFavorite, undo } =
     useInteractions();
@@ -79,33 +139,30 @@ export default function DiscoverScreen() {
 
   const [topIndex, setTopIndex] = useState(0);
 
-  // Swipe-direction onboarding hint (see SWIPE_HINT_MODE above). null = not yet
-  // loaded (first5 reads a persisted count); everyOpen uses the session counter.
-  const [hintCount, setHintCount] = useState<number | null>(
-    SWIPE_HINT_MODE === 'everyOpen' ? sessionSwipeCount : null,
-  );
+  // Swipe onboarding hint — show only on the very first app open (persisted).
+  // null = still loading the flag; false = not seen yet; true = already seen.
+  const [hintSeen, setHintSeen] = useState<boolean | null>(null);
   useEffect(() => {
-    if (SWIPE_HINT_MODE !== 'first5') return;
     let alive = true;
     getSetting(SWIPE_HINT_KEY).then((v) => {
-      if (alive) setHintCount(v ? parseInt(v, 10) || 0 : 0);
+      if (alive) setHintSeen(v === '1');
     });
     return () => {
       alive = false;
     };
   }, []);
-  const hintActive = hintCount != null && hintCount < SWIPE_HINT_LIMIT;
-  const bumpHint = useCallback(() => {
-    setHintCount((c) => {
-      const next = (c ?? 0) + 1;
-      if (SWIPE_HINT_MODE === 'first5') {
-        setSetting(SWIPE_HINT_KEY, String(next)).catch(() => {});
-      } else {
-        sessionSwipeCount = next;
-      }
-      return next;
-    });
-  }, []);
+  const hintActive = hintSeen === false;
+
+  // Play the swipe onboarding right after the user leaves the landing screen
+  // (picks a category) the FIRST time ever, then remember it's been seen.
+  const [hintReplay, setHintReplay] = useState(0);
+  useEffect(() => {
+    if (chosen && hintActive) {
+      setHintReplay((r) => r + 1);
+      setHintSeen(true);
+      setSetting(SWIPE_HINT_KEY, '1').catch(() => {});
+    }
+  }, [chosen, hintActive]);
 
   // When no TMDB token is set we serve a built-in demo feed; surface that so the
   // user knows how to unlock the full catalog.
@@ -216,16 +273,10 @@ export default function DiscoverScreen() {
         ) : (
           <>
             <SwipeDeck
-              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}`}
+              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${actor?.id ?? 'all'}`}
               cards={movies}
-              onSwipeRight={(movie) => {
-                markWatched(movie);
-                bumpHint();
-              }}
-              onSwipeLeft={(movie) => {
-                skip(movie);
-                bumpHint();
-              }}
+              onSwipeRight={(movie) => markWatched(movie)}
+              onSwipeLeft={(movie) => skip(movie)}
               onStar={toggleWatchlist}
               onHeart={toggleFavorite}
               onUndo={(movie, type) => undo(movie.id, type, movie.mediaType)}
@@ -233,6 +284,7 @@ export default function DiscoverScreen() {
               isFavorite={(movie) => states.isFavorite(movie.id)}
               onIndexChange={setTopIndex}
               hint={hintActive}
+              replay={hintReplay}
             />
             {exhausted && (
               <Centered pointerEvents="none">
@@ -261,20 +313,39 @@ export default function DiscoverScreen() {
       <FilterSheet
         visible={filtersOpen}
         onClose={() => setFiltersOpen(false)}
-        genreOptions={genreOptions ?? []}
-        genre={genre}
-        onGenreChange={setGenre}
+        genreOptions={genreFilterOptions}
+        genre={collection ?? genre}
+        onGenreChange={selectGenreOrCollection}
+        vibeOptions={vibeOptions}
+        actor={actor}
+        onActorChange={(a) => {
+          setActor(a);
+          if (a) setMustSee(false);
+        }}
+        hideActor={mediaType !== 'movie'}
         eraOptions={eraOptions}
         era={era}
-        onEraChange={setEra}
+        onEraChange={(id) => {
+          setEra(id);
+          if (id) setMustSee(false);
+        }}
         countryOptions={COUNTRY_OPTIONS}
         country={country}
-        onCountryChange={setCountry}
+        onCountryChange={(id) => {
+          setCountry(id);
+          if (id) setMustSee(false);
+        }}
         hideCountry={mediaType === 'book'}
+        mustSee={mustSee}
+        onMustSeeChange={selectMustSee}
+        hideMustSee={mediaType !== 'movie'}
         onClearAll={() => {
           setGenre(null);
           setEra(null);
           setCountry(null);
+          setCollection(null);
+          setActor(null);
+          setMustSee(false);
         }}
       />
     </View>
