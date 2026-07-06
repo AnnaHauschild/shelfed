@@ -12,6 +12,7 @@ const OPTIONS: {
   { type: 'movie', label: 'Movies', icon: 'film' },
   { type: 'tv', label: 'Series', icon: 'tv' },
   { type: 'book', label: 'Books', icon: 'book' },
+  { type: 'game', label: 'Games', icon: 'game-controller' },
 ];
 
 /**

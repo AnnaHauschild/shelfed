@@ -18,6 +18,10 @@ export const POSTER_SIZE_SMALL = 'w342';
 // v4 "API Read Access Token" (Bearer). Set in .env (see .env.example).
 export const TMDB_ACCESS_TOKEN = process.env.EXPO_PUBLIC_TMDB_ACCESS_TOKEN ?? '';
 
+// RAWG (video games API). Free key from rawg.io/apikey, set in .env.
+export const RAWG_BASE_URL = 'https://api.rawg.io/api';
+export const RAWG_API_KEY = process.env.EXPO_PUBLIC_RAWG_API_KEY ?? '';
+
 // Region used for streaming availability (TMDB watch/providers via JustWatch).
 export const WATCH_REGION = 'DE';
 

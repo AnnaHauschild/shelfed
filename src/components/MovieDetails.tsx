@@ -9,6 +9,7 @@ import { useProfile } from '@/context/ProfileProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
 import { useMovieTrailer } from '@/hooks/useMovieTrailer';
 import { useBookDescription } from '@/hooks/useBookDescription';
+import { useGameDescription } from '@/hooks/useGameDescription';
 import { useWatchProviders } from '@/hooks/useWatchProviders';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { PosterImage } from './PosterImage';
@@ -27,6 +28,7 @@ function displayCharacter(raw: string): string {
 
 /** Public web URL for a movie/series/book, used in share messages. */
 function shareUrl(movie: Movie): string {
+  if (movie.mediaType === 'game') return '';
   if (movie.mediaType === 'book') return `https://openlibrary.org/works/${movie.id}`;
   if (movie.mediaType === 'tv') return `https://www.themoviedb.org/tv/${movie.id}`;
   return `https://www.themoviedb.org/movie/${movie.id}`;
@@ -35,7 +37,8 @@ function shareUrl(movie: Movie): string {
 async function shareMovie(movie: Movie, name: string | null): Promise<void> {
   const year = movie.year != null ? ` (${movie.year})` : '';
   const lead = name ? `${name} recommends:` : 'Check this out:';
-  const message = `${lead} ${movie.title}${year}\n${shareUrl(movie)}`;
+  const url = shareUrl(movie);
+  const message = `${lead} ${movie.title}${year}${url ? `\n${url}` : ''}`;
   try {
     await Share.share({ message, title: movie.title });
   } catch {
@@ -64,13 +67,19 @@ interface Props {
  */
 export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote }: Props) {
   const isBook = movie.mediaType === 'book';
+  const isGame = movie.mediaType === 'game';
   const { name } = useProfile();
   const { data: cast } = useMovieCast(movie.id, movie.mediaType);
   const { data: trailerUrl } = useMovieTrailer(movie.id, movie.mediaType);
   const { data: bookDesc } = useBookDescription(movie.id, isBook);
+  const { data: gameDesc } = useGameDescription(movie.id, isGame);
   const { data: watch } = useWatchProviders(movie.id, movie.mediaType);
 
-  const description = isBook ? bookDesc ?? '' : movie.overview;
+  const description = isBook
+    ? bookDesc ?? ''
+    : isGame
+      ? movie.overview || (gameDesc ?? '')
+      : movie.overview;
   const overview =
     description && description.length > 0
       ? description

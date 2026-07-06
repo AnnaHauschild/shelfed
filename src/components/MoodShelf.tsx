@@ -26,6 +26,7 @@ import { ShelfRack } from '@/components/ShelfRack';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMood, useMoodMovies, useMoodMutations } from '@/hooks/useMoods';
 import { useShelf } from '@/hooks/useShelf';
+import { MediaType } from '@/api/types';
 import { InteractionType } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 
@@ -252,8 +253,8 @@ function AddPicker({
   moodId: number;
   sourceType: InteractionType;
   memberKeys: Set<string>;
-  onAdd: (m: { id: string; mediaType: 'movie' | 'tv' | 'book' }) => void;
-  onRemove: (m: { id: string; mediaType: 'movie' | 'tv' | 'book' }) => void;
+  onAdd: (m: { id: string; mediaType: MediaType }) => void;
+  onRemove: (m: { id: string; mediaType: MediaType }) => void;
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();

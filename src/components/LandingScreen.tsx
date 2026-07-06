@@ -52,6 +52,13 @@ const CATEGORIES: Category[] = [
     icon: 'book',
     accent: colors.amber,
   },
+  {
+    type: 'game',
+    label: 'Games',
+    blurb: 'Log the games you have played',
+    icon: 'game-controller',
+    accent: colors.rust,
+  },
 ];
 
 /**

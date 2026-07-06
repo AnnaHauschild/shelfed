@@ -169,13 +169,21 @@ export default function DiscoverScreen() {
   const isDemo = !hasTmdbToken();
 
   const noun =
-    mediaType === 'tv' ? 'series' : mediaType === 'book' ? 'books' : 'movies';
+    mediaType === 'tv'
+      ? 'series'
+      : mediaType === 'book'
+        ? 'books'
+        : mediaType === 'game'
+          ? 'games'
+          : 'movies';
   const emptyIcon: keyof typeof Ionicons.glyphMap =
     mediaType === 'tv'
       ? 'tv-outline'
       : mediaType === 'book'
         ? 'book-outline'
-        : 'film-outline';
+        : mediaType === 'game'
+          ? 'game-controller-outline'
+          : 'film-outline';
 
   const movies = useMemo(() => {
     const all = data?.pages.flatMap((page) => page.movies) ?? [];
@@ -209,7 +217,9 @@ export default function DiscoverScreen() {
       ? 'Swipe your series'
       : mediaType === 'book'
         ? 'Swipe your books'
-        : 'Swipe your films';
+        : mediaType === 'game'
+          ? 'Swipe your games'
+          : 'Swipe your films';
 
   return (
     <View
@@ -223,6 +233,7 @@ export default function DiscoverScreen() {
           <MediaSwitcher />
           <Pressable
             onPress={() => setFiltersOpen(true)}
+            accessibilityLabel="Filters"
             style={({ pressed }) => [
               styles.filterButton,
               activeFilterCount > 0 && styles.filterButtonActive,
@@ -237,14 +248,13 @@ export default function DiscoverScreen() {
                 activeFilterCount > 0 ? colors.amberBright : colors.textOnDarkMuted
               }
             />
-            <Text
-              style={[
-                styles.filterButtonText,
-                activeFilterCount > 0 && { color: colors.amberBright },
-              ]}
-            >
-              {activeFilterCount > 0 ? `Filters · ${activeFilterCount}` : 'Filters'}
-            </Text>
+            {activeFilterCount > 0 && (
+              <Text
+                style={[styles.filterButtonText, { color: colors.amberBright }]}
+              >
+                {activeFilterCount}
+              </Text>
+            )}
           </Pressable>
         </View>
       </View>
@@ -335,7 +345,7 @@ export default function DiscoverScreen() {
           setCountry(id);
           if (id) setMustSee(false);
         }}
-        hideCountry={mediaType === 'book'}
+        hideCountry={mediaType === 'book' || mediaType === 'game'}
         mustSee={mustSee}
         onMustSeeChange={selectMustSee}
         hideMustSee={mediaType !== 'movie'}

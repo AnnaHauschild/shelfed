@@ -1,7 +1,37 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { MediaType } from '@/api/types';
+import { useMediaType } from '@/context/MediaTypeProvider';
 import { colors, fonts } from '@/theme';
 import { WATCHLIST_LABEL } from '@/constants/labels';
+
+// Discover tab icon follows the active category (film / series / book / game).
+const DISCOVER_ICONS: Record<
+  MediaType,
+  { on: keyof typeof Ionicons.glyphMap; off: keyof typeof Ionicons.glyphMap }
+> = {
+  movie: { on: 'film', off: 'film-outline' },
+  tv: { on: 'tv', off: 'tv-outline' },
+  book: { on: 'book', off: 'book-outline' },
+  game: { on: 'game-controller', off: 'game-controller-outline' },
+};
+
+/** Discover tab icon that reflects the currently selected category. */
+function DiscoverTabIcon({
+  focused,
+  color,
+  size,
+}: {
+  focused: boolean;
+  color: string;
+  size: number;
+}) {
+  const mediaType = useMediaType();
+  const icon = DISCOVER_ICONS[mediaType];
+  return (
+    <Ionicons name={focused ? icon.on : icon.off} color={color} size={size} />
+  );
+}
 
 /** Bottom tab navigation across the four main screens. */
 export default function TabsLayout() {
@@ -28,13 +58,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Discover',
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? 'film' : 'film-outline'}
-              color={color}
-              size={size}
-            />
-          ),
+          tabBarIcon: (props) => <DiscoverTabIcon {...props} />,
         }}
       />
       <Tabs.Screen

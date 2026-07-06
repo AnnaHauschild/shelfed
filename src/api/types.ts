@@ -1,5 +1,5 @@
 /** The kinds of media the app can browse. */
-export type MediaType = 'movie' | 'tv' | 'book';
+export type MediaType = 'movie' | 'tv' | 'book' | 'game';
 
 /** Raw movie shape returned by TMDB list/discover endpoints. */
 export interface TmdbMovie {

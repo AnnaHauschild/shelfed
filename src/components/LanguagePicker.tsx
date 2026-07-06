@@ -30,9 +30,7 @@ export function LanguagePicker({ style }: { style?: StyleProp<ViewStyle> }) {
         hitSlop={8}
       >
         <Ionicons name="globe-outline" size={15} color={colors.textOnPaper} />
-        <Text style={styles.pillText}>
-          {current.flag} {current.code.toUpperCase()}
-        </Text>
+        <Text style={styles.pillText}>{current.code.toUpperCase()}</Text>
       </Pressable>
 
       <Modal
@@ -62,7 +60,6 @@ export function LanguagePicker({ style }: { style?: StyleProp<ViewStyle> }) {
                   setOpen(false);
                 }}
               >
-                <Text style={styles.flag}>{l.flag}</Text>
                 <Text style={[styles.rowLabel, active && styles.rowLabelActive]}>
                   {l.label}
                 </Text>
@@ -143,9 +140,6 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.7,
-  },
-  flag: {
-    fontSize: 20,
   },
   rowLabel: {
     flex: 1,

@@ -2,7 +2,7 @@ import { MediaType } from '@/api/types';
 
 /** The verb for the "watched" interaction — books are read, not watched. */
 export function watchedLabel(mediaType: MediaType): string {
-  return mediaType === 'book' ? 'Read' : 'Watched';
+  return mediaType === 'book' ? 'Read' : mediaType === 'game' ? 'Played' : 'Watched';
 }
 
 /**
@@ -13,5 +13,11 @@ export const WATCHLIST_LABEL = 'Wishlist';
 
 /** Plural noun for a media type, for media-aware copy: movies / series / books. */
 export function mediaPlural(mediaType: MediaType): string {
-  return mediaType === 'tv' ? 'series' : mediaType === 'book' ? 'books' : 'movies';
+  return mediaType === 'tv'
+    ? 'series'
+    : mediaType === 'book'
+      ? 'books'
+      : mediaType === 'game'
+        ? 'games'
+        : 'movies';
 }

@@ -7,6 +7,12 @@ import {
   fetchBookFeedPage,
   searchBooks,
 } from './openLibrary';
+import {
+  fetchGameById,
+  fetchGameFeedPage,
+  getGameGenreOptions,
+  searchGames,
+} from './rawg';
 import mustSeeData from './mustSee.json';
 import { SAMPLE_MOVIES } from './sampleMovies';
 import { contentLanguage, hasTmdbToken, posterUrl, tmdbGet } from './tmdb';
@@ -174,6 +180,7 @@ export async function getGenreOptions(
   mediaType: MediaType,
 ): Promise<{ id: string; name: string }[]> {
   if (mediaType === 'book') return BOOK_GENRE_OPTIONS;
+  if (mediaType === 'game') return getGameGenreOptions();
   const map = await loadGenres(mediaType);
   let entries = Object.entries(map).map(([id, name]) => ({ id, name }));
   if (mediaType === 'tv') {
@@ -316,6 +323,17 @@ export async function fetchFeedPage(
     return fetchBookFeedPage(page, genre, years);
   }
 
+  // Games come from RAWG (needs its own key). Genre = RAWG slug, era = date range.
+  if (mediaType === 'game') {
+    const years = eraWindow
+      ? {
+          from: Number(eraWindow.gte.slice(0, 4)),
+          to: Number(eraWindow.lte.slice(0, 4)),
+        }
+      : undefined;
+    return fetchGameFeedPage(page, genre, years);
+  }
+
   // No token yet? Serve a built-in demo feed so the app is fully usable, then
   // stop (one page). TV has no offline samples, so it stays empty in demo mode.
   if (!hasTmdbToken()) {
@@ -428,6 +446,7 @@ export async function fetchMovieCast(
   movieId: string,
   mediaType: MediaType,
 ): Promise<CastMember[]> {
+  if (mediaType !== 'movie' && mediaType !== 'tv') return [];
   if (!hasTmdbToken()) return [];
 
   const data = await tmdbGet<TmdbCredits>(`/${mediaType}/${movieId}/credits`, {
@@ -472,6 +491,7 @@ export async function fetchMovieTrailer(
   movieId: string,
   mediaType: MediaType,
 ): Promise<string | null> {
+  if (mediaType !== 'movie' && mediaType !== 'tv') return null;
   if (!hasTmdbToken()) return null;
 
   const data = await tmdbGet<TmdbVideosResponse>(
@@ -499,7 +519,8 @@ export async function fetchWatchProviders(
   id: string,
   mediaType: MediaType,
 ): Promise<WatchInfo | null> {
-  if (mediaType === 'book' || !hasTmdbToken()) return null;
+  if (mediaType !== 'movie' && mediaType !== 'tv') return null;
+  if (!hasTmdbToken()) return null;
 
   const data = await tmdbGet<TmdbWatchProvidersResponse>(
     `/${mediaType}/${id}/watch/providers`,
@@ -546,6 +567,7 @@ export async function searchMovies(
 
   // Books come from Open Library (no TMDB token needed).
   if (mediaType === 'book') return searchBooks(q, page);
+  if (mediaType === 'game') return searchGames(q, page);
 
   if (!hasTmdbToken()) {
     if (mediaType === 'tv') return { movies: [], nextPage: null };
@@ -598,6 +620,7 @@ export async function fetchMediaById(
   id: string,
 ): Promise<Movie | null> {
   if (mediaType === 'book') return fetchBookById(id);
+  if (mediaType === 'game') return fetchGameById(id);
   if (!hasTmdbToken()) return null;
   try {
     const genreMap = await loadGenres(mediaType);

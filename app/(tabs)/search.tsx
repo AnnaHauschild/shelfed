@@ -50,7 +50,9 @@ export default function SearchScreen() {
       ? 'Find any series'
       : mediaType === 'book'
         ? 'Find any book'
-        : 'Find any movie';
+        : mediaType === 'game'
+          ? 'Find any game'
+          : 'Find any movie';
 
   return (
     <Pressable
@@ -75,7 +77,9 @@ export default function SearchScreen() {
               ? 'Find a series by title…'
               : mediaType === 'book'
                 ? 'Find a book by title…'
-                : 'Find a movie by title…'
+                : mediaType === 'game'
+                  ? 'Find a game by title…'
+                  : 'Find a movie by title…'
           }
           placeholderTextColor={colors.textOnDarkMuted}
           style={styles.input}
