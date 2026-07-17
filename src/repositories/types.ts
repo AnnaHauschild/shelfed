@@ -13,6 +13,8 @@ export interface Interaction {
 /** A cached movie plus when it was stored. */
 export interface StoredMovie extends Movie {
   cachedAt: number;
+  /** TMDB language tag (e.g. 'de-DE') the cached title/overview are in. */
+  lang?: string | null;
 }
 
 /** Aggregated signals for the future recommendation engine. */

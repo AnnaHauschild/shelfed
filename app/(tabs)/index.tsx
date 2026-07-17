@@ -30,8 +30,9 @@ import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 // --- Swipe onboarding hint --------------------------------------------------
 // Arrows + a demo card wiggle teach the swipe directions. Shown only ONCE — the
 // very first time the app is ever opened (persisted in the settings store).
-// After that it never appears again.
-const SWIPE_HINT_KEY = 'swipeHintSeen';
+// After that it never appears again. (Key bumped to V2 so users of the earlier
+// build, where the animation never actually played, get it once.)
+const SWIPE_HINT_KEY = 'swipeHintSeenV2';
 
 export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
@@ -151,18 +152,22 @@ export default function DiscoverScreen() {
       alive = false;
     };
   }, []);
-  const hintActive = hintSeen === false;
 
   // Play the swipe onboarding right after the user leaves the landing screen
   // (picks a category) the FIRST time ever, then remember it's been seen.
+  // `playHint` drives the deck animation and stays true for the whole session,
+  // decoupled from the persisted flag so writing the flag doesn't immediately
+  // flip the hint off and cut the animation short (the earlier bug).
+  const [playHint, setPlayHint] = useState(false);
   const [hintReplay, setHintReplay] = useState(0);
   useEffect(() => {
-    if (chosen && hintActive) {
+    if (chosen && hintSeen === false && !playHint) {
+      setPlayHint(true);
       setHintReplay((r) => r + 1);
       setHintSeen(true);
       setSetting(SWIPE_HINT_KEY, '1').catch(() => {});
     }
-  }, [chosen, hintActive]);
+  }, [chosen, hintSeen, playHint]);
 
   // When no TMDB token is set we serve a built-in demo feed; surface that so the
   // user knows how to unlock the full catalog.
@@ -293,7 +298,7 @@ export default function DiscoverScreen() {
               isWatchlisted={(movie) => states.isWatchlisted(movie.id)}
               isFavorite={(movie) => states.isFavorite(movie.id)}
               onIndexChange={setTopIndex}
-              hint={hintActive}
+              hint={playHint}
               replay={hintReplay}
             />
             {exhausted && (

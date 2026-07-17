@@ -31,6 +31,7 @@ export const SCHEMA_STATEMENTS: string[] = [
      vote_count    INTEGER,
      popularity    REAL,
      cached_at     INTEGER NOT NULL,
+     lang          TEXT,
      PRIMARY KEY (media_type, id)
    );`,
 
@@ -86,4 +87,4 @@ export const SCHEMA_STATEMENTS: string[] = [
    );`,
 ];
 
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;

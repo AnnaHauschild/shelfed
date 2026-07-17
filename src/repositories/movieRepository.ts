@@ -1,4 +1,5 @@
 import { MediaType, Movie } from '@/api/types';
+import { contentLanguage } from '@/api/tmdb';
 import { getDatabase } from '@/db/database';
 import { MovieRow, rowToStoredMovie } from './mappers';
 import { MovieRepository, StoredMovie } from './types';
@@ -13,8 +14,8 @@ export const movieRepository: MovieRepository = {
     await db.runAsync(
       `INSERT INTO movies
          (media_type, id, title, year, genre_ids, genres, poster_path,
-          backdrop_path, overview, vote_average, vote_count, popularity, cached_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          backdrop_path, overview, vote_average, vote_count, popularity, cached_at, lang)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(media_type, id) DO UPDATE SET
          title=excluded.title,
          year=excluded.year,
@@ -26,7 +27,8 @@ export const movieRepository: MovieRepository = {
          vote_average=excluded.vote_average,
          vote_count=excluded.vote_count,
          popularity=excluded.popularity,
-         cached_at=excluded.cached_at;`,
+         cached_at=excluded.cached_at,
+         lang=excluded.lang;`,
       [
         movie.mediaType,
         movie.id,
@@ -41,6 +43,7 @@ export const movieRepository: MovieRepository = {
         movie.voteCount,
         movie.popularity,
         Date.now(),
+        contentLanguage(),
       ],
     );
   },

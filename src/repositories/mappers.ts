@@ -16,6 +16,7 @@ export interface MovieRow {
   vote_count: number | null;
   popularity: number | null;
   cached_at: number;
+  lang: string | null;
 }
 
 function safeParseArray<T>(json: string | null): T[] {
@@ -44,5 +45,6 @@ export function rowToStoredMovie(row: MovieRow): StoredMovie {
     voteCount: row.vote_count ?? 0,
     popularity: row.popularity ?? 0,
     cachedAt: row.cached_at,
+    lang: row.lang ?? null,
   };
 }

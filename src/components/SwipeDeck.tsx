@@ -70,6 +70,9 @@ interface TopCardProps {
   dragX: SharedValue<number>;
   /** Deck-driven onboarding wiggle offset added to this card's position. */
   demoX: SharedValue<number>;
+  /** Reports whether the card is flipped to its details side, so the deck can
+   *  hide the Undo button (like the Star/Heart buttons) while details show. */
+  onFlipChange: (flipped: boolean) => void;
 }
 
 /**
@@ -89,6 +92,7 @@ function TopCard({
   isFavorite,
   dragX,
   demoX,
+  onFlipChange,
 }: TopCardProps) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -110,8 +114,9 @@ function TopCard({
     const next = !isFlippedRef.current;
     isFlippedRef.current = next;
     setIsFlipped(next);
+    onFlipChange(next);
     flip.value = withTiming(next ? 1 : 0, { duration: 450 });
-  }, [flip]);
+  }, [flip, onFlipChange]);
 
   const gesture = useMemo(() => {
     const pan = Gesture.Pan()
@@ -319,6 +324,10 @@ export function SwipeDeck({
   const [history, setHistory] = useState<
     { movie: Movie; type: InteractionType }[]
   >([]);
+  // Whether the top card is flipped to its details side. When it is, the Undo
+  // button is hidden (mirroring the Star/Heart buttons) and shown again once
+  // the poster front is back.
+  const [topFlipped, setTopFlipped] = useState(false);
   // Mirrors the active card's horizontal drag so the Undo button can fade out
   // during a swipe and back in afterwards (like the Star/Heart buttons).
   const dragX = useSharedValue(0);
@@ -404,6 +413,8 @@ export function SwipeDeck({
     demoX.value = 0;
     arrowLeft.value = 0;
     arrowRight.value = 0;
+    // A newly surfaced card always starts on its poster front.
+    setTopFlipped(false);
   }, [index, onIndexChange, dragX, demoX, arrowLeft, arrowRight]);
 
   const handleRight = useCallback(
@@ -485,6 +496,7 @@ export function SwipeDeck({
             isFavorite={isFavorite?.(movie) ?? false}
             dragX={dragX}
             demoX={demoX}
+            onFlipChange={setTopFlipped}
           />
         ) : (
           <View
@@ -514,7 +526,7 @@ export function SwipeDeck({
         </View>
       </Animated.View>
 
-      {history.length > 0 && (
+      {history.length > 0 && !topFlipped && (
         <AnimatedPressable
           style={[styles.undoButton, undoStyle]}
           onPress={handleUndo}

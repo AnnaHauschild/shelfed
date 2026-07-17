@@ -20,6 +20,12 @@ async function migrate(db: SQLite.SQLiteDatabase): Promise<void> {
     await migrateToV2(db);
   }
 
+  // v5 -> v6: cache the content language each movie/series was stored in, so the
+  // shelf can re-localize stale rows when the user switches app language.
+  if (version < 6) {
+    await migrateAddLangColumn(db);
+  }
+
   // Create tables on a fresh install (no-op once they already exist).
   for (const statement of SCHEMA_STATEMENTS) {
     await db.execAsync(statement);
@@ -88,6 +94,21 @@ async function migrateToV2(db: SQLite.SQLiteDatabase): Promise<void> {
     await db.execAsync('ALTER TABLE interactions_v2 RENAME TO interactions;');
   });
   await db.execAsync('PRAGMA foreign_keys = ON;');
+}
+
+/**
+ * Adds the `lang` column to the movies cache (v6). Existing rows get NULL, which
+ * the shelf treats as "unknown language" and re-fetches once in the current
+ * language. No-op on a fresh install (the CREATE statement already includes it)
+ * or if the column was added already.
+ */
+async function migrateAddLangColumn(db: SQLite.SQLiteDatabase): Promise<void> {
+  const cols = await db.getAllAsync<{ name: string }>(
+    'PRAGMA table_info(movies);',
+  );
+  if (cols.length === 0) return; // fresh install; CREATE includes the column
+  if (cols.some((c) => c.name === 'lang')) return; // already migrated
+  await db.execAsync('ALTER TABLE movies ADD COLUMN lang TEXT;');
 }
 
 /**
