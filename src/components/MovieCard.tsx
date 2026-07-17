@@ -99,53 +99,60 @@ export function MovieCard({
 
 /**
  * A cinema-style "Coming Soon" ribbon across the cover, with the text scrolling
- * continuously (marquee) to grab attention. Two identical copies of the text
- * sit side by side; sliding the row by exactly one copy's width and repeating
- * makes the scroll seamless.
+ * continuously (marquee) to grab attention. Each "COMING SOON" is separated by a
+ * diamond drawn as a rotated square (so it renders in any font). Two identical
+ * segments sit side by side; the row slides by exactly one segment width and
+ * repeats, looping seamlessly.
  */
 function ComingSoonRibbon() {
-  const [copyW, setCopyW] = useState(0);
+  const [segW, setSegW] = useState(0);
   const x = useSharedValue(0);
 
   useEffect(() => {
-    if (copyW <= 0) return;
+    if (segW <= 0) return;
     x.value = 0;
     x.value = withRepeat(
-      withTiming(-copyW, { duration: copyW * 9, easing: Easing.linear }),
+      withTiming(-segW, { duration: segW * 9, easing: Easing.linear }),
       -1,
       false,
     );
-  }, [copyW, x]);
+  }, [segW, x]);
 
   const rowStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: x.value }],
   }));
 
-  const copy = 'COMING SOON   ✦   '.repeat(6);
+  const units = Array.from({ length: 5 });
+  const renderSegment = (measure: boolean) => (
+    <View
+      style={styles.ribbonSegment}
+      onLayout={
+        measure
+          ? (e) => {
+              const w = Math.ceil(e.nativeEvent.layout.width);
+              if (segW === 0 && w > 0) setSegW(w);
+            }
+          : undefined
+      }
+    >
+      {units.map((_, i) => (
+        <View key={i} style={styles.ribbonUnit}>
+          <Text style={styles.ribbonText} numberOfLines={1}>
+            COMING SOON
+          </Text>
+          {/* A rotated square = a diamond that renders in any font. */}
+          <View style={styles.ribbonDiamond} />
+        </View>
+      ))}
+    </View>
+  );
 
   return (
     <View style={styles.ribbon} pointerEvents="none">
-      {/* Invisible copy, just to measure one repeat's width once. */}
-      <Text
-        style={[styles.ribbonText, styles.ribbonMeasure]}
-        numberOfLines={1}
-        onLayout={(e) => {
-          const w = Math.ceil(e.nativeEvent.layout.width);
-          if (copyW === 0 && w > 0) setCopyW(w);
-        }}
-      >
-        {copy}
-      </Text>
-      {copyW > 0 && (
-        <Animated.View style={[styles.ribbonRow, rowStyle]}>
-          <Text style={[styles.ribbonText, { width: copyW }]} numberOfLines={1}>
-            {copy}
-          </Text>
-          <Text style={[styles.ribbonText, { width: copyW }]} numberOfLines={1}>
-            {copy}
-          </Text>
-        </Animated.View>
-      )}
+      <Animated.View style={[styles.ribbonRow, rowStyle]}>
+        {renderSegment(true)}
+        {renderSegment(false)}
+      </Animated.View>
     </View>
   );
 }
@@ -193,18 +200,31 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     transform: [{ rotate: '-6deg' }],
   },
-  ribbonMeasure: {
-    position: 'absolute',
-    opacity: 0,
-  },
   ribbonRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ribbonSegment: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ribbonUnit: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   ribbonText: {
     fontFamily: fonts.display,
     fontSize: 18,
     letterSpacing: 3,
     color: colors.paper,
+    flexShrink: 0,
+  },
+  ribbonDiamond: {
+    width: 7,
+    height: 7,
+    marginHorizontal: 16,
+    backgroundColor: colors.amberBright,
+    transform: [{ rotate: '45deg' }],
   },
   info: {
     position: 'absolute',
