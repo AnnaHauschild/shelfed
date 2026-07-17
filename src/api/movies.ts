@@ -220,6 +220,7 @@ function toMovie(raw: TmdbMovie, genreMap: Record<number, string>): Movie {
     voteAverage: raw.vote_average,
     voteCount: raw.vote_count,
     popularity: raw.popularity,
+    releaseDate: raw.release_date || undefined,
     mediaType: 'movie',
   };
 }
@@ -242,8 +243,16 @@ function toTv(raw: TmdbTv, genreMap: Record<number, string>): Movie {
     voteAverage: raw.vote_average,
     voteCount: raw.vote_count,
     popularity: raw.popularity,
+    releaseDate: raw.first_air_date || undefined,
     mediaType: 'tv',
   };
+}
+
+/** True if the title's release/air date is still in the future (coming soon). */
+export function isUpcoming(movie: Movie): boolean {
+  if (!movie.releaseDate) return false;
+  const ts = Date.parse(movie.releaseDate);
+  return Number.isFinite(ts) && ts > Date.now();
 }
 
 export interface FeedPage {
@@ -279,6 +288,37 @@ function fetchMustSeePage(page: number): FeedPage {
   const nextPage =
     start + MUST_SEE_PAGE_SIZE < mustSeeOrder.length ? page + 1 : null;
   return { movies, nextPage };
+}
+
+/**
+ * A handful of genuinely upcoming films (primary release still in the future),
+ * most-anticipated first. Used to surface "Coming Soon" cinema releases at the
+ * top of the default feed — the normal feed's US-certification filter hides
+ * unreleased titles (they have no rating yet), so they'd otherwise never show.
+ */
+async function fetchUpcomingMovies(
+  genreMap: Record<number, string>,
+): Promise<Movie[]> {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const data = await tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
+      include_adult: false,
+      include_video: false,
+      language: contentLanguage(),
+      sort_by: 'popularity.desc',
+      'primary_release_date.gte': today,
+      without_keywords: EXCLUDED_KEYWORDS,
+      page: 1,
+    });
+    return data.results
+      .filter((m) => m.poster_path)
+      .filter((m) => !isLikelyErotic(m.title) && !isLikelyErotic(m.original_title))
+      .map((m) => toMovie(m, genreMap))
+      .filter(isUpcoming)
+      .slice(0, 6);
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -434,6 +474,18 @@ export async function fetchFeedPage(
   );
 
   const nextPage = page < data.total_pages ? page + 1 : null;
+
+  // On the first page of the plain (unfiltered) feed, surface a few genuinely
+  // upcoming cinema releases up top so the "Coming Soon" badge is actually seen
+  // — the US-certification filter above otherwise hides unreleased films.
+  const isPlainFeed = !genre && !collection && !country && !actorId && !eraId;
+  if (page === 1 && isPlainFeed) {
+    const upcoming = await fetchUpcomingMovies(genreMap);
+    const ids = new Set(movies.map((m) => m.id));
+    const injected = upcoming.filter((m) => !ids.has(m.id));
+    return { movies: [...injected, ...movies], nextPage };
+  }
+
   return { movies, nextPage };
 }
 

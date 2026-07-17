@@ -1,7 +1,16 @@
+import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import { Movie } from '@/api/types';
+import { isUpcoming } from '@/api/movies';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { ActionButtons } from './ActionButtons';
 import { PosterImage } from './PosterImage';
@@ -48,6 +57,8 @@ export function MovieCard({
         style={styles.scrim}
       />
 
+      {isUpcoming(movie) && <ComingSoonRibbon />}
+
       {onStar && onHeart && (
         <ActionButtons
           onStar={onStar}
@@ -86,6 +97,59 @@ export function MovieCard({
   );
 }
 
+/**
+ * A cinema-style "Coming Soon" ribbon across the cover, with the text scrolling
+ * continuously (marquee) to grab attention. Two identical copies of the text
+ * sit side by side; sliding the row by exactly one copy's width and repeating
+ * makes the scroll seamless.
+ */
+function ComingSoonRibbon() {
+  const [copyW, setCopyW] = useState(0);
+  const x = useSharedValue(0);
+
+  useEffect(() => {
+    if (copyW <= 0) return;
+    x.value = 0;
+    x.value = withRepeat(
+      withTiming(-copyW, { duration: copyW * 9, easing: Easing.linear }),
+      -1,
+      false,
+    );
+  }, [copyW, x]);
+
+  const rowStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: x.value }],
+  }));
+
+  const copy = 'COMING SOON   ✦   '.repeat(6);
+
+  return (
+    <View style={styles.ribbon} pointerEvents="none">
+      {/* Invisible copy, just to measure one repeat's width once. */}
+      <Text
+        style={[styles.ribbonText, styles.ribbonMeasure]}
+        numberOfLines={1}
+        onLayout={(e) => {
+          const w = Math.ceil(e.nativeEvent.layout.width);
+          if (copyW === 0 && w > 0) setCopyW(w);
+        }}
+      >
+        {copy}
+      </Text>
+      {copyW > 0 && (
+        <Animated.View style={[styles.ribbonRow, rowStyle]}>
+          <Text style={[styles.ribbonText, { width: copyW }]} numberOfLines={1}>
+            {copy}
+          </Text>
+          <Text style={[styles.ribbonText, { width: copyW }]} numberOfLines={1}>
+            {copy}
+          </Text>
+        </Animated.View>
+      )}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   card: {
     flex: 1,
@@ -114,6 +178,33 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: '55%',
+  },
+  ribbon: {
+    position: 'absolute',
+    top: '15%',
+    left: -24,
+    right: -24,
+    height: 38,
+    backgroundColor: colors.maroon,
+    borderTopWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: colors.amberBright,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    transform: [{ rotate: '-6deg' }],
+  },
+  ribbonMeasure: {
+    position: 'absolute',
+    opacity: 0,
+  },
+  ribbonRow: {
+    flexDirection: 'row',
+  },
+  ribbonText: {
+    fontFamily: fonts.display,
+    fontSize: 18,
+    letterSpacing: 3,
+    color: colors.paper,
   },
   info: {
     position: 'absolute',

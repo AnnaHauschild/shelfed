@@ -88,6 +88,7 @@ function gameToMovie(g: RawgGame): Movie {
     voteAverage: rating,
     voteCount: g.ratings_count ?? 0,
     popularity: g.added ?? 0,
+    releaseDate: g.released ?? undefined,
     authors: platformNames(g),
     mediaType: 'game',
   };

@@ -144,5 +144,7 @@ export interface Movie {
   popularity: number;
   /** Authors — only set for books (movies/series use cast instead). */
   authors?: string[];
+  /** Release/air date 'YYYY-MM-DD' when known — drives the "Coming Soon" badge. */
+  releaseDate?: string;
   mediaType: MediaType;
 }
