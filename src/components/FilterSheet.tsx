@@ -41,6 +41,10 @@ interface Props {
   onCountryChange: (id: string | null) => void;
   /** When true (books), the country filter is hidden. */
   hideCountry?: boolean;
+  /** Console/platform filter (games only, RAWG parent-platform ids). */
+  platformOptions?: Option[];
+  platform: string | null;
+  onPlatformChange: (id: string | null) => void;
   /** The curated "Must-See" list toggle (movies only). */
   mustSee?: boolean;
   onMustSeeChange?: (value: boolean) => void;
@@ -70,6 +74,9 @@ export function FilterSheet({
   onActorChange,
   hideActor = false,
   hideCountry = false,
+  platformOptions = [],
+  platform,
+  onPlatformChange,
   mustSee = false,
   onMustSeeChange,
   hideMustSee = false,
@@ -183,6 +190,19 @@ export function FilterSheet({
               wrap
             />
           </View>
+
+          {platformOptions.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Console</Text>
+              <GenreChips
+                options={platformOptions}
+                selected={platform}
+                onSelect={onPlatformChange}
+                accent={colors.rust}
+                wrap
+              />
+            </View>
+          )}
 
           {!hideCountry && countryOptions.length > 0 && (
             <View style={styles.section}>

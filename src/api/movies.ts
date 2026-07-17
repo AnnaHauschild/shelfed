@@ -300,6 +300,7 @@ export async function fetchFeedPage(
   country?: string,
   collectionId?: string,
   actorId?: string,
+  platform?: string,
 ): Promise<FeedPage> {
   // The bundled Must-See list bypasses TMDB entirely (instant + offline).
   if (mediaType === 'movie' && collectionId === MUST_SEE_ID) {
@@ -323,7 +324,8 @@ export async function fetchFeedPage(
     return fetchBookFeedPage(page, genre, years);
   }
 
-  // Games come from RAWG (needs its own key). Genre = RAWG slug, era = date range.
+  // Games come from RAWG (needs its own key). Genre = RAWG slug, era = date range,
+  // platform = RAWG parent-platform id (console family).
   if (mediaType === 'game') {
     const years = eraWindow
       ? {
@@ -331,7 +333,7 @@ export async function fetchFeedPage(
           to: Number(eraWindow.lte.slice(0, 4)),
         }
       : undefined;
-    return fetchGameFeedPage(page, genre, years);
+    return fetchGameFeedPage(page, genre, years, platform);
   }
 
   // No token yet? Serve a built-in demo feed so the app is fully usable, then

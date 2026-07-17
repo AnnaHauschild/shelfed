@@ -91,3 +91,12 @@ export const COUNTRY_OPTIONS: { id: string; name: string }[] = [
   { id: 'DK', name: 'Denmark' },
   { id: 'CA', name: 'Canada' },
 ];
+
+/** RAWG parent-platform ids for the games "Console" filter (platform families). */
+export const PLATFORM_OPTIONS: { id: string; name: string }[] = [
+  { id: '2', name: 'PlayStation' },
+  { id: '3', name: 'Xbox' },
+  { id: '7', name: 'Nintendo' },
+  { id: '1', name: 'PC' },
+  { id: '11', name: 'SEGA' },
+];

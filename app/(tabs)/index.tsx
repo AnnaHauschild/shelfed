@@ -11,7 +11,7 @@ import { TmdbError, hasTmdbToken } from '@/api/tmdb';
 import { MUST_SEE_ID } from '@/api/movies';
 import { type SelectedActor } from '@/components/ActorFilter';
 import { collectionsFor } from '@/constants/collections';
-import { COUNTRY_OPTIONS, ERA_OPTIONS } from '@/constants/config';
+import { COUNTRY_OPTIONS, ERA_OPTIONS, PLATFORM_OPTIONS } from '@/constants/config';
 import { FilterSheet } from '@/components/FilterSheet';
 import { GenreChips } from '@/components/GenreChips';
 import { LoadingReel } from '@/components/LoadingReel';
@@ -43,6 +43,7 @@ export default function DiscoverScreen() {
   const [country, setCountry] = useState<string | null>(null);
   const [collection, setCollection] = useState<string | null>(null);
   const [actor, setActor] = useState<SelectedActor | null>(null);
+  const [platform, setPlatform] = useState<string | null>(null);
   const [mustSee, setMustSee] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -53,6 +54,7 @@ export default function DiscoverScreen() {
     setCountry(null);
     setCollection(null);
     setActor(null);
+    setPlatform(null);
     setMustSee(false);
   }, [mediaType]);
 
@@ -117,6 +119,7 @@ export default function DiscoverScreen() {
     (country ? 1 : 0) +
     (collection ? 1 : 0) +
     (actor ? 1 : 0) +
+    (platform ? 1 : 0) +
     (mustSee ? 1 : 0);
   const {
     data,
@@ -133,6 +136,7 @@ export default function DiscoverScreen() {
     country ?? undefined,
     mustSee ? MUST_SEE_ID : collection ?? undefined,
     actor?.id ?? undefined,
+    platform ?? undefined,
   );
   const { markWatched, skip, toggleWatchlist, toggleFavorite, undo } =
     useInteractions();
@@ -276,7 +280,7 @@ export default function DiscoverScreen() {
       <View style={styles.deckArea}>
         {isLoading ? (
           <Centered>
-            <LoadingReel />
+            <LoadingReel mediaType={mediaType} />
           </Centered>
         ) : isError ? (
           <SetupOrError error={error} onRetry={() => refetch()} />
@@ -288,7 +292,7 @@ export default function DiscoverScreen() {
         ) : (
           <>
             <SwipeDeck
-              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${actor?.id ?? 'all'}`}
+              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${actor?.id ?? 'all'}:${platform ?? 'all'}`}
               cards={movies}
               onSwipeRight={(movie) => markWatched(movie)}
               onSwipeLeft={(movie) => skip(movie)}
@@ -304,7 +308,7 @@ export default function DiscoverScreen() {
             {exhausted && (
               <Centered pointerEvents="none">
                 {isFetchingNextPage ? (
-                  <LoadingReel size={44} />
+                  <LoadingReel size={44} mediaType={mediaType} />
                 ) : (
                   <>
                     <Ionicons
@@ -351,6 +355,9 @@ export default function DiscoverScreen() {
           if (id) setMustSee(false);
         }}
         hideCountry={mediaType === 'book' || mediaType === 'game'}
+        platformOptions={mediaType === 'game' ? PLATFORM_OPTIONS : []}
+        platform={platform}
+        onPlatformChange={setPlatform}
         mustSee={mustSee}
         onMustSeeChange={selectMustSee}
         hideMustSee={mediaType !== 'movie'}
@@ -360,6 +367,7 @@ export default function DiscoverScreen() {
           setCountry(null);
           setCollection(null);
           setActor(null);
+          setPlatform(null);
           setMustSee(false);
         }}
       />

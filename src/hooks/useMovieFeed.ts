@@ -17,6 +17,7 @@ export function useMovieFeed(
   country?: string,
   collection?: string,
   actor?: string,
+  platform?: string,
 ) {
   const mediaType = useMediaType();
   const { language } = useLanguage();
@@ -30,10 +31,20 @@ export function useMovieFeed(
       country ?? null,
       collection ?? null,
       actor ?? null,
+      platform ?? null,
     ],
     queryFn: async ({ pageParam }) => {
       const [page, seen] = await Promise.all([
-        fetchFeedPage(pageParam, mediaType, genre, era, country, collection, actor),
+        fetchFeedPage(
+          pageParam,
+          mediaType,
+          genre,
+          era,
+          country,
+          collection,
+          actor,
+          platform,
+        ),
         interactionRepository.getSeenIds(mediaType),
       ]);
       return {

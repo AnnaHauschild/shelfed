@@ -118,6 +118,7 @@ export async function fetchGameFeedPage(
   page: number,
   genre?: string,
   years?: { from: number; to: number },
+  parentPlatform?: string,
 ): Promise<FeedPage> {
   if (!hasRawgKey()) return { movies: [], nextPage: null };
   const dates = years ? `${years.from}-01-01,${years.to}-12-31` : undefined;
@@ -127,6 +128,7 @@ export async function fetchGameFeedPage(
     ordering: '-added',
     genres: genre,
     dates,
+    parent_platforms: parentPlatform,
   });
   const movies = data.results
     .filter((g) => g.background_image)
