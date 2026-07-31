@@ -44,11 +44,13 @@ export interface TmdbGenre {
   name: string;
 }
 
-/** Raw cast entry from TMDB's /movie/{id}/credits endpoint. */
+/** Raw cast entry from TMDB credits / aggregate_credits endpoints. */
 export interface TmdbCastMember {
   id: number;
   name: string;
-  character: string;
+  /** Movie credits use `character`; TV aggregate_credits use `roles[]`. */
+  character?: string;
+  roles?: { character: string; episode_count?: number }[];
   order: number;
   known_for_department: string;
   profile_path: string | null;

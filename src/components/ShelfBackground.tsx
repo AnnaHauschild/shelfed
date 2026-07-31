@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors, radius } from '@/theme';
+import { useTheme } from '@/context/ThemeProvider';
+import { colors } from '@/theme';
 
 interface Props {
   /** Number of cubby columns. Default 4. */
@@ -77,7 +78,12 @@ export function ShelfBackground({
   dim = 0.55,
   variant = 'cubbies',
 }: Props) {
+  const { theme } = useTheme();
   const layout = useMemo(() => buildLayout(columns, rows), [columns, rows]);
+
+  if (theme === 'collector') {
+    return <CollectorBackground variant={variant} dim={dim} layout={layout} />;
+  }
 
   if (variant === 'wall') {
     return (
@@ -145,9 +151,31 @@ function Cubby({ content }: { content: CubbyContent }) {
       <View style={styles.cubbyInner}>
         {content.kind === 'book' && <Books seed={content.seed} />}
         {content.kind === 'lamp' && <Lamp />}
-        {content.kind === 'leaf' && <Leaves seed={content.seed} />}
-        {content.kind === 'photo' && <Photo seed={content.seed} />}
+        {content.kind === 'leaf' && <Leaves />}
+        {content.kind === 'photo' && <Photo />}
+        {content.kind === 'empty' && <StackedBooks seed={content.seed} />}
       </View>
+    </View>
+  );
+}
+
+/** A small stack of books lying flat — fills an otherwise empty cubby. */
+const STACK_COLORS = ['#7a3527', '#3f6079', '#5e7a3c', '#8a5a2b'];
+function StackedBooks({ seed }: { seed: number }) {
+  return (
+    <View style={styles.stack}>
+      {STACK_COLORS.map((color, i) => (
+        <View
+          key={i}
+          style={{
+            width: `${62 + rand(seed + i * 5) * 24}%`,
+            height: 7,
+            borderRadius: 2,
+            marginTop: 3,
+            backgroundColor: color,
+          }}
+        />
+      ))}
     </View>
   );
 }
@@ -191,27 +219,205 @@ function Lamp() {
   );
 }
 
-/** A trailing-vine plant with a few overlapping leaves. */
-function Leaves({ seed }: { seed: number }) {
+/** A hanging planter: a ring + two ropes from the shelf top down to a pot in
+ *  the middle of the cubby, a small leaf tuft, and two vines trailing below. */
+const POT_TUFT = [
+  { left: 50, top: 28, w: 13, h: 20, rot: 0, tone: LEAF_GREEN },
+  { left: 40, top: 31, w: 11, h: 17, rot: -32, tone: LEAF_GREEN_LIGHT },
+  { left: 60, top: 31, w: 11, h: 17, rot: 32, tone: LEAF_GREEN },
+];
+
+function Leaves() {
   return (
-    <View style={styles.leaves}>
-      {Array.from({ length: 5 }).map((_, i) => {
-        const left = 10 + rand(seed + i * 13) * 70;
-        const top = rand(seed + i * 19) * 60;
-        const size = 10 + rand(seed + i * 7) * 8;
-        const tone = i % 2 === 0 ? LEAF_GREEN : LEAF_GREEN_LIGHT;
+    <View style={styles.plant}>
+      {/* Hanger ring + two ropes fanning down to the pot rim. */}
+      <View style={styles.hangRing} />
+      <View style={[styles.hangRope, { transform: [{ rotate: '-22deg' }] }]} />
+      <View style={[styles.hangRope, { transform: [{ rotate: '22deg' }] }]} />
+      {/* Planter hanging in the middle of the cubby. */}
+      <View style={styles.potRim} />
+      <View style={styles.potBody} />
+      {/* A small tuft of leaves out of the pot. */}
+      {POT_TUFT.map((t, i) => (
+        <View
+          key={i}
+          style={[
+            styles.tuftLeaf,
+            {
+              left: `${t.left}%`,
+              top: `${t.top}%`,
+              width: t.w,
+              height: t.h,
+              marginLeft: -t.w / 2,
+              borderRadius: t.w / 2,
+              backgroundColor: t.tone,
+              transform: [{ rotate: `${t.rot}deg` }],
+            },
+          ]}
+        />
+      ))}
+      {/* Two vines trailing below the pot. */}
+      {[42, 58].map((x) => (
+        <View key={x} style={styles.vine}>
+          <View style={[styles.vineStem, { left: `${x}%` }]} />
+          {[0, 1, 2].map((i) => (
+            <View
+              key={i}
+              style={[
+                styles.vineLeaf,
+                {
+                  left: `${x}%`,
+                  top: `${56 + i * 11}%`,
+                  backgroundColor: i % 2 ? LEAF_GREEN_LIGHT : LEAF_GREEN,
+                  transform: [
+                    { translateX: -5 },
+                    { rotate: `${i % 2 ? 35 : -35}deg` },
+                  ],
+                },
+              ]}
+            />
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+/** A small framed landscape picture (sky, horizon, sun). */
+function Photo() {
+  return (
+    <View style={styles.photoWrap}>
+      <View style={styles.photoFrame}>
+        <View style={styles.photoScene}>
+          <LinearGradient
+            colors={['#d9b25a', '#e7cf86', '#6d8a3f', '#4f6b35']}
+            locations={[0, 0.55, 0.55, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={styles.photoSun} />
+        </View>
+      </View>
+    </View>
+  );
+}
+
+// --- Collector's Cabinet theme -------------------------------------------
+const C_SPINE = '#2c2620';
+const C_SPINE_DARK = '#171310';
+const C_ACCENTS = ['#274a63', '#5a2a2a', '#1f5560', '#4a3a1e'];
+
+/** Dark, backlit "collector cabinet" background — an alternative to the warm
+ *  classic wood shelf. Same cubby grid, re-skinned dark with warm LED washes
+ *  and rim-lit spines. */
+function CollectorBackground({
+  variant,
+  dim,
+  layout,
+}: {
+  variant: 'cubbies' | 'wall';
+  dim: number;
+  layout: CubbyContent[][];
+}) {
+  if (variant === 'wall') {
+    return (
+      <View style={styles.root} pointerEvents="none">
+        <LinearGradient
+          colors={['#161210', '#0c0a08', '#050403']}
+          locations={[0, 0.5, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={styles.cWallGlow} pointerEvents="none" />
+        <LinearGradient
+          colors={[`rgba(5, 4, 3, ${dim * 0.5})`, `rgba(5, 4, 3, ${dim})`]}
+          style={StyleSheet.absoluteFill}
+        />
+      </View>
+    );
+  }
+  return (
+    <View style={styles.root} pointerEvents="none">
+      <LinearGradient
+        colors={['#141110', '#0a0908', '#050403']}
+        locations={[0, 0.5, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+      <View style={styles.grid}>
+        {layout.map((row, r) => (
+          <View key={`r${r}`} style={styles.row}>
+            {row.map((cell, c) => (
+              <CollectorCubby key={`c${r}-${c}`} content={cell} />
+            ))}
+          </View>
+        ))}
+      </View>
+      <LinearGradient
+        colors={[
+          `rgba(5, 4, 3, ${dim * 0.35})`,
+          `rgba(5, 4, 3, ${dim * 0.15})`,
+          `rgba(5, 4, 3, ${dim * 0.6})`,
+        ]}
+        locations={[0, 0.5, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+    </View>
+  );
+}
+
+function CollectorCubby({ content }: { content: CubbyContent }) {
+  return (
+    <View style={styles.cCubby}>
+      <View style={styles.cCubbyInner}>
+        {/* Warm LED wash pouring down from the shelf lip. */}
+        <LinearGradient
+          colors={[
+            'rgba(255, 184, 112, 0.30)',
+            'rgba(255, 184, 112, 0.06)',
+            'transparent',
+          ]}
+          locations={[0, 0.35, 0.72]}
+          style={StyleSheet.absoluteFill}
+        />
+        {/* Bright thin LED strip under the lip. */}
+        <View style={styles.cLedBar} />
+        <View style={styles.cContent}>
+          {content.kind === 'lamp' ? (
+            <CollectorAccent />
+          ) : content.kind === 'photo' ? (
+            <CollectorPoster />
+          ) : (
+            <CollectorSpines seed={content.seed} />
+          )}
+        </View>
+      </View>
+    </View>
+  );
+}
+
+/** A row of dark, rim-lit spines (books / blu-rays). */
+function CollectorSpines({ seed }: { seed: number }) {
+  const count = 6 + Math.floor(rand(seed + 11) * 5); // 6..10
+  return (
+    <View style={styles.cSpines}>
+      {Array.from({ length: count }).map((_, i) => {
+        const widthPct = 7 + rand(seed + i * 17) * 5; // 7..12%
+        const heightPct = 68 + rand(seed + i * 23) * 30; // 68..98%
+        const roll = rand(seed * 13 + i);
+        const bg =
+          roll > 0.86
+            ? C_ACCENTS[Math.floor(rand(seed + i * 7) * C_ACCENTS.length)]
+            : roll > 0.5
+              ? C_SPINE
+              : C_SPINE_DARK;
         return (
           <View
             key={i}
             style={{
-              position: 'absolute',
-              left: `${left}%`,
-              top: `${top}%`,
-              width: size,
-              height: size * 1.4,
-              borderRadius: size,
-              backgroundColor: tone,
-              transform: [{ rotate: `${rand(seed + i) * 360}deg` }],
+              width: `${widthPct}%`,
+              height: `${heightPct}%`,
+              backgroundColor: bg,
+              marginHorizontal: 0.5,
+              borderTopWidth: 1,
+              borderTopColor: 'rgba(255, 225, 190, 0.3)',
             }}
           />
         );
@@ -220,14 +426,27 @@ function Leaves({ seed }: { seed: number }) {
   );
 }
 
-/** A framed photo / mini poster as a coloured rectangle with a thin border. */
-function Photo({ seed }: { seed: number }) {
-  const colorIdx = Math.floor(rand(seed + 5) * BOOK_PALETTE.length);
+/** A dark collectible with a warm glow (fills a 'lamp' cubby). */
+function CollectorAccent() {
   return (
-    <View style={styles.photoWrap}>
-      <View
-        style={[styles.photo, { backgroundColor: BOOK_PALETTE[colorIdx] }]}
-      />
+    <View style={styles.cAccentWrap}>
+      <View style={styles.cAccentGlow} />
+      <View style={styles.cAccentBody} />
+    </View>
+  );
+}
+
+/** A small dark framed poster (fills a 'photo' cubby). */
+function CollectorPoster() {
+  return (
+    <View style={styles.cPosterWrap}>
+      <View style={styles.cPoster}>
+        <LinearGradient
+          colors={['#0a1830', '#12294a', '#0a0f1a']}
+          locations={[0, 0.5, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+      </View>
     </View>
   );
 }
@@ -270,6 +489,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
   },
+  stack: {
+    width: '100%',
+    alignItems: 'center',
+    paddingBottom: 2,
+  },
   lampWrap: {
     flex: 1,
     alignItems: 'center',
@@ -298,20 +522,96 @@ const styles = StyleSheet.create({
     height: '40%',
     backgroundColor: '#3a2410',
   },
-  leaves: {
+  plant: {
     flex: 1,
+  },
+  vine: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  hangRing: {
+    position: 'absolute',
+    top: '1%',
+    left: '50%',
+    width: 7,
+    height: 7,
+    marginLeft: -3.5,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    borderColor: '#4a3420',
+    backgroundColor: 'transparent',
+  },
+  hangRope: {
+    position: 'absolute',
+    top: '4%',
+    left: '50%',
+    width: 1.5,
+    height: '34%',
+    marginLeft: -0.75,
+    backgroundColor: '#4a3420',
+    transformOrigin: 'center top',
+  },
+  tuftLeaf: {
+    position: 'absolute',
+    transformOrigin: 'center bottom',
+  },
+  potRim: {
+    position: 'absolute',
+    top: '38%',
+    left: '28%',
+    right: '28%',
+    height: 5,
+    borderRadius: 2,
+    backgroundColor: '#c06a40',
+  },
+  potBody: {
+    position: 'absolute',
+    top: '41%',
+    left: '35%',
+    right: '35%',
+    height: '12%',
+    backgroundColor: '#8a4327',
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+  },
+  vineStem: {
+    position: 'absolute',
+    top: '52%',
+    width: 2,
+    height: '30%',
+    marginLeft: -1,
+    backgroundColor: '#3f5a28',
+  },
+  vineLeaf: {
+    position: 'absolute',
+    width: 11,
+    height: 15,
+    borderRadius: 7,
   },
   photoWrap: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  photo: {
-    width: '78%',
-    height: '78%',
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    borderColor: '#f3e7d2',
+  photoFrame: {
+    width: '74%',
+    height: '82%',
+    backgroundColor: '#f3e7d2',
+    borderWidth: 2,
+    borderColor: '#6b4a2a',
+    padding: 3,
+  },
+  photoScene: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  photoSun: {
+    position: 'absolute',
+    top: 3,
+    right: 4,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#f8efd6',
   },
   // --- 'wall' variant: hanging lamp in the upper-right corner. ---
   hangingLamp: {
@@ -350,5 +650,86 @@ const styles = StyleSheet.create({
     height: 320,
     borderRadius: 240,
     backgroundColor: 'rgba(255, 200, 110, 0.10)',
+  },
+  // --- Collector's Cabinet theme ---
+  cCubby: {
+    flex: 1,
+    padding: 3,
+    backgroundColor: '#0a0806',
+    borderColor: '#1c1712',
+    borderWidth: 1,
+  },
+  cCubbyInner: {
+    flex: 1,
+    backgroundColor: '#050403',
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    paddingBottom: 3,
+  },
+  cLedBar: {
+    position: 'absolute',
+    top: 2,
+    left: '12%',
+    right: '12%',
+    height: 2,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 224, 180, 0.85)',
+  },
+  cContent: {
+    height: '100%',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  cSpines: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    height: '100%',
+    width: '100%',
+  },
+  cAccentWrap: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 3,
+  },
+  cAccentBody: {
+    width: '26%',
+    height: '48%',
+    borderRadius: 6,
+    backgroundColor: '#2a2620',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 225, 190, 0.35)',
+  },
+  cAccentGlow: {
+    position: 'absolute',
+    width: '70%',
+    height: '60%',
+    bottom: '6%',
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 190, 120, 0.14)',
+  },
+  cPosterWrap: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cPoster: {
+    width: '72%',
+    height: '80%',
+    borderWidth: 2,
+    borderColor: '#1c160f',
+    overflow: 'hidden',
+  },
+  cWallGlow: {
+    position: 'absolute',
+    top: 20,
+    right: -40,
+    width: 320,
+    height: 320,
+    borderRadius: 240,
+    backgroundColor: 'rgba(255, 184, 112, 0.10)',
   },
 });

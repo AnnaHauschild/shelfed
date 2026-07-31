@@ -19,11 +19,28 @@ const OPTIONS: {
  * Compact segmented control to switch the active category (Movies / Series)
  * while inside the app. Reflects and updates the shared media-type context.
  */
-export function MediaSwitcher() {
-  const { mediaType, setMediaType } = useMediaTypeControls();
+export function MediaSwitcher({
+  filterCount = 0,
+  onFilterPress,
+}: {
+  /** Number of active filters (Discover only). Shows a count badge. */
+  filterCount?: number;
+  /** When set, a trailing filter pill is shown inside the bar. */
+  onFilterPress?: () => void;
+} = {}) {
+  const { mediaType, setMediaType, backToLanding } = useMediaTypeControls();
+  const hasFilters = filterCount > 0;
 
   return (
     <View style={styles.row}>
+      <Pressable
+        style={({ pressed }) => [styles.homePill, pressed && styles.pressed]}
+        onPress={backToLanding}
+        hitSlop={4}
+        accessibilityLabel="Home"
+      >
+        <Ionicons name="home" size={15} color={colors.textOnDarkMuted} />
+      </Pressable>
       {OPTIONS.map((opt) => {
         const active = mediaType === opt.type;
         return (
@@ -36,18 +53,36 @@ export function MediaSwitcher() {
             ]}
             onPress={() => setMediaType(opt.type)}
             hitSlop={4}
+            accessibilityLabel={opt.label}
           >
             <Ionicons
               name={opt.icon}
               size={14}
               color={active ? colors.background : colors.textOnDarkMuted}
             />
-            <Text style={[styles.pillText, active && styles.pillTextActive]}>
-              {opt.label}
-            </Text>
+            {active && (
+              <Text style={[styles.pillText, styles.pillTextActive]}>
+                {opt.label}
+              </Text>
+            )}
           </Pressable>
         );
       })}
+      {onFilterPress && (
+        <Pressable
+          style={({ pressed }) => [styles.filterPill, pressed && styles.pressed]}
+          onPress={onFilterPress}
+          hitSlop={4}
+          accessibilityLabel="Filters"
+        >
+          <Ionicons
+            name="options-outline"
+            size={15}
+            color={hasFilters ? colors.amberBright : colors.textOnDarkMuted}
+          />
+          {hasFilters && <Text style={styles.filterCount}>{filterCount}</Text>}
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -55,12 +90,41 @@ export function MediaSwitcher() {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: spacing.xs,
     backgroundColor: colors.surface,
     borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: colors.border,
     padding: 3,
+  },
+  homePill: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.xl,
+    borderRightWidth: 1,
+    borderRightColor: colors.border,
+    marginRight: 1,
+  },
+  filterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 3,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.xl,
+    borderLeftWidth: 1,
+    borderLeftColor: colors.border,
+    marginLeft: 1,
+  },
+  filterCount: {
+    color: colors.amberBright,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    fontWeight: '700',
   },
   pill: {
     flexDirection: 'row',

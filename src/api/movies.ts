@@ -341,6 +341,7 @@ export async function fetchFeedPage(
   collectionId?: string,
   actorId?: string,
   platform?: string,
+  vibeId?: string,
 ): Promise<FeedPage> {
   // The bundled Must-See list bypasses TMDB entirely (instant + offline).
   if (mediaType === 'movie' && collectionId === MUST_SEE_ID) {
@@ -351,6 +352,9 @@ export async function fetchFeedPage(
   const collection = collectionId
     ? COLLECTIONS.find((c) => c.id === collectionId)
     : undefined;
+  // A second, independent "vibe" collection can be combined with the genre
+  // collection above (Genre AND Vibe): their keyword groups are ANDed together.
+  const vibe = vibeId ? COLLECTIONS.find((c) => c.id === vibeId) : undefined;
 
   // Books come from Open Library (no TMDB token needed). Collections are a
   // TMDB-keyword concept, so they don't apply to the book feed.
@@ -388,21 +392,29 @@ export async function fetchFeedPage(
   // Merge the selected collection's constraints with the user's own filters.
   // Genre: AND the collection's genres with the user's pick. Keyword: resolve
   // the collection's keyword names. Language/country: the collection overrides.
-  const withKeywords = collection?.keywords
+  // Keyword groups are OR-combined within a collection, then AND-combined
+  // across the genre + vibe collections (comma = AND in TMDB with_keywords).
+  const collectionKeywords = collection?.keywords
     ? await resolveKeywordIds(collection.keywords)
     : undefined;
+  const vibeKeywords = vibe?.keywords
+    ? await resolveKeywordIds(vibe.keywords)
+    : undefined;
+  const withKeywords =
+    [collectionKeywords, vibeKeywords].filter(Boolean).join(',') || undefined;
   const withGenres =
-    [genre, collection?.genres?.join(',')].filter(Boolean).join(',') ||
-    undefined;
-  const originalLanguage = collection?.language;
-  const originCountry = collection?.country ?? country;
-  // A collection, a country or an actor filter is niche, so when one is active
-  // (and the user hasn't pinned a specific era) we search the FULL catalogue
-  // instead of a single random decade, and drop the US-certification
+    [genre, collection?.genres?.join(','), vibe?.genres?.join(',')]
+      .filter(Boolean)
+      .join(',') || undefined;
+  const originalLanguage = collection?.language ?? vibe?.language;
+  const originCountry = collection?.country ?? vibe?.country ?? country;
+  // A collection/vibe, a country or an actor filter is niche, so when one is
+  // active (and the user hasn't pinned a specific era) we search the FULL
+  // catalogue instead of a single random decade, and drop the US-certification
   // requirement — that filter only returns titles with a US rating, which
   // excludes most foreign / niche films (K-dramas, Brazilian cinema, etc.).
   // The erotic keyword + title guards still apply.
-  const broaden = !!collection || !!originCountry || !!actorId;
+  const broaden = !!collection || !!vibe || !!originCountry || !!actorId;
 
   if (mediaType === 'tv') {
     // No explicit era → weighted-random recent decade (skips 70s/80s by
@@ -503,7 +515,13 @@ export async function fetchMovieCast(
   if (mediaType !== 'movie' && mediaType !== 'tv') return [];
   if (!hasTmdbToken()) return [];
 
-  const data = await tmdbGet<TmdbCredits>(`/${mediaType}/${movieId}/credits`, {
+  // TV shows keep their full cast under aggregate_credits (across all seasons);
+  // /tv/{id}/credits is usually empty. Movies use plain credits.
+  const path =
+    mediaType === 'tv'
+      ? `/tv/${movieId}/aggregate_credits`
+      : `/movie/${movieId}/credits`;
+  const data = await tmdbGet<TmdbCredits>(path, {
     language: 'en-US',
   });
 
@@ -529,7 +547,7 @@ export async function fetchMovieCast(
       return {
         id: c.id,
         name: c.name,
-        character: c.character,
+        character: c.character ?? c.roles?.[0]?.character ?? '',
         birthYear,
         profilePath: c.profile_path,
       };

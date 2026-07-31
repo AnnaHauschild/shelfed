@@ -21,6 +21,7 @@ import {
   useMediaTypeControls,
 } from '@/context/MediaTypeProvider';
 import { ProfileProvider } from '@/context/ProfileProvider';
+import { ThemeProvider } from '@/context/ThemeProvider';
 import { colors, fontMap } from '@/theme';
 
 // Keep the splash screen up until fonts are ready (avoids a flash of system font).
@@ -60,6 +61,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <LanguageProvider>
           <ProfileProvider>
+            <ThemeProvider>
             <MediaTypeProvider>
               <StatusBar style="light" />
               <MovieDetailsProvider>
@@ -75,6 +77,7 @@ export default function RootLayout() {
               </MovieDetailsProvider>
               <LandingGate />
             </MediaTypeProvider>
+            </ThemeProvider>
           </ProfileProvider>
           </LanguageProvider>
         </QueryClientProvider>

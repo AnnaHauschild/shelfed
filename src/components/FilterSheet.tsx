@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Dimensions, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -9,7 +9,6 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { GenreChips } from './GenreChips';
 import { ActorFilter, SelectedActor } from './ActorFilter';
 import { MUST_SEE_LABEL } from '@/api/movies';
 import { colors, fonts, radius, spacing } from '@/theme';
@@ -21,14 +20,26 @@ interface Option {
   name: string;
 }
 
+interface FilterDef {
+  key: string;
+  label: string;
+  options: Option[];
+  selected: string | null;
+  onSelect: (id: string | null) => void;
+  accent: string;
+}
+
 interface Props {
   visible: boolean;
   onClose: () => void;
   genreOptions: Option[];
   genre: string | null;
   onGenreChange: (id: string | null) => void;
-  /** Mood/atmosphere collections (Road Trip, Melancholy …). Same select state. */
+  /** Mood/atmosphere collections (Road Trip, Melancholy …). */
   vibeOptions?: Option[];
+  /** Selected vibe collection id, independent from the Genre selection. */
+  vibe?: string | null;
+  onVibeChange?: (id: string | null) => void;
   actor: SelectedActor | null;
   onActorChange: (actor: SelectedActor | null) => void;
   /** When true (series/books), the actor filter is hidden (movies only). */
@@ -64,6 +75,8 @@ export function FilterSheet({
   genre,
   onGenreChange,
   vibeOptions = [],
+  vibe = null,
+  onVibeChange,
   eraOptions,
   era,
   onEraChange,
@@ -85,8 +98,14 @@ export function FilterSheet({
   // Drag-to-dismiss, same feel as the movie-details sheet: pull the sheet down
   // past a threshold (or flick it) to close.
   const translateY = useSharedValue(0);
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  const toggle = (key: string) =>
+    setOpenKey((cur) => (cur === key ? null : key));
   useEffect(() => {
-    if (visible) translateY.value = 0;
+    if (visible) {
+      translateY.value = 0;
+      setOpenKey(null);
+    }
   }, [visible, translateY]);
 
   const sheetStyle = useAnimatedStyle(() => ({
@@ -106,6 +125,54 @@ export function FilterSheet({
         translateY.value = withSpring(0, { damping: 22, stiffness: 220 });
       }
     });
+
+  const filterDefs: FilterDef[] = [
+    genreOptions.length > 0 && {
+      key: 'genre',
+      label: 'Genre',
+      options: genreOptions,
+      selected: genre,
+      onSelect: onGenreChange,
+      accent: colors.amberBright,
+    },
+    vibeOptions.length > 0 && {
+      key: 'vibe',
+      label: 'Vibe',
+      options: vibeOptions,
+      selected: vibe,
+      onSelect: (id: string | null) => onVibeChange?.(id),
+      accent: colors.favorite,
+    },
+    {
+      key: 'year',
+      label: 'Year',
+      options: eraOptions,
+      selected: era,
+      onSelect: onEraChange,
+      accent: colors.amber,
+    },
+    platformOptions.length > 0 && {
+      key: 'console',
+      label: 'Console',
+      options: platformOptions,
+      selected: platform,
+      onSelect: onPlatformChange,
+      accent: colors.rust,
+    },
+    !hideCountry && countryOptions.length > 0 && {
+      key: 'country',
+      label: 'Country',
+      options: countryOptions,
+      selected: country,
+      onSelect: onCountryChange,
+      accent: colors.watched,
+    },
+  ].filter(Boolean) as FilterDef[];
+  const openDef = filterDefs.find((f) => f.key === openKey) ?? null;
+  const selectOption = (def: FilterDef, id: string | null) => {
+    def.onSelect(id);
+    setOpenKey(null);
+  };
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -155,65 +222,66 @@ export function FilterSheet({
             </View>
           )}
 
-          {genreOptions.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.label}>Genre</Text>
-              <GenreChips
-                options={genreOptions}
-                selected={genre}
-                onSelect={onGenreChange}
-                wrap
-              />
-            </View>
-          )}
-
-          {vibeOptions.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.label}>Vibe</Text>
-              <GenreChips
-                options={vibeOptions}
-                selected={genre}
-                onSelect={onGenreChange}
-                accent={colors.favorite}
-                wrap
-              />
-            </View>
-          )}
-
-          <View style={styles.section}>
-            <Text style={styles.label}>Year</Text>
-            <GenreChips
-              options={eraOptions}
-              selected={era}
-              onSelect={onEraChange}
-              accent={colors.amber}
-              wrap
-            />
+          <View style={styles.filterGrid}>
+            {filterDefs.map((f) => {
+              const current = f.options.find((o) => o.id === f.selected) ?? null;
+              const isOpen = openKey === f.key;
+              return (
+                <Pressable
+                  key={f.key}
+                  style={[styles.gridDropdown, isOpen && styles.gridDropdownOpen]}
+                  onPress={() => toggle(f.key)}
+                  hitSlop={4}
+                >
+                  <View style={styles.gridTextWrap}>
+                    <Text style={styles.gridLabel}>{f.label}</Text>
+                    <Text
+                      style={[styles.gridValue, !!current && { color: f.accent }]}
+                      numberOfLines={1}
+                    >
+                      {current ? current.name : ''}
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name={isOpen ? 'chevron-up' : 'chevron-down'}
+                    size={16}
+                    color={colors.textOnDarkMuted}
+                  />
+                </Pressable>
+              );
+            })}
           </View>
 
-          {platformOptions.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.label}>Console</Text>
-              <GenreChips
-                options={platformOptions}
-                selected={platform}
-                onSelect={onPlatformChange}
-                accent={colors.rust}
-                wrap
-              />
-            </View>
-          )}
-
-          {!hideCountry && countryOptions.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.label}>Country</Text>
-              <GenreChips
-                options={countryOptions}
-                selected={country}
-                onSelect={onCountryChange}
-                accent={colors.watched}
-                wrap
-              />
+          {openDef && (
+            <View style={styles.dropdownList}>
+              {openDef.options.map((o) => {
+                const active = openDef.selected === o.id;
+                return (
+                  <Pressable
+                    key={o.id}
+                    onPress={() => selectOption(openDef, active ? null : o.id)}
+                    style={({ pressed }) => [
+                      styles.dropdownItem,
+                      pressed && styles.itemPressed,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.dropdownItemText,
+                        active && {
+                          color: openDef.accent,
+                          fontFamily: fonts.label,
+                        },
+                      ]}
+                    >
+                      {o.name}
+                    </Text>
+                    {active && (
+                      <Ionicons name="checkmark" size={16} color={openDef.accent} />
+                    )}
+                  </Pressable>
+                );
+              })}
             </View>
           )}
         </ScrollView>
@@ -323,6 +391,71 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginLeft: 2,
+  },
+  filterGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: spacing.sm,
+  },
+  gridDropdown: {
+    width: '48.5%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  gridDropdownOpen: {
+    borderColor: colors.amberBright,
+  },
+  gridTextWrap: {
+    flex: 1,
+    marginRight: 4,
+  },
+  gridLabel: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.label,
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  gridValue: {
+    color: colors.textOnDark,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    marginTop: 1,
+    minHeight: 17,
+  },
+  dropdownList: {
+    marginTop: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm + 2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
+  },
+  dropdownItemText: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    flexShrink: 1,
+  },
+  itemPressed: {
+    backgroundColor: colors.surfaceRaised,
   },
   doneButton: {
     flexDirection: 'row',

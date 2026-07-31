@@ -8,6 +8,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { TmdbError, hasTmdbToken } from '@/api/tmdb';
+import { SCREENSHOT_MODE, screenshotFeed } from '@/api/screenshotData';
 import { MUST_SEE_ID } from '@/api/movies';
 import { type SelectedActor } from '@/components/ActorFilter';
 import { collectionsFor } from '@/constants/collections';
@@ -42,6 +43,7 @@ export default function DiscoverScreen() {
   const [era, setEra] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
   const [collection, setCollection] = useState<string | null>(null);
+  const [vibe, setVibe] = useState<string | null>(null);
   const [actor, setActor] = useState<SelectedActor | null>(null);
   const [platform, setPlatform] = useState<string | null>(null);
   const [mustSee, setMustSee] = useState(false);
@@ -53,6 +55,7 @@ export default function DiscoverScreen() {
     setEra(null);
     setCountry(null);
     setCollection(null);
+    setVibe(null);
     setActor(null);
     setPlatform(null);
     setMustSee(false);
@@ -108,6 +111,7 @@ export default function DiscoverScreen() {
     if (value) {
       setGenre(null);
       setCollection(null);
+      setVibe(null);
       setEra(null);
       setCountry(null);
       setActor(null);
@@ -118,6 +122,7 @@ export default function DiscoverScreen() {
     (era ? 1 : 0) +
     (country ? 1 : 0) +
     (collection ? 1 : 0) +
+    (vibe ? 1 : 0) +
     (actor ? 1 : 0) +
     (platform ? 1 : 0) +
     (mustSee ? 1 : 0);
@@ -137,6 +142,7 @@ export default function DiscoverScreen() {
     mustSee ? MUST_SEE_ID : collection ?? undefined,
     actor?.id ?? undefined,
     platform ?? undefined,
+    vibe ?? undefined,
   );
   const { markWatched, skip, toggleWatchlist, toggleFavorite, undo } =
     useInteractions();
@@ -195,6 +201,7 @@ export default function DiscoverScreen() {
           : 'film-outline';
 
   const movies = useMemo(() => {
+    if (SCREENSHOT_MODE) return screenshotFeed(mediaType);
     const all = data?.pages.flatMap((page) => page.movies) ?? [];
     // De-duplicate by id: TMDB pages (and Open Library subjects) can repeat a
     // title, which would otherwise collide as duplicate keys in the deck.
@@ -204,7 +211,7 @@ export default function DiscoverScreen() {
       seen.add(m.id);
       return true;
     });
-  }, [data]);
+  }, [data, mediaType]);
 
   // Prefetch the next page as the user nears the bottom of the current deck.
   useEffect(() => {
@@ -239,32 +246,10 @@ export default function DiscoverScreen() {
       <FeatureHeader height={headerHeight} topInset={insets.top} tagline={tagline} scale={0.55} />
       <View style={styles.header}>
         <View style={styles.switcherRow}>
-          <MediaSwitcher />
-          <Pressable
-            onPress={() => setFiltersOpen(true)}
-            accessibilityLabel="Filters"
-            style={({ pressed }) => [
-              styles.filterButton,
-              activeFilterCount > 0 && styles.filterButtonActive,
-              pressed && styles.filterButtonPressed,
-            ]}
-            hitSlop={4}
-          >
-            <Ionicons
-              name="options-outline"
-              size={16}
-              color={
-                activeFilterCount > 0 ? colors.amberBright : colors.textOnDarkMuted
-              }
-            />
-            {activeFilterCount > 0 && (
-              <Text
-                style={[styles.filterButtonText, { color: colors.amberBright }]}
-              >
-                {activeFilterCount}
-              </Text>
-            )}
-          </Pressable>
+          <MediaSwitcher
+            filterCount={activeFilterCount}
+            onFilterPress={() => setFiltersOpen(true)}
+          />
         </View>
       </View>
 
@@ -278,11 +263,11 @@ export default function DiscoverScreen() {
       )}
 
       <View style={styles.deckArea}>
-        {isLoading ? (
+        {!SCREENSHOT_MODE && isLoading ? (
           <Centered>
             <LoadingReel mediaType={mediaType} />
           </Centered>
-        ) : isError ? (
+        ) : !SCREENSHOT_MODE && isError ? (
           <SetupOrError error={error} onRetry={() => refetch()} />
         ) : movies.length === 0 ? (
           <Centered>
@@ -292,7 +277,7 @@ export default function DiscoverScreen() {
         ) : (
           <>
             <SwipeDeck
-              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${actor?.id ?? 'all'}:${platform ?? 'all'}`}
+              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibe ?? 'all'}:${actor?.id ?? 'all'}:${platform ?? 'all'}`}
               cards={movies}
               onSwipeRight={(movie) => markWatched(movie)}
               onSwipeLeft={(movie) => skip(movie)}
@@ -336,6 +321,11 @@ export default function DiscoverScreen() {
         genre={collection ?? genre}
         onGenreChange={selectGenreOrCollection}
         vibeOptions={vibeOptions}
+        vibe={vibe}
+        onVibeChange={(id) => {
+          setVibe(id);
+          if (id) setMustSee(false);
+        }}
         actor={actor}
         onActorChange={(a) => {
           setActor(a);
@@ -366,6 +356,7 @@ export default function DiscoverScreen() {
           setEra(null);
           setCountry(null);
           setCollection(null);
+          setVibe(null);
           setActor(null);
           setPlatform(null);
           setMustSee(false);
@@ -440,32 +431,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     marginTop: spacing.xs,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  filterButtonActive: {
-    borderColor: colors.amberBright,
-    backgroundColor: 'rgba(217, 165, 49, 0.15)',
-  },
-  filterButtonPressed: {
-    transform: [{ scale: 0.94 }],
-    opacity: 0.85,
-  },
-  filterButtonText: {
-    color: colors.textOnDarkMuted,
-    fontFamily: fonts.label,
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
   filterRow: {
     marginBottom: spacing.sm,
