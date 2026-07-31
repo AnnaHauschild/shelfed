@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shelfed — Same Shelf, Different Themes</title>
+<style>
+  html,body{margin:0;padding:0;background:#120c07;color:#f4e4c1;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  body{padding:28px 20px 70px;}
+  h1{font-size:21px;margin:0 0 4px;}
+  p.note{color:#b89b73;font-size:13px;margin:0 0 26px;max-width:940px;line-height:1.5;}
+  .row{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;}
+  .item{width:250px;}
+  .label{margin-top:10px;font-size:12px;color:#d8c9a8;text-align:center;}
+  .label b{color:#f4e4c1;}
+  .phone{width:250px;height:520px;border-radius:26px;overflow:hidden;position:relative;
+    box-shadow:0 16px 44px rgba(0,0,0,.55);background:#1d140c;}
+  .card{position:absolute;left:26px;right:26px;top:120px;bottom:150px;border-radius:16px;
+    background:linear-gradient(160deg,#3a2a1c,#241812);border:2px solid #5a4128;
+    box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:flex-end;}
+  .card .t{padding:14px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:1px;
+    font-weight:700;font-size:20px;color:#f4e4c1;text-shadow:0 2px 6px rgba(0,0,0,.85);}
+  .vig{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 40%,transparent 42%,rgba(10,7,3,.5) 100%);}
+  .abs{position:absolute;inset:0;}
+</style>
+</head>
+<body>
+  <h1>Same shelf — different themes</h1>
+  <p class="note">
+    Exactly the current cubby bookshelf (same grid + dimensions), just re-skinned: different wood/frame colours,
+    book palette and little decorations to match each mood. Placeholder card on top for readability. Pick the
+    theme(s) you like (+ tweaks) and I'll wire them up as selectable shelf themes (#7).
+  </p>
+  <div class="row" id="opts"></div>
+
+<script>
+function rnd(s){const x=Math.sin(s*9301+49297)*233280;return x-Math.floor(x);}
+function card(){return `<div class="card"><div class="t">Interstellar</div></div><div class="vig"></div>`;}
+
+const THEMES=[
+ {key:'modern',name:'Modern',sub:'matte charcoal, cool spines',
+   wall:['#262a31','#191c22','#0f1115'],frame:'#2b2f36',edge:'#15171b',cubby:'#141619',
+   books:['#3f6079','#4a6b6b','#6b7280','#9aa0a6','#c8cdd2','#d8a548'],
+   lampShade:'#cfd6dd',lampGlow:'rgba(150,190,220,.28)',plant:'tuft',leaf:['#5a7a6a','#7a9a86'],
+   pic:'linear-gradient(180deg,#6b7280 0 55%,#3f6079 55% 100%)',matte:'#c8cdd2',picEdge:'#2b2f36'},
+ {key:'playful',name:'Verspielt',sub:'cream frame, candy-bright books',
+   wall:['#ffe9cf','#ffd9bf','#ffc9b3'],frame:'#e88f5a',edge:'#c46a3a',cubby:'#fff4e6',
+   books:['#ff6b6b','#ffd93d','#5ec26a','#4d96ff','#ff9f43','#a55eea','#26c6da'],
+   lampShade:'#ffe08a',lampGlow:'rgba(255,150,80,.35)',plant:'tuft',leaf:['#5ec26a','#8ad98a'],
+   pic:'linear-gradient(180deg,#ffd93d 0 55%,#5ec26a 55% 100%)',matte:'#fff4e6',picEdge:'#e88f5a'},
+ {key:'wizard',name:'Harry-Potter-Stil',sub:'dark walnut, leather books, candle, gilt',
+   wall:['#2a1d10','#1a1208','#100a06'],frame:'#3a2a18',edge:'#1a1208',cubby:'#140f0a',
+   books:['#1f4030','#5a1f22','#1f2a44','#4a3020','#7a5a2b','#2c1a2c'],
+   lampShade:'#efe0bd',lampGlow:'rgba(255,190,90,.4)',candle:true,plant:'tuft',leaf:['#2f5a3a','#4a6b4a'],
+   pic:'linear-gradient(180deg,#101a3a,#1a1030)',stars:true,matte:'#e8d9b5',picEdge:'#c9a24a'},
+ {key:'regency',name:'Stolz & Vorurteile',sub:'sage-painted, pastel spines, gilt, rose',
+   wall:['#e7dccb','#ddccbc','#cfb9ad'],frame:'#9aa87a',edge:'#7a8a5c',cubby:'#efe6d6',
+   books:['#c98a9a','#9aa87a','#a8b8c8','#e0d3b8','#c9a24a','#b57a86'],
+   lampShade:'#f0e2c2',lampGlow:'rgba(230,190,120,.3)',plant:'rose',leaf:['#9aa87a','#b6c096'],
+   pic:'linear-gradient(180deg,#cdd8c0 0 55%,#b9c7d2 55% 100%)',matte:'#f3ead6',picEdge:'#c9a24a'},
+ {key:'jungle',name:'Jurassic-Park-Stil',sub:'jungle wood, ferns, amber, hazard',
+   wall:['#183a20','#12280f','#0a140a'],frame:'#2a3a1e',edge:'#14200e',cubby:'#0e160b',
+   books:['#2f5a3a','#4a6b2a','#8a6a2b','#6a3a1a','#3a4a2a','#c08a2a'],
+   lampShade:'#e6c07a',lampGlow:'rgba(230,170,60,.32)',plant:'fern',leaf:['#2f5a3a','#4a6b2a'],hazard:true,
+   pic:'linear-gradient(180deg,#5a7a3a 0 55%,#173a24 55% 100%)',matte:'#d8c89a',picEdge:'#4a3a1a'},
+];
+
+function books(t,i){let n=4+Math.floor(rnd(i+11)*3),s='';
+  for(let k=0;k<n;k++){const col=t.books[Math.floor(rnd(i*31+k)*t.books.length)];
+    const bw=9+rnd(i+k*17)*8,bh=62+rnd(i+k*23)*32;
+    s+=`<div style="width:${bw}%;height:${bh}%;background:${col};margin:0 .5px;border-radius:1px"></div>`;}
+  return `<div style="display:flex;align-items:flex-end;justify-content:center;height:100%">${s}</div>`;}
+
+function lamp(t){const glow=`<div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:90%;height:60%;background:radial-gradient(circle,${t.lampGlow},transparent 70%)"></div>`;
+  if(t.candle) return `<div style="position:absolute;left:50%;bottom:18%;transform:translateX(-50%);width:6px;height:30%;background:${t.lampShade};border-radius:1px"></div>
+    <div style="position:absolute;left:50%;bottom:48%;transform:translateX(-50%);width:5px;height:9px;background:#ffcf6b;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;box-shadow:0 0 8px 2px rgba(255,180,60,.85)"></div>${glow}`;
+  return `<div style="position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:55%;height:32%;background:${t.lampShade};border-radius:20px 20px 3px 3px"></div>${glow}`;}
+
+function plant(t,i){
+  if(t.plant==='rose'){return `<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:30px;height:30px">
+    ${[0,72,144,216,288].map(a=>`<div style="position:absolute;left:50%;top:50%;width:13px;height:10px;margin:-5px 0 0 -6.5px;background:#d98aa0;border-radius:50%;transform:rotate(${a}deg) translateY(-7px)"></div>`).join('')}
+    <div style="position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#c26a86"></div>
+    <div style="position:absolute;left:50%;top:58%;width:2px;height:40%;margin-left:-1px;background:#6a8a5a"></div></div>`;}
+  if(t.plant==='fern'){let b='';for(let k=0;k<7;k++){const a=-52+k*17;
+    b+=`<div style="position:absolute;left:50%;bottom:8%;width:5px;height:52%;margin-left:-2.5px;background:${k%2?t.leaf[1]:t.leaf[0]};border-radius:50% 50% 45% 45%/62% 62% 38% 38%;transform-origin:bottom center;transform:rotate(${a}deg)"></div>`;}
+    return b;}
+  // tuft in a little pot
+  let lv='';const pts=[[50,30,0],[40,34,-32],[60,34,32],[50,36,0]];
+  pts.forEach(([x,y,r],k)=>{lv+=`<div style="position:absolute;left:${x}%;top:${y}%;width:12px;height:19px;margin-left:-6px;background:${k%2?t.leaf[1]:t.leaf[0]};border-radius:6px;transform-origin:center bottom;transform:rotate(${r}deg)"></div>`;});
+  return `${lv}<div style="position:absolute;left:33%;right:33%;top:44%;height:16%;background:#8a5a30;border-radius:0 0 4px 4px"></div>
+    <div style="position:absolute;left:28%;right:28%;top:42%;height:5px;background:#a86a3a;border-radius:2px"></div>`;}
+
+function picture(t){const scene=t.stars
+   ?`<div style="width:100%;height:100%;background:${t.pic};position:relative">${Array.from({length:10}).map((_,k)=>`<div style="position:absolute;left:${10+rnd(k*4+1)*80}%;top:${8+rnd(k*3+2)*70}%;width:2px;height:2px;border-radius:50%;background:#ffe9a8"></div>`).join('')}</div>`
+   :`<div style="width:100%;height:100%;background:${t.pic}"></div>`;
+  return `<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64%;height:70%;background:${t.matte};border:2px solid ${t.picEdge};box-sizing:border-box;padding:2px">${scene}</div>`;}
+
+function stack(t,i){let s='';for(let k=0;k<4;k++){const bw=62+rnd(i+k*5)*24;
+  s+=`<div style="width:${bw}%;height:6px;margin-top:3px;border-radius:2px;background:${t.books[k%t.books.length]}"></div>`;}
+  return `<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:3px;box-sizing:border-box">${s}</div>`;}
+
+function deco(t,i){const r=rnd(i*7+3);
+  if(r<0.5)return books(t,i);
+  if(r<0.64)return lamp(t);
+  if(r<0.76)return plant(t,i);
+  if(r<0.88)return picture(t);
+  return stack(t,i);}
+
+function shelf(t){const cols=4,rows=6;let rowsHtml='';
+  for(let r=0;r<rows;r++){let cb='';
+    for(let c=0;c<cols;c++){const i=r*cols+c;
+      const hazard=t.hazard&&r===0&&c===0
+        ?`<div style="position:absolute;top:0;left:0;width:22px;height:22px;background:repeating-linear-gradient(45deg,#e5b73a 0 6px,#1a1208 6px 12px);clip-path:polygon(0 0,100% 0,0 100%);z-index:2"></div>`:'';
+      cb+=`<div style="flex:1;background:${t.frame};border:1px solid ${t.edge};padding:3px;box-sizing:border-box">
+        <div style="width:100%;height:100%;background:${t.cubby};position:relative;overflow:hidden">${deco(t,i)}${hazard}</div></div>`;}
+    rowsHtml+=`<div style="flex:1;display:flex">${cb}</div>`;}
+  return `<div class="abs" style="background:linear-gradient(180deg,${t.wall[0]},${t.wall[1]} 55%,${t.wall[2]})"></div>
+    <div class="abs" style="display:flex;flex-direction:column;padding:5px;box-sizing:border-box">${rowsHtml}</div>`;}
+
+document.getElementById('opts').innerHTML = THEMES.map(t=>`
+  <div class="item"><div class="phone">${shelf(t)}${card()}</div>
+  <div class="label"><b>${t.name}</b><br>${t.sub}</div></div>`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shelfed — Arched Library (realistic)</title>
+<style>
+  html,body{margin:0;padding:0;background:#100b06;color:#f4e4c1;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  body{padding:28px 20px 70px;}
+  h1{font-size:21px;margin:0 0 4px;}
+  p.note{color:#b89b73;font-size:13px;margin:0 0 24px;max-width:960px;line-height:1.5;}
+  .row{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;}
+  .item{width:250px;}
+  .label{margin-top:9px;font-size:12px;color:#d8c9a8;text-align:center;}
+  .label b{color:#f4e4c1;}
+  .phone{width:250px;height:540px;border-radius:26px;overflow:hidden;position:relative;
+    box-shadow:0 18px 46px rgba(0,0,0,.6);background:#120c07;}
+  .card{position:absolute;left:26px;right:26px;top:126px;bottom:150px;border-radius:16px;
+    background:linear-gradient(160deg,#3a2a1c,#241812);border:2px solid #5a4128;
+    box-shadow:0 14px 34px rgba(0,0,0,.6);display:flex;align-items:flex-end;}
+  .card .t{padding:14px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:1px;
+    font-weight:700;font-size:20px;color:#f4e4c1;text-shadow:0 2px 6px rgba(0,0,0,.9);}
+  .vig{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 85% at 50% 38%,transparent 40%,rgba(8,5,2,.62) 100%);}
+  .abs{position:absolute;inset:0;}
+  /* warm top light across the whole wall */
+  .toplight{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,210,140,.10),transparent 30%);}
+</style>
+</head>
+<body>
+  <h1>Arched library — more realistic (3 wood tones)</h1>
+  <p class="note">
+    Same arched shelf, now with depth: recessed niches (inset shadows), wood grain, book spines with a lit
+    edge + shadow, candle glow, a gilt frame. Tell me which wood tone + how much “grandeur” you want. And yes —
+    a couple of reference photos of the exact library look you picture would help me match tone, lighting and
+    proportions precisely (or we go photo-real with an actual background image).
+  </p>
+  <div class="row" id="opts"></div>
+
+<script>
+function rnd(s){const x=Math.sin(s*9301+49297)*233280;return x-Math.floor(x);}
+function card(){return `<div class="card"><div class="t">Interstellar</div></div><div class="vig"></div>`;}
+const ARCH='border-radius:46% 46% 5px 5px / 32% 32% 5px 5px';
+
+/* realistic book spines: lit left edge, shaded right, title band, base shadow */
+function books(t,i){let n=4+Math.floor(rnd(i+11)*3),s='';
+  for(let k=0;k<n;k++){const col=t.books[Math.floor(rnd(i*31+k)*t.books.length)];
+    const bw=11+rnd(i+k*17)*8,bh=56+rnd(i+k*23)*36,band=42+rnd(i+k)*26,gild=rnd(i*3+k)<0.4;
+    s+=`<div style="position:relative;width:${bw}%;height:${bh}%;margin:0 .5px;border-radius:1px 1px 0 0;
+      background:linear-gradient(90deg,rgba(255,255,255,.18),transparent 26%,transparent 74%,rgba(0,0,0,.45)),${col};
+      box-shadow:0 3px 4px rgba(0,0,0,.55)">
+      <div style="position:absolute;left:14%;right:14%;top:${band}%;height:7%;background:${gild?'rgba(210,175,90,.7)':'rgba(0,0,0,.3)'};border-radius:1px"></div>
+      <div style="position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(0,0,0,.35))"></div></div>`;}
+  return `<div style="position:absolute;left:6%;right:6%;bottom:9%;display:flex;align-items:flex-end;justify-content:center;height:74%">${s}</div>`;}
+
+/* candle with real flame glow */
+function lamp(t){return `<div style="position:absolute;left:50%;bottom:22%;transform:translateX(-50%);width:130%;height:66%;
+    background:radial-gradient(circle,${t.glow},transparent 62%);pointer-events:none"></div>
+  <div style="position:absolute;left:50%;bottom:12%;transform:translateX(-50%);width:9%;height:30%;border-radius:2px;
+    background:linear-gradient(90deg,rgba(255,255,255,.25),transparent 42%,rgba(0,0,0,.35)),${t.candle};box-shadow:0 3px 4px rgba(0,0,0,.55)"></div>
+  <div style="position:absolute;left:50%;bottom:41%;transform:translateX(-50%);width:6px;height:12px;
+    background:radial-gradient(circle at 50% 72%,#fff3c4,#ffb347);border-radius:50% 50% 50% 50%/62% 62% 38% 38%;
+    box-shadow:0 0 14px 5px rgba(255,180,70,.9)"></div>`;}
+
+/* leafy plant in a pot with shading */
+function plant(t){let lv='';const pts=[[50,26,0],[39,31,-34],[61,31,34],[44,34,-16],[56,34,16]];
+  pts.forEach(([x,y,r],k)=>{lv+=`<div style="position:absolute;left:${x}%;top:${y}%;width:13px;height:22px;margin-left:-6.5px;
+    background:linear-gradient(120deg,${t.leaf[1]},${t.leaf[0]});border-radius:7px;transform-origin:center bottom;
+    transform:rotate(${r}deg);box-shadow:0 1px 2px rgba(0,0,0,.4)"></div>`;});
+  return `${lv}<div style="position:absolute;left:35%;right:35%;top:46%;height:16%;
+    background:linear-gradient(90deg,rgba(255,255,255,.15),transparent 40%,rgba(0,0,0,.3)),#8a5a30;border-radius:0 0 5px 5px;box-shadow:0 3px 5px rgba(0,0,0,.5)"></div>
+    <div style="position:absolute;left:30%;right:30%;top:44%;height:6px;background:#a86a3a;border-radius:2px"></div>`;}
+
+/* gilt-framed picture with bevel + drop shadow */
+function picture(t){return `<div style="position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:62%;height:64%;
+    background:linear-gradient(135deg,#e6c368,#b8892f 45%,#8a6520);border-radius:2px;padding:4px;box-sizing:border-box;
+    box-shadow:0 5px 10px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.25)">
+    <div style="width:100%;height:100%;background:${t.pic};box-shadow:inset 0 0 6px rgba(0,0,0,.5)"></div></div>`;}
+
+function stack(t,i){let s='';for(let k=0;k<4;k++){const bw=60+rnd(i+k*5)*26,col=t.books[k%t.books.length];
+  s+=`<div style="width:${bw}%;height:8%;margin-top:3px;border-radius:2px;
+    background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.3)),${col};box-shadow:0 2px 3px rgba(0,0,0,.5)"></div>`;}
+  return `<div style="position:absolute;left:0;right:0;bottom:10%;display:flex;flex-direction:column-reverse;align-items:center;height:70%">${s}</div>`;}
+
+function deco(t,i){const r=rnd(i*7+3);
+  if(r<0.54)return books(t,i); if(r<0.66)return lamp(t);
+  if(r<0.78)return plant(t); if(r<0.9)return picture(t); return stack(t,i);}
+
+function archCell(t,i){
+  return `<div style="flex:1;position:relative;padding:4px;box-sizing:border-box;background:${t.wood}">
+    <div style="position:relative;width:100%;height:100%;${ARCH};overflow:hidden;background:${t.niche}">
+      <!-- lit back wall + floor -->
+      <div class="abs" style="background:linear-gradient(180deg,${t.backTop},${t.backBot} 82%,${t.floor})"></div>
+      <!-- soft shadow the items sit in -->
+      <div style="position:absolute;left:12%;right:12%;bottom:6%;height:10%;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 70%)"></div>
+      ${deco(t,i)}
+      <!-- recess occlusion -->
+      <div class="abs" style="${ARCH};pointer-events:none;box-shadow:inset 0 11px 18px rgba(0,0,0,.6),inset 0 -7px 12px rgba(0,0,0,.5),inset 9px 0 13px rgba(0,0,0,.4),inset -9px 0 13px rgba(0,0,0,.4)"></div>
+      <!-- arch rim highlight -->
+      <div class="abs" style="${ARCH};pointer-events:none;box-shadow:inset 0 2px 0 ${t.rim}"></div>
+    </div>
+  </div>`;}
+
+function shelf(t){const cols=4,rows=6;let html='';
+  for(let r=0;r<rows;r++){let cb='';for(let c=0;c<cols;c++)cb+=archCell(t,r*cols+c);
+    html+=`<div style="flex:1;display:flex">${cb}</div>`;}
+  return `<div class="abs" style="background:linear-gradient(180deg,${t.wall[0]},${t.wall[1]} 55%,${t.wall[2]})"></div>
+    <div class="abs" style="display:flex;flex-direction:column;padding:5px;box-sizing:border-box">${html}</div>
+    <div class="toplight"></div>`;}
+
+const WOOD_WALNUT=`linear-gradient(90deg,rgba(0,0,0,.32),transparent 12%,transparent 88%,rgba(0,0,0,.36)),repeating-linear-gradient(0deg,rgba(255,235,200,.035) 0 1px,transparent 1px 4px),linear-gradient(180deg,#4a3018,#2e1c0e)`;
+const WOOD_OAK   =`linear-gradient(90deg,rgba(0,0,0,.26),transparent 12%,transparent 88%,rgba(0,0,0,.3)),repeating-linear-gradient(0deg,rgba(255,240,210,.05) 0 1px,transparent 1px 4px),linear-gradient(180deg,#8a5a2e,#5a3818)`;
+const WOOD_MAHOG =`linear-gradient(90deg,rgba(0,0,0,.3),transparent 12%,transparent 88%,rgba(0,0,0,.34)),repeating-linear-gradient(0deg,rgba(255,220,190,.04) 0 1px,transparent 1px 4px),linear-gradient(180deg,#5e2c1c,#3a1810)`;
+
+const LEATHER=['#1f4030','#5a1f22','#20304a','#4a3020','#6a4a1a','#2c1a2c','#3a2440'];
+
+const STYLES=[
+ {name:'A · Dark walnut + gilt',wall:['#241a10','#160f08','#0c0805'],wood:WOOD_WALNUT,
+   niche:'#140f0a',backTop:'#0f0a06',backBot:'#22160d',floor:'#2c1d10',rim:'rgba(210,180,110,.35)',
+   books:LEATHER,leaf:['#2f5a3a','#4a6b4a'],candle:'#efe0bd',glow:'rgba(255,190,90,.5)',
+   pic:'linear-gradient(180deg,#3a4a6a 0 55%,#1f2a3a 55% 100%)'},
+ {name:'B · Warm oak',wall:['#3a2614','#26180c','#160e07'],wood:WOOD_OAK,
+   niche:'#1c130b',backTop:'#160e07',backBot:'#2e2012',floor:'#3a2816',rim:'rgba(255,225,160,.4)',
+   books:['#7a3527','#5e7a3c','#3f6079','#d8a548','#8a5a2b','#a7563d','#2c4a3a'],leaf:['#4f6b35','#7a9658'],
+   candle:'#f0d28c',glow:'rgba(255,200,110,.5)',pic:'linear-gradient(180deg,#d9b25a 0 55%,#5e7a3c 55% 100%)'},
+ {name:'C · Rich mahogany',wall:['#2e160f','#1c0d08','#100705'],wood:WOOD_MAHOG,
+   niche:'#180d09',backTop:'#120806',backBot:'#28140d',floor:'#341a10',rim:'rgba(230,170,120,.35)',
+   books:['#3a1f4a','#7a1f22','#1f4030','#c9a24a','#4a2018','#2c3a5a'],leaf:['#3a5a3a','#5a7a52'],
+   candle:'#f0dcc0',glow:'rgba(255,180,100,.5)',pic:'linear-gradient(180deg,#8a5a3a 0 55%,#3a2418 55% 100%)'},
+];
+
+document.getElementById('opts').innerHTML = STYLES.map(t=>`
+  <div class="item"><div class="phone">${shelf(t)}${card()}</div>
+  <div class="label"><b>${t.name}</b></div></div>`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shelfed – Collector Shelf (Handy-Format, voll)</title>
+<style>
+  :root{
+    --glow:      rgba(255,178,108,.36);
+    --glow-soft: rgba(255,190,120,.16);
+    --led:       #ffe4bd;
+    --rim:       rgba(255,222,180,.30);
+    --spine-a:  #322c25; --spine-b:#0d0b09;
+    --paper:     #e9ddc7;
+    --blue:      #6fd0ff;
+    --green:     #8fbf6a;
+    --gold:      #d8b271;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:radial-gradient(120% 80% at 50% 0%, #16120f, #050403 60%, #000 100%);
+    color:#b8a684; min-height:100vh;
+    padding:20px 12px 40px; display:flex; flex-direction:column; align-items:center; gap:12px;
+  }
+  h1{ font-size:16px; font-weight:600; color:#e7d6b6; letter-spacing:.3px; }
+  .sub{ font-size:11.5px; color:#7d6f5a; max-width:420px; text-align:center; line-height:1.5; }
+
+  /* ============ phone frame ============ */
+  .phone{
+    width:390px; max-width:96vw; aspect-ratio:390/820;
+    background:#000; border-radius:38px; padding:12px 10px;
+    box-shadow:0 30px 70px rgba(0,0,0,.8), inset 0 0 0 2px #1a1a1a;
+    position:relative; overflow:hidden;
+  }
+  .notch{ position:absolute; top:12px; left:50%; transform:translateX(-50%);
+    width:120px; height:22px; background:#000; border-radius:0 0 14px 14px; z-index:5; }
+  .statusbar{ height:20px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px; font-size:10px; color:#9a8c72; }
+
+  /* ============ cabinet fills the phone ============ */
+  .cabinet{
+    height:calc(100% - 24px); border-radius:10px; position:relative;
+    background:linear-gradient(180deg,#0e0b09,#060504);
+    padding:8px 9px; overflow:hidden;
+    box-shadow:inset 0 0 40px rgba(0,0,0,.9);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .cabinet::before,.cabinet::after{
+    content:''; position:absolute; top:6px; bottom:6px; width:8px; z-index:3;
+    background:linear-gradient(90deg,#1c1712,#0a0806); box-shadow:inset 0 0 8px rgba(0,0,0,.8);
+  }
+  .cabinet::before{ left:2px; border-radius:5px 0 0 5px; }
+  .cabinet::after { right:2px; border-radius:0 5px 5px 0; }
+
+  /* hero top */
+  .hero{
+    position:relative; height:56px; border-radius:3px; flex:0 0 auto;
+    background:
+      radial-gradient(70% 130% at 76% 0%, var(--glow), transparent 60%),
+      linear-gradient(180deg,#0a0806,#050403);
+    box-shadow:inset 0 2px 0 #241d16, inset 0 -12px 18px rgba(0,0,0,.75);
+    display:flex; align-items:flex-end; justify-content:space-between; padding:0 14px 5px; overflow:hidden;
+  }
+  .hero .led{ position:absolute; top:3px; left:8%; right:8%; height:2px; border-radius:2px;
+    background:linear-gradient(90deg,transparent,var(--led),transparent); box-shadow:0 2px 14px 2px var(--glow); }
+  .lightbar{ position:absolute; right:70px; bottom:8px; width:4px; height:34px; border-radius:2px;
+    background:linear-gradient(180deg,#fff,#ffdca6); box-shadow:0 0 14px 4px var(--glow); }
+
+  /* columns area grows to fill */
+  .cols{ display:grid; grid-template-columns:1fr 1.14fr 1fr; gap:6px; flex:1 1 auto; }
+  .col{ display:flex; flex-direction:column; gap:6px; }
+
+  .cubby{
+    position:relative; border-radius:3px; overflow:hidden; flex:1 1 0;
+    background:
+      radial-gradient(120% 66% at 50% -6%, var(--glow), transparent 52%),
+      radial-gradient(90% 40% at 50% 0%, var(--glow-soft), transparent 60%),
+      linear-gradient(180deg,#0a0807 0%,#040302 100%);
+    box-shadow:inset 0 2px 0 #221b14, inset 0 10px 16px rgba(0,0,0,.8), inset 0 -3px 6px rgba(0,0,0,.7);
+    display:flex; align-items:flex-end; justify-content:center; padding:5px 5px 4px;
+  }
+  .cubby::before{ content:''; position:absolute; top:3px; left:8%; right:8%; height:2px; border-radius:2px;
+    background:linear-gradient(90deg,transparent,var(--led),transparent); box-shadow:0 2px 12px 1px var(--glow); }
+  .grow2{ flex:1.4 1 0; }   /* taller feature cubby */
+
+  .row{ display:flex; align-items:flex-end; justify-content:space-between; width:100%; gap:3px; }
+  .center{ justify-content:center; gap:8px; }
+
+  /* spines – thinner & denser to feel FULL */
+  .spines{ display:flex; align-items:flex-end; gap:1.5px; height:82%; width:100%; justify-content:center; }
+  .spine{ width:6px; align-self:flex-end; border-radius:1px 1px 0 0;
+    background:linear-gradient(180deg,var(--spine-a),var(--spine-b));
+    box-shadow:inset 0 2px 2px var(--rim), 0 0 2px rgba(0,0,0,.5); }
+  .spine.t{ height:100%; } .spine.m{ height:88%; } .spine.s{ height:76%; } .spine.xs{ height:64%; }
+  .spine.w{ width:8px; }
+  .spine.blue{ background:linear-gradient(180deg,#20323f,#0a1116); }
+  .spine.red { background:linear-gradient(180deg,#3a201d,#160b0a); }
+  .spine.gold{ background:linear-gradient(180deg,#4a3a1e,#1c150b); }
+
+  .plate{ display:flex; align-items:center; justify-content:center; align-self:flex-end;
+    border-radius:2px; background:linear-gradient(180deg,#171310,#080605);
+    box-shadow:inset 0 2px 2px var(--rim), 0 0 3px rgba(0,0,0,.6); }
+  .plate span{ color:#c9b48c; font-weight:700; letter-spacing:.8px; font-size:5.5px; }
+
+  .poster{ position:relative; border-radius:2px; border:2px solid #1c160f; overflow:hidden;
+    box-shadow:0 4px 9px rgba(0,0,0,.7), inset 0 0 0 1px #000; }
+  .poster .ttl{ position:absolute; left:0; right:0; bottom:3px; text-align:center; font-weight:800;
+    font-size:6px; letter-spacing:.8px; color:var(--paper); text-shadow:0 1px 2px #000; }
+  .art{ position:absolute; inset:0; }
+  .art.dune{ background:radial-gradient(circle at 50% 40%, #caa06e 0 16%, #8a5a2a 17% 55%, #2a1a0d 100%); }
+  .art.dune::after{ content:''; position:absolute; left:50%; top:22%; transform:translateX(-50%);
+    width:18px; height:18px; border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #f0dcb4, #b98a4e); box-shadow:0 0 10px rgba(240,220,180,.5); }
+  .art.city{ background:linear-gradient(180deg,#081226 0%,#12294a 50%,#070b14 100%); }
+  .art.city::before{ content:''; position:absolute; inset:0;
+    background:
+      linear-gradient(90deg,transparent 16%,#0c1a2e 16% 20%,transparent 20%),
+      linear-gradient(90deg,transparent 44%,#0c1a2e 44% 50%,transparent 50%),
+      linear-gradient(90deg,transparent 70%,#0c1a2e 70% 75%,transparent 75%); opacity:.9; }
+  .art.city::after{ content:''; position:absolute; left:28%; top:34%; width:2px; height:24px;
+    background:var(--blue); box-shadow:0 0 7px var(--blue); }
+  .art.star{ background:radial-gradient(circle at 50% 60%, #1a2340, #05070f 70%); }
+  .art.star::before{ content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(1px 1px at 22% 26%,#fff,transparent),
+      radial-gradient(1px 1px at 64% 34%,#fff,transparent),
+      radial-gradient(1px 1px at 44% 60%,#fff,transparent),
+      radial-gradient(1px 1px at 78% 66%,#fff,transparent); }
+  .art.star::after{ content:''; position:absolute; left:50%; top:18%; transform:translateX(-50%);
+    width:2px; height:28px; background:linear-gradient(180deg,#3aa0ff,transparent);
+    box-shadow:0 0 7px #3aa0ff; opacity:.8; }
+
+  .fig{ background:linear-gradient(180deg,#2a2520,#0a0806); position:relative;
+    box-shadow:inset 0 2px 3px var(--rim), 0 3px 6px rgba(0,0,0,.6); }
+  .figA{ width:13px; border-radius:5px 5px 2px 2px; }
+  .figB{ width:16px; border-radius:7px 7px 2px 2px; }
+  .figC{ width:15px; border-radius:50% 50% 3px 3px; }
+
+  .falcon{ width:80px; height:20px; border-radius:18px/11px; position:relative;
+    background:linear-gradient(180deg,#4a433a,#141009); box-shadow:inset 0 2px 4px var(--rim), 0 4px 7px rgba(0,0,0,.7); }
+  .falcon::before{ content:''; position:absolute; left:5px; top:5px; width:14px; height:9px;
+    border-radius:5px; background:#0a0806; box-shadow:inset 0 0 3px #000; }
+  .falcon::after{ content:''; position:absolute; left:32px; top:-5px; width:22px; height:8px;
+    border-radius:50%; background:linear-gradient(180deg,#3a342c,#120e0a); }
+
+  .halo{ width:38px; height:32px; border-radius:19px 19px 8px 8px; position:relative;
+    background:linear-gradient(180deg,#3a4a30,#0d1509); box-shadow:inset 0 2px 4px rgba(180,210,150,.25), 0 3px 7px rgba(0,0,0,.7); }
+  .halo::after{ content:''; position:absolute; left:8px; top:13px; width:22px; height:9px;
+    border-radius:5px 5px 7px 7px; background:linear-gradient(180deg,#f0c877,#7a5a2c); box-shadow:0 0 6px rgba(240,200,120,.5); }
+
+  .eve{ width:17px; height:26px; border-radius:9px 9px 7px 7px; position:relative;
+    background:linear-gradient(180deg,#f2efe9,#aeb2b5); box-shadow:0 3px 7px rgba(0,0,0,.6); }
+  .eve::after{ content:''; position:absolute; left:4px; top:6px; width:9px; height:6px;
+    border-radius:50%; background:#0a0f14; box-shadow:inset 0 0 0 1.5px var(--blue), 0 0 9px 2px var(--blue); }
+
+  .bb8{ width:20px; height:29px; position:relative; }
+  .bb8::before{ content:''; position:absolute; bottom:0; left:1px; width:18px; height:18px;
+    border-radius:50%; background:linear-gradient(180deg,#e8e2d4,#9a948a); box-shadow:0 3px 6px rgba(0,0,0,.6); }
+  .bb8::after{ content:''; position:absolute; top:1px; left:4px; width:12px; height:8px;
+    border-radius:8px 8px 2px 2px; background:linear-gradient(180deg,#eee,#b7b0a4); }
+
+  .mech{ width:34px; height:52px; border-radius:7px 7px 3px 3px; position:relative;
+    background:linear-gradient(180deg,#3a352c,#0c0a08); box-shadow:inset 0 2px 4px var(--rim), 0 4px 8px rgba(0,0,0,.7); }
+  .mech::before{ content:''; position:absolute; top:-6px; left:11px; width:13px; height:11px;
+    border-radius:4px; background:linear-gradient(180deg,#33302a,#100d0a); }
+  .mech::after{ content:''; position:absolute; top:16px; left:7px; width:5px; height:5px;
+    border-radius:50%; background:var(--blue); box-shadow:0 0 6px var(--blue); }
+
+  .walle{ width:22px; height:26px; border-radius:4px; position:relative;
+    background:linear-gradient(180deg,#8a6a2e,#3a2c12); box-shadow:inset 0 2px 3px rgba(255,220,150,.25), 0 4px 7px rgba(0,0,0,.6); }
+  .walle::after{ content:''; position:absolute; top:-4px; left:4px; width:14px; height:7px;
+    border-radius:4px; background:#100d0a; box-shadow:inset 0 0 0 1.5px #4a3a1e; }
+
+  .rocket{ width:8px; height:34px; border-radius:4px 4px 1px 1px; align-self:flex-end;
+    background:linear-gradient(180deg,#cfc7ba,#5a544a); box-shadow:0 3px 6px rgba(0,0,0,.6); }
+  .stand{ width:20px; height:22px; border-radius:10px 10px 4px 4px; position:relative;
+    background:linear-gradient(180deg,#2a2620,#0a0806); box-shadow:inset 0 2px 3px var(--rim),0 3px 6px rgba(0,0,0,.6); }
+  /* candle for warm point-lights */
+  .candle{ width:7px; height:18px; border-radius:2px; align-self:flex-end; position:relative;
+    background:linear-gradient(180deg,#d8cbb0,#6a604e); }
+  .candle::after{ content:''; position:absolute; top:-6px; left:1.5px; width:4px; height:6px;
+    border-radius:50% 50% 40% 40%; background:radial-gradient(circle,#ffe6a8,#ff9d3a);
+    box-shadow:0 0 10px 3px rgba(255,170,80,.7); }
+
+  .stack{ display:flex; flex-direction:column-reverse; gap:1.5px; }
+  .book{ height:5px; border-radius:1px; box-shadow:inset 0 1px 1px var(--rim); }
+
+  .base{ height:26px; border-radius:3px; position:relative; flex:0 0 auto;
+    background:linear-gradient(180deg,#150f09,#080605);
+    box-shadow:inset 0 2px 0 #241d16, inset 0 -8px 12px rgba(0,0,0,.7); }
+  .base .falcon{ position:absolute; left:50%; top:-11px; transform:translateX(-50%) scale(.78); }
+
+  .legend{ font-size:10.5px; color:#7d6f5a; max-width:420px; text-align:center; line-height:1.5; }
+  .legend b{ color:#d8b271; }
+</style>
+</head>
+<body>
+  <h1>Shelfed – „Collector's Cabinet" · Handy-Format, voll gepackt</h1>
+  <p class="sub">Schmales Hochformat wie im App-Screen, dicht bestückte Fächer.</p>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="statusbar"><span>9:41</span><span>Shelfed</span><span>▮▮▮</span></div>
+
+    <div class="cabinet">
+      <!-- hero -->
+      <div class="hero">
+        <span class="led"></span>
+        <div class="falcon" style="transform:scale(.8)"></div>
+        <div class="fig figB" style="height:32px"></div>
+        <div class="fig figB" style="height:36px"></div>
+        <div class="fig figB" style="height:30px"></div>
+        <span class="lightbar"></span>
+        <div class="halo" style="width:34px;height:28px"></div>
+      </div>
+
+      <div class="cols">
+        <!-- LEFT -->
+        <div class="col">
+          <div class="cubby grow2">
+            <div class="row">
+              <div class="fig figB" style="height:40px"></div>
+              <div class="poster" style="width:40px;height:54px"><div class="art dune"></div><div class="ttl">DUNE</div></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="row">
+              <div class="fig figC" style="height:32px"></div>
+              <div class="stand"></div>
+              <div class="candle"></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="spines">
+              <span class="spine t"></span><span class="spine m"></span><span class="spine t red"></span>
+              <span class="spine s"></span><span class="spine t"></span><span class="spine m gold"></span>
+              <span class="spine t"></span><span class="spine s blue"></span><span class="spine t"></span>
+              <span class="spine m"></span><span class="spine t"></span>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="row">
+              <div class="fig figB" style="height:34px"></div>
+              <div class="spines" style="height:66%;width:auto">
+                <span class="spine t"></span><span class="spine m"></span><span class="spine s"></span>
+                <span class="spine t blue"></span><span class="spine m"></span><span class="spine t"></span>
+                <span class="spine s"></span>
+              </div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="row">
+              <div class="spines" style="height:60%;width:auto">
+                <span class="spine t"></span><span class="spine m"></span><span class="spine s"></span>
+                <span class="spine t"></span><span class="spine m"></span>
+              </div>
+              <div class="eve"></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="row">
+              <div class="stack">
+                <span class="book" style="width:38px;background:linear-gradient(90deg,#4a3a22,#211a0e)"></span>
+                <span class="book" style="width:35px;background:linear-gradient(90deg,#2f2a24,#12100d)"></span>
+                <span class="book" style="width:40px;background:linear-gradient(90deg,#3a2420,#181010)"></span>
+                <span class="book" style="width:34px;background:linear-gradient(90deg,#333,#141414)"></span>
+              </div>
+              <div class="fig figA" style="height:30px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER -->
+        <div class="col">
+          <div class="cubby grow2">
+            <div class="row center">
+              <div class="poster" style="width:78px;height:50px;border-radius:2px">
+                <div class="art city"></div><div class="ttl" style="letter-spacing:1px">BLADE&nbsp;CITY</div></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="spines">
+              <span class="spine t"></span><span class="spine m"></span>
+              <span class="plate" style="width:38px;height:70%"><span>NEUROMANCER</span></span>
+              <span class="spine t"></span><span class="spine m"></span><span class="spine s"></span>
+              <span class="spine t"></span>
+            </div>
+          </div>
+          <div class="cubby grow2">
+            <div class="row center">
+              <div class="mech"></div>
+              <div class="fig figB" style="height:36px"></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="spines">
+              <span class="spine t w"></span><span class="spine m w"></span><span class="spine t w blue"></span>
+              <span class="spine s w"></span><span class="spine t w"></span><span class="spine m w red"></span>
+              <span class="spine t w"></span><span class="spine s w"></span>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="row center">
+              <div class="plate" style="width:48px;height:60%;border-radius:2px"><span>MASS&nbsp;EFFECT</span></div>
+              <div class="fig figB" style="height:34px"></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="spines">
+              <span class="spine t"></span><span class="spine m"></span><span class="spine s"></span>
+              <span class="spine t gold"></span><span class="spine m"></span><span class="spine t"></span>
+              <span class="spine s"></span><span class="spine m blue"></span><span class="spine t"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col">
+          <div class="cubby grow2">
+            <div class="row">
+              <div class="fig figB" style="height:38px;border-radius:44% 44% 3px 3px"></div>
+              <div class="poster" style="width:36px;height:50px"><div class="art star"></div><div class="ttl">STAR&nbsp;WARS</div></div>
+              <div class="bb8"></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="halo" style="margin:0 auto"></div>
+          </div>
+          <div class="cubby">
+            <div class="row">
+              <div class="fig figC" style="height:30px"></div>
+              <div class="fig figB" style="height:36px"></div>
+              <div class="rocket"></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="row">
+              <div class="poster" style="width:34px;height:42px"><div class="art star"></div><div class="ttl" style="font-size:5px">ASIMOV</div></div>
+              <div class="fig figB" style="height:34px;border-radius:40% 40% 4px 4px"></div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="row">
+              <div class="walle"></div>
+              <div class="spines" style="height:62%;width:auto">
+                <span class="spine t"></span><span class="spine m"></span><span class="spine s gold"></span>
+                <span class="spine t"></span><span class="spine m"></span>
+              </div>
+            </div>
+          </div>
+          <div class="cubby">
+            <div class="spines">
+              <span class="spine t"></span><span class="spine m red"></span><span class="spine t"></span>
+              <span class="spine s"></span><span class="spine t"></span><span class="spine m"></span>
+              <span class="spine t gold"></span><span class="spine s"></span><span class="spine t"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="base"><div class="falcon"></div></div>
+    </div>
+  </div>
+
+  <p class="legend">
+    Jetzt im <b>Handy-Hochformat</b> (schmaler) und <b>dichter bestückt</b> – volle Fächer,
+    zusätzliche Kerzen als warme Lichtpunkte, weniger Leerraum.
+  </p>
+</body>
+</html>

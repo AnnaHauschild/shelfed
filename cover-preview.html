@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shelfed – Cover-Varianten</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Special+Elite&display=swap');
+  :root{ --paper:#f4e4c1; --ink:#1a120a; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:'Segoe UI',system-ui,sans-serif; background:#161009; color:#cbb79a;
+    padding:28px 18px 60px; }
+  h1{ font-size:20px; color:#e7d6b6; margin-bottom:4px; }
+  .sub{ font-size:12.5px; color:#8a7b64; max-width:720px; line-height:1.55; margin-bottom:22px; }
+  h2{ font-size:14px; color:#e0a23c; letter-spacing:1px; text-transform:uppercase; margin:26px 0 12px; }
+  .row{ display:flex; flex-wrap:wrap; gap:18px; }
+
+  /* ---------- cover card ---------- */
+  .cover{ width:190px; height:285px; border-radius:8px; position:relative; overflow:hidden;
+    box-shadow:0 14px 30px rgba(0,0,0,.55); background:#20140a; }
+  .cover .grain{ position:absolute; inset:0; opacity:.05; mix-blend-mode:overlay; pointer-events:none;
+    background:repeating-linear-gradient(0deg,#000 0 1px,transparent 1px 3px),
+              repeating-linear-gradient(90deg,#000 0 1px,transparent 1px 3px); }
+  .cover .vign{ position:absolute; inset:0; pointer-events:none;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.5); }
+  .cover .scrim{ position:absolute; left:0; right:0; bottom:0; height:52%;
+    background:linear-gradient(180deg,transparent, rgba(10,6,2,.35) 45%, rgba(10,6,2,.92)); }
+  .cover .info{ position:absolute; left:12px; right:12px; bottom:12px; z-index:3; }
+  .cover .title{ font-family:'Oswald',sans-serif; font-weight:700; font-size:20px; line-height:1.02;
+    color:var(--paper); text-transform:uppercase; letter-spacing:.4px; text-shadow:0 2px 4px rgba(0,0,0,.7); }
+  .cover .meta{ margin-top:5px; font-family:'Special Elite',monospace; font-size:10.5px; color:#e8d9b8; opacity:.92; }
+  .cover .meta .star{ color:#e0a23c; }
+  .cover .badge{ position:absolute; top:9px; right:9px; z-index:3; font-family:'Oswald',sans-serif;
+    font-weight:700; font-size:11px; color:#1a120a; background:#e0a23c; padding:2px 7px; border-radius:20px;
+    box-shadow:0 2px 5px rgba(0,0,0,.4); }
+
+  /* ---------- scene building blocks ---------- */
+  .sky{ position:absolute; inset:0; }
+  .sun{ position:absolute; border-radius:50%; }
+  .sun::after{ content:''; position:absolute; inset:-60%; border-radius:50%;
+    background:radial-gradient(circle, currentColor, transparent 62%); opacity:.5; }
+  .mtn{ position:absolute; bottom:0; }
+  .hill{ position:absolute; bottom:0; border-top-left-radius:120px; border-top-right-radius:180px; }
+  .tree{ position:absolute; bottom:0; width:0; height:0; }
+  .road{ position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    border-left:20px solid transparent; border-right:20px solid transparent; }
+  .star{ position:absolute; width:2px; height:2px; border-radius:50%; background:rgba(255,255,255,.85); }
+  .label{ font-size:11px; color:#8a7b64; margin-top:7px; text-align:center; width:190px; }
+  .tag{ display:inline-block; font-size:9px; letter-spacing:1px; text-transform:uppercase;
+    background:#2b1d12; color:#c8862b; border:1px solid #5a4128; border-radius:10px; padding:1px 7px; margin-left:6px; }
+  .item{ display:flex; flex-direction:column; align-items:center; }
+
+  .note{ background:#20160d; border:1px solid #5a4128; border-radius:10px; padding:14px 16px;
+    font-size:12.5px; line-height:1.6; color:#cbb79a; max-width:760px; margin-top:26px; }
+  .note b{ color:#e0a23c; }
+</style>
+</head>
+<body>
+  <h1>Shelfed – Cover-Varianten</h1>
+  <p class="sub">Nur die untersten ~30 % sind im Screenshot sichtbar (halb weggeswipte Karte), aber hier siehst du
+  ganze Cover zum Vergleich. <b>A = euer eigenes Foto als Cover</b> (empfohlen, gehört euch), <b>B = generierte
+  Szenen-Cover</b> (überarbeitet, weniger schablonenhaft).</p>
+
+  <h2>A · Euer Foto als Cover <span class="tag">rechtlich sauber – gehört euch</span></h2>
+  <div class="row" id="rowPhoto"></div>
+
+  <h2>B · Generierte Szenen-Cover (überarbeitet)</h2>
+  <div class="row" id="rowScene"></div>
+
+  <div class="note">
+    <b>Wie wir eure eigenen Fotos verwenden (Variante A):</b><br>
+    Da die vanlife-Playlist <b>euer Kanal</b> ist, gehören euch die Bilder – ihr dürft sie also als Cover nutzen.
+    Ablauf: Du gibst mir <b>6–10 Lieblings-Fotos/Thumbnails</b> (Querformat ist ok, wird als Cover beschnitten).
+    Ich lege sie als App-Assets ab, und der Screenshot-Modus zeigt statt der generierten Szenen <b>eure echten
+    Fotos</b> mit Titel-Overlay (wie oben in A). Ergebnis: echte, hochwertige Cover – <b>ohne</b> Copyright-Risiko.
+    <br><br>Sag mir, welche Richtung dir gefällt (A oder B), dann baue ich das in den Screenshot-Modus ein.
+  </div>
+
+<script>
+  const PHOTO_SCENES = [
+    { name:'The Long Way North', y:2023, r:'8.1', g:'Adventure · Drama',
+      sky:'linear-gradient(180deg,#f7c26b 0%,#e8894a 42%,#8a3f39 78%,#3a1f28 100%)',
+      sun:{c:'#fff2cf',s:64,l:58,t:20}, hills:[['#7a4030',86,42,-20,150,220],['#43211c',94,30,60,220,120]],
+      road:'#efd9a6', stars:0 },
+    { name:'Harbor Lights', y:2019, r:'8.0', g:'Drama',
+      sky:'linear-gradient(180deg,#3a6ea5 0%,#27547c 45%,#123049 80%,#08202f 100%)',
+      sun:{c:'#eaf4ff',s:46,l:24,t:16}, hills:[['#123a52',88,40,-24,160,220],['#0a2233',96,28,50,220,130]],
+      road:null, stars:0 },
+    { name:'Woodsmoke', y:2023, r:'7.7', g:'Mystery',
+      sky:'linear-gradient(180deg,#6a9a5b 0%,#436b47 45%,#20361f 82%,#111f14 100%)',
+      sun:{c:'#eef3d6',s:40,l:64,t:22}, hills:[['#274d33',86,44,-18,150,210]], trees:true, stars:0 },
+    { name:'The Winter Guest', y:2018, r:'8.2', g:'Drama',
+      sky:'linear-gradient(180deg,#2b3f63 0%,#1b2c49 40%,#0d1830 75%,#060c18 100%)',
+      sun:{c:'#dbe7f5',s:38,l:70,t:14}, hills:[['#243a54',88,46,-20,140,220],['#101f30',96,30,55,220,120]],
+      snow:true, stars:26 },
+  ];
+  const SCENE_SCENES = [
+    { name:'Golden Hour', y:2022, r:'7.9', g:'Drama · Romance',
+      sky:'linear-gradient(180deg,#f6b26b,#d9713b 55%,#5a2a2e)',
+      sun:{c:'#ffe9c2',s:58,l:52,t:24}, hills:[['#7a3b2e',86,42,-20,150,220],['#361a17',94,30,60,220,120]], stars:0 },
+    { name:'Nightfall Road', y:2021, r:'7.3', g:'Thriller',
+      sky:'linear-gradient(180deg,#274060,#152a44 55%,#070d18)',
+      sun:{c:'#dbe7f5',s:34,l:30,t:14}, hills:[['#101f30',90,40,-15,150,210],['#060c15',96,28,55,220,130]],
+      road:'#39506f', stars:30 },
+    { name:'Salt & Pine', y:2019, r:'7.8', g:'Drama',
+      sky:'linear-gradient(180deg,#e0a950,#b06a2e 55%,#4a2a18)',
+      sun:{c:'#fff0c8',s:50,l:60,t:20}, hills:[['#5e3418',86,44,-18,150,210]], trees:true, stars:0 },
+    { name:'After the Rain', y:2024, r:'8.0', g:'Drama',
+      sky:'linear-gradient(180deg,#7b6aa8,#4a3f6b 52%,#1a1630)',
+      sun:{c:'#f2ead0',s:44,l:40,t:18}, hills:[['#241f47',88,42,-20,150,220],['#120f28',96,30,55,220,120]], stars:18 },
+  ];
+
+  function buildCover(s){
+    const c = document.createElement('div'); c.className='cover';
+    const sky = document.createElement('div'); sky.className='sky'; sky.style.background=s.sky; c.appendChild(sky);
+    // stars
+    for(let i=0;i<(s.stars||0);i++){ const st=document.createElement('div'); st.className='star';
+      st.style.left=(Math.random()*100)+'%'; st.style.top=(Math.random()*55)+'%';
+      st.style.opacity=(0.4+Math.random()*0.6).toFixed(2); c.appendChild(st); }
+    // sun
+    if(s.sun){ const sun=document.createElement('div'); sun.className='sun';
+      sun.style.width=s.sun.s+'px'; sun.style.height=s.sun.s+'px'; sun.style.left=s.sun.l+'%'; sun.style.top=s.sun.t+'%';
+      sun.style.background=s.sun.c; sun.style.color=s.sun.c; c.appendChild(sun); }
+    // hills
+    (s.hills||[]).forEach(h=>{ const [col,w,ht,left,rL,rR]=h; const hill=document.createElement('div'); hill.className='hill';
+      hill.style.background=col; hill.style.width=w+'%'; hill.style.height=ht+'%'; hill.style.left=left+'%';
+      hill.style.borderTopLeftRadius=rL+'px'; hill.style.borderTopRightRadius=rR+'px'; c.appendChild(hill); });
+    // trees silhouettes
+    if(s.trees){ for(let i=0;i<7;i++){ const t=document.createElement('div'); t.className='tree';
+      const bw=6+Math.random()*4, bh=26+Math.random()*22; t.style.borderLeft=bw+'px solid transparent';
+      t.style.borderRight=bw+'px solid transparent'; t.style.borderBottom=bh+'px solid #0e1a10';
+      t.style.left=(6+i*13+Math.random()*4)+'%'; t.style.bottom=(6+Math.random()*10)+'%'; c.appendChild(t); } }
+    // road
+    if(s.road){ const r=document.createElement('div'); r.className='road';
+      r.style.borderBottom='120px solid '+s.road; r.style.opacity=.85; c.appendChild(r); }
+    // snow caps hint
+    if(s.snow){ const sc=document.createElement('div'); sc.className='hill';
+      sc.style.background='rgba(240,246,255,.85)'; sc.style.width='30%'; sc.style.height='14%'; sc.style.left='34%';
+      sc.style.borderTopLeftRadius='60px'; sc.style.borderTopRightRadius='80px'; c.appendChild(sc); }
+    const grain=document.createElement('div'); grain.className='grain'; c.appendChild(grain);
+    const vign=document.createElement('div'); vign.className='vign'; c.appendChild(vign);
+    const scrim=document.createElement('div'); scrim.className='scrim'; c.appendChild(scrim);
+    const badge=document.createElement('div'); badge.className='badge'; badge.textContent='★ '+s.r; c.appendChild(badge);
+    const info=document.createElement('div'); info.className='info';
+    info.innerHTML='<div class="title">'+s.name+'</div><div class="meta">'+s.y+'   ·   '+s.g+'</div>';
+    c.appendChild(info);
+    return c;
+  }
+  function fill(id, list, photo){
+    const row=document.getElementById(id);
+    list.forEach(s=>{ const item=document.createElement('div'); item.className='item';
+      item.appendChild(buildCover(s));
+      const lbl=document.createElement('div'); lbl.className='label';
+      lbl.textContent = photo ? '↑ hier käme euer echtes Foto rein' : '';
+      item.appendChild(lbl); row.appendChild(item); });
+  }
+  fill('rowPhoto', PHOTO_SCENES, true);
+  fill('rowScene', SCENE_SCENES, false);
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shelfed — Background Style Options</title>
+<style>
+  :root{
+    --paper:#f4e4c1; --amber:#c8862b; --amber-bright:#e0a23c; --maroon:#7c2f1e;
+  }
+  html,body{margin:0;padding:0;background:#120c07;color:#f4e4c1;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  body{padding:28px 20px 70px;}
+  h1{font-size:21px;margin:0 0 4px;}
+  p.note{color:#b89b73;font-size:13px;margin:0 0 26px;max-width:900px;line-height:1.5;}
+  .row{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;}
+  .item{width:250px;}
+  .label{margin-top:10px;font-size:12px;color:#d8c9a8;line-height:1.4;text-align:center;}
+  .label b{color:#f4e4c1;}
+  /* phone frame */
+  .phone{width:250px;height:520px;border-radius:26px;overflow:hidden;position:relative;
+    box-shadow:0 16px 44px rgba(0,0,0,.55);background:#1d140c;}
+  /* the fake content card sitting on top of every background */
+  .card{position:absolute;left:26px;right:26px;top:120px;bottom:150px;border-radius:16px;
+    background:linear-gradient(160deg,#3a2a1c,#241812);border:2px solid #5a4128;
+    box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:flex-end;}
+  .card .t{padding:14px;font-family:"Oswald",sans-serif;text-transform:uppercase;
+    letter-spacing:1px;font-weight:700;font-size:20px;color:#f4e4c1;
+    text-shadow:0 2px 6px rgba(0,0,0,.8);}
+  .vig{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(15,9,4,.6) 100%);}
+  .abs{position:absolute;inset:0;}
+</style>
+</head>
+<body>
+  <h1>Background style options</h1>
+  <p class="note">
+    Each phone shows a different backdrop with a placeholder movie card on top (so you can judge how readable the
+    foreground stays). Option A is the current look. Tell me which you like (or a mix — e.g. "B but warmer",
+    "C with the plant") and I'll build it as a selectable shelf theme (to-do #7).
+  </p>
+  <div class="row" id="opts"></div>
+
+<script>
+function rand(s){const x=Math.sin(s*9301+49297)*233280;return x-Math.floor(x);}
+const BOOKS=['#a7563d','#7a3527','#5e7a3c','#3f6079','#d8a548','#8a5a2b','#b89b73','#2c4a3a'];
+const COOL =['#3f6079','#4f7a86','#5e7a3c','#6b7a8a','#8a8f6a','#4a6b6b','#7a6f8a','#2c4a3a'];
+
+function card(){return `<div class="card"><div class="t">Interstellar</div></div><div class="vig"></div>`;}
+function phone(inner){return `<div class="phone">${inner}${card()}</div>`;}
+
+/* ---------- A / E : cubby bookshelf ---------- */
+function bookshelf(pal, wood){
+  const [w1,w2,w3,frame,cubby]=wood;
+  let cells='';
+  const cols=4,rows=6;
+  for(let r=0;r<rows;r++){for(let c=0;c<cols;c++){
+    const i=r*cols+c, roll=rand(i*7+3);
+    let inner='';
+    if(roll<0.62){ // books
+      const n=4+Math.floor(rand(i+11)*3);
+      for(let k=0;k<n;k++){const col=pal[Math.floor(rand(i*31+k)*pal.length)];
+        const bw=9+rand(i+k*17)*8, bh=62+rand(i+k*23)*32;
+        inner+=`<div style="width:${bw}%;height:${bh}%;background:${col};margin:0 .5px;border-radius:1px"></div>`;}
+      inner=`<div style="display:flex;align-items:flex-end;justify-content:center;height:100%">${inner}</div>`;
+    } else if(roll<0.74){ // lamp
+      inner=`<div style="position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:55%;height:32%;
+        background:#f0d28c;border-radius:20px 20px 3px 3px"></div>
+        <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:90%;height:60%;
+        background:radial-gradient(circle,rgba(255,210,120,.35),transparent 70%)"></div>`;
+    } else if(roll<0.86){ // framed landscape
+      inner=`<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64%;height:70%;
+        background:#f3e7d2;border:2px solid #6b4a2a;box-sizing:border-box;padding:2px">
+        <div style="width:100%;height:100%;background:linear-gradient(180deg,#d9b25a 0 55%,#5e7a3c 55% 100%)"></div></div>`;
+    } else { // stacked books
+      let s='';for(let k=0;k<4;k++){const bw=62+rand(i+k*5)*24;
+        s+=`<div style="width:${bw}%;height:6px;margin-top:3px;border-radius:2px;background:${pal[k%pal.length]}"></div>`;}
+      inner=`<div style="width:100%;align-items:center;display:flex;flex-direction:column;justify-content:flex-end;height:100%;padding-bottom:2px">${s}</div>`;
+    }
+    cells+=`<div style="flex:1;background:${frame};border:1px solid ${w3};padding:3px;box-sizing:border-box">
+      <div style="width:100%;height:100%;background:${cubby};position:relative;overflow:hidden">${inner}</div></div>`;
+  }}
+  // rows
+  let grid='';const per=cols;
+  for(let r=0;r<rows;r++){grid+=`<div style="flex:1;display:flex">${
+    Array.from({length:per}).map((_,c)=>cells.split('</div></div>')[r*per+c]+'</div></div>').join('')}</div>`;}
+  return `<div class="abs" style="background:linear-gradient(180deg,${w1},${w2} 55%,${w3})"></div>
+    <div class="abs" style="display:flex;flex-direction:column;padding:5px;box-sizing:border-box">${grid}</div>`;
+}
+
+/* ---------- B : videothek (VHS/DVD spines) ---------- */
+function videothek(){
+  const cols=['#7a3527','#a7563d','#d8a548','#3f6079','#5e7a3c','#8a5a2b','#7c2f1e','#4a6b6b','#b89b73','#2c4a3a'];
+  let shelves='';
+  for(let sh=0;sh<5;sh++){
+    let spines='';const n=13;
+    for(let k=0;k<n;k++){const col=cols[Math.floor(rand(sh*20+k*3+1)*cols.length)];
+      const lean=rand(sh*7+k)<0.12?(rand(sh+k)-0.5)*10:0;
+      const h=82+rand(sh*5+k)*16;
+      spines+=`<div style="flex:1;height:${h}%;background:${col};margin:0 .6px;border-radius:1px;
+        transform:rotate(${lean}deg);transform-origin:bottom center;position:relative">
+        <div style="position:absolute;top:22%;left:0;right:0;height:14%;background:rgba(255,255,255,.18)"></div></div>`;}
+    shelves+=`<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+      <div style="display:flex;align-items:flex-end;height:100%;padding:0 3px">${spines}</div>
+      <div style="height:7px;background:linear-gradient(180deg,#7a4a22,#4a2c12);box-shadow:0 2px 4px rgba(0,0,0,.5)"></div>
+    </div>`;
+  }
+  return `<div class="abs" style="background:linear-gradient(180deg,#5a3618,#3e2410)"></div>
+    <div class="abs" style="display:flex;flex-direction:column;padding-top:6px">${shelves}</div>`;
+}
+
+/* ---------- C : minimal warm wall + hanging lamp ---------- */
+function warmWall(){
+  return `<div class="abs" style="background:linear-gradient(180deg,#6a4020,#3e2410 60%,#28180b)"></div>
+    <div style="position:absolute;top:0;right:44px;display:flex;flex-direction:column;align-items:center">
+      <div style="width:2px;height:70px;background:#2a1808"></div>
+      <div style="width:70px;height:42px;background:#f0d28c;border-radius:36px 36px 4px 4px"></div>
+    </div>
+    <div style="position:absolute;top:60px;right:-40px;width:280px;height:280px;border-radius:50%;
+      background:radial-gradient(circle,rgba(255,205,110,.22),transparent 65%)"></div>
+    <div style="position:absolute;bottom:-30px;left:-20px;width:200px;height:200px;border-radius:50%;
+      background:radial-gradient(circle,rgba(124,47,30,.18),transparent 70%)"></div>`;
+}
+
+/* ---------- D : cinema (film reels + spotlight) ---------- */
+function reel(x,y,s){
+  return `<div style="position:absolute;left:${x}px;top:${y}px;width:${s}px;height:${s}px;border-radius:50%;
+    background:radial-gradient(circle,#2a1c12 0 30%,#1a120a 30%);border:${s*0.13}px solid #3a281a;box-sizing:border-box">
+    ${[0,60,120,180,240,300].map(a=>`<div style="position:absolute;left:50%;top:50%;width:${s*0.16}px;height:${s*0.16}px;
+      margin:${-s*0.08}px 0 0 ${-s*0.08}px;border-radius:50%;background:#120c07;
+      transform:rotate(${a}deg) translateY(${-s*0.3}px)"></div>`).join('')}
+    <div style="position:absolute;left:50%;top:50%;width:${s*0.18}px;height:${s*0.18}px;margin:${-s*0.09}px 0 0 ${-s*0.09}px;border-radius:50%;background:#120c07"></div></div>`;
+}
+function cinema(){
+  return `<div class="abs" style="background:radial-gradient(120% 80% at 50% 30%,#2a1d10,#160f08 70%,#0d0905)"></div>
+    <div style="position:absolute;top:40px;left:50%;transform:translateX(-50%);width:260px;height:120px;
+      background:radial-gradient(ellipse,rgba(224,162,60,.16),transparent 70%)"></div>
+    ${reel(20,60,120)}${reel(150,150,150)}
+    <div style="position:absolute;left:0;top:0;bottom:0;width:20px;background:
+      repeating-linear-gradient(180deg,#0d0905 0 14px,#2a1c12 14px 22px)"></div>
+    <div style="position:absolute;right:0;top:0;bottom:0;width:20px;background:
+      repeating-linear-gradient(180deg,#0d0905 0 14px,#2a1c12 14px 22px)"></div>`;
+}
+
+const opts=[
+  ['<b>A — Current</b><br>warm wood bookshelf', bookshelf(BOOKS,['#7a4a22','#5a3618','#3e2410','#7a4a22','#2a1808'])],
+  ['<b>B — Videothek</b><br>rows of VHS/DVD spines (very on-theme)', videothek()],
+  ['<b>C — Warm wall</b><br>calm wood + hanging lamp glow', warmWall()],
+  ['<b>D — Cinema</b><br>film reels + spotlight, filmstrip edges', cinema()],
+  ['<b>E — Cool shelf</b><br>same shelf, cooler palette (teal/sage)', bookshelf(COOL,['#5a5040','#3e3a30','#2a2620','#5a5040','#20201c'])],
+];
+document.getElementById('opts').innerHTML =
+  opts.map(([l,inner])=>`<div class="item">${phone(inner)}<div class="label">${l}</div></div>`).join('');
+</script>
+</body>
+</html>

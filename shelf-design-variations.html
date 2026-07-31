@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shelfed — Shelf Design Variations</title>
+<style>
+  html,body{margin:0;padding:0;background:#120c07;color:#f4e4c1;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  body{padding:28px 20px 70px;}
+  h1{font-size:21px;margin:0 0 4px;}
+  p.note{color:#b89b73;font-size:13px;margin:0 0 26px;max-width:960px;line-height:1.5;}
+  .row{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;}
+  .item{width:230px;}
+  .label{margin-top:9px;font-size:12px;color:#d8c9a8;text-align:center;line-height:1.4;}
+  .label b{color:#f4e4c1;}
+  .phone{width:230px;height:480px;border-radius:24px;overflow:hidden;position:relative;
+    box-shadow:0 16px 40px rgba(0,0,0,.55);background:#1d140c;}
+  .card{position:absolute;left:24px;right:24px;top:112px;bottom:138px;border-radius:15px;
+    background:linear-gradient(160deg,#3a2a1c,#241812);border:2px solid #5a4128;
+    box-shadow:0 12px 28px rgba(0,0,0,.5);display:flex;align-items:flex-end;}
+  .card .t{padding:12px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:1px;
+    font-weight:700;font-size:18px;color:#f4e4c1;text-shadow:0 2px 6px rgba(0,0,0,.85);}
+  .vig{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 40%,transparent 42%,rgba(10,7,3,.5) 100%);}
+  .abs{position:absolute;inset:0;}
+</style>
+</head>
+<body>
+  <h1>Shelf design variations — different structures & styles</h1>
+  <p class="note">
+    Same idea (a shelf behind the card) but the actual DESIGN changes: cubby shape, frames, open vs closed,
+    hexagons, arches, metal, gilt… each with a fitting palette. Tell me which structure + which colour direction
+    you like (mix & match, e.g. "arched shape but the Modern colours") and I'll build it.
+  </p>
+  <div class="row" id="opts"></div>
+
+<script>
+function rnd(s){const x=Math.sin(s*9301+49297)*233280;return x-Math.floor(x);}
+function card(){return `<div class="card"><div class="t">Interstellar</div></div><div class="vig"></div>`;}
+
+/* ---- decorations (themed by palette) ---- */
+function books(t,i){let n=4+Math.floor(rnd(i+11)*3),s='';
+  for(let k=0;k<n;k++){const col=t.books[Math.floor(rnd(i*31+k)*t.books.length)];
+    const bw=9+rnd(i+k*17)*8,bh=60+rnd(i+k*23)*34;
+    s+=`<div style="width:${bw}%;height:${bh}%;background:${col};margin:0 .5px;border-radius:1px"></div>`;}
+  return `<div style="display:flex;align-items:flex-end;justify-content:center;height:100%">${s}</div>`;}
+function lamp(t){return `<div style="position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:52%;height:30%;background:${t.lampShade};border-radius:18px 18px 3px 3px"></div>
+  <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:90%;height:56%;background:radial-gradient(circle,${t.lampGlow},transparent 70%)"></div>`;}
+function plant(t){let lv='';const pts=[[50,30,0],[40,34,-32],[60,34,32],[50,36,0]];
+  pts.forEach(([x,y,r],k)=>{lv+=`<div style="position:absolute;left:${x}%;top:${y}%;width:12px;height:19px;margin-left:-6px;background:${k%2?t.leaf[1]:t.leaf[0]};border-radius:6px;transform-origin:center bottom;transform:rotate(${r}deg)"></div>`;});
+  return `${lv}<div style="position:absolute;left:34%;right:34%;top:44%;height:15%;background:#8a5a30;border-radius:0 0 4px 4px"></div><div style="position:absolute;left:29%;right:29%;top:42%;height:5px;background:#a86a3a;border-radius:2px"></div>`;}
+function picture(t){return `<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:62%;height:66%;background:${t.matte};border:2px solid ${t.picEdge};box-sizing:border-box;padding:2px"><div style="width:100%;height:100%;background:${t.pic}"></div></div>`;}
+function stack(t,i){let s='';for(let k=0;k<4;k++){const bw=62+rnd(i+k*5)*24;
+  s+=`<div style="width:${bw}%;height:6px;margin-top:3px;border-radius:2px;background:${t.books[k%t.books.length]}"></div>`;}
+  return `<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:3px;box-sizing:border-box">${s}</div>`;}
+function deco(t,i){const r=rnd(i*7+3);
+  if(r<0.52)return books(t,i); if(r<0.65)return lamp(t);
+  if(r<0.77)return plant(t); if(r<0.89)return picture(t); return stack(t,i);}
+
+/* ---- cubby shapes ---- */
+const SHAPE={
+  rect:'', round:'border-radius:13px;',
+  arch:'border-top-left-radius:42% 30%;border-top-right-radius:42% 30%;',
+  archFull:'border-radius:50% 50% 6px 6px / 40% 40% 6px 6px;',
+  hex:'clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%);',
+};
+
+function gridShelf(t){
+  const cols=t.cols||4, rows=t.rows||6; const sh=SHAPE[t.shape||'rect'];
+  let html='';
+  for(let r=0;r<rows;r++){let cb='';
+    for(let c=0;c<cols;c++){const i=r*cols+c;
+      cb+=`<div style="flex:1;background:${t.frame};border:${t.frameW}px solid ${t.edge};padding:${t.pad}px;box-sizing:border-box;${sh};${t.frameExtra||''}">
+        <div style="width:100%;height:100%;background:${t.cubby};position:relative;overflow:hidden;${sh}">${deco(t,i)}</div></div>`;}
+    html+=`<div style="flex:1;display:flex;gap:${t.gap||0}px">${cb}</div>`;}
+  return `<div class="abs" style="background:linear-gradient(180deg,${t.wall[0]},${t.wall[1]} 55%,${t.wall[2]})"></div>
+    <div class="abs" style="display:flex;flex-direction:column;gap:${t.gap||0}px;padding:${t.outerPad||5}px;box-sizing:border-box">${html}</div>`;}
+
+function floatingShelf(t){
+  const rows=6;let html='';
+  for(let r=0;r<rows;r++){let items='';const n=10+Math.floor(rnd(r*3+1)*4);
+    for(let k=0;k<n;k++){const col=t.books[Math.floor(rnd(r*13+k)*t.books.length)];
+      const bh=52+rnd(r+k*7)*38,lean=rnd(r*5+k)<0.14?(rnd(r+k)-0.5)*12:0;
+      items+=`<div style="flex:1;height:${bh}%;background:${col};margin:0 .5px;border-radius:1px;transform:rotate(${lean}deg);transform-origin:bottom center"></div>`;}
+    html+=`<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+      <div style="display:flex;align-items:flex-end;height:100%;padding:0 8px">${items}</div>
+      <div style="height:8px;margin:0 4px;background:linear-gradient(180deg,${t.frame},${t.edge});border-radius:2px;box-shadow:0 4px 6px rgba(0,0,0,.5)"></div></div>`;}
+  return `<div class="abs" style="background:linear-gradient(180deg,${t.wall[0]},${t.wall[1]} 55%,${t.wall[2]})"></div>
+    <div class="abs" style="display:flex;flex-direction:column;padding:8px 0">${html}</div>`;}
+
+function shelf(t){return t.mode==='floating'?floatingShelf(t):gridShelf(t);}
+
+/* palettes reused */
+const P_WARM=['#a7563d','#7a3527','#5e7a3c','#3f6079','#d8a548','#8a5a2b','#b89b73','#2c4a3a'];
+const P_COOL=['#3f6079','#4a6b6b','#6b7280','#9aa0a6','#c8cdd2','#d8a548'];
+const P_BRIGHT=['#ff6b6b','#ffd93d','#5ec26a','#4d96ff','#ff9f43','#a55eea','#26c6da'];
+const P_LEATHER=['#1f4030','#5a1f22','#1f2a44','#4a3020','#7a5a2b','#2c1a2c'];
+const P_PASTEL=['#c98a9a','#9aa87a','#a8b8c8','#e0d3b8','#c9a24a','#b57a86'];
+
+const base={frameW:1,pad:3,leaf:['#4f6b35','#7a9658'],lampShade:'#f0d28c',lampGlow:'rgba(255,210,120,.32)',
+  matte:'#f3e7d2',picEdge:'#6b4a2a',pic:'linear-gradient(180deg,#d9b25a 0 55%,#5e7a3c 55% 100%)'};
+
+const STYLES=[
+ {...base,name:'1 · Classic',sub:'square cubbies, warm wood',shape:'rect',
+   wall:['#7a4a22','#5a3618','#3e2410'],frame:'#7a4a22',edge:'#3e2410',cubby:'#2a1808',books:P_WARM},
+ {...base,name:'2 · Arched library',sub:'arched tops, dark walnut + gilt',shape:'arch',frameW:2,
+   wall:['#2a1d10','#1a1208','#100a06'],frame:'#3a2a18',edge:'#c9a24a',cubby:'#140f0a',books:P_LEATHER,
+   matte:'#e8d9b5',picEdge:'#c9a24a'},
+ {...base,name:'3 · Ornate cabinet',sub:'thick gilt frames, deep burgundy',shape:'rect',frameW:4,pad:4,
+   wall:['#3a1418','#26100f','#160a08'],frame:'#b8892f',edge:'#6a4a18',cubby:'#1e0e0c',books:['#7a1f22','#c9a24a','#3a2440','#1f4030','#8a5a2b'],
+   frameExtra:'box-shadow:inset 0 0 0 1px #6a4a1a',matte:'#e8d9b5',picEdge:'#b8892f'},
+ {...base,name:'4 · Floating shelves',sub:'open ledges, no dividers',mode:'floating',
+   wall:['#6a4020','#3e2410','#28180b'],frame:'#8a5a2b',edge:'#4a2c12',books:P_WARM},
+ {...base,name:'5 · Industrial grid',sub:'thin metal frames, concrete',shape:'rect',frameW:1,pad:2,gap:2,
+   wall:['#3a3d42','#26282c','#161719'],frame:'#4a4d52',edge:'#1a1c1e',cubby:'#1c1e21',books:P_COOL,
+   lampGlow:'rgba(150,190,220,.28)',lampShade:'#cfd6dd',leaf:['#5a7a6a','#7a9a86']},
+ {...base,name:'6 · Honeycomb',sub:'hexagon cubbies, playful',shape:'hex',frameW:2,pad:2,
+   wall:['#ffe9cf','#ffd9bf','#ffc9b3'],frame:'#e88f5a',edge:'#c46a3a',cubby:'#fff4e6',books:P_BRIGHT,
+   lampShade:'#ffe08a',lampGlow:'rgba(255,150,80,.35)',leaf:['#5ec26a','#8ad98a'],matte:'#fff4e6',picEdge:'#e88f5a'},
+ {...base,name:'7 · Rounded soft',sub:'rounded cubbies, muted pastel',shape:'round',frameW:2,pad:3,gap:2,
+   wall:['#e7dccb','#ddccbc','#cfb9ad'],frame:'#c9b7a4',edge:'#a8917c',cubby:'#efe6d6',books:P_PASTEL,
+   lampShade:'#f0e2c2',lampGlow:'rgba(230,190,120,.3)',leaf:['#9aa87a','#b6c096'],matte:'#f3ead6',picEdge:'#b79a6a',
+   pic:'linear-gradient(180deg,#cdd8c0 0 55%,#b9c7d2 55% 100%)'},
+ {...base,name:'8 · Apothecary arches',sub:'round-arch niches, botanical',shape:'archFull',frameW:3,pad:3,
+   wall:['#233a24','#16280f','#0c160a'],frame:'#3a4a2a',edge:'#6a7a3a',cubby:'#101a0d',books:['#2f5a3a','#4a6b2a','#8a6a2b','#6a3a1a','#c08a2a'],
+   leaf:['#2f5a3a','#4a6b2a'],lampShade:'#e6c07a',lampGlow:'rgba(230,170,60,.3)',matte:'#d8c89a',picEdge:'#4a3a1a',
+   pic:'linear-gradient(180deg,#5a7a3a 0 55%,#173a24 55% 100%)'},
+];
+
+document.getElementById('opts').innerHTML = STYLES.map(t=>`
+  <div class="item"><div class="phone">${shelf(t)}${card()}</div>
+  <div class="label"><b>${t.name}</b><br>${t.sub}</div></div>`).join('');
+</script>
+</body>
+</html>

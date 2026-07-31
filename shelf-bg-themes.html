@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shelfed — Themed Background Options</title>
+<style>
+  html,body{margin:0;padding:0;background:#120c07;color:#f4e4c1;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  body{padding:28px 20px 70px;}
+  h1{font-size:21px;margin:0 0 4px;}
+  p.note{color:#b89b73;font-size:13px;margin:0 0 26px;max-width:940px;line-height:1.5;}
+  .row{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;}
+  .item{width:250px;}
+  .label{margin-top:10px;font-size:12px;color:#d8c9a8;line-height:1.4;text-align:center;}
+  .label b{color:#f4e4c1;}
+  .phone{width:250px;height:520px;border-radius:26px;overflow:hidden;position:relative;
+    box-shadow:0 16px 44px rgba(0,0,0,.55);background:#1d140c;}
+  .card{position:absolute;left:26px;right:26px;top:120px;bottom:150px;border-radius:16px;
+    background:linear-gradient(160deg,#3a2a1c,#241812);border:2px solid #5a4128;
+    box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:flex-end;}
+  .card .t{padding:14px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:1px;
+    font-weight:700;font-size:20px;color:#f4e4c1;text-shadow:0 2px 6px rgba(0,0,0,.85);}
+  .vig{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 40%,transparent 42%,rgba(10,7,3,.55) 100%);}
+  .abs{position:absolute;inset:0;}
+</style>
+</head>
+<body>
+  <h1>Themed background options</h1>
+  <p class="note">
+    Original, franchise-<i>inspired</i> moods (no logos/characters — just the aesthetic). Each phone has a
+    placeholder card on top so you can judge readability. Tell me which vibe(s) you like and any tweaks
+    ("darker", "more sparkle", "add the plant") and I'll build the chosen one(s) as selectable shelf themes (#7).
+  </p>
+  <div class="row" id="opts"></div>
+
+<script>
+function rnd(s){const x=Math.sin(s*9301+49297)*233280;return x-Math.floor(x);}
+function card(title){return `<div class="card"><div class="t">${title||'Interstellar'}</div></div><div class="vig"></div>`;}
+function phone(inner,title){return `<div class="phone">${inner}${card(title)}</div>`;}
+
+/* 1) MODERN — dark, minimal, one soft accent glow + hairlines */
+function modern(){
+  return `<div class="abs" style="background:radial-gradient(95% 70% at 32% 18%,#242a34,#12151b 58%,#0b0d11)"></div>
+    <div style="position:absolute;top:-50px;left:-50px;width:230px;height:230px;border-radius:50%;
+      background:radial-gradient(circle,rgba(90,190,205,.16),transparent 65%)"></div>
+    <div style="position:absolute;bottom:-70px;right:-50px;width:250px;height:250px;border-radius:50%;
+      background:radial-gradient(circle,rgba(224,162,60,.10),transparent 65%)"></div>
+    <div style="position:absolute;top:0;bottom:0;left:58px;width:1px;background:rgba(255,255,255,.05)"></div>
+    <div style="position:absolute;top:0;bottom:0;right:66px;width:1px;background:rgba(255,255,255,.05)"></div>
+    <div style="position:absolute;left:0;right:0;top:46%;height:1px;background:rgba(255,255,255,.04)"></div>`;
+}
+
+/* 2) VERSPIELT / PLAYFUL — cream base, confetti + pastel blobs */
+function playful(){
+  const cols=['#ff6b6b','#ffd93d','#5ec26a','#4d96ff','#ff9f43','#a55eea','#26c6da'];
+  let bits='';
+  for(let i=0;i<46;i++){
+    const x=rnd(i*3+1)*100,y=rnd(i*5+2)*100,c=cols[Math.floor(rnd(i*7+3)*cols.length)];
+    const sz=6+rnd(i+4)*10,rot=rnd(i+9)*360,sh=rnd(i+11);
+    const shape=sh<0.4?'border-radius:50%':sh<0.7?'border-radius:2px':'border-radius:2px;width:'+sz+'px;height:'+(sz*0.4)+'px';
+    bits+=`<div style="position:absolute;left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;background:${c};
+      transform:rotate(${rot}deg);${shape};opacity:.9"></div>`;
+  }
+  return `<div class="abs" style="background:linear-gradient(160deg,#fff3df,#ffe3c7 55%,#ffd0b0)"></div>
+    <div style="position:absolute;top:-40px;left:-30px;width:190px;height:190px;border-radius:50%;
+      background:radial-gradient(circle,rgba(93,194,106,.35),transparent 70%)"></div>
+    <div style="position:absolute;bottom:-50px;right:-30px;width:210px;height:210px;border-radius:50%;
+      background:radial-gradient(circle,rgba(77,150,255,.30),transparent 70%)"></div>
+    ${bits}`;
+}
+
+/* 3) HARRY POTTER STYLE — magical library: midnight, arched window, floating candles, gold sparkles */
+function wizard(){
+  let candles='';
+  const spots=[[18,34],[40,22],[70,30],[84,46],[28,55],[60,50]];
+  spots.forEach(([x,y],i)=>{
+    candles+=`<div style="position:absolute;left:${x}%;top:${y}%;width:36px;height:36px;margin:-18px 0 0 -18px;
+        border-radius:50%;background:radial-gradient(circle,rgba(255,196,90,.5),transparent 60%)"></div>
+      <div style="position:absolute;left:${x}%;top:${y}%;width:4px;height:16px;margin:0 0 0 -2px;background:#efe0bd;border-radius:1px"></div>
+      <div style="position:absolute;left:${x}%;top:${y-1}%;width:5px;height:8px;margin:-8px 0 0 -2.5px;background:#ffcf6b;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;box-shadow:0 0 8px 2px rgba(255,180,60,.7)"></div>`;
+  });
+  let stars='';for(let i=0;i<26;i++){const x=22+rnd(i*4+1)*56,y=6+rnd(i*6+2)*20,s=1+rnd(i+3)*2;
+    stars+=`<div style="position:absolute;left:${x}%;top:${y}%;width:${s}px;height:${s}px;border-radius:50%;background:#ffe9a8;opacity:${.4+rnd(i)*.6}"></div>`;}
+  let sparkle='';for(let i=0;i<18;i++){const x=rnd(i*9+5)*100,y=30+rnd(i*3+7)*60;
+    sparkle+=`<div style="position:absolute;left:${x}%;top:${y}%;width:3px;height:3px;border-radius:50%;background:#e8c15a;box-shadow:0 0 6px 1px rgba(216,165,60,.8)"></div>`;}
+  // bottom bookshelf silhouette
+  let spines='';for(let i=0;i<16;i++){const h=40+rnd(i*5+2)*40,c=['#20304a','#3a2440','#2a3a2a','#402a20'][i%4];
+    spines+=`<div style="flex:1;height:${h}px;background:${c};margin:0 1px;border-radius:1px 1px 0 0"></div>`;}
+  return `<div class="abs" style="background:linear-gradient(180deg,#0e1430,#160f2a 55%,#0c0a1c)"></div>
+    <div style="position:absolute;top:24px;left:50%;transform:translateX(-50%);width:120px;height:150px;
+      border-radius:60px 60px 6px 6px;background:linear-gradient(180deg,#101a3a,#1a1030);
+      border:3px solid #2a2140;overflow:hidden">
+      <div style="position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#2a2140"></div>
+      <div style="position:absolute;left:0;right:0;top:46%;height:2px;background:#2a2140"></div>${stars}</div>
+    ${sparkle}${candles}
+    <div style="position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;height:60px;padding:0 6px;opacity:.9">${spines}</div>`;
+}
+
+/* 4) STOLZ & VORURTEILE — Regency drawing room: rose damask, gold oval frame, roses */
+function regency(){
+  // damask-ish repeating motif
+  let motif='';for(let gy=0;gy<7;gy++)for(let gx=0;gx<5;gx++){
+    const x=gx*22+ (gy%2?11:0), y=gy*15;
+    motif+=`<div style="position:absolute;left:${x}%;top:${y}%;width:16px;height:22px;margin:-11px 0 0 -8px;
+      background:rgba(150,120,120,.16);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transform:rotate(45deg)"></div>`;
+  }
+  // little roses
+  let roses='';const rs=[[16,64],[80,60],[50,78]];
+  rs.forEach(([x,y])=>{roses+=`<div style="position:absolute;left:${x}%;top:${y}%;width:26px;height:26px;margin:-13px 0 0 -13px">
+      ${[0,72,144,216,288].map(a=>`<div style="position:absolute;left:50%;top:50%;width:12px;height:9px;margin:-4.5px 0 0 -6px;
+        background:#d98aa0;border-radius:50%;transform:rotate(${a}deg) translateY(-6px)"></div>`).join('')}
+      <div style="position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#c26a86"></div></div>`;});
+  return `<div class="abs" style="background:linear-gradient(180deg,#efe3d8,#e7d3c9 55%,#dcc6c0)"></div>
+    ${motif}
+    <div style="position:absolute;top:40px;left:50%;transform:translateX(-50%);width:110px;height:140px;
+      border-radius:50%;background:linear-gradient(180deg,#cdd8c0,#b9c7d2);
+      border:7px solid #c9a24a;box-shadow:0 0 0 2px #a8863a,0 8px 20px rgba(0,0,0,.2)"></div>
+    <div style="position:absolute;top:34px;left:50%;transform:translateX(-50%);width:124px;height:12px;
+      background:radial-gradient(circle,#e0be5e,transparent 70%)"></div>
+    ${roses}`;
+}
+
+/* 5) JURASSIC PARK STYLE — jungle: fern leaves, mist, amber glow, warning stripe */
+function jungle(){
+  function frond(x,y,rot,scale,tone){
+    let blades='';for(let i=0;i<7;i++){const a=-52+i*17;
+      blades+=`<div style="position:absolute;left:0;bottom:0;width:${5*scale}px;height:${40*scale}px;background:${tone};
+        border-radius:50% 50% 45% 45%/62% 62% 38% 38%;transform-origin:bottom center;transform:rotate(${a}deg)"></div>`;}
+    return `<div style="position:absolute;left:${x}%;top:${y}%;transform:rotate(${rot}deg)">${blades}</div>`;
+  }
+  return `<div class="abs" style="background:linear-gradient(180deg,#0d2416,#173a24 45%,#2f5a3a 78%,#4a6f48)"></div>
+    <div style="position:absolute;top:30px;right:-30px;width:200px;height:200px;border-radius:50%;
+      background:radial-gradient(circle,rgba(230,170,60,.28),transparent 65%)"></div>
+    <div style="position:absolute;left:0;right:0;top:40%;height:120px;background:linear-gradient(180deg,rgba(180,200,170,.14),transparent)"></div>
+    ${frond(-6,86,-12,1.5,'#183a20')}
+    ${frond(96,90,18,1.7,'#153520')}
+    ${frond(20,96,-4,1.2,'#20492b')}
+    ${frond(74,98,8,1.1,'#20492b')}
+    ${frond(-4,20,150,1.1,'#1c4024')}
+    <div style="position:absolute;top:0;left:0;width:60px;height:60px;background:
+      repeating-linear-gradient(45deg,#e5b73a 0 10px,#1a1208 10px 20px);clip-path:polygon(0 0,100% 0,0 100%);opacity:.85"></div>`;
+}
+
+const opts=[
+  ['<b>1 — Modern</b><br>dark, minimal, one soft glow', modern()],
+  ['<b>2 — Verspielt</b><br>cream + confetti, cheerful', playful()],
+  ['<b>3 — Harry-Potter-Stil</b><br>magical library: candles, stars, gold', wizard()],
+  ['<b>4 — Stolz &amp; Vorurteile</b><br>Regency: rose damask, gold frame', regency()],
+  ['<b>5 — Jurassic-Park-Stil</b><br>jungle: ferns, mist, amber, hazard stripe', jungle()],
+];
+document.getElementById('opts').innerHTML =
+  opts.map(([l,inner])=>`<div class="item">${phone(inner)}<div class="label">${l}</div></div>`).join('');
+</script>
+</body>
+</html>

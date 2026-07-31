@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shelfed – „Der Sammler" (realistischer)</title>
+<style>
+  :root{
+    --wall1:#efa63c; --wall2:#dd8f2c; --wall3:#c07620;
+    --wood:#d7bb8c; --wood-d:#a9884f; --wood-l:#e6d3a8; --plank:#c6a468;
+    --back:#2a2018;                      /* dark shelf back panel behind spines */
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:#1c1712; color:#8a7b64; min-height:100vh;
+    padding:20px 12px 44px; display:flex; flex-direction:column; align-items:center; gap:14px;
+  }
+  h1{ font-size:16px; font-weight:600; color:#e7d6b6; letter-spacing:.3px; }
+  .sub{ font-size:11.5px; color:#7d6f5a; max-width:440px; text-align:center; line-height:1.5; }
+
+  .phone{
+    width:390px; max-width:96vw; aspect-ratio:390/820;
+    background:#000; border-radius:38px; padding:12px 10px;
+    box-shadow:0 30px 70px rgba(0,0,0,.7), inset 0 0 0 2px #1a1a1a;
+    position:relative; overflow:hidden;
+  }
+  .notch{ position:absolute; top:12px; left:50%; transform:translateX(-50%);
+    width:120px; height:22px; background:#000; border-radius:0 0 14px 14px; z-index:20; }
+  .statusbar{ height:20px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px; font-size:10px; color:#fff; position:relative; z-index:15; }
+
+  .scene{
+    position:absolute; inset:0; border-radius:30px; overflow:hidden;
+    background:
+      radial-gradient(130% 55% at 8% -5%, rgba(255,240,205,.65), transparent 42%),
+      linear-gradient(158deg, var(--wall1) 0%, var(--wall2) 55%, var(--wall3) 100%);
+  }
+  /* faint wall texture streaks so the flat orange isn't uniform */
+  .scene::before{ content:''; position:absolute; inset:0; opacity:.06; mix-blend-mode:multiply;
+    background:repeating-linear-gradient(92deg, #000 0 1px, transparent 1px 7px); }
+
+  .case{ position:absolute; inset:34px 8px 8px; display:flex; flex-direction:column; }
+
+  .topFigs{ height:54px; display:flex; align-items:flex-end; padding:0 6px; gap:2px;
+    position:relative; z-index:6; }
+
+  .shelves{ flex:1; display:flex; flex-direction:column; position:relative;
+    background:linear-gradient(180deg,var(--wood-l),var(--wood)); border-radius:3px;
+    border:2px solid var(--wood-d); overflow:hidden;
+    box-shadow:inset 0 0 0 1px rgba(120,90,50,.3); }
+  /* room light coming from the left, shadow to the right (breaks the flatness) */
+  .shelves::after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:7;
+    background:linear-gradient(102deg, rgba(255,244,210,.16) 0%, transparent 34%, rgba(40,20,5,.16) 100%); }
+
+  .posts{ position:absolute; inset:0; display:flex; justify-content:space-between;
+    pointer-events:none; z-index:4; }
+  .post{ width:6px; background:linear-gradient(90deg,var(--wood-l),var(--wood-d));
+    box-shadow:1px 0 2px rgba(0,0,0,.25); }
+
+  .shelfRow{ flex:1; display:flex; flex-direction:column; position:relative; }
+  .cubes{ flex:1; display:flex; }
+  .cube{ flex:1; position:relative; overflow:hidden; background:var(--back);
+    box-shadow:inset 0 7px 9px rgba(0,0,0,.30), inset 0 -4px 7px rgba(0,0,0,.35),
+               inset 6px 0 8px rgba(0,0,0,.12); }
+  .spines{ position:absolute; inset:0; display:flex; align-items:flex-end;
+    justify-content:flex-start; padding:0 1px; }
+  .spine{ position:relative; align-self:flex-end; flex:0 0 auto; transform-origin:bottom center;
+    box-shadow:inset 1px 0 0 rgba(255,255,255,.14), inset -1px 0 0 rgba(0,0,0,.22); }
+  .spine .band{ position:absolute; left:0; right:0; }              /* printed title strip */
+  .spine .logo{ position:absolute; left:15%; right:15%; bottom:6%; height:5%;
+    background:rgba(255,255,255,.35); border-radius:1px; }         /* studio logo hint */
+
+  .plank{ height:8px; position:relative; z-index:3;
+    background:linear-gradient(180deg,var(--wood-l),var(--plank) 45%,var(--wood-d));
+    box-shadow:0 3px 4px rgba(0,0,0,.30); }
+  .plank::before{ content:''; position:absolute; left:0; right:0; top:0; height:1px;
+    background:rgba(255,248,225,.6); }
+
+  .shelfFigs{ position:absolute; bottom:8px; display:flex; align-items:flex-end; gap:5px; z-index:5; }
+
+  /* figures ------------------------------------------------------------- */
+  .fig{ position:relative; }
+  .fig .shadow{ position:absolute; bottom:-2px; left:50%; transform:translateX(-50%);
+    width:120%; height:5px; border-radius:50%; background:rgba(0,0,0,.28); filter:blur(1px); }
+
+  .legend{ font-size:11px; color:#7d6f5a; max-width:440px; text-align:center; line-height:1.5; }
+  .legend b{ color:#dd8f2c; }
+</style>
+</head>
+<body>
+  <h1>Shelfed – „Der Sammler" (weniger „AI", mehr echt)</h1>
+  <p class="sub">Gruppierte Farb-Läufe, bedruckte Titel-Banderolen, gemischte Breiten, bündige
+  Oberkanten und Licht/Schatten für Tiefe – plus charaktervollere Figuren mit Bodenschatten.</p>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="statusbar"><span>9:41</span><span>Shelfed</span><span>▮▮▮</span></div>
+    <div class="scene">
+      <div class="case">
+        <div class="topFigs" id="topFigs"></div>
+        <div class="shelves" id="shelves">
+          <div class="posts" id="posts"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="legend"><b>Der Sammler</b> – helles, vollgepacktes Regal echter wirkender Filme + Figuren.</p>
+
+<script>
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const ri=(a,b)=>Math.floor(rnd(a,b+1));
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const chance=p=>Math.random()<p;
+
+  // hex helpers for shading a base colour
+  function hx(c){c=c.replace('#','');return [parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)];}
+  function sh(c,f){const[r,g,b]=hx(c);const m=x=>Math.max(0,Math.min(255,Math.round(x*(1+f))));return `rgb(${m(r)},${m(g)},${m(b)})`;}
+
+  // muted-realistic DVD palette + neutral cases (white/black/navy) mixed in
+  const DVD=['#8f2c24','#b23a2e','#7a2540','#243f66','#1f5b6b','#2c6b3c','#54397a',
+             '#c06a26','#b89230','#7a4a1f','#365a8f','#1f6b5a','#9c2f5a','#3a3f7a'];
+  const NEUTRAL=['#e7e3d8','#d7cfbc','#1b1b1b','#2b2b2b','#8f8a80','#c9c3b4'];
+
+  function makeSpine(base, isNeutral){
+    const s=document.createElement('div'); s.className='spine';
+    const boxset = !isNeutral && chance(0.14);            // occasional thick box set
+    const w = isNeutral ? rnd(3,5) : boxset ? rnd(7,10) : rnd(3.2,5.2);
+    // even tops: most tall, a few blu-ray (shorter) or artbook (taller)
+    let h = rnd(90,97);
+    if(!isNeutral && chance(0.12)) h = rnd(82,87);        // blu-ray a touch shorter
+    if(chance(0.05)) h = rnd(98,103);                     // tall art book / steelbook
+    s.style.width=w+'px'; s.style.height=h+'%';
+    s.style.margin='0 .35px';
+    const light = sh(base, rnd(-0.14,0.14));
+    s.style.background=`linear-gradient(90deg, ${sh(base,0.16)} 0%, ${light} 30%, ${sh(base,-0.22)} 100%)`;
+    if(chance(0.10)) s.style.transform=`rotate(${rnd(-2.2,2.2)}deg)`; // a few leaners
+    // printed title band near the top (studio banner / title)
+    const band=document.createElement('div'); band.className='band';
+    band.style.top=rnd(6,16)+'%'; band.style.height=rnd(9,16)+'%';
+    const bandDark=chance(0.5);
+    band.style.background=bandDark?'rgba(0,0,0,.30)':'rgba(255,255,255,.42)';
+    s.appendChild(band);
+    if(w>4 && chance(0.6)){ const l=document.createElement('div'); l.className='logo'; s.appendChild(l); }
+    return s;
+  }
+
+  function fillCube(cube){
+    const sp=document.createElement('div'); sp.className='spines';
+    let budget=110;                       // fill past the edge; overflow clips
+    while(budget>0){
+      // a colour "run" = a few volumes of the same series sit together
+      if(chance(0.22)){                   // a single neutral case breaks up runs
+        const s=makeSpine(pick(NEUTRAL), true); sp.appendChild(s); budget-=5;
+      } else {
+        const base=pick(DVD); const run=ri(2,5);
+        for(let k=0;k<run && budget>0;k++){ const s=makeSpine(base,false); sp.appendChild(s); budget-=5; }
+      }
+      if(chance(0.06)) budget-=3;         // occasional small gap
+    }
+    cube.appendChild(sp);
+  }
+
+  // ---- figures: distinct archetypes, muted colours, ground shadow ----
+  const FCOL=['#7a2a24','#274a6b','#3a5a2e','#5a3a6b','#b07a2a','#2f4658','#8a3a5a','#456b6b'];
+  function fbase(el,w,h,col){ el.style.width=w+'px'; el.style.height=h+'px';
+    el.style.background=`linear-gradient(180deg, ${sh(col,0.12)}, ${sh(col,-0.5)})`; }
+  function figure(scale=1){
+    const f=document.createElement('div'); f.className='fig';
+    const col=pick(FCOL); const type=ri(0,5);
+    const wrap=document.createElement('div'); wrap.style.position='relative';
+    const s=rnd(.85,1.15)*scale;
+    let W=13*s, H=rnd(30,40)*s;
+    const body=document.createElement('div');
+    body.style.position='relative'; body.style.borderRadius='4px 4px 3px 3px';
+    if(type===0){ // caped hero, one arm up
+      fbase(body,W,H,col); body.style.borderRadius='5px 5px 3px 3px';
+      const head=document.createElement('div'); fbase(head,W*.62,W*.62,sh(col,.05));
+      head.style.borderRadius='50%'; head.style.position='absolute'; head.style.left='50%';
+      head.style.top=(-W*.5)+'px'; head.style.transform='translateX(-50%)';
+      const cape=document.createElement('div'); fbase(cape,W*1.5,H*.8,pick(FCOL));
+      cape.style.position='absolute'; cape.style.top='16%'; cape.style.left='50%';
+      cape.style.transform='translateX(-55%)'; cape.style.zIndex='-1';
+      cape.style.borderRadius='4px 4px 10px 4px';
+      const arm=document.createElement('div'); fbase(arm,W*.28,H*.5,col);
+      arm.style.position='absolute'; arm.style.right='-3px'; arm.style.top='-18%';
+      arm.style.transform='rotate(24deg)'; arm.style.borderRadius='3px';
+      body.appendChild(cape); body.appendChild(head); body.appendChild(arm);
+    } else if(type===1){ // robot: boxy + antenna + eye
+      W=15*s; fbase(body,W,H,col); body.style.borderRadius='3px';
+      const head=document.createElement('div'); fbase(head,W*.8,W*.62,sh(col,-.1));
+      head.style.position='absolute'; head.style.left='50%'; head.style.top=(-W*.5)+'px';
+      head.style.transform='translateX(-50%)'; head.style.borderRadius='2px';
+      const eye=document.createElement('div'); eye.style.cssText=`position:absolute;left:50%;top:${-W*.32}px;transform:translateX(-50%);width:${W*.32}px;height:${W*.16}px;border-radius:2px;background:#ffd66a;box-shadow:0 0 5px #ffb84a;`;
+      const ant=document.createElement('div'); ant.style.cssText=`position:absolute;left:50%;top:${-W*.85}px;transform:translateX(-50%);width:1.5px;height:${W*.4}px;background:${sh(col,-.2)};`;
+      body.appendChild(head); body.appendChild(eye); body.appendChild(ant);
+    } else if(type===2){ // droid ball (BB-8-ish)
+      const ball=document.createElement('div'); const d=W*1.5; fbase(ball,d,d,sh(col,.2));
+      ball.style.borderRadius='50%'; body.appendChild(ball); H=d*1.25;
+      const dome=document.createElement('div'); fbase(dome,d*.7,d*.42,sh(col,.1));
+      dome.style.position='absolute'; dome.style.left='50%'; dome.style.top=(-d*.34)+'px';
+      dome.style.transform='translateX(-50%)'; dome.style.borderRadius='50% 50% 4px 4px';
+      body.appendChild(dome);
+    } else if(type===3){ // beast: hunched + ears
+      W=16*s; H=rnd(24,30)*s; fbase(body,W,H,col); body.style.borderRadius='8px 8px 4px 4px';
+      [-1,1].forEach(d=>{const ear=document.createElement('div'); fbase(ear,W*.28,W*.4,sh(col,-.1));
+        ear.style.position='absolute'; ear.style.top=(-W*.28)+'px'; ear.style[d<0?'left':'right']='12%';
+        ear.style.borderRadius='60% 60% 20% 20%'; body.appendChild(ear);});
+    } else if(type===4){ // slim jedi + saber line
+      W=9*s; fbase(body,W,H,col); body.style.borderRadius='5px 5px 3px 3px';
+      const head=document.createElement('div'); fbase(head,W*.8,W*.8,sh(col,.05));
+      head.style.borderRadius='50%'; head.style.position='absolute'; head.style.left='50%';
+      head.style.top=(-W*.7)+'px'; head.style.transform='translateX(-50%)';
+      const saber=document.createElement('div'); saber.style.cssText=`position:absolute;right:-4px;top:-40%;width:2px;height:${H*.7}px;background:linear-gradient(180deg,#7ef0a0,#2fae5a);box-shadow:0 0 5px #6ff09a;border-radius:2px;transform:rotate(12deg);`;
+      body.appendChild(head); body.appendChild(saber);
+    } else { // bulky armored + helmet slit
+      W=17*s; H=rnd(28,36)*s; fbase(body,W,H,col); body.style.borderRadius='6px 6px 3px 3px';
+      const head=document.createElement('div'); fbase(head,W*.6,W*.6,sh(col,-.05));
+      head.style.borderRadius='50% 50% 30% 30%'; head.style.position='absolute';
+      head.style.left='50%'; head.style.top=(-W*.42)+'px'; head.style.transform='translateX(-50%)';
+      const visor=document.createElement('div'); visor.style.cssText=`position:absolute;left:50%;top:${-W*.24}px;transform:translateX(-50%);width:${W*.34}px;height:${W*.1}px;background:#0c0c0c;border-radius:1px;`;
+      body.appendChild(head); body.appendChild(visor);
+    }
+    wrap.appendChild(body);
+    const sh_=document.createElement('div'); sh_.className='shadow'; wrap.appendChild(sh_);
+    f.appendChild(wrap);
+    f.style.height=H+'px';
+    if(chance(0.5)) f.style.transform=`rotate(${rnd(-3,3)}deg)`;
+    return f;
+  }
+
+  // build
+  const COLS=4, ROWS=6;
+  const shelves=document.getElementById('shelves');
+  for(let r=0;r<ROWS;r++){
+    const row=document.createElement('div'); row.className='shelfRow';
+    const cubes=document.createElement('div'); cubes.className='cubes';
+    for(let c=0;c<COLS;c++){ const cube=document.createElement('div'); cube.className='cube'; fillCube(cube); cubes.appendChild(cube); }
+    row.appendChild(cubes);
+    if(chance(0.7)){ const sf=document.createElement('div'); sf.className='shelfFigs';
+      sf.style[chance(0.5)?'right':'left']=rnd(4,40)+'px';
+      const k=ri(1,2); for(let j=0;j<k;j++) sf.appendChild(figure(.62)); row.appendChild(sf); }
+    const plank=document.createElement('div'); plank.className='plank'; row.appendChild(plank);
+    shelves.appendChild(row);
+  }
+  const posts=document.getElementById('posts');
+  for(let i=0;i<=COLS;i++){ const p=document.createElement('div'); p.className='post'; posts.appendChild(p); }
+  // top row of figures across the case (uneven spacing feels hand-placed)
+  const topFigs=document.getElementById('topFigs');
+  for(let i=0;i<13;i++){ const f=figure(1); f.style.marginLeft=rnd(0,10)+'px'; topFigs.appendChild(f); }
+</script>
+</body>
+</html>

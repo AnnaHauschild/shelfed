@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Shelfed — Overflowing Plant Options</title>
+<style>
+  :root {
+    --frame: #7a4a22;
+    --frame-edge: #3e2410;
+    --cubby-bg: #2a1808;
+    --leaf-dark: #4f6b35;
+    --leaf-mid: #5e7a3c;
+    --leaf-light: #7a9658;
+    --terra: #a7563d;
+    --terra-dark: #7a3527;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    background: #17100a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #f4e4c1;
+  }
+  body { padding: 28px 20px 60px; }
+  h1 { font-size: 20px; letter-spacing: 1px; margin: 0 0 4px; }
+  p.note { color: #b89b73; font-size: 13px; margin: 0 0 24px; max-width: 860px; line-height: 1.5; }
+  .rowwrap { display: flex; flex-wrap: wrap; gap: 26px; }
+  .item { width: 150px; }
+  .label { text-align: center; margin-top: 8px; font-size: 12px; color: #d8c9a8; line-height: 1.4; }
+  .label b { color: #f4e4c1; }
+
+  /* Two stacked cubbies (upper holds the plant, lower is empty). */
+  .stack2 { width: 150px; position: relative; }
+  .cubby {
+    width: 150px; height: 150px; background: var(--frame);
+    border: 1px solid var(--frame-edge); padding: 6px; box-sizing: border-box;
+  }
+  .inner {
+    width: 100%; height: 100%; background: var(--cubby-bg);
+    position: relative; overflow: hidden; border-radius: 1px;
+  }
+  /* The plant is drawn ABOVE both cubbies (like rendering it at grid level in
+     the app) so it can overflow the shelf edge into the lower cubby. */
+  .plant {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+
+  .pot {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 42px; height: 28px;
+    background: linear-gradient(180deg, #b5623c, #7a3527);
+    border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+  }
+  .pot-rim {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 50px; height: 8px; background: #c06a40; border-radius: 3px;
+  }
+  .leaf {
+    position: absolute;
+    background: var(--leaf-mid);
+    border-radius: 50% 50% 50% 50% / 62% 62% 40% 40%;
+    transform-origin: bottom center;
+  }
+  .stem { position: absolute; width: 2px; background: #3f5a28; border-radius: 2px; }
+</style>
+</head>
+<body>
+  <h1>Overflowing plant — sits in the upper cubby, trails into the empty one below</h1>
+  <p class="note">
+    Each tile is TWO stacked cubbies: the plant lives in the top one and its vines drape over the shelf edge
+    into the empty cubby below. All are a mix of a leafy bush (Plant 2) on top + trailing vines (Plant 3).
+    Tell me which number you like (or a tweak — bushier, longer vines, drape sideways…), then I'll build a
+    version that renders across two shelf rows in the app.
+  </p>
+  <div class="rowwrap" id="opts"></div>
+
+<script>
+  // Pot + rim sitting on the upper shelf floor (upper cubby bottom ≈ y150).
+  const POT_TOP = 116, POT_W = 42, POT_H = 28;
+
+  function pot() {
+    return `<div class="pot-rim" style="top:${POT_TOP - 6}px"></div>
+            <div class="pot" style="top:${POT_TOP}px"></div>`;
+  }
+
+  // A bushy cluster of teardrop leaves fanning up out of the pot.
+  function bush(leaves) {
+    // leaves: [ [cx%, topPx, w, h, rot, tone] ... ]
+    return leaves.map(([cx, top, w, h, rot, tone]) =>
+      `<div class="leaf" style="left:${cx}%;top:${top}px;width:${w}px;height:${h}px;
+        background:${tone};transform:translateX(-50%) rotate(${rot}deg)"></div>`).join('');
+  }
+
+  // A trailing vine: a stem from the pot down to `len`, with leaves along it.
+  function vine(cx, startTop, len, curve, leafTone) {
+    let s = `<div class="stem" style="left:${cx}%;top:${startTop}px;height:${len}px;
+      transform:rotate(${curve}deg);transform-origin:top center"></div>`;
+    const n = Math.floor(len / 20);
+    for (let i = 1; i <= n; i++) {
+      const t = startTop + i * 20;
+      const side = i % 2 ? 1 : -1;
+      const tone = i % 2 ? leafTone : 'var(--leaf-dark)';
+      s += `<div class="leaf" style="left:calc(${cx}% + ${curve * i * 0.6}px);top:${t}px;
+        width:12px;height:18px;background:${tone};
+        transform:translateX(-50%) rotate(${side * 40}deg)"></div>`;
+    }
+    return s;
+  }
+
+  const L_DARK = 'var(--leaf-dark)', L_MID = 'var(--leaf-mid)', L_LIGHT = 'var(--leaf-light)';
+
+  // Compact bush (leaves around the pot mouth).
+  const bushSmall = bush([
+    [50, 86, 20, 32, 0, L_MID],
+    [36, 96, 17, 27, -32, L_DARK],
+    [64, 96, 17, 27, 32, L_LIGHT],
+    [44, 104, 16, 26, -14, L_LIGHT],
+    [58, 104, 16, 26, 14, L_DARK],
+  ]);
+  const bushFull = bush([
+    [50, 78, 22, 36, 0, L_MID],
+    [33, 90, 18, 30, -36, L_DARK],
+    [67, 90, 18, 30, 36, L_LIGHT],
+    [40, 100, 17, 28, -18, L_LIGHT],
+    [60, 100, 17, 28, 18, L_DARK],
+    [50, 96, 18, 30, 0, L_MID],
+    [28, 104, 15, 24, -50, L_MID],
+    [72, 104, 15, 24, 50, L_MID],
+  ]);
+
+  const options = [
+    {
+      label: '<b>Mix 1</b><br>compact bush · 2 short vines',
+      html: pot()
+        + vine(43, 130, 90, -3, L_LIGHT)
+        + vine(57, 130, 78, 3, L_MID)
+        + bushSmall,
+    },
+    {
+      label: '<b>Mix 2</b><br>full bush · 3 long vines',
+      html: pot()
+        + vine(38, 132, 128, -4, L_LIGHT)
+        + vine(50, 132, 150, 0, L_MID)
+        + vine(62, 132, 120, 4, L_LIGHT)
+        + bushFull,
+    },
+    {
+      label: '<b>Mix 3</b><br>bush · vines drape left & right edges',
+      html: pot()
+        + vine(30, 128, 110, -14, L_LIGHT)
+        + vine(70, 128, 110, 14, L_MID)
+        + vine(50, 132, 80, 0, L_DARK)
+        + bushFull,
+    },
+    {
+      label: '<b>Mix 4</b><br>tall leaves · 2 medium vines',
+      html: pot()
+        + `<div class="leaf" style="left:47%;top:60px;width:13px;height:64px;background:${L_MID};transform:translateX(-50%) rotate(-8deg)"></div>`
+        + `<div class="leaf" style="left:53%;top:52px;width:13px;height:72px;background:${L_LIGHT};transform:translateX(-50%) rotate(6deg)"></div>`
+        + `<div class="leaf" style="left:40%;top:70px;width:12px;height:54px;background:${L_DARK};transform:translateX(-50%) rotate(-20deg)"></div>`
+        + `<div class="leaf" style="left:60%;top:70px;width:12px;height:54px;background:${L_DARK};transform:translateX(-50%) rotate(20deg)"></div>`
+        + vine(42, 132, 100, -3, L_LIGHT)
+        + vine(58, 132, 96, 3, L_MID),
+    },
+  ];
+
+  document.getElementById('opts').innerHTML = options.map(o => `
+    <div class="item">
+      <div class="stack2">
+        <div class="cubby"><div class="inner"></div></div>
+        <div class="cubby"><div class="inner"></div></div>
+        <div class="plant">${o.html}</div>
+      </div>
+      <div class="label">${o.label}</div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>
