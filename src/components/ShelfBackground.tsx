@@ -76,6 +76,46 @@ const THEME_IMAGES: Partial<Record<ShelfTheme, number>> = {
   minimal: require('../../assets/shelf-themes/minimal.png'),
 };
 
+/** Per-theme palette for the simple lamp-lit 'wall' backdrop used on the shelf
+ *  screens: wall gradient, lamp cord/shade/glow, ambient pool and the vignette
+ *  RGB triplet. Keeps the shelf screens calm while echoing the chosen theme. */
+const WALL_THEMES: Record<
+  ShelfTheme,
+  {
+    wood: [string, string, string];
+    cord: string;
+    shade: string;
+    glow: string;
+    pool: string;
+    vignette: string;
+  }
+> = {
+  classic: {
+    wood: ['#5a3618', '#3e2410', '#28180b'],
+    cord: '#2a1808',
+    shade: '#f0d28c',
+    glow: 'rgba(255, 210, 120, 0.30)',
+    pool: 'rgba(255, 200, 110, 0.10)',
+    vignette: '15, 9, 4',
+  },
+  scifi: {
+    wood: ['#1b2b4a', '#111d38', '#070d1c'],
+    cord: '#0a1526',
+    shade: '#f7f3cf',
+    glow: 'rgba(240, 240, 170, 0.40)',
+    pool: 'rgba(150, 200, 255, 0.10)',
+    vignette: '4, 8, 18',
+  },
+  minimal: {
+    wood: ['#54545a', '#3c3c40', '#252528'],
+    cord: '#2a2a2e',
+    shade: '#ffffff',
+    glow: 'rgba(255, 255, 255, 0.30)',
+    pool: 'rgba(255, 255, 255, 0.10)',
+    vignette: '18, 18, 20',
+  },
+};
+
 /**
  * Stylised "Tiny Desk" bookshelf wall used as a soft background behind the
  * swipe deck. Pure RN views + gradients — no images required.
@@ -90,33 +130,39 @@ export function ShelfBackground({
   const layout = useMemo(() => buildLayout(columns, rows), [columns, rows]);
 
   const themeImage = THEME_IMAGES[theme];
-  if (themeImage != null) {
+  // Image themes fill Discover/Search (the 'cubbies' surface). The shelf
+  // screens ('wall') keep a simple lamp-lit wall, recoloured per theme below.
+  if (themeImage != null && variant !== 'wall') {
     return (
       <ImageThemeBackground source={themeImage} dim={dim} variant={variant} />
     );
   }
 
   if (variant === 'wall') {
+    const w = WALL_THEMES[theme] ?? WALL_THEMES.classic;
     return (
       <View style={styles.root} pointerEvents="none">
         <LinearGradient
-          colors={['#5a3618', '#3e2410', '#28180b']}
+          colors={w.wood}
           locations={[0, 0.55, 1]}
           style={StyleSheet.absoluteFill}
         />
-        {/* Hanging lamp in the upper-right — casts a soft warm pool. */}
+        {/* Hanging lamp in the upper-right — casts a soft pool of light. */}
         <View style={styles.hangingLamp} pointerEvents="none">
-          <View style={styles.hangingCord} />
-          <View style={styles.hangingShade} />
-          <View style={styles.hangingGlow} />
+          <View style={[styles.hangingCord, { backgroundColor: w.cord }]} />
+          <View style={[styles.hangingShade, { backgroundColor: w.shade }]} />
+          <View style={[styles.hangingGlow, { backgroundColor: w.glow }]} />
         </View>
         {/* Wide soft pool of lamplight on the wall. */}
-        <View style={styles.lampPool} pointerEvents="none" />
+        <View
+          style={[styles.lampPool, { backgroundColor: w.pool }]}
+          pointerEvents="none"
+        />
         {/* Subtle vignette to keep foreground content readable. */}
         <LinearGradient
           colors={[
-            `rgba(15, 9, 4, ${dim * 0.6})`,
-            `rgba(15, 9, 4, ${dim * 1.0})`,
+            `rgba(${w.vignette}, ${dim * 0.6})`,
+            `rgba(${w.vignette}, ${dim * 1.0})`,
           ]}
           locations={[0, 1]}
           style={StyleSheet.absoluteFill}
