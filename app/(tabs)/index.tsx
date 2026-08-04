@@ -268,7 +268,7 @@ export default function DiscoverScreen() {
             <LoadingReel mediaType={mediaType} />
           </Centered>
         ) : !SCREENSHOT_MODE && isError ? (
-          <SetupOrError error={error} onRetry={() => refetch()} />
+          <SetupOrError error={error} onRetry={() => refetch()} noun={noun} />
         ) : movies.length === 0 ? (
           <Centered>
             <Ionicons name={emptyIcon} size={48} color={colors.border} />
@@ -385,9 +385,11 @@ function Centered({
 function SetupOrError({
   error,
   onRetry,
+  noun,
 }: {
   error: unknown;
   onRetry: () => void;
+  noun: string;
 }) {
   const isToken =
     error instanceof TmdbError && /access token/i.test(error.message);
@@ -400,7 +402,7 @@ function SetupOrError({
         color={colors.border}
       />
       <Text style={styles.errorTitle}>
-        {isToken ? 'Add your TMDB token' : 'Could not load movies'}
+        {isToken ? 'Add your TMDB token' : `Could not load ${noun}`}
       </Text>
       <Text style={styles.muted}>
         {isToken

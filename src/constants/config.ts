@@ -85,6 +85,7 @@ export const COUNTRY_OPTIONS: { id: string; name: string }[] = [
   { id: 'ES', name: 'Spain' },
   { id: 'JP', name: 'Japan' },
   { id: 'KR', name: 'Korea' },
+  { id: 'CN', name: 'China' },
   { id: 'IN', name: 'India' },
   { id: 'BR', name: 'Brazil' },
   { id: 'SE', name: 'Sweden' },
@@ -98,5 +99,6 @@ export const PLATFORM_OPTIONS: { id: string; name: string }[] = [
   { id: '3', name: 'Xbox' },
   { id: '7', name: 'Nintendo' },
   { id: '1', name: 'PC' },
+  { id: '4,8', name: 'Mobile' }, // RAWG parent platforms iOS + Android
   { id: '11', name: 'SEGA' },
 ];
