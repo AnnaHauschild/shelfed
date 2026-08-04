@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '@/context/ThemeProvider';
+import { ShelfTheme, useTheme } from '@/context/ThemeProvider';
 import { colors } from '@/theme';
 
 interface Props {
@@ -68,6 +69,13 @@ function buildLayout(cols: number, rowsCount: number): CubbyContent[][] {
   return grid;
 }
 
+/** Image-based themes bake the whole scene (incl. their own header) into a
+ *  single artwork; the app renders it full-bleed with a dimming scrim. */
+const THEME_IMAGES: Partial<Record<ShelfTheme, number>> = {
+  scifi: require('../../assets/shelf-themes/scifi.png'),
+  minimal: require('../../assets/shelf-themes/minimal.png'),
+};
+
 /**
  * Stylised "Tiny Desk" bookshelf wall used as a soft background behind the
  * swipe deck. Pure RN views + gradients — no images required.
@@ -81,8 +89,11 @@ export function ShelfBackground({
   const { theme } = useTheme();
   const layout = useMemo(() => buildLayout(columns, rows), [columns, rows]);
 
-  if (theme === 'collector') {
-    return <CollectorBackground variant={variant} dim={dim} layout={layout} />;
+  const themeImage = THEME_IMAGES[theme];
+  if (themeImage != null) {
+    return (
+      <ImageThemeBackground source={themeImage} dim={dim} variant={variant} />
+    );
   }
 
   if (variant === 'wall') {
@@ -301,152 +312,36 @@ function Photo() {
   );
 }
 
-// --- Collector's Cabinet theme -------------------------------------------
-const C_SPINE = '#2c2620';
-const C_SPINE_DARK = '#171310';
-const C_ACCENTS = ['#274a63', '#5a2a2a', '#1f5560', '#4a3a1e'];
-
-/** Dark, backlit "collector cabinet" background — an alternative to the warm
- *  classic wood shelf. Same cubby grid, re-skinned dark with warm LED washes
- *  and rim-lit spines. */
-function CollectorBackground({
-  variant,
+// --- Image themes (sci-fi / minimal) -------------------------------------
+function ImageThemeBackground({
+  source,
   dim,
-  layout,
+  variant,
 }: {
-  variant: 'cubbies' | 'wall';
+  source: number;
   dim: number;
-  layout: CubbyContent[][];
+  variant: 'cubbies' | 'wall';
 }) {
-  if (variant === 'wall') {
-    return (
-      <View style={styles.root} pointerEvents="none">
-        <LinearGradient
-          colors={['#161210', '#0c0a08', '#050403']}
-          locations={[0, 0.5, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-        <View style={styles.cWallGlow} pointerEvents="none" />
-        <LinearGradient
-          colors={[`rgba(5, 4, 3, ${dim * 0.5})`, `rgba(5, 4, 3, ${dim})`]}
-          style={StyleSheet.absoluteFill}
-        />
-      </View>
-    );
-  }
+  // Shelf ("wall") screens render the user's own spines on top, so dim a touch
+  // more there to keep them legible over the artwork.
+  const s = variant === 'wall' ? Math.min(dim + 0.18, 0.92) : dim;
   return (
     <View style={styles.root} pointerEvents="none">
-      <LinearGradient
-        colors={['#141110', '#0a0908', '#050403']}
-        locations={[0, 0.5, 1]}
+      <Image
+        source={source}
         style={StyleSheet.absoluteFill}
+        contentFit="cover"
+        contentPosition="top"
+        transition={200}
       />
-      <View style={styles.grid}>
-        {layout.map((row, r) => (
-          <View key={`r${r}`} style={styles.row}>
-            {row.map((cell, c) => (
-              <CollectorCubby key={`c${r}-${c}`} content={cell} />
-            ))}
-          </View>
-        ))}
-      </View>
       <LinearGradient
         colors={[
-          `rgba(5, 4, 3, ${dim * 0.35})`,
-          `rgba(5, 4, 3, ${dim * 0.15})`,
-          `rgba(5, 4, 3, ${dim * 0.6})`,
+          `rgba(6, 5, 10, ${(s * 0.55).toFixed(3)})`,
+          `rgba(6, 5, 10, ${(s * 0.8).toFixed(3)})`,
         ]}
-        locations={[0, 0.5, 1]}
+        locations={[0, 1]}
         style={StyleSheet.absoluteFill}
       />
-    </View>
-  );
-}
-
-function CollectorCubby({ content }: { content: CubbyContent }) {
-  return (
-    <View style={styles.cCubby}>
-      <View style={styles.cCubbyInner}>
-        {/* Warm LED wash pouring down from the shelf lip. */}
-        <LinearGradient
-          colors={[
-            'rgba(255, 184, 112, 0.30)',
-            'rgba(255, 184, 112, 0.06)',
-            'transparent',
-          ]}
-          locations={[0, 0.35, 0.72]}
-          style={StyleSheet.absoluteFill}
-        />
-        {/* Bright thin LED strip under the lip. */}
-        <View style={styles.cLedBar} />
-        <View style={styles.cContent}>
-          {content.kind === 'lamp' ? (
-            <CollectorAccent />
-          ) : content.kind === 'photo' ? (
-            <CollectorPoster />
-          ) : (
-            <CollectorSpines seed={content.seed} />
-          )}
-        </View>
-      </View>
-    </View>
-  );
-}
-
-/** A row of dark, rim-lit spines (books / blu-rays). */
-function CollectorSpines({ seed }: { seed: number }) {
-  const count = 6 + Math.floor(rand(seed + 11) * 5); // 6..10
-  return (
-    <View style={styles.cSpines}>
-      {Array.from({ length: count }).map((_, i) => {
-        const widthPct = 7 + rand(seed + i * 17) * 5; // 7..12%
-        const heightPct = 68 + rand(seed + i * 23) * 30; // 68..98%
-        const roll = rand(seed * 13 + i);
-        const bg =
-          roll > 0.86
-            ? C_ACCENTS[Math.floor(rand(seed + i * 7) * C_ACCENTS.length)]
-            : roll > 0.5
-              ? C_SPINE
-              : C_SPINE_DARK;
-        return (
-          <View
-            key={i}
-            style={{
-              width: `${widthPct}%`,
-              height: `${heightPct}%`,
-              backgroundColor: bg,
-              marginHorizontal: 0.5,
-              borderTopWidth: 1,
-              borderTopColor: 'rgba(255, 225, 190, 0.3)',
-            }}
-          />
-        );
-      })}
-    </View>
-  );
-}
-
-/** A dark collectible with a warm glow (fills a 'lamp' cubby). */
-function CollectorAccent() {
-  return (
-    <View style={styles.cAccentWrap}>
-      <View style={styles.cAccentGlow} />
-      <View style={styles.cAccentBody} />
-    </View>
-  );
-}
-
-/** A small dark framed poster (fills a 'photo' cubby). */
-function CollectorPoster() {
-  return (
-    <View style={styles.cPosterWrap}>
-      <View style={styles.cPoster}>
-        <LinearGradient
-          colors={['#0a1830', '#12294a', '#0a0f1a']}
-          locations={[0, 0.5, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-      </View>
     </View>
   );
 }
@@ -650,86 +545,5 @@ const styles = StyleSheet.create({
     height: 320,
     borderRadius: 240,
     backgroundColor: 'rgba(255, 200, 110, 0.10)',
-  },
-  // --- Collector's Cabinet theme ---
-  cCubby: {
-    flex: 1,
-    padding: 3,
-    backgroundColor: '#0a0806',
-    borderColor: '#1c1712',
-    borderWidth: 1,
-  },
-  cCubbyInner: {
-    flex: 1,
-    backgroundColor: '#050403',
-    overflow: 'hidden',
-    justifyContent: 'flex-end',
-    paddingBottom: 3,
-  },
-  cLedBar: {
-    position: 'absolute',
-    top: 2,
-    left: '12%',
-    right: '12%',
-    height: 2,
-    borderRadius: 2,
-    backgroundColor: 'rgba(255, 224, 180, 0.85)',
-  },
-  cContent: {
-    height: '100%',
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    paddingHorizontal: 2,
-  },
-  cSpines: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    height: '100%',
-    width: '100%',
-  },
-  cAccentWrap: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingBottom: 3,
-  },
-  cAccentBody: {
-    width: '26%',
-    height: '48%',
-    borderRadius: 6,
-    backgroundColor: '#2a2620',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 225, 190, 0.35)',
-  },
-  cAccentGlow: {
-    position: 'absolute',
-    width: '70%',
-    height: '60%',
-    bottom: '6%',
-    borderRadius: 40,
-    backgroundColor: 'rgba(255, 190, 120, 0.14)',
-  },
-  cPosterWrap: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cPoster: {
-    width: '72%',
-    height: '80%',
-    borderWidth: 2,
-    borderColor: '#1c160f',
-    overflow: 'hidden',
-  },
-  cWallGlow: {
-    position: 'absolute',
-    top: 20,
-    right: -40,
-    width: 320,
-    height: 320,
-    borderRadius: 240,
-    backgroundColor: 'rgba(255, 184, 112, 0.10)',
   },
 });

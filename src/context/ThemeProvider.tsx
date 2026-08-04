@@ -12,7 +12,7 @@ import { getSetting, setSetting } from '@/db/settings';
 export const SHELF_THEME_KEY = 'shelfTheme';
 
 /** The available shelf background looks. */
-export type ShelfTheme = 'classic' | 'collector';
+export type ShelfTheme = 'classic' | 'scifi' | 'minimal';
 
 interface ThemeContextValue {
   /** The active shelf background theme (defaults to 'classic'). */
@@ -39,7 +39,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     getSetting(SHELF_THEME_KEY)
       .then((v) => {
         if (cancelled) return;
-        if (v === 'collector' || v === 'classic') setThemeState(v);
+        if (v === 'classic' || v === 'scifi' || v === 'minimal') {
+          setThemeState(v);
+        }
         setReady(true);
       })
       .catch(() => {

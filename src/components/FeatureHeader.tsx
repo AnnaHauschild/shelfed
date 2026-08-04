@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '@/context/ThemeProvider';
 import { colors, fonts, spacing } from '@/theme';
 
 // Warm dark-wood band with the "Shelfed" title, a hanging lamp, a small potted
@@ -32,6 +33,11 @@ export function FeatureHeader({
    *  screens). */
   brandSize?: number;
 }) {
+  const { theme } = useTheme();
+  // Sci-fi / minimal themes bake their own header + wordmark into the artwork,
+  // so skip the vintage wood header entirely to avoid a doubled one.
+  if (theme === 'scifi' || theme === 'minimal') return null;
+
   if (compact) {
     return (
       <View style={[styles.featureHeader, { height }]} pointerEvents="none">

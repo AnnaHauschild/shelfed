@@ -51,11 +51,18 @@ const THEMES: ThemeOption[] = [
     swatch: ['#3e2410', '#1a0e05'],
   },
   {
-    id: 'collector',
-    label: "Collector's Cabinet",
-    blurb: 'Dark backlit display with glowing shelves.',
-    swatch: ['#141110', '#050403'],
-    dot: '#ffce8a',
+    id: 'scifi',
+    label: 'Sci-Fi Bay',
+    blurb: 'Neon-lit starship shelves.',
+    swatch: ['#0b1024', '#05030f'],
+    dot: '#42e8ff',
+  },
+  {
+    id: 'minimal',
+    label: 'Modern Minimal',
+    blurb: 'Bright, calm Scandinavian shelf.',
+    swatch: ['#e9e3d8', '#cbc3b4'],
+    dot: '#f0d28c',
   },
 ];
 
