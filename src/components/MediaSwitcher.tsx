@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { MediaType } from '@/api/types';
 import { useMediaTypeControls } from '@/context/MediaTypeProvider';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
 const OPTIONS: {
@@ -29,17 +30,18 @@ export function MediaSwitcher({
   onFilterPress?: () => void;
 } = {}) {
   const { mediaType, setMediaType, backToLanding } = useMediaTypeControls();
+  const chrome = useThemeChrome();
   const hasFilters = filterCount > 0;
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, { backgroundColor: chrome.surface, borderColor: chrome.border }]}>
       <Pressable
-        style={({ pressed }) => [styles.homePill, pressed && styles.pressed]}
+        style={({ pressed }) => [styles.homePill, { borderRightColor: chrome.border }, pressed && styles.pressed]}
         onPress={backToLanding}
         hitSlop={4}
         accessibilityLabel="Home"
       >
-        <Ionicons name="home" size={15} color={colors.textOnDarkMuted} />
+        <Ionicons name="home" size={15} color={chrome.muted} />
       </Pressable>
       {OPTIONS.map((opt) => {
         const active = mediaType === opt.type;
@@ -48,7 +50,7 @@ export function MediaSwitcher({
             key={opt.type}
             style={({ pressed }) => [
               styles.pill,
-              active && styles.pillActive,
+              active && { backgroundColor: chrome.accent },
               pressed && styles.pressed,
             ]}
             onPress={() => setMediaType(opt.type)}
@@ -58,10 +60,10 @@ export function MediaSwitcher({
             <Ionicons
               name={opt.icon}
               size={14}
-              color={active ? colors.background : colors.textOnDarkMuted}
+              color={active ? chrome.onAccent : chrome.muted}
             />
             {active && (
-              <Text style={[styles.pillText, styles.pillTextActive]}>
+              <Text style={[styles.pillText, { color: chrome.onAccent }]}>
                 {opt.label}
               </Text>
             )}
@@ -70,7 +72,7 @@ export function MediaSwitcher({
       })}
       {onFilterPress && (
         <Pressable
-          style={({ pressed }) => [styles.filterPill, pressed && styles.pressed]}
+          style={({ pressed }) => [styles.filterPill, { borderLeftColor: chrome.border }, pressed && styles.pressed]}
           onPress={onFilterPress}
           hitSlop={4}
           accessibilityLabel="Filters"
@@ -78,9 +80,9 @@ export function MediaSwitcher({
           <Ionicons
             name="options-outline"
             size={15}
-            color={hasFilters ? colors.amberBright : colors.textOnDarkMuted}
+            color={hasFilters ? chrome.accent : chrome.muted}
           />
-          {hasFilters && <Text style={styles.filterCount}>{filterCount}</Text>}
+          {hasFilters && <Text style={[styles.filterCount, { color: chrome.accent }]}>{filterCount}</Text>}
         </Pressable>
       )}
     </View>

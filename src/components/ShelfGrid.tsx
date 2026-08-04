@@ -14,6 +14,7 @@ import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { ShelfMenu, ShelfMenuSection } from '@/components/ShelfMenu';
 import { MoodShelf } from '@/components/MoodShelf';
 import { useMovieDetails } from '@/components/MovieDetailsProvider';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
 import { Skeleton } from '@/components/Skeleton';
@@ -220,19 +221,21 @@ function ControlButton({
   accent: string;
   onPress: () => void;
 }) {
+  const chrome = useThemeChrome();
   return (
     <Pressable
       onPress={onPress}
       hitSlop={4}
       style={({ pressed }) => [
         styles.controlButton,
+        { backgroundColor: chrome.surface, borderColor: chrome.border },
         active && { borderColor: accent },
         pressed && styles.controlButtonPressed,
       ]}
     >
-      <Ionicons name={icon} size={15} color={active ? accent : colors.paper} />
+      <Ionicons name={icon} size={15} color={active ? accent : chrome.muted} />
       <Text
-        style={[styles.controlButtonText, active && { color: accent }]}
+        style={[styles.controlButtonText, { color: chrome.muted }, active && { color: accent }]}
         numberOfLines={1}
       >
         {label}
