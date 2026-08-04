@@ -1,8 +1,10 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Dimensions, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
+  Extrapolation,
+  interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -22,10 +24,14 @@ import { NoteSheet } from './NoteSheet';
 import { MovieDetails } from './MovieDetails';
 
 const SCREEN_H = Dimensions.get('window').height;
+const SCREEN_W = Dimensions.get('window').width;
 
 interface DetailsContextValue {
-  /** Opens the shared details modal for a movie. */
-  open: (movie: Movie) => void;
+  /**
+   * Opens the shared details modal for a movie. Pass the surrounding `list`
+   * (e.g. the current shelf) to let the user swipe left/right between items.
+   */
+  open: (movie: Movie, list?: Movie[]) => void;
 }
 
 const DetailsContext = createContext<DetailsContextValue | null>(null);
@@ -49,25 +55,44 @@ export function MovieDetailsProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [movie, setMovie] = useState<Movie | null>(null);
-  const open = useCallback((m: Movie) => setMovie(m), []);
-  const close = useCallback(() => setMovie(null), []);
+  const [session, setSession] = useState<{ list: Movie[]; index: number } | null>(
+    null,
+  );
+  const open = useCallback((m: Movie, list?: Movie[]) => {
+    const arr = list && list.length ? list : [m];
+    const idx = Math.max(
+      0,
+      arr.findIndex((x) => x.id === m.id && x.mediaType === m.mediaType),
+    );
+    setSession({ list: arr, index: idx });
+  }, []);
+  const close = useCallback(() => setSession(null), []);
+  const goTo = useCallback((index: number) => {
+    setSession((s) =>
+      s && index >= 0 && index < s.list.length ? { ...s, index } : s,
+    );
+  }, []);
 
   return (
     <DetailsContext.Provider value={{ open }}>
       {children}
-      <DetailsModal movie={movie} onClose={close} />
+      <DetailsModal session={session} onClose={close} onIndexChange={goTo} />
     </DetailsContext.Provider>
   );
 }
 
 function DetailsModal({
-  movie,
+  session,
   onClose,
+  onIndexChange,
 }: {
-  movie: Movie | null;
+  session: { list: Movie[]; index: number } | null;
   onClose: () => void;
+  onIndexChange: (index: number) => void;
 }) {
+  const list = session?.list ?? [];
+  const index = session?.index ?? 0;
+  const movie = session ? session.list[session.index] : null;
   const { toggleWatched, toggleWatchlist, toggleFavorite } = useInteractions();
   const states = useInteractionStates();
   const { text } = useLanguage();
@@ -79,6 +104,7 @@ function DetailsModal({
   );
 
   const translateY = useSharedValue(0);
+  const pageX = useSharedValue(0);
   // Reset the drag offset whenever a new movie opens.
   useEffect(() => {
     if (movie) {
@@ -88,14 +114,33 @@ function DetailsModal({
     }
   }, [movie, translateY]);
 
+  // Recentre the horizontal pager only on a fresh open (not while paging).
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (session && !wasOpen.current) pageX.value = 0;
+    wasOpen.current = !!session;
+  }, [session, pageX]);
+
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
+  }));
+
+  const pageStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: pageX.value }],
+    opacity: interpolate(
+      Math.abs(pageX.value),
+      [0, SCREEN_W * 0.5],
+      [1, 0],
+      Extrapolation.CLAMP,
+    ),
   }));
 
   // Build a fresh drag-to-dismiss gesture. Used on BOTH the grab handle and the
   // card's poster/title header, so the sheet can be pulled down from either.
   const buildDismiss = () =>
     Gesture.Pan()
+      .activeOffsetY([-12, 12])
+      .failOffsetX([-24, 24])
       .onUpdate((e) => {
         translateY.value = Math.max(0, e.translationY);
       })
@@ -111,6 +156,41 @@ function DetailsModal({
   const handleDrag = buildDismiss();
   const headerDrag = buildDismiss();
 
+  // Swipe left/right to page through the surrounding list (e.g. the shelf).
+  const canPrev = index > 0;
+  const canNext = index < list.length - 1;
+  const pager = Gesture.Pan()
+    .activeOffsetX([-20, 20])
+    .failOffsetY([-18, 18])
+    .onUpdate((e) => {
+      let dx = e.translationX;
+      if ((!canPrev && dx > 0) || (!canNext && dx < 0)) dx *= 0.3;
+      pageX.value = dx;
+    })
+    .onEnd((e) => {
+      const decisive =
+        Math.abs(e.translationX) > 80 || Math.abs(e.velocityX) > 650;
+      if (decisive && e.translationX < 0 && canNext) {
+        pageX.value = withTiming(-SCREEN_W, { duration: 160 }, (fin) => {
+          if (fin) {
+            runOnJS(onIndexChange)(index + 1);
+            pageX.value = SCREEN_W;
+            pageX.value = withTiming(0, { duration: 190 });
+          }
+        });
+      } else if (decisive && e.translationX > 0 && canPrev) {
+        pageX.value = withTiming(SCREEN_W, { duration: 160 }, (fin) => {
+          if (fin) {
+            runOnJS(onIndexChange)(index - 1);
+            pageX.value = -SCREEN_W;
+            pageX.value = withTiming(0, { duration: 190 });
+          }
+        });
+      } else {
+        pageX.value = withSpring(0, { damping: 20, stiffness: 220 });
+      }
+    });
+
   if (!movie) return null;
 
   return (
@@ -123,6 +203,13 @@ function DetailsModal({
               <View style={styles.handle} />
             </View>
           </GestureDetector>
+          {list.length > 1 && (
+            <Text style={styles.counter}>
+              {index + 1} / {list.length}
+            </Text>
+          )}
+          <GestureDetector gesture={pager}>
+            <Animated.View style={[styles.pager, pageStyle]}>
           <MovieDetails
             movie={movie}
             dragGesture={headerDrag}
@@ -165,6 +252,8 @@ function DetailsModal({
           </View>
           <Text style={styles.hint}>{text.removeHint}</Text>
         </MovieDetails>
+            </Animated.View>
+          </GestureDetector>
 
         <Pressable style={styles.closeButton} onPress={onClose} hitSlop={8}>
           <Ionicons name="close" size={18} color={colors.textOnDarkMuted} />
@@ -239,6 +328,17 @@ const styles = StyleSheet.create({
   },
   modalRoot: {
     flex: 1,
+  },
+  pager: {
+    flex: 1,
+  },
+  counter: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    textAlign: 'center',
+    letterSpacing: 1,
+    marginBottom: spacing.xs,
   },
   handle: {
     width: 44,

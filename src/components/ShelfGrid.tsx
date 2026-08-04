@@ -170,7 +170,7 @@ export function ShelfGrid({
         >
           <ShelfRack
             movies={sortedMovies}
-            onOpen={open}
+            onOpen={(m) => open(m, sortedMovies)}
             isWatchlisted={(id) => states.isWatchlisted(id)}
             isFavorite={(id) => states.isFavorite(id)}
             containerWidth={CONTAINER_WIDTH}
