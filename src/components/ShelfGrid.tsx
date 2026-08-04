@@ -174,6 +174,8 @@ export function ShelfGrid({
             isWatchlisted={(id) => states.isWatchlisted(id)}
             isFavorite={(id) => states.isFavorite(id)}
             containerWidth={CONTAINER_WIDTH}
+            showStar={type !== 'watchlist'}
+            showHeart={type !== 'favorite'}
           />
         </ScrollView>
       )}

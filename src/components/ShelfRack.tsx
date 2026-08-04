@@ -37,6 +37,10 @@ interface Props {
   isFavorite?: (id: string) => boolean;
   /** Available horizontal pixels (after page padding) for laying out spines. */
   containerWidth: number;
+  /** Hide the star badge (on the Wishlist shelf, where every item is starred). */
+  showStar?: boolean;
+  /** Hide the heart badge (on the Favorites shelf, where every item is a fav). */
+  showHeart?: boolean;
 }
 
 /**
@@ -50,6 +54,8 @@ export function ShelfRack({
   isWatchlisted,
   isFavorite,
   containerWidth,
+  showStar = true,
+  showHeart = true,
 }: Props) {
   // Choose a spine width that yields a tidy whole-number per row.
   const spinesPerRow = Math.max(5, Math.min(9, Math.floor(containerWidth / 42)));
@@ -74,6 +80,8 @@ export function ShelfRack({
           isWatchlisted={isWatchlisted}
           isFavorite={isFavorite}
           spineWidth={spineWidth}
+          showStar={showStar}
+          showHeart={showHeart}
         />
       ))}
     </View>
@@ -86,6 +94,8 @@ function ShelfRow({
   isWatchlisted,
   isFavorite,
   spineWidth,
+  showStar = true,
+  showHeart = true,
 }: Omit<Props, 'containerWidth'> & { spineWidth: number }) {
   return (
     <View style={styles.rowOuter}>
@@ -98,6 +108,8 @@ function ShelfRow({
             onOpen={onOpen}
             watchlisted={isWatchlisted?.(m.id) ?? false}
             favorite={isFavorite?.(m.id) ?? false}
+            showStar={showStar}
+            showHeart={showHeart}
           />
         ))}
       </View>
@@ -119,12 +131,16 @@ function BookSpine({
   onOpen,
   watchlisted,
   favorite,
+  showStar,
+  showHeart,
 }: {
   movie: StoredMovie;
   width: number;
   onOpen: (movie: StoredMovie) => void;
   watchlisted: boolean;
   favorite: boolean;
+  showStar: boolean;
+  showHeart: boolean;
 }) {
   const lift = useSharedValue(0);
   const tilt = useSharedValue(0);
@@ -211,14 +227,15 @@ function BookSpine({
           <View style={[styles.band, styles.bandSilver]} />
         )}
 
-        {/* Tiny badge dots at the very top for star/heart. */}
-        {(watchlisted || favorite) && (
+        {/* Status badges at the top: hide the icon matching the current shelf
+            (redundant there); show the remaining one a touch bigger. */}
+        {((showStar && watchlisted) || (showHeart && favorite)) && (
           <View style={styles.badges}>
-            {watchlisted && (
-              <Ionicons name="star" size={9} color={colors.star} />
+            {showStar && watchlisted && (
+              <Ionicons name="star" size={12} color={colors.star} />
             )}
-            {favorite && (
-              <Ionicons name="heart" size={9} color={colors.favorite} />
+            {showHeart && favorite && (
+              <Ionicons name="heart" size={12} color={colors.favorite} />
             )}
           </View>
         )}
