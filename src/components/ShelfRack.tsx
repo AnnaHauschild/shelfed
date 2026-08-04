@@ -227,15 +227,19 @@ function BookSpine({
           <View style={[styles.band, styles.bandSilver]} />
         )}
 
-        {/* Status badges at the top: hide the icon matching the current shelf
-            (redundant there); show the remaining one a touch bigger. */}
+        {/* Status badges: a dark chip with an accent ring makes the icon read
+            clearly over any poster art. Hide the icon matching this shelf. */}
         {((showStar && watchlisted) || (showHeart && favorite)) && (
           <View style={styles.badges}>
             {showStar && watchlisted && (
-              <Ionicons name="star" size={12} color={colors.star} />
+              <View style={[styles.badgeChip, { borderColor: colors.star }]}>
+                <Ionicons name="star" size={11} color={colors.star} />
+              </View>
             )}
             {showHeart && favorite && (
-              <Ionicons name="heart" size={12} color={colors.favorite} />
+              <View style={[styles.badgeChip, { borderColor: colors.favorite }]}>
+                <Ionicons name="heart" size={11} color={colors.favorite} />
+              </View>
             )}
           </View>
         )}
@@ -313,11 +317,25 @@ const styles = StyleSheet.create({
   },
   badges: {
     position: 'absolute',
-    top: 10,
-    alignSelf: 'center',
+    top: 6,
+    right: 4,
     flexDirection: 'column',
-    gap: 2,
+    gap: 3,
     alignItems: 'center',
+  },
+  badgeChip: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: 'rgba(8, 5, 2, 0.7)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    shadowColor: '#000',
+    shadowOpacity: 0.55,
+    shadowRadius: 2.5,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 4,
   },
 });
 
