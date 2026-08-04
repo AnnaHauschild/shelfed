@@ -99,6 +99,10 @@ function TopCard({
   const flip = useSharedValue(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const isFlippedRef = useRef(false);
+  // The details side (with the trailer button) only accepts touches once the
+  // flip has fully settled, so the flipping tap can't leak into a button.
+  const [detailsReady, setDetailsReady] = useState(false);
+  const readyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const commit = useCallback(
     (direction: 'left' | 'right') => {
@@ -116,7 +120,21 @@ function TopCard({
     setIsFlipped(next);
     onFlipChange(next);
     flip.value = withTiming(next ? 1 : 0, { duration: 450 });
+    // Gate the details side's touch handling until the flip settles.
+    if (readyTimer.current) clearTimeout(readyTimer.current);
+    if (next) {
+      readyTimer.current = setTimeout(() => setDetailsReady(true), 500);
+    } else {
+      setDetailsReady(false);
+    }
   }, [flip, onFlipChange]);
+
+  useEffect(
+    () => () => {
+      if (readyTimer.current) clearTimeout(readyTimer.current);
+    },
+    [],
+  );
 
   const gesture = useMemo(() => {
     const pan = Gesture.Pan()
@@ -268,7 +286,10 @@ function TopCard({
             </View>
           </Animated.View>
 
-          <Animated.View style={[styles.face, styles.back, backStyle]}>
+          <Animated.View
+            style={[styles.face, styles.back, backStyle]}
+            pointerEvents={detailsReady ? 'auto' : 'none'}
+          >
             <View style={styles.backInner}>
               <MovieDetails movie={movie} />
               <View style={styles.flipHint} pointerEvents="none">
