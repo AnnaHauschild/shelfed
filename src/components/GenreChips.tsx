@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
 interface Option {
@@ -28,9 +30,12 @@ export function GenreChips({
   options,
   selected,
   onSelect,
-  accent = colors.amberBright,
+  accent,
   wrap = false,
 }: Props) {
+  const chrome = useThemeChrome();
+  const styles = useMemo(() => makeStyles(chrome), [chrome]);
+  const resolvedAccent = accent ?? chrome.accent;
   if (options.length === 0) return null;
 
   const chips = (
@@ -38,7 +43,7 @@ export function GenreChips({
       <Chip
         label="All"
         active={selected === null}
-        accent={accent}
+        accent={resolvedAccent}
         onPress={() => onSelect(null)}
       />
       {options.map((o) => (
@@ -46,7 +51,7 @@ export function GenreChips({
           key={o.id}
           label={o.name}
           active={selected === o.id}
-          accent={accent}
+          accent={resolvedAccent}
           // Tapping the active chip again clears the filter (toggle), so the
           // user doesn't have to reach for "All".
           onPress={() => onSelect(selected === o.id ? null : o.id)}
@@ -81,6 +86,8 @@ function Chip({
   accent: string;
   onPress: () => void;
 }) {
+  const chrome = useThemeChrome();
+  const styles = useMemo(() => makeStyles(chrome), [chrome]);
   return (
     <Pressable
       onPress={onPress}
@@ -100,7 +107,8 @@ function Chip({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ThemeChrome) =>
+  StyleSheet.create({
   row: {
     gap: spacing.sm,
     paddingRight: spacing.lg,
@@ -115,8 +123,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     borderRadius: radius.xl,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
+    borderColor: c.border,
+    backgroundColor: c.surfaceRaised,
   },
   chipText: {
     color: colors.textOnDarkMuted,
