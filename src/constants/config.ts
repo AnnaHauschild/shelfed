@@ -77,20 +77,20 @@ export const ERA_OPTIONS: EraOption[] = [
 
 // Common countries of origin for the Discover filter (ISO 3166-1 codes).
 export const COUNTRY_OPTIONS: { id: string; name: string }[] = [
-  { id: 'US', name: 'USA' },
-  { id: 'GB', name: 'UK' },
-  { id: 'DE', name: 'Germany' },
+  { id: 'BR', name: 'Brazil' },
+  { id: 'CA', name: 'Canada' },
+  { id: 'CN', name: 'China' },
+  { id: 'DK', name: 'Denmark' },
   { id: 'FR', name: 'France' },
+  { id: 'DE', name: 'Germany' },
+  { id: 'IN', name: 'India' },
   { id: 'IT', name: 'Italy' },
-  { id: 'ES', name: 'Spain' },
   { id: 'JP', name: 'Japan' },
   { id: 'KR', name: 'Korea' },
-  { id: 'CN', name: 'China' },
-  { id: 'IN', name: 'India' },
-  { id: 'BR', name: 'Brazil' },
+  { id: 'ES', name: 'Spain' },
   { id: 'SE', name: 'Sweden' },
-  { id: 'DK', name: 'Denmark' },
-  { id: 'CA', name: 'Canada' },
+  { id: 'GB', name: 'UK' },
+  { id: 'US', name: 'USA' },
 ];
 
 /** RAWG parent-platform ids for the games "Console" filter (platform families). */
