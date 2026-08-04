@@ -18,6 +18,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useNote } from '@/hooks/useNotes';
 import { useLanguage } from '@/context/LanguageProvider';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { AddToMoodSheet } from './AddToMoodSheet';
 import { NoteSheet } from './NoteSheet';
@@ -93,6 +94,7 @@ function DetailsModal({
   const list = session?.list ?? [];
   const index = session?.index ?? 0;
   const movie = session ? session.list[session.index] : null;
+  const chrome = useThemeChrome();
   const { toggleWatched, toggleWatchlist, toggleFavorite } = useInteractions();
   const states = useInteractionStates();
   const { text } = useLanguage();
@@ -197,10 +199,10 @@ function DetailsModal({
     <Modal visible animationType="slide" transparent onRequestClose={onClose}>
       <GestureHandlerRootView style={styles.modalRoot}>
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <Animated.View style={[styles.sheet, sheetStyle]}>
+        <Animated.View style={[styles.sheet, sheetStyle, { backgroundColor: chrome.background, borderColor: chrome.border }]}>
           <GestureDetector gesture={handleDrag}>
             <View style={styles.handleZone}>
-              <View style={styles.handle} />
+              <View style={[styles.handle, { backgroundColor: chrome.border }]} />
             </View>
           </GestureDetector>
           {list.length > 1 && (
@@ -292,11 +294,13 @@ function DetailAction({
   active,
   onPress,
 }: DetailActionProps) {
+  const chrome = useThemeChrome();
   return (
     <Pressable style={styles.action} onPress={onPress} hitSlop={6}>
       <View
         style={[
           styles.actionCircle,
+          { backgroundColor: chrome.surfaceRaised, borderColor: chrome.border },
           active && { borderColor: color, backgroundColor: `${color}22` },
         ]}
       >

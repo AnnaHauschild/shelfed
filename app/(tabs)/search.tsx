@@ -145,7 +145,7 @@ function ResultRow({ movie }: { movie: Movie }) {
         posterPath={movie.posterPath}
         title={movie.title}
         size={POSTER_SIZE_SMALL}
-        style={styles.thumb}
+        style={[styles.thumb, { backgroundColor: chrome.surfaceRaised, borderColor: chrome.border }]}
       />
       <View style={styles.rowInfo}>
         <Text style={styles.rowTitle} numberOfLines={2}>
@@ -174,7 +174,7 @@ function ResultRow({ movie }: { movie: Movie }) {
         <Pressable
           hitSlop={8}
           onPress={() => toggleWatchlist(movie)}
-          style={styles.quick}
+          style={[styles.quick, { backgroundColor: chrome.surfaceRaised, borderColor: chrome.border }]}
           accessibilityLabel="Add to watchlist"
         >
           <Ionicons
@@ -186,7 +186,7 @@ function ResultRow({ movie }: { movie: Movie }) {
         <Pressable
           hitSlop={8}
           onPress={() => toggleFavorite(movie)}
-          style={styles.quick}
+          style={[styles.quick, { backgroundColor: chrome.surfaceRaised, borderColor: chrome.border }]}
           accessibilityLabel="Add to favorites"
         >
           <Ionicons

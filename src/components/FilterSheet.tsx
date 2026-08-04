@@ -180,11 +180,11 @@ export function FilterSheet({
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <GestureHandlerRootView style={styles.modalRoot}>
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <Animated.View style={[styles.sheet, sheetStyle]}>
+        <Animated.View style={[styles.sheet, sheetStyle, { backgroundColor: chrome.background, borderColor: chrome.border }]}>
           <GestureDetector gesture={dragGesture}>
             <View style={styles.grabZone}>
               <View style={styles.handleZone}>
-                <View style={styles.handle} />
+                <View style={[styles.handle, { backgroundColor: chrome.border }]} />
               </View>
               <View style={styles.headerRow}>
                 <Text style={styles.title}>Filters</Text>
@@ -202,7 +202,7 @@ export function FilterSheet({
           {!hideMustSee && (
             <Pressable
               onPress={() => onMustSeeChange?.(!mustSee)}
-              style={[styles.mustSee, mustSee && styles.mustSeeActive, mustSee && { borderColor: chrome.accent }]}
+              style={[styles.mustSee, { backgroundColor: chrome.surface, borderColor: chrome.border }, mustSee && styles.mustSeeActive, mustSee && { borderColor: chrome.accent }]}
             >
               <Text
                 style={[styles.mustSeeTitle, mustSee && styles.mustSeeTitleActive, mustSee && { color: chrome.accent }]}
@@ -231,7 +231,7 @@ export function FilterSheet({
               return (
                 <Pressable
                   key={f.key}
-                  style={[styles.gridDropdown, isOpen && styles.gridDropdownOpen, isOpen && { borderColor: chrome.accent }]}
+                  style={[styles.gridDropdown, { backgroundColor: chrome.surface, borderColor: chrome.border }, isOpen && styles.gridDropdownOpen, isOpen && { borderColor: chrome.accent }]}
                   onPress={() => toggle(f.key)}
                   hitSlop={4}
                 >
@@ -255,7 +255,7 @@ export function FilterSheet({
           </View>
 
           {openDef && (
-            <View style={styles.dropdownList}>
+            <View style={[styles.dropdownList, { backgroundColor: chrome.surface, borderColor: chrome.border }]}>
               {openDef.options.map((o) => {
                 const active = openDef.selected === o.id;
                 return (

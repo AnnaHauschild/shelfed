@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Image } from 'expo-image';
 import { Linking, Modal, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,7 +13,7 @@ import { useBookDescription } from '@/hooks/useBookDescription';
 import { useGameDescription } from '@/hooks/useGameDescription';
 import { useWatchProviders } from '@/hooks/useWatchProviders';
 import { colors, fonts, radius, spacing } from '@/theme';
-import { useThemeChrome } from '@/context/ThemeProvider';
+import { useThemeChrome, type ThemeChrome } from '@/context/ThemeProvider';
 import { PosterImage } from './PosterImage';
 
 /**
@@ -70,6 +70,7 @@ interface Props {
 export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote }: Props) {
   const chrome = useThemeChrome();
   const accentText = { color: chrome.accent };
+  const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [zoom, setZoom] = useState(false);
   // Poster tap-to-enlarge is only offered in the details sheet (where a
   // dragGesture is wired), not on the swipe card whose tap flips it back.
@@ -287,7 +288,8 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ThemeChrome) =>
+  StyleSheet.create({
   container: {
     flex: 1,
     padding: spacing.lg,
@@ -302,8 +304,8 @@ const styles = StyleSheet.create({
     height: 144,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
+    borderColor: c.border,
+    backgroundColor: c.surfaceRaised,
   },
   zoomBackdrop: {
     flex: 1,
@@ -356,8 +358,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   genreChip: {
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.border,
+    backgroundColor: c.surfaceRaised,
+    borderColor: c.border,
     borderWidth: 1,
     borderRadius: radius.sm,
     paddingHorizontal: spacing.sm,
@@ -388,8 +390,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
+    borderColor: c.border,
+    backgroundColor: c.surfaceRaised,
   },
   trailerText: {
     color: colors.textOnDark,
@@ -431,9 +433,9 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: radius.sm,
-    backgroundColor: colors.surfaceRaised,
+    backgroundColor: c.surfaceRaised,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: c.border,
   },
   castLabel: {
     marginTop: spacing.lg,
@@ -445,19 +447,19 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingVertical: 5,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: c.border,
   },
   castAvatar: {
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: colors.background,
+    backgroundColor: c.background,
   },
   castAvatarFallback: {
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: c.border,
   },
   castNameRow: {
     flex: 1,
@@ -474,7 +476,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   castAge: {
-    color: colors.amber,
+    color: c.accent,
     fontFamily: fonts.body,
     fontSize: 12,
   },
