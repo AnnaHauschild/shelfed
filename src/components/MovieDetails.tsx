@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { Image } from 'expo-image';
-import { Linking, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Linking, Modal, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { GestureDetector, type GestureType } from 'react-native-gesture-handler';
 import { Movie } from '@/api/types';
 import { posterUrl } from '@/api/tmdb';
-import { POSTER_SIZE_SMALL } from '@/constants/config';
+import { POSTER_SIZE, POSTER_SIZE_SMALL } from '@/constants/config';
 import { useProfile } from '@/context/ProfileProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
 import { useMovieTrailer } from '@/hooks/useMovieTrailer';
@@ -66,6 +67,10 @@ interface Props {
  * surface + framing).
  */
 export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote }: Props) {
+  const [zoom, setZoom] = useState(false);
+  // Poster tap-to-enlarge is only offered in the details sheet (where a
+  // dragGesture is wired), not on the swipe card whose tap flips it back.
+  const zoomable = !!dragGesture;
   const isBook = movie.mediaType === 'book';
   const isGame = movie.mediaType === 'game';
   const { name } = useProfile();
@@ -87,12 +92,23 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
 
   const header = (
       <View style={styles.headerRow}>
-        <PosterImage
-          posterPath={movie.posterPath}
-          title={movie.title}
-          size={POSTER_SIZE_SMALL}
-          style={styles.poster}
-        />
+        {zoomable ? (
+          <Pressable onPress={() => setZoom(true)} hitSlop={4}>
+            <PosterImage
+              posterPath={movie.posterPath}
+              title={movie.title}
+              size={POSTER_SIZE_SMALL}
+              style={styles.poster}
+            />
+          </Pressable>
+        ) : (
+          <PosterImage
+            posterPath={movie.posterPath}
+            title={movie.title}
+            size={POSTER_SIZE_SMALL}
+            style={styles.poster}
+          />
+        )}
         <View style={styles.headerInfo}>
           <Text style={styles.title} numberOfLines={3}>
             {movie.title}
@@ -247,6 +263,23 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
       </ScrollView>
 
       {children}
+
+      <Modal
+        visible={zoom}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setZoom(false)}
+      >
+        <Pressable style={styles.zoomBackdrop} onPress={() => setZoom(false)}>
+          <PosterImage
+            posterPath={movie.posterPath}
+            title={movie.title}
+            size={POSTER_SIZE}
+            contentFit="contain"
+            style={styles.zoomPoster}
+          />
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -268,6 +301,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surfaceRaised,
+  },
+  zoomBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(5, 3, 1, 0.94)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  zoomPoster: {
+    width: '92%',
+    height: '82%',
+    borderRadius: radius.md,
   },
   headerInfo: {
     flex: 1,
