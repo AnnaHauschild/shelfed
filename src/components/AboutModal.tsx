@@ -1,5 +1,6 @@
 import { Linking, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
 interface Props {
@@ -12,11 +13,12 @@ interface Props {
  * for Open Library credit + future privacy policy link.
  */
 export function AboutModal({ visible, onClose }: Props) {
+  const chrome = useThemeChrome();
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={styles.sheet}>
-        <View style={styles.header}>
+      <View style={[styles.sheet, { backgroundColor: chrome.background, borderColor: chrome.border }]}>
+        <View style={[styles.header, { borderBottomColor: chrome.border }]}>
           <Text style={styles.title}>About Shelfed</Text>
           <Pressable onPress={onClose} hitSlop={10}>
             <Ionicons name="close" size={20} color={colors.textOnDarkMuted} />
@@ -24,7 +26,7 @@ export function AboutModal({ visible, onClose }: Props) {
         </View>
 
         <ScrollView contentContainerStyle={styles.content}>
-          <Text style={styles.tagline}>
+          <Text style={[styles.tagline, { color: chrome.accent }]}>
             Your personal shelf for movies, series, books and games.
           </Text>
 
@@ -33,7 +35,7 @@ export function AboutModal({ visible, onClose }: Props) {
               This product uses the TMDB API but is not endorsed or certified by TMDB.
             </Text>
             <Pressable onPress={() => Linking.openURL('https://www.themoviedb.org/').catch(() => {})}>
-              <Text style={styles.link}>themoviedb.org</Text>
+              <Text style={[styles.link, { color: chrome.accent }]}>themoviedb.org</Text>
             </Pressable>
           </Section>
 
@@ -42,7 +44,7 @@ export function AboutModal({ visible, onClose }: Props) {
               Book data and covers provided by Open Library, a project of the Internet Archive.
             </Text>
             <Pressable onPress={() => Linking.openURL('https://openlibrary.org/').catch(() => {})}>
-              <Text style={styles.link}>openlibrary.org</Text>
+              <Text style={[styles.link, { color: chrome.accent }]}>openlibrary.org</Text>
             </Pressable>
           </Section>
 
@@ -51,7 +53,7 @@ export function AboutModal({ visible, onClose }: Props) {
               Game data and images provided by RAWG, the largest video game database.
             </Text>
             <Pressable onPress={() => Linking.openURL('https://rawg.io/').catch(() => {})}>
-              <Text style={styles.link}>rawg.io</Text>
+              <Text style={[styles.link, { color: chrome.accent }]}>rawg.io</Text>
             </Pressable>
           </Section>
 
@@ -70,9 +72,10 @@ export function AboutModal({ visible, onClose }: Props) {
 }
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
+  const chrome = useThemeChrome();
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionLabel}>{label}</Text>
+      <Text style={[styles.sectionLabel, { color: chrome.accent }]}>{label}</Text>
       {children}
     </View>
   );
