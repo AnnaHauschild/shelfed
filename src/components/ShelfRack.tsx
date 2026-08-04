@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { PosterImage } from '@/components/PosterImage';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { StoredMovie } from '@/repositories';
 import { colors, spacing } from '@/theme';
 
@@ -97,6 +98,7 @@ function ShelfRow({
   showStar = true,
   showHeart = true,
 }: Omit<Props, 'containerWidth'> & { spineWidth: number }) {
+  const chrome = useThemeChrome();
   return (
     <View style={styles.rowOuter}>
       <View style={styles.row}>
@@ -115,7 +117,7 @@ function ShelfRow({
       </View>
       {/* Wooden plank under the books. */}
       <LinearGradient
-        colors={['#7a4a22', '#4a2d12']}
+        colors={chrome.plank}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.plank}

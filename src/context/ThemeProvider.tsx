@@ -78,8 +78,12 @@ export interface ThemeChrome {
   accent: string;
   onAccent: string;
   surface: string;
+  surfaceRaised: string;
+  background: string;
   border: string;
   muted: string;
+  /** Two-stop gradient for the wooden shelf planks. */
+  plank: [string, string];
 }
 
 const CHROME: Record<ShelfTheme, ThemeChrome> = {
@@ -87,22 +91,31 @@ const CHROME: Record<ShelfTheme, ThemeChrome> = {
     accent: '#e0a23c',
     onAccent: '#1d140c',
     surface: '#2b1d12',
+    surfaceRaised: '#3a281a',
+    background: '#1d140c',
     border: '#5a4128',
     muted: '#b89b73',
+    plank: ['#7a4a22', '#4a2d12'],
   },
   scifi: {
     accent: '#5fe0ff',
     onAccent: '#07101f',
     surface: '#101d33',
+    surfaceRaised: '#182a49',
+    background: '#0a1220',
     border: '#284a76',
     muted: '#8fa6c4',
+    plank: ['#24406e', '#12233f'],
   },
   minimal: {
     accent: '#eaeaec',
     onAccent: '#1f1f22',
     surface: '#35353a',
+    surfaceRaised: '#434349',
+    background: '#2a2a2e',
     border: '#5a5a61',
     muted: '#a8a8ad',
+    plank: ['#6a6a70', '#4a4a4f'],
   },
 };
 

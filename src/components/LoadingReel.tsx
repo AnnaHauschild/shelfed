@@ -13,6 +13,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { MediaType } from '@/api/types';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { colors } from '@/theme';
 
 /**
@@ -21,17 +22,19 @@ import { colors } from '@/theme';
  */
 export function LoadingReel({
   size = 54,
-  color = colors.amber,
+  color,
   mediaType,
 }: {
   size?: number;
   color?: string;
   mediaType?: MediaType;
 }) {
+  const chrome = useThemeChrome();
+  const c = color ?? chrome.accent;
   if (mediaType === 'book') {
-    return <BookLoader size={size} color={color} />;
+    return <BookLoader size={size} color={c} />;
   }
-  return <ReelLoader size={size} color={color} />;
+  return <ReelLoader size={size} color={c} />;
 }
 
 /** A slowly spinning camera-iris icon. */
