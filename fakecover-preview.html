@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shelfed — Fake-Cover Vorschau (Screenshot-Modus)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Special+Elite&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #1d140c;
+    --panel: #241811;
+    --amber: #d9a531;
+    --amber-bright: #f0c04a;
+    --text: #f3e7d6;
+    --muted: #b9a488;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(120% 90% at 50% -10%, #3a2513 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 32px 20px 64px;
+    min-height: 100vh;
+  }
+  header.page {
+    max-width: 1180px;
+    margin: 0 auto 8px;
+    text-align: center;
+  }
+  .wordmark {
+    font-family: "Oswald", sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 40px;
+    color: var(--amber-bright);
+    margin: 0;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 6px 0 0;
+  }
+  .note {
+    max-width: 780px;
+    margin: 18px auto 32px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(217,165,49,0.25);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .note strong { color: var(--text); }
+
+  section { max-width: 1180px; margin: 0 auto 40px; }
+  h2.cat {
+    font-family: "Oswald", sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 20px;
+    color: var(--amber);
+    border-bottom: 1px solid rgba(217,165,49,0.2);
+    padding-bottom: 8px;
+    margin: 0 0 20px;
+  }
+
+  /* Hero row = how the Discover deck card looks (large) */
+  .hero {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 26px;
+  }
+  .hero .card { width: 300px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+  }
+
+  .card { width: 100%; }
+  .cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #20140a;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .layer { position: absolute; inset: 0; }
+  .sun { position: absolute; width: 32%; aspect-ratio: 1; border-radius: 999px; opacity: 0.92; filter: blur(0.3px); }
+  .star { position: absolute; width: 2px; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.85); }
+  .hillBack { position: absolute; bottom: 0; left: -22%; width: 86%; height: 42%; border-top-left-radius: 160px; border-top-right-radius: 240px; }
+  .hillFront { position: absolute; bottom: 0; right: -18%; width: 90%; height: 32%; border-top-left-radius: 240px; border-top-right-radius: 140px; }
+
+  /* Title scrim + label, mimicking the in-app card overlay */
+  .scrim {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 55%;
+    background: linear-gradient(to top, rgba(10,6,2,0.92) 0%, rgba(10,6,2,0.55) 45%, transparent 100%);
+  }
+  .meta { position: absolute; left: 12px; right: 12px; bottom: 12px; }
+  .title {
+    font-family: "Oswald", sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-size: 17px;
+    line-height: 1.1;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+  .sub {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .rating { color: var(--amber-bright); font-weight: 600; }
+  .genre {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #e6d6bd; background: rgba(255,255,255,0.10);
+    padding: 2px 7px; border-radius: 999px;
+  }
+  .author { font-style: italic; color: #cdbfa8; }
+  .palette-tag {
+    position: absolute; top: 8px; left: 8px;
+    font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.35);
+    padding: 2px 6px; border-radius: 6px;
+  }
+  footer { text-align:center; color: var(--muted); font-size: 12px; margin-top: 32px; }
+</style>
+</head>
+<body>
+  <header class="page">
+    <h1 class="wordmark">Shelfed</h1>
+    <p class="subtitle">Screenshot-Modus · Fake-Cover Vorschau · kein fremdes Material</p>
+  </header>
+
+  <div class="note">
+    Diese Cover werden <strong>live von der App gezeichnet</strong> (nur Farbverläufe &amp; Formen, keine Bilddateien) und sind
+    komplett <strong>copyright-frei</strong>. Jeder Titel bekommt deterministisch eine von 6 Paletten und eine Sonnenposition —
+    exakt wie im Screenshot-Modus der App. <strong>Es wurde nichts in die App geladen.</strong>
+  </div>
+
+  <div id="app"></div>
+
+  <footer>Deterministisch aus dem Titel-Hash · identisch zur <code>FakeCover</code>-Komponente in <code>PosterImage.tsx</code></footer>
+
+<script>
+  // --- 1:1 Nachbau der FakeCover-Logik aus PosterImage.tsx -------------------
+  const PALETTES = [
+    { name: 'sunset',      sky: ['#f6b26b', '#d9713b', '#5a2a2e'], sun: '#ffe9c2', hillA: '#7a3b2e', hillB: '#361a17', night: false },
+    { name: 'ocean',       sky: ['#3a6ea5', '#1f4b73', '#06283d'], sun: '#eaf4ff', hillA: '#123a52', hillB: '#07202f', night: false },
+    { name: 'forest',      sky: ['#6a9a5b', '#3f6b4a', '#16321f'], sun: '#f0f5d8', hillA: '#274d33', hillB: '#0f2317', night: false },
+    { name: 'dusk',        sky: ['#3b3566', '#241f47', '#0d0b1f'], sun: '#f2ead0', hillA: '#1c1838', hillB: '#0a0818', night: true  },
+    { name: 'desert',      sky: ['#e0a950', '#b06a2e', '#4a2a18'], sun: '#fff0c8', hillA: '#5e3418', hillB: '#2c1710', night: false },
+    { name: 'night road',  sky: ['#274060', '#152a44', '#070d18'], sun: '#dbe7f5', hillA: '#101f30', hillB: '#060c15', night: true  },
+  ];
+  const FAKE_STARS = [
+    { x: 18, y: 14 }, { x: 34, y: 22 }, { x: 52, y: 11 },
+    { x: 68, y: 25 }, { x: 80, y: 16 }, { x: 44, y: 31 },
+  ];
+  function hashString(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return h;
+  }
+
+  function coverHTML(seed) {
+    const h = hashString(seed);
+    const p = PALETTES[h % PALETTES.length];
+    const sunLeft = 16 + (h % 5) * 12;
+    const sunTop = 12 + ((h >> 3) % 4) * 6;
+    const sky = `linear-gradient(to bottom, ${p.sky[0]} 0%, ${p.sky[1]} 50%, ${p.sky[2]} 100%)`;
+    const stars = p.night
+      ? FAKE_STARS.map(s => `<span class="star" style="left:${s.x}%;top:${s.y}%"></span>`).join('')
+      : '';
+    return {
+      palette: p.name,
+      html: `
+        <div class="layer" style="background:${sky}"></div>
+        ${stars}
+        <span class="sun" style="background:${p.sun};left:${sunLeft}%;top:${sunTop}%"></span>
+        <span class="hillBack" style="background:${p.hillA}"></span>
+        <span class="hillFront" style="background:${p.hillB}"></span>
+      `,
+    };
+  }
+
+  function card(item) {
+    const c = coverHTML(item.title);
+    const genre = item.genres && item.genres.length ? `<span class="genre">${item.genres[0]}</span>` : '';
+    const author = item.authors && item.authors.length ? `<span class="author">${item.authors[0]}</span>` : '';
+    return `
+      <div class="card">
+        <div class="cover">
+          ${c.html}
+          <span class="palette-tag">${c.palette}</span>
+          <div class="scrim"></div>
+          <div class="meta">
+            <p class="title">${item.title}</p>
+            <p class="sub">
+              <span class="rating">★ ${item.vote.toFixed(1)}</span>
+              <span>${item.year}</span>
+              ${genre}
+              ${author}
+            </p>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // --- Erfundene Titel (aus src/api/screenshotData.ts) -----------------------
+  const MOVIES = [
+    { title: 'The Long Way North', year: 2023, vote: 8.1, genres: ['Adventure','Drama'] },
+    { title: 'Golden Hour', year: 2022, vote: 7.9, genres: ['Drama','Romance'] },
+    { title: 'Nightfall Road', year: 2021, vote: 7.3, genres: ['Thriller','Mystery'] },
+    { title: 'Salt & Pine', year: 2019, vote: 7.8, genres: ['Drama'] },
+    { title: 'After the Rain', year: 2024, vote: 8.0, genres: ['Drama','Romance'] },
+    { title: 'Wanderers', year: 2023, vote: 7.7, genres: ['Adventure'] },
+    { title: 'The Quiet Season', year: 2018, vote: 7.4, genres: ['Mystery','Drama'] },
+    { title: 'Coastline', year: 2022, vote: 7.6, genres: ['Drama'] },
+  ];
+  const SERIES = [
+    { title: 'Northbound', year: 2022, vote: 8.2, genres: ['Drama'] },
+    { title: 'Tidewater', year: 2021, vote: 7.9, genres: ['Crime','Mystery'] },
+    { title: 'Cabin Nine', year: 2023, vote: 7.5, genres: ['Thriller'] },
+    { title: 'The Detour', year: 2020, vote: 7.8, genres: ['Comedy','Drama'] },
+    { title: 'Harbor Lights', year: 2019, vote: 8.0, genres: ['Drama'] },
+    { title: 'Wildwood', year: 2024, vote: 7.6, genres: ['Adventure'] },
+  ];
+  const BOOKS = [
+    { title: 'Between the Pines', year: 2021, vote: 8.4, genres: ['Fiction'], authors: ['E. M. Hale'] },
+    { title: 'A Map of Small Roads', year: 2020, vote: 8.1, genres: ['Travel'], authors: ['J. Rivers'] },
+    { title: 'The Weekend House', year: 2022, vote: 7.9, genres: ['Fiction'], authors: ['Clara Voss'] },
+    { title: 'Letters to the Sea', year: 2019, vote: 8.2, genres: ['Fiction'], authors: ['Nadia Brandt'] },
+    { title: 'Woodsmoke', year: 2023, vote: 7.7, genres: ['Mystery'], authors: ['T. A. Nolan'] },
+    { title: 'The Winter Guest', year: 2018, vote: 8.0, genres: ['Fiction'], authors: ['Marta Lindqvist'] },
+  ];
+  const GAMES = [
+    { title: 'Trailblazer', year: 2022, vote: 8.5, genres: ['Adventure'] },
+    { title: 'Driftwood', year: 2021, vote: 8.1, genres: ['Indie'] },
+    { title: 'Summit', year: 2023, vote: 8.3, genres: ['Adventure'] },
+    { title: 'The Open Road', year: 2020, vote: 7.9, genres: ['Racing'] },
+    { title: 'Lantern', year: 2024, vote: 8.6, genres: ['Puzzle'] },
+    { title: 'Homestead', year: 2022, vote: 8.0, genres: ['Simulation'] },
+  ];
+
+  function section(title, items, heroCount) {
+    const hero = items.slice(0, heroCount).map(card).join('');
+    const rest = items.slice(heroCount).map(card).join('');
+    return `
+      <section>
+        <h2 class="cat">${title}</h2>
+        <div class="hero">${hero}</div>
+        ${rest ? `<div class="grid">${rest}</div>` : ''}
+      </section>`;
+  }
+
+  document.getElementById('app').innerHTML =
+    section('Filme', MOVIES, 3) +
+    section('Serien', SERIES, 3) +
+    section('Bücher', BOOKS, 3) +
+    section('Games', GAMES, 3);
+</script>
+</body>
+</html>

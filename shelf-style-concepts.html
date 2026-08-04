@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shelfed — Vektor Design-Welten (Konzepte)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #0a0a0c; color: #eee; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; padding: 28px 20px 60px; }
+  h1 { font-family: "Oswald"; font-weight: 700; letter-spacing: 1px; text-align: center; margin: 0 0 4px; }
+  .sub { text-align: center; color: #8a8a92; font-size: 13px; margin: 0 0 28px; }
+  .row { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; align-items: flex-start; }
+  .item { width: 320px; }
+  .cap { text-align: center; margin: 12px 2px 0; }
+  .cap b { font-family: "Oswald"; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 15px; }
+  .cap span { display: block; color: #8a8a92; font-size: 12px; margin-top: 3px; line-height: 1.4; }
+  .screen { width: 320px; height: 640px; border-radius: 30px; overflow: hidden; box-shadow: 0 16px 44px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06); position: relative; }
+  .screen svg { display: block; width: 100%; height: 100%; }
+  .note { max-width: 820px; margin: 30px auto 0; text-align: center; color: #8a8a92; font-size: 12.5px; line-height: 1.6; }
+</style>
+</head>
+<body>
+  <h1>Shelfed — Vektor Design-Welten</h1>
+  <p class="sub">3 komplett unterschiedliche Konzepte (Aufbau, Motiv, Stil) — handcodiert, kein Farbfilter · nur Browser</p>
+
+  <div class="row">
+
+    <!-- ============ 1) MINIMAL / MODERN ============ -->
+    <div class="item">
+      <div class="screen">
+        <svg viewBox="0 0 320 640" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="m-bg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#101216"/><stop offset="1" stop-color="#181b21"/>
+            </linearGradient>
+            <radialGradient id="m-blob" cx="0.8" cy="0.18" r="0.6">
+              <stop offset="0" stop-color="#ff7a59" stop-opacity="0.55"/>
+              <stop offset="1" stop-color="#ff7a59" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="m-blob2" cx="0.1" cy="0.9" r="0.6">
+              <stop offset="0" stop-color="#4de0c0" stop-opacity="0.35"/>
+              <stop offset="1" stop-color="#4de0c0" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="320" height="640" fill="url(#m-bg)"/>
+          <rect width="320" height="640" fill="url(#m-blob)"/>
+          <rect width="320" height="640" fill="url(#m-blob2)"/>
+          <!-- ultra-minimal "shelf": one hairline + a few floating rounded bars -->
+          <text x="28" y="92" font-family="Space Grotesk" font-size="30" font-weight="700" fill="#f3f3f5" letter-spacing="0.5">Shelfed</text>
+          <text x="29" y="114" font-family="Space Grotesk" font-size="12" fill="#9aa0aa" letter-spacing="2">YOUR COLLECTION</text>
+          <line x1="28" y1="300" x2="292" y2="300" stroke="#3a3f48" stroke-width="1"/>
+          <line x1="28" y1="452" x2="292" y2="452" stroke="#3a3f48" stroke-width="1"/>
+          <g>
+            <rect x="40" y="232" width="26" height="68" rx="5" fill="#ff7a59"/>
+            <rect x="74" y="250" width="26" height="50" rx="5" fill="#2b303a"/>
+            <rect x="108" y="222" width="26" height="78" rx="5" fill="#3a4150"/>
+            <rect x="150" y="256" width="26" height="44" rx="5" fill="#4de0c0"/>
+            <rect x="228" y="240" width="26" height="60" rx="5" fill="#2b303a"/>
+          </g>
+          <g>
+            <rect x="56" y="392" width="26" height="60" rx="5" fill="#2b303a"/>
+            <rect x="90" y="404" width="26" height="48" rx="5" fill="#ff7a59"/>
+            <rect x="200" y="384" width="26" height="68" rx="5" fill="#3a4150"/>
+            <rect x="234" y="410" width="26" height="42" rx="5" fill="#4de0c0"/>
+          </g>
+          <circle cx="264" cy="150" r="6" fill="#ff7a59"/>
+        </svg>
+      </div>
+      <div class="cap"><b>Minimal / Modern</b><span>Viel Weißraum, weiche Farbverläufe, dünne Linien-Regale, ein Akzent — clean &amp; ruhig.</span></div>
+    </div>
+
+    <!-- ============ 2) SCI-FI / NEBULA ============ -->
+    <div class="item">
+      <div class="screen">
+        <svg viewBox="0 0 320 640" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="s-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#0a0f2a"/><stop offset="0.55" stop-color="#161038"/><stop offset="1" stop-color="#05030f"/>
+            </linearGradient>
+            <radialGradient id="s-planet" cx="0.35" cy="0.35" r="0.8">
+              <stop offset="0" stop-color="#7b5cff"/><stop offset="0.6" stop-color="#3a2a8a"/><stop offset="1" stop-color="#1a1240"/>
+            </radialGradient>
+            <radialGradient id="s-glow" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stop-color="#42e8ff" stop-opacity="0.5"/><stop offset="1" stop-color="#42e8ff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="320" height="640" fill="url(#s-sky)"/>
+          <!-- stars -->
+          <g fill="#cfe6ff">
+            <circle cx="40" cy="60" r="1.3"/><circle cx="90" cy="110" r="1"/><circle cx="150" cy="48" r="1.4"/>
+            <circle cx="210" cy="90" r="1"/><circle cx="270" cy="55" r="1.5"/><circle cx="300" cy="130" r="1"/>
+            <circle cx="24" cy="150" r="1"/><circle cx="120" cy="150" r="1.2"/><circle cx="250" cy="170" r="1"/>
+            <circle cx="60" cy="210" r="1"/><circle cx="190" cy="200" r="1.3"/><circle cx="285" cy="230" r="1"/>
+          </g>
+          <!-- planet + ring -->
+          <ellipse cx="228" cy="150" rx="120" ry="34" fill="none" stroke="#42e8ff" stroke-opacity="0.5" stroke-width="3"/>
+          <circle cx="228" cy="150" r="70" fill="url(#s-planet)"/>
+          <text x="24" y="300" font-family="Space Grotesk" font-size="30" font-weight="700" fill="#eaf6ff" letter-spacing="0.5">Shelfed</text>
+          <text x="25" y="322" font-family="Space Grotesk" font-size="12" fill="#7fb9ff" letter-spacing="3">STREAM THE STARS</text>
+          <!-- neon perspective grid floor -->
+          <g stroke="#ff3db0" stroke-opacity="0.55" stroke-width="1.4">
+            <line x1="0" y1="470" x2="320" y2="470"/>
+            <line x1="-40" y1="560" x2="360" y2="560"/>
+            <line x1="160" y1="440" x2="-120" y2="640"/>
+            <line x1="160" y1="440" x2="60" y2="640"/>
+            <line x1="160" y1="440" x2="260" y2="640"/>
+            <line x1="160" y1="440" x2="440" y2="640"/>
+          </g>
+          <rect x="0" y="440" width="320" height="200" fill="url(#s-glow)" opacity="0.5"/>
+          <!-- holographic shelf bars -->
+          <g fill="#42e8ff" opacity="0.9">
+            <rect x="40" y="392" width="14" height="46" rx="2"/><rect x="60" y="404" width="14" height="34" rx="2"/>
+            <rect x="248" y="386" width="14" height="52" rx="2"/><rect x="268" y="400" width="14" height="38" rx="2"/>
+          </g>
+          <!-- figure silhouette looking up -->
+          <g fill="#05030f">
+            <circle cx="160" cy="500" r="9"/>
+            <path d="M150 512 q10 -6 20 0 l3 44 -26 0 z"/>
+          </g>
+        </svg>
+      </div>
+      <div class="cap"><b>Sci-Fi / Nebula</b><span>Sternenhimmel, Planet mit Ring, Neon-Perspektivraster, holografische Regale, kleine Figur.</span></div>
+    </div>
+
+    <!-- ============ 3) LINE-ART STUDIO (with figure) ============ -->
+    <div class="item">
+      <div class="screen">
+        <svg viewBox="0 0 320 640" xmlns="http://www.w3.org/2000/svg">
+          <rect width="320" height="640" fill="#ece3d3"/>
+          <!-- soft sun blob through window -->
+          <circle cx="250" cy="150" r="70" fill="#f3d9a6" opacity="0.5"/>
+          <g stroke="#2b2620" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <!-- window -->
+            <rect x="196" y="86" width="96" height="120" rx="4"/>
+            <line x1="244" y1="86" x2="244" y2="206"/><line x1="196" y1="146" x2="292" y2="146"/>
+            <!-- shelf on right with a few books -->
+            <rect x="196" y="250" width="96" height="150" rx="3"/>
+            <line x1="196" y1="300" x2="292" y2="300"/><line x1="196" y1="350" x2="292" y2="350"/>
+            <!-- floor line -->
+            <line x1="16" y1="470" x2="304" y2="470"/>
+            <!-- floor lamp -->
+            <line x1="40" y1="470" x2="40" y2="300"/>
+            <path d="M24 300 q16 -26 32 0 z"/>
+            <!-- lounge chair + reading figure -->
+            <path d="M78 470 l0 -70 q0 -26 26 -26 l40 0"/>
+            <path d="M78 400 q-16 6 -16 34 l0 36"/>
+            <!-- person: head, body, legs, book -->
+            <circle cx="120" cy="356" r="13"/>
+            <path d="M120 369 q22 8 22 40 l0 30 -44 0 0 -30 q0 -30 22 -40 z"/>
+            <path d="M112 402 l30 -10"/>
+            <rect x="128" y="384" width="26" height="18" rx="2"/>
+            <!-- potted plant -->
+            <path d="M300 470 l0 -1"/>
+          </g>
+          <!-- accent fills -->
+          <path d="M78 470 l0 -70 q0 -26 26 -26 l40 0 0 96 z" fill="#c96f4a" opacity="0.16"/>
+          <rect x="196" y="250" width="96" height="150" rx="3" fill="#6b8f6e" opacity="0.10"/>
+          <g fill="#6b8f6e" opacity="0.85">
+            <rect x="206" y="262" width="8" height="32"/><rect x="218" y="268" width="8" height="26"/>
+          </g>
+          <g fill="#c96f4a" opacity="0.85">
+            <rect x="232" y="264" width="8" height="30"/><rect x="244" y="270" width="8" height="24"/>
+          </g>
+          <text x="24" y="536" font-family="Oswald" font-size="30" font-weight="700" fill="#2b2620" letter-spacing="0.5">Shelfed</text>
+          <text x="25" y="558" font-family="Space Grotesk" font-size="12" fill="#7a7060" letter-spacing="2">A QUIET PLACE TO COLLECT</text>
+        </svg>
+      </div>
+      <div class="cap"><b>Line-Art Studio</b><span>Flache Linien-Illustration: Zimmer mit Fenster, Regal, Stehlampe, Sessel &amp; lesender Figur. Scandi/modern.</span></div>
+    </div>
+
+  </div>
+  <p class="note">Alles handcodierte Vektorkunst (SVG) — nur Browser, nichts in der App. Das ist die Bandbreite, die <b>ich</b> ohne Bild-KI schaffe (illustrativ, nicht fotorealistisch). Für Fotorealismus/echte Figuren: die Referenzbilder in <code>store\</code> an eine Bild-KI geben.</p>
+</body>
+</html>

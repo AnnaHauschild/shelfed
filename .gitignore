@@ -46,6 +46,12 @@ shelf-bg-preview.html
 ngrok-debug.log
 fw_result.txt
 
+# local screenshot/theme working artifacts (intermediates — kept locally only)
+store/screenshots-raw/
+store/screenshots-ipad-raw/
+store/shelf-themes-ai/
+store/current-background-*.png
+
 
 # Local build artifacts (.aab/.ipa)
 /build/
