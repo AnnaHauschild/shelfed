@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   KeyboardAvoidingView,
@@ -28,6 +28,7 @@ import { GenreChips } from '@/components/GenreChips';
 import { useLanguage } from '@/context/LanguageProvider';
 import { MOODS_LABEL, MOOD_LABEL, MOOD_TEMPLATES } from '@/constants/moods';
 import { useMoodMutations, useMoods } from '@/hooks/useMoods';
+import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
 const SCREEN_H = Dimensions.get('window').height;
@@ -73,6 +74,8 @@ export function ShelfMenu({
   const { data: moods } = useMoods();
   const { createMood } = useMoodMutations();
   const { text } = useLanguage();
+  const chrome = useThemeChrome();
+  const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
   const translateY = useSharedValue(0);
@@ -198,7 +201,7 @@ export function ShelfMenu({
                 onPress={create}
                 disabled={!name.trim()}
               >
-                <Ionicons name="add-circle" size={18} color={colors.background} />
+                <Ionicons name="add-circle" size={18} color={chrome.onAccent} />
                 <Text style={styles.createButtonText}>Create &amp; open</Text>
               </Pressable>
             </ScrollView>
@@ -255,7 +258,7 @@ export function ShelfMenu({
                     ]}
                     onPress={() => setCreating(true)}
                   >
-                    <Ionicons name="add" size={18} color={colors.background} />
+                    <Ionicons name="add" size={18} color={chrome.onAccent} />
                     <Text style={styles.newButtonText}>
                       New {MOOD_LABEL.toLowerCase()}
                     </Text>
@@ -316,6 +319,8 @@ function OptionChip({
   accent: string;
   onPress: () => void;
 }) {
+  const chrome = useThemeChrome();
+  const styles = useMemo(() => makeStyles(chrome), [chrome]);
   return (
     <Pressable
       onPress={onPress}
@@ -330,7 +335,8 @@ function OptionChip({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ThemeChrome) =>
+  StyleSheet.create({
   avoider: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -341,11 +347,11 @@ const styles = StyleSheet.create({
   },
   sheet: {
     maxHeight: '86%',
-    backgroundColor: colors.background,
+    backgroundColor: c.background,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     borderTopWidth: 2,
-    borderColor: colors.border,
+    borderColor: c.border,
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.xl,
     paddingTop: spacing.sm,
@@ -359,7 +365,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.border,
+    backgroundColor: c.border,
     alignSelf: 'center',
   },
   content: {
@@ -372,7 +378,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   title: {
-    color: colors.amberBright,
+    color: c.accent,
     fontFamily: fonts.display,
     fontSize: 20,
     textTransform: 'uppercase',
@@ -396,8 +402,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     borderRadius: radius.xl,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
+    borderColor: c.border,
+    backgroundColor: c.surfaceRaised,
   },
   chipText: {
     color: colors.textOnDarkMuted,
@@ -413,10 +419,10 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: spacing.md,
     borderRadius: radius.xl,
-    backgroundColor: colors.amberBright,
+    backgroundColor: c.accent,
   },
   newButtonText: {
-    color: colors.background,
+    color: c.onAccent,
     fontFamily: fonts.label,
     fontSize: 14,
     textTransform: 'uppercase',
@@ -440,8 +446,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
+    borderColor: c.border,
+    backgroundColor: c.surfaceRaised,
   },
   moodInfo: {
     flex: 1,
@@ -471,8 +477,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
+    borderColor: c.border,
+    backgroundColor: c.surfaceRaised,
   },
   hint: {
     color: colors.textOnDarkMuted,
@@ -487,13 +493,13 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     paddingVertical: spacing.md,
     borderRadius: radius.xl,
-    backgroundColor: colors.amberBright,
+    backgroundColor: c.accent,
   },
   createButtonDisabled: {
     opacity: 0.4,
   },
   createButtonText: {
-    color: colors.background,
+    color: c.onAccent,
     fontFamily: fonts.label,
     fontSize: 14,
     textTransform: 'uppercase',

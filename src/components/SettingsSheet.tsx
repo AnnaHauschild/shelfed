@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   Modal,
@@ -27,7 +27,7 @@ import { LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/context/LanguageProvider';
 import { useProfile } from '@/context/ProfileProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
-import { ShelfTheme, useTheme } from '@/context/ThemeProvider';
+import { ShelfTheme, ThemeChrome, useTheme, useThemeChrome } from '@/context/ThemeProvider';
 
 const SCREEN_H = Dimensions.get('window').height;
 
@@ -82,6 +82,8 @@ export function SettingsSheet({
   const { name, setName } = useProfile();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const chrome = useThemeChrome();
+  const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [draft, setDraft] = useState(name ?? '');
   const [langOpen, setLangOpen] = useState(false);
 
@@ -147,7 +149,7 @@ export function SettingsSheet({
                 <Ionicons
                   name="settings-outline"
                   size={20}
-                  color={colors.amberBright}
+                  color={chrome.accent}
                 />
                 <Text style={styles.title}>Settings</Text>
               </View>
@@ -225,7 +227,7 @@ export function SettingsSheet({
                         <Ionicons
                           name="checkmark"
                           size={16}
-                          color={colors.amberBright}
+                          color={chrome.accent}
                         />
                       )}
                     </Pressable>
@@ -280,7 +282,7 @@ export function SettingsSheet({
                       <Ionicons
                         name="checkmark-circle"
                         size={20}
-                        color={colors.amberBright}
+                        color={chrome.accent}
                       />
                     )}
                   </Pressable>
@@ -294,7 +296,8 @@ export function SettingsSheet({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ThemeChrome) =>
+  StyleSheet.create({
   modalRoot: {
     flex: 1,
   },
@@ -308,11 +311,11 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     maxHeight: '88%',
-    backgroundColor: colors.background,
+    backgroundColor: c.background,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     borderTopWidth: 2,
-    borderColor: colors.border,
+    borderColor: c.border,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
   },
@@ -328,7 +331,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.border,
+    backgroundColor: c.border,
     alignSelf: 'center',
   },
   headerRow: {
@@ -337,7 +340,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   title: {
-    color: colors.amberBright,
+    color: c.accent,
     fontFamily: fonts.display,
     fontSize: 22,
     textTransform: 'uppercase',
@@ -368,9 +371,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: c.border,
     borderRadius: radius.md,
-    backgroundColor: colors.surface,
+    backgroundColor: c.surface,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
@@ -386,9 +389,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: c.border,
     borderRadius: radius.md,
-    backgroundColor: colors.surface,
+    backgroundColor: c.surface,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
   },
@@ -400,9 +403,9 @@ const styles = StyleSheet.create({
   dropdownList: {
     marginTop: spacing.xs,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: c.border,
     borderRadius: radius.md,
-    backgroundColor: colors.surface,
+    backgroundColor: c.surface,
     overflow: 'hidden',
   },
   dropdownItem: {
@@ -412,10 +415,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    borderBottomColor: c.border,
   },
   dropdownItemActive: {
-    backgroundColor: colors.surfaceRaised,
+    backgroundColor: c.surfaceRaised,
   },
   dropdownItemText: {
     color: colors.textOnDarkMuted,
@@ -436,12 +439,12 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: c.border,
+    backgroundColor: c.surface,
   },
   themeRowActive: {
-    borderColor: colors.amberBright,
-    backgroundColor: colors.surfaceRaised,
+    borderColor: c.accent,
+    backgroundColor: c.surfaceRaised,
   },
   themeRowSoon: {
     opacity: 0.7,
