@@ -25,7 +25,7 @@ export function AboutModal({ visible, onClose }: Props) {
 
         <ScrollView contentContainerStyle={styles.content}>
           <Text style={styles.tagline}>
-            Your personal shelf for movies, series and books.
+            Your personal shelf for movies, series, books and games.
           </Text>
 
           <Section label="Movies & Series">
@@ -43,6 +43,15 @@ export function AboutModal({ visible, onClose }: Props) {
             </Text>
             <Pressable onPress={() => Linking.openURL('https://openlibrary.org/').catch(() => {})}>
               <Text style={styles.link}>openlibrary.org</Text>
+            </Pressable>
+          </Section>
+
+          <Section label="Games">
+            <Text style={styles.body}>
+              Game data and images provided by RAWG, the largest video game database.
+            </Text>
+            <Pressable onPress={() => Linking.openURL('https://rawg.io/').catch(() => {})}>
+              <Text style={styles.link}>rawg.io</Text>
             </Pressable>
           </Section>
 
