@@ -12,6 +12,7 @@ import Animated, {
 import { ActorFilter, SelectedActor } from './ActorFilter';
 import { MUST_SEE_LABEL } from '@/api/movies';
 import { colors, fonts, radius, spacing } from '@/theme';
+import { useThemeChrome } from '@/context/ThemeProvider';
 
 const SCREEN_H = Dimensions.get('window').height;
 
@@ -126,6 +127,7 @@ export function FilterSheet({
       }
     });
 
+  const chrome = useThemeChrome();
   const filterDefs: FilterDef[] = [
     genreOptions.length > 0 && {
       key: 'genre',
@@ -133,7 +135,7 @@ export function FilterSheet({
       options: genreOptions,
       selected: genre,
       onSelect: onGenreChange,
-      accent: colors.amberBright,
+      accent: chrome.accent,
     },
     vibeOptions.length > 0 && {
       key: 'vibe',
@@ -149,7 +151,7 @@ export function FilterSheet({
       options: eraOptions,
       selected: era,
       onSelect: onEraChange,
-      accent: colors.amber,
+      accent: chrome.accent,
     },
     platformOptions.length > 0 && {
       key: 'console',
@@ -187,7 +189,7 @@ export function FilterSheet({
               <View style={styles.headerRow}>
                 <Text style={styles.title}>Filters</Text>
                 <Pressable onPress={onClearAll} hitSlop={8}>
-                  <Text style={styles.clear}>Clear all</Text>
+                  <Text style={[styles.clear, { color: chrome.accent }]}>Clear all</Text>
                 </Pressable>
               </View>
             </View>
@@ -200,17 +202,17 @@ export function FilterSheet({
           {!hideMustSee && (
             <Pressable
               onPress={() => onMustSeeChange?.(!mustSee)}
-              style={[styles.mustSee, mustSee && styles.mustSeeActive]}
+              style={[styles.mustSee, mustSee && styles.mustSeeActive, mustSee && { borderColor: chrome.accent }]}
             >
               <Text
-                style={[styles.mustSeeTitle, mustSee && styles.mustSeeTitleActive]}
+                style={[styles.mustSeeTitle, mustSee && styles.mustSeeTitleActive, mustSee && { color: chrome.accent }]}
               >
                 {MUST_SEE_LABEL}
               </Text>
               <Ionicons
                 name={mustSee ? 'checkmark-circle' : 'ellipse-outline'}
                 size={18}
-                color={mustSee ? colors.amberBright : colors.border}
+                color={mustSee ? chrome.accent : colors.border}
               />
             </Pressable>
           )}
@@ -229,7 +231,7 @@ export function FilterSheet({
               return (
                 <Pressable
                   key={f.key}
-                  style={[styles.gridDropdown, isOpen && styles.gridDropdownOpen]}
+                  style={[styles.gridDropdown, isOpen && styles.gridDropdownOpen, isOpen && { borderColor: chrome.accent }]}
                   onPress={() => toggle(f.key)}
                   hitSlop={4}
                 >
@@ -286,9 +288,9 @@ export function FilterSheet({
           )}
         </ScrollView>
 
-        <Pressable style={styles.doneButton} onPress={onClose} hitSlop={8}>
-          <Ionicons name="checkmark" size={18} color={colors.background} />
-          <Text style={styles.doneText}>Done</Text>
+        <Pressable style={[styles.doneButton, { backgroundColor: chrome.accent }]} onPress={onClose} hitSlop={8}>
+          <Ionicons name="checkmark" size={18} color={chrome.onAccent} />
+          <Text style={[styles.doneText, { color: chrome.onAccent }]}>Done</Text>
         </Pressable>
         </Animated.View>
       </GestureHandlerRootView>

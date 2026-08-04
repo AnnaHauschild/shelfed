@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '@/api/types';
 import { POSTER_SIZE_SMALL } from '@/constants/config';
 import { useMovieDetails } from '@/components/MovieDetailsProvider';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { PosterImage } from '@/components/PosterImage';
 import { useMediaType } from '@/context/MediaTypeProvider';
@@ -28,6 +29,7 @@ import { FeatureHeader } from '@/components/FeatureHeader';
 export default function SearchScreen() {
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
+  const chrome = useThemeChrome();
   const [text, setText] = useState('');
   const [query, setQuery] = useState('');
 
@@ -67,7 +69,7 @@ export default function SearchScreen() {
         <MediaSwitcher />
       </View>
 
-      <View style={styles.searchBar}>
+      <View style={[styles.searchBar, { backgroundColor: chrome.surface, borderColor: chrome.border }]}>
         <Ionicons name="search" size={18} color={colors.textOnDarkMuted} />
         <TextInput
           value={text}
@@ -99,7 +101,7 @@ export default function SearchScreen() {
       </View>
 
       {trimmed.length < 2 ? null : isLoading ? (
-        <ActivityIndicator style={styles.loader} color={colors.amber} size="large" />
+        <ActivityIndicator style={styles.loader} color={chrome.accent} size="large" />
       ) : isError ? (
         <Centered
           icon="cloud-offline-outline"
@@ -125,6 +127,7 @@ export default function SearchScreen() {
 /** One search result with a poster, meta and quick add-to-list buttons. */
 function ResultRow({ movie }: { movie: Movie }) {
   const { open } = useMovieDetails();
+  const chrome = useThemeChrome();
   const { toggleWatchlist, toggleFavorite } = useInteractions();
   const states = useInteractionStates();
   const isWatchlisted = states.isWatchlisted(movie.id);
@@ -154,7 +157,7 @@ function ResultRow({ movie }: { movie: Movie }) {
           )}
           {movie.voteAverage > 0 && (
             <View style={styles.rating}>
-              <Ionicons name="star" size={12} color={colors.amberBright} />
+              <Ionicons name="star" size={12} color={chrome.accent} />
               <Text style={styles.rowMetaText}>
                 {movie.voteAverage.toFixed(1)}
               </Text>
@@ -162,7 +165,7 @@ function ResultRow({ movie }: { movie: Movie }) {
           )}
         </View>
         {movie.genres.length > 0 && (
-          <Text style={styles.rowGenres} numberOfLines={1}>
+          <Text style={[styles.rowGenres, { color: chrome.accent }]} numberOfLines={1}>
             {movie.genres.slice(0, 3).join('  •  ')}
           </Text>
         )}

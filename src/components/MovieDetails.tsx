@@ -13,6 +13,7 @@ import { useBookDescription } from '@/hooks/useBookDescription';
 import { useGameDescription } from '@/hooks/useGameDescription';
 import { useWatchProviders } from '@/hooks/useWatchProviders';
 import { colors, fonts, radius, spacing } from '@/theme';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { PosterImage } from './PosterImage';
 
 /**
@@ -67,6 +68,8 @@ interface Props {
  * surface + framing).
  */
 export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote }: Props) {
+  const chrome = useThemeChrome();
+  const accentText = { color: chrome.accent };
   const [zoom, setZoom] = useState(false);
   // Poster tap-to-enlarge is only offered in the details sheet (where a
   // dragGesture is wired), not on the swipe card whose tap flips it back.
@@ -117,7 +120,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
             {movie.year != null && <Text style={styles.meta}>{movie.year}</Text>}
             {movie.voteAverage > 0 && (
               <View style={styles.rating}>
-                <Ionicons name="star" size={13} color={colors.amberBright} />
+                <Ionicons name="star" size={13} color={chrome.accent} />
                 <Text style={styles.meta}>{movie.voteAverage.toFixed(1)}</Text>
               </View>
             )}
@@ -126,13 +129,13 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
             <View style={styles.genreRow}>
               {movie.genres.slice(0, 3).map((g) => (
                 <View key={g} style={styles.genreChip}>
-                  <Text style={styles.genreText}>{g}</Text>
+                  <Text style={[styles.genreText, accentText]}>{g}</Text>
                 </View>
               ))}
             </View>
           )}
           {movie.authors && movie.authors.length > 0 && (
-            <Text style={styles.author} numberOfLines={2}>
+            <Text style={[styles.author, accentText]} numberOfLines={2}>
               {movie.authors.join(', ')}
             </Text>
           )}
@@ -156,7 +159,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
               Linking.openURL(trailerUrl).catch(() => {});
             }}
           >
-            <Ionicons name="play-circle" size={18} color={colors.amberBright} />
+            <Ionicons name="play-circle" size={18} color={chrome.accent} />
             <Text style={styles.trailerText}>Watch Trailer</Text>
           </Pressable>
         )}
@@ -168,7 +171,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
             <Ionicons
               name={hasNote ? 'reader' : 'reader-outline'}
               size={18}
-              color={colors.amberBright}
+              color={chrome.accent}
             />
           </Pressable>
         )}
@@ -178,7 +181,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
             shareMovie(movie, name);
           }}
         >
-          <Ionicons name="share-outline" size={18} color={colors.amberBright} />
+          <Ionicons name="share-outline" size={18} color={chrome.accent} />
           {!trailerUrl && <Text style={styles.trailerText}>Share</Text>}
         </Pressable>
       </View>
@@ -190,7 +193,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
       >
         {watch && watch.providers.length > 0 && (
           <View style={styles.watchSection}>
-            <Text style={styles.sectionLabel}>Where to watch</Text>
+            <Text style={[styles.sectionLabel, accentText]}>Where to watch</Text>
             <View style={styles.providerRow}>
               {watch.providers.slice(0, 8).map((p) => (
                 <Pressable
@@ -212,12 +215,12 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
           </View>
         )}
 
-        <Text style={styles.sectionLabel}>Synopsis</Text>
+        <Text style={[styles.sectionLabel, accentText]}>Synopsis</Text>
         <Text style={styles.overview}>{overview}</Text>
 
         {cast && cast.length > 0 && (
           <>
-            <Text style={[styles.sectionLabel, styles.castLabel]}>Cast</Text>
+            <Text style={[styles.sectionLabel, styles.castLabel, accentText]}>Cast</Text>
             {cast.map((member) => {
               const age =
                 movie.year != null && member.birthYear != null
