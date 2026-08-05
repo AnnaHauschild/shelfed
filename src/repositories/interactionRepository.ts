@@ -63,8 +63,8 @@ export const interactionRepository: InteractionRepository = {
     const typeRows = await db.getAllAsync<{ media_type: string; n: number }>(
       "SELECT media_type, COUNT(*) AS n FROM interactions WHERE type = 'watched' GROUP BY media_type;",
     );
-    const genreRows = await db.getAllAsync<{ genres: string }>(
-      `SELECT m.genres FROM movies m
+    const genreRows = await db.getAllAsync<{ media_type: string; genres: string }>(
+      `SELECT m.media_type AS media_type, m.genres AS genres FROM movies m
          INNER JOIN interactions i
            ON i.movie_id = m.id AND i.media_type = m.media_type
        WHERE i.type = 'watched';`,
@@ -80,16 +80,27 @@ export const interactionRepository: InteractionRepository = {
       if (r.media_type in byType) byType[r.media_type as MediaType] = r.n;
       totalWatched += r.n;
     }
-    const counts = new Map<string, number>();
+    const countsByType: Record<MediaType, Map<string, number>> = {
+      movie: new Map(),
+      tv: new Map(),
+      book: new Map(),
+      game: new Map(),
+    };
     for (const r of genreRows) {
+      if (!(r.media_type in countsByType)) continue;
+      const counts = countsByType[r.media_type as MediaType];
       for (const g of safeParseArray<string>(r.genres)) {
         counts.set(g, (counts.get(g) ?? 0) + 1);
       }
     }
-    const genres = Array.from(counts, ([name, count]) => ({ name, count })).sort(
-      (a, b) => b.count - a.count,
-    );
-    return { byType, totalWatched, genres };
+    const genresByType = {} as WatchedStats['genresByType'];
+    (Object.keys(countsByType) as MediaType[]).forEach((mt) => {
+      genresByType[mt] = Array.from(countsByType[mt], ([name, count]) => ({
+        name,
+        count,
+      })).sort((a, b) => b.count - a.count);
+    });
+    return { byType, totalWatched, genresByType };
   },
 
   async getSeenIds(mediaType: MediaType): Promise<Set<string>> {

@@ -98,6 +98,18 @@ export function SettingsSheet({
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { data: stats } = useStats(visible);
+  const [statType, setStatType] = useState<MediaType | null>(null);
+  const topType = useMemo<MediaType>(() => {
+    if (!stats) return 'movie';
+    let best: MediaType = STAT_TYPES[0].key;
+    for (const t of STAT_TYPES) {
+      if (stats.byType[t.key] > stats.byType[best]) best = t.key;
+    }
+    return best;
+  }, [stats]);
+  const activeType = statType ?? topType;
+  const activeGenres = stats?.genresByType[activeType] ?? [];
+  const activeLabel = STAT_TYPES.find((t) => t.key === activeType)?.label ?? '';
   const [draft, setDraft] = useState(name ?? '');
   const [langOpen, setLangOpen] = useState(false);
 
@@ -309,23 +321,43 @@ export function SettingsSheet({
             {stats && stats.totalWatched > 0 ? (
               <>
                 <Text style={styles.hint}>
-                  You&apos;ve watched {stats.totalWatched}{' '}
-                  {stats.totalWatched === 1 ? 'title' : 'titles'}.
+                  You&apos;ve collected {stats.totalWatched}{' '}
+                  {stats.totalWatched === 1 ? 'title' : 'titles'}. Tap a card for
+                  its top genres.
                 </Text>
                 <View style={styles.statGrid}>
-                  {STAT_TYPES.map((t) => (
-                    <View key={t.key} style={styles.statCard}>
-                      <Ionicons name={t.icon} size={16} color={chrome.accent} />
-                      <Text style={styles.statNum}>{stats.byType[t.key]}</Text>
-                      <Text style={styles.statLabel}>{t.label}</Text>
-                    </View>
-                  ))}
+                  {STAT_TYPES.map((t) => {
+                    const active = t.key === activeType;
+                    return (
+                      <Pressable
+                        key={t.key}
+                        onPress={() => setStatType(t.key)}
+                        style={({ pressed }) => [
+                          styles.statCard,
+                          active && styles.statCardActive,
+                          pressed && styles.pressed,
+                        ]}
+                      >
+                        <Ionicons
+                          name={t.icon}
+                          size={16}
+                          color={active ? chrome.accent : chrome.muted}
+                        />
+                        <Text
+                          style={[styles.statNum, !active && styles.statNumIdle]}
+                        >
+                          {stats.byType[t.key]}
+                        </Text>
+                        <Text style={styles.statLabel}>{t.label}</Text>
+                      </Pressable>
+                    );
+                  })}
                 </View>
-                {stats.genres.length > 0 && (
+                {activeGenres.length > 0 ? (
                   <>
-                    <Text style={styles.statSub}>Top genres</Text>
+                    <Text style={styles.statSub}>Top genres · {activeLabel}</Text>
                     <View style={styles.genreStatWrap}>
-                      {stats.genres.slice(0, 6).map((g) => (
+                      {activeGenres.slice(0, 6).map((g) => (
                         <View key={g.name} style={styles.genreStat}>
                           <Text style={styles.genreStatName}>{g.name}</Text>
                           <Text style={styles.genreStatCount}>{g.count}</Text>
@@ -333,12 +365,15 @@ export function SettingsSheet({
                       ))}
                     </View>
                   </>
+                ) : (
+                  <Text style={styles.hint}>
+                    No {activeLabel.toLowerCase()} logged yet.
+                  </Text>
                 )}
               </>
             ) : (
               <Text style={styles.hint}>
-                Nothing watched yet — swipe right on a title to add it to your
-                shelf.
+                Nothing on your shelf yet — swipe right on a title to add it.
               </Text>
             )}
           </ScrollView>
@@ -566,10 +601,17 @@ const makeStyles = (c: ThemeChrome) =>
     borderColor: c.border,
     backgroundColor: c.surface,
   },
+  statCardActive: {
+    borderColor: c.accent,
+    backgroundColor: c.surfaceRaised,
+  },
   statNum: {
     color: c.accent,
     fontFamily: fonts.display,
     fontSize: 20,
+  },
+  statNumIdle: {
+    color: c.muted,
   },
   statLabel: {
     color: colors.textOnDarkMuted,

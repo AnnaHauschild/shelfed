@@ -31,8 +31,8 @@ export interface WatchedStats {
   byType: Record<MediaType, number>;
   /** Total watched across all media types. */
   totalWatched: number;
-  /** Genre name + how many watched titles have it, most-watched first. */
-  genres: { name: string; count: number }[];
+  /** Genre breakdown per media type, most-watched first. */
+  genresByType: Record<MediaType, { name: string; count: number }[]>;
 }
 
 /**
