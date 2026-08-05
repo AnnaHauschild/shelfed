@@ -376,8 +376,7 @@ function ImageThemeBackground({
       <Image
         source={source}
         style={StyleSheet.absoluteFill}
-        contentFit="cover"
-        contentPosition="top"
+        contentFit="fill"
         transition={200}
       />
       <LinearGradient
