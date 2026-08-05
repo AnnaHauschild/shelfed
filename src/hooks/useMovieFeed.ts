@@ -18,7 +18,7 @@ export function useMovieFeed(
   collection?: string,
   actor?: string,
   platforms: string[] = [],
-  vibe?: string,
+  vibes: string[] = [],
   providers: string[] = [],
 ) {
   const mediaType = useMediaType();
@@ -34,7 +34,7 @@ export function useMovieFeed(
       collection ?? null,
       actor ?? null,
       platforms.join(','),
-      vibe ?? null,
+      vibes.join(','),
       providers.join(','),
     ],
     queryFn: async ({ pageParam }) => {
@@ -48,7 +48,7 @@ export function useMovieFeed(
           collection,
           actor,
           platforms,
-          vibe,
+          vibes,
           providers,
         ),
         interactionRepository.getSeenIds(mediaType),

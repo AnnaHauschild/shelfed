@@ -1,4 +1,4 @@
-import { COLLECTIONS } from '@/constants/collections';
+import { COLLECTIONS, Collection } from '@/constants/collections';
 import { ERA_OPTIONS, ERA_WINDOWS, watchRegion } from '@/constants/config';
 import { GENRE_FALLBACK } from '@/constants/genres';
 import {
@@ -342,7 +342,7 @@ export async function fetchFeedPage(
   collectionId?: string,
   actorId?: string,
   platforms?: string[],
-  vibeId?: string,
+  vibeIds?: string[],
   providers?: string[],
 ): Promise<FeedPage> {
   // The bundled Must-See list bypasses TMDB entirely (instant + offline).
@@ -354,9 +354,12 @@ export async function fetchFeedPage(
   const collection = collectionId
     ? COLLECTIONS.find((c) => c.id === collectionId)
     : undefined;
-  // A second, independent "vibe" collection can be combined with the genre
-  // collection above (Genre AND Vibe): their keyword groups are ANDed together.
-  const vibe = vibeId ? COLLECTIONS.find((c) => c.id === vibeId) : undefined;
+  // Independent "vibe" collections combine with the genre collection (Genre AND
+  // Vibe): each vibe's keywords are OR'd together, then ANDed with the genre
+  // collection's keywords.
+  const vibes = (vibeIds ?? [])
+    .map((id) => COLLECTIONS.find((c) => c.id === id))
+    .filter((c): c is Collection => Boolean(c));
 
   // Books come from Open Library (no TMDB token needed). Collections are a
   // TMDB-keyword concept, so they don't apply to the book feed.
@@ -404,8 +407,9 @@ export async function fetchFeedPage(
   const collectionKeywords = collection?.keywords
     ? await resolveKeywordIds(collection.keywords)
     : undefined;
-  const vibeKeywords = vibe?.keywords
-    ? await resolveKeywordIds(vibe.keywords)
+  const vibeKeywordNames = vibes.flatMap((v) => v.keywords ?? []);
+  const vibeKeywords = vibeKeywordNames.length
+    ? await resolveKeywordIds(vibeKeywordNames)
     : undefined;
   const withKeywords =
     [collectionKeywords, vibeKeywords].filter(Boolean).join(',') || undefined;
@@ -413,15 +417,16 @@ export async function fetchFeedPage(
     [
       genres?.length ? genres.join('|') : undefined,
       collection?.genres?.join(','),
-      vibe?.genres?.join(','),
+      vibes.flatMap((v) => v.genres ?? []).join('|') || undefined,
     ]
       .filter(Boolean)
       .join(',') || undefined;
   const withProviders = providers?.length ? providers.join('|') : undefined;
-  const originalLanguage = collection?.language ?? vibe?.language;
+  const originalLanguage =
+    collection?.language ?? vibes.find((v) => v.language)?.language;
   const originCountry =
     collection?.country ??
-    vibe?.country ??
+    vibes.find((v) => v.country)?.country ??
     (countries?.length ? countries.join('|') : undefined);
   // A collection/vibe, a country or an actor filter is niche, so when one is
   // active (and the user hasn't pinned a specific era) we search the FULL
@@ -429,7 +434,7 @@ export async function fetchFeedPage(
   // requirement — that filter only returns titles with a US rating, which
   // excludes most foreign / niche films (K-dramas, Brazilian cinema, etc.).
   // The erotic keyword + title guards still apply.
-  const broaden = !!collection || !!vibe || !!originCountry || !!actorId || !!withProviders;
+  const broaden = !!collection || vibes.length > 0 || !!originCountry || !!actorId || !!withProviders;
 
   if (mediaType === 'tv') {
     // No explicit era → weighted-random recent decade (skips 70s/80s by

@@ -42,9 +42,9 @@ interface Props {
   onGenreToggle: (id: string) => void;
   /** Mood/atmosphere collections (Road Trip, Melancholy …). */
   vibeOptions?: Option[];
-  /** Selected vibe collection id, independent from the Genre selection. */
-  vibe?: string | null;
-  onVibeChange?: (id: string | null) => void;
+  /** Selected vibe collection ids (multi-select, OR). */
+  vibeSelected?: string[];
+  onVibeToggle?: (id: string) => void;
   actor: SelectedActor | null;
   onActorChange: (actor: SelectedActor | null) => void;
   /** When true (series/books), the actor filter is hidden (movies only). */
@@ -85,8 +85,8 @@ export function FilterSheet({
   genreMulti,
   onGenreToggle,
   vibeOptions = [],
-  vibe = null,
-  onVibeChange,
+  vibeSelected = [],
+  onVibeToggle,
   eraOptions,
   era,
   onEraChange,
@@ -154,9 +154,9 @@ export function FilterSheet({
       key: 'vibe',
       label: 'Vibe',
       options: vibeOptions,
-      selected: vibe ? [vibe] : [],
-      multi: false,
-      onToggle: (id: string) => onVibeChange?.(vibe === id ? null : id),
+      selected: vibeSelected,
+      multi: true,
+      onToggle: (id: string) => onVibeToggle?.(id),
       accent: chrome.accent,
     },
     {

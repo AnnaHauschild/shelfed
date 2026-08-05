@@ -44,7 +44,7 @@ export default function DiscoverScreen() {
   const [era, setEra] = useState<string | null>(null);
   const [countries, setCountries] = useState<string[]>([]);
   const [collection, setCollection] = useState<string | null>(null);
-  const [vibe, setVibe] = useState<string | null>(null);
+  const [vibes, setVibes] = useState<string[]>([]);
   const [actor, setActor] = useState<SelectedActor | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [providers, setProviders] = useState<string[]>([]);
@@ -57,7 +57,7 @@ export default function DiscoverScreen() {
     setEra(null);
     setCountries([]);
     setCollection(null);
-    setVibe(null);
+    setVibes([]);
     setActor(null);
     setPlatforms([]);
     setProviders([]);
@@ -128,6 +128,10 @@ export default function DiscoverScreen() {
     setMustSee(false);
     setProviders((p) => toggleId(p, id));
   };
+  const onVibeToggle = (id: string) => {
+    setMustSee(false);
+    setVibes((v) => toggleId(v, id));
+  };
   // Must-See is a self-contained curated feed, so it's exclusive: turning it on
   // clears every other filter, and picking any other filter turns it off.
   const selectMustSee = (value: boolean) => {
@@ -135,7 +139,7 @@ export default function DiscoverScreen() {
     if (value) {
       setGenres([]);
       setCollection(null);
-      setVibe(null);
+      setVibes([]);
       setEra(null);
       setCountries([]);
       setActor(null);
@@ -147,7 +151,7 @@ export default function DiscoverScreen() {
     (era ? 1 : 0) +
     countries.length +
     (collection ? 1 : 0) +
-    (vibe ? 1 : 0) +
+    vibes.length +
     (actor ? 1 : 0) +
     platforms.length +
     providers.length +
@@ -168,7 +172,7 @@ export default function DiscoverScreen() {
     mustSee ? MUST_SEE_ID : collection ?? undefined,
     actor?.id ?? undefined,
     platforms,
-    vibe ?? undefined,
+    vibes,
     providers,
   );
   const { markWatched, skip, toggleWatchlist, toggleFavorite, undo } =
@@ -304,7 +308,7 @@ export default function DiscoverScreen() {
         ) : (
           <>
             <SwipeDeck
-              key={`${mediaType}:${genres.join(',') || 'all'}:${era ?? 'all'}:${countries.join(',') || 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibe ?? 'all'}:${actor?.id ?? 'all'}:${platforms.join(',') || 'all'}:${providers.join(',') || 'all'}`}
+              key={`${mediaType}:${genres.join(',') || 'all'}:${era ?? 'all'}:${countries.join(',') || 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibes.join(',') || 'all'}:${actor?.id ?? 'all'}:${platforms.join(',') || 'all'}:${providers.join(',') || 'all'}`}
               cards={movies}
               onSwipeRight={(movie) => markWatched(movie)}
               onSwipeLeft={(movie) => skip(movie)}
@@ -349,11 +353,8 @@ export default function DiscoverScreen() {
         genreMulti={genreMulti}
         onGenreToggle={onGenreToggle}
         vibeOptions={vibeOptions}
-        vibe={vibe}
-        onVibeChange={(id) => {
-          setVibe(id);
-          if (id) setMustSee(false);
-        }}
+        vibeSelected={vibes}
+        onVibeToggle={onVibeToggle}
         actor={actor}
         onActorChange={(a) => {
           setActor(a);
@@ -384,7 +385,7 @@ export default function DiscoverScreen() {
           setEra(null);
           setCountries([]);
           setCollection(null);
-          setVibe(null);
+          setVibes([]);
           setActor(null);
           setPlatforms([]);
           setProviders([]);
