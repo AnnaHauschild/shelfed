@@ -85,6 +85,16 @@ export const SCHEMA_STATEMENTS: string[] = [
      key   TEXT PRIMARY KEY,
      value TEXT NOT NULL
    );`,
+
+  // Per-episode "watched" marks for series (episode-level progress). Standalone
+  // (no FK to movies) so it works for any series, whether or not it's on a shelf.
+  `CREATE TABLE IF NOT EXISTS episode_watches (
+     tv_id      INTEGER NOT NULL,
+     season     INTEGER NOT NULL,
+     episode    INTEGER NOT NULL,
+     watched_at INTEGER NOT NULL,
+     PRIMARY KEY (tv_id, season, episode)
+   );`,
 ];
 
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
