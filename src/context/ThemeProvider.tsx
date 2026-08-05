@@ -12,7 +12,7 @@ import { getSetting, setSetting } from '@/db/settings';
 export const SHELF_THEME_KEY = 'shelfTheme';
 
 /** The available shelf background looks. */
-export type ShelfTheme = 'classic' | 'scifi' | 'minimal';
+export type ShelfTheme = 'classic' | 'scifi' | 'minimal' | 'vintage';
 
 interface ThemeContextValue {
   /** The active shelf background theme (defaults to 'classic'). */
@@ -39,7 +39,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     getSetting(SHELF_THEME_KEY)
       .then((v) => {
         if (cancelled) return;
-        if (v === 'classic' || v === 'scifi' || v === 'minimal') {
+        if (
+          v === 'classic' ||
+          v === 'scifi' ||
+          v === 'minimal' ||
+          v === 'vintage'
+        ) {
           setThemeState(v);
         }
         setReady(true);
@@ -116,6 +121,16 @@ const CHROME: Record<ShelfTheme, ThemeChrome> = {
     border: '#5b5346',
     muted: '#b3a891',
     plank: ['#6a5f4e', '#4a4238'],
+  },
+  vintage: {
+    accent: '#d3a24a',
+    onAccent: '#1c1108',
+    surface: '#241611',
+    surfaceRaised: '#34241a',
+    background: '#170e08',
+    border: '#4e3821',
+    muted: '#b39a77',
+    plank: ['#6f4325', '#3d2512'],
   },
 };
 

@@ -63,6 +63,12 @@ const THEMES: ThemeOption[] = [
     swatch: ['#e9e3d8', '#cbc3b4'],
     dot: '#f0d28c',
   },
+  {
+    id: 'vintage',
+    label: 'Vintage',
+    swatch: ['#4a2f18', '#1c1108'],
+    dot: '#9fca94',
+  },
 ];
 
 const STAT_TYPES: {

@@ -34,9 +34,11 @@ export function FeatureHeader({
   brandSize?: number;
 }) {
   const { theme } = useTheme();
-  // Sci-fi / minimal themes bake their own header + wordmark into the artwork,
-  // so skip the vintage wood header entirely to avoid a doubled one.
-  if (theme === 'scifi' || theme === 'minimal') return null;
+  // Sci-fi / minimal / vintage themes bake their own header + wordmark into the
+  // artwork, so skip the vintage wood header entirely to avoid a doubled one.
+  if (theme === 'scifi' || theme === 'minimal' || theme === 'vintage') {
+    return null;
+  }
 
   if (compact) {
     return (

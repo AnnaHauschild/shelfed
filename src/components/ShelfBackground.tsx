@@ -74,6 +74,7 @@ function buildLayout(cols: number, rowsCount: number): CubbyContent[][] {
 const THEME_IMAGES: Partial<Record<ShelfTheme, number>> = {
   scifi: require('../../assets/shelf-themes/scifi.png'),
   minimal: require('../../assets/shelf-themes/minimal.png'),
+  vintage: require('../../assets/shelf-themes/vintage.png'),
 };
 
 /** Per-theme palette for the simple lamp-lit 'wall' backdrop used on the shelf
@@ -113,6 +114,14 @@ const WALL_THEMES: Record<
     glow: 'rgba(255, 236, 200, 0.28)',
     pool: 'rgba(255, 240, 210, 0.10)',
     vignette: '46, 39, 30',
+  },
+  vintage: {
+    wood: ['#4a2f18', '#33200f', '#20130a'],
+    cord: '#241407',
+    shade: '#9fca94',
+    glow: 'rgba(170, 215, 160, 0.24)',
+    pool: 'rgba(255, 214, 140, 0.10)',
+    vignette: '20, 13, 8',
   },
 };
 
