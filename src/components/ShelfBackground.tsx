@@ -107,12 +107,12 @@ const WALL_THEMES: Record<
     vignette: '4, 8, 18',
   },
   minimal: {
-    wood: ['#54545a', '#3c3c40', '#252528'],
-    cord: '#2a2a2e',
-    shade: '#ffffff',
-    glow: 'rgba(255, 255, 255, 0.30)',
-    pool: 'rgba(255, 255, 255, 0.10)',
-    vignette: '18, 18, 20',
+    wood: ['#6b5f50', '#564b3e', '#3f362c'],
+    cord: '#3a332b',
+    shade: '#f4e8d2',
+    glow: 'rgba(255, 236, 200, 0.28)',
+    pool: 'rgba(255, 240, 210, 0.10)',
+    vignette: '46, 39, 30',
   },
 };
 
