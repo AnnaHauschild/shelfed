@@ -36,7 +36,6 @@ const SCREEN_H = Dimensions.get('window').height;
 interface ThemeOption {
   id: ShelfTheme;
   label: string;
-  blurb: string;
   /** Swatch colours (top → bottom) previewing the look. */
   swatch: [string, string];
   /** A small accent dot on the swatch (e.g. the warm LED glow). */
@@ -49,20 +48,17 @@ const THEMES: ThemeOption[] = [
   {
     id: 'classic',
     label: 'Classic Shelf',
-    blurb: 'Warm wood rack — the original look.',
     swatch: ['#3e2410', '#1a0e05'],
   },
   {
     id: 'scifi',
     label: 'Sci-Fi Bay',
-    blurb: 'Neon-lit starship shelves.',
     swatch: ['#0b1024', '#05030f'],
     dot: '#42e8ff',
   },
   {
     id: 'minimal',
     label: 'Modern Minimal',
-    blurb: 'Bright, calm Scandinavian shelf.',
     swatch: ['#e9e3d8', '#cbc3b4'],
     dot: '#f0d28c',
   },
@@ -302,7 +298,6 @@ export function SettingsSheet({
                           </View>
                         )}
                       </View>
-                      <Text style={styles.themeBlurb}>{t.blurb}</Text>
                     </View>
                     {active && (
                       <Ionicons
@@ -567,12 +562,6 @@ const makeStyles = (c: ThemeChrome) =>
     color: colors.textOnDark,
     fontFamily: fonts.label,
     fontSize: 14,
-  },
-  themeBlurb: {
-    color: colors.textOnDarkMuted,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    marginTop: 1,
   },
   soonBadge: {
     paddingHorizontal: 6,
