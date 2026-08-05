@@ -153,46 +153,46 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
         header
       )}
 
-      <View style={styles.actionRow}>
-        {trailerUrl && (
-          <Pressable
-            style={[styles.trailerButton, styles.actionFill]}
-            onPress={() => {
-              Linking.openURL(trailerUrl).catch(() => {});
-            }}
-          >
-            <Ionicons name="play-circle" size={18} color={chrome.accent} />
-            <Text style={styles.trailerText}>Watch Trailer</Text>
-          </Pressable>
-        )}
-        {onOpenNote && (
-          <Pressable
-            style={[styles.trailerButton, styles.shareCompact]}
-            onPress={onOpenNote}
-          >
-            <Ionicons
-              name={hasNote ? 'reader' : 'reader-outline'}
-              size={18}
-              color={chrome.accent}
-            />
-          </Pressable>
-        )}
-        <Pressable
-          style={[styles.trailerButton, trailerUrl ? styles.shareCompact : styles.actionFill]}
-          onPress={() => {
-            shareMovie(movie, name);
-          }}
-        >
-          <Ionicons name="share-outline" size={18} color={chrome.accent} />
-          {!trailerUrl && <Text style={styles.trailerText}>Share</Text>}
-        </Pressable>
-      </View>
-
       <ScrollView
         style={styles.overviewScroll}
         contentContainerStyle={styles.overviewContent}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.actionRow}>
+          {trailerUrl && (
+            <Pressable
+              style={[styles.trailerButton, styles.actionFill]}
+              onPress={() => {
+                Linking.openURL(trailerUrl).catch(() => {});
+              }}
+            >
+              <Ionicons name="play-circle" size={18} color={chrome.accent} />
+              <Text style={styles.trailerText}>Watch Trailer</Text>
+            </Pressable>
+          )}
+          {onOpenNote && (
+            <Pressable
+              style={[styles.trailerButton, styles.shareCompact]}
+              onPress={onOpenNote}
+            >
+              <Ionicons
+                name={hasNote ? 'reader' : 'reader-outline'}
+                size={18}
+                color={chrome.accent}
+              />
+            </Pressable>
+          )}
+          <Pressable
+            style={[styles.trailerButton, trailerUrl ? styles.shareCompact : styles.actionFill]}
+            onPress={() => {
+              shareMovie(movie, name);
+            }}
+          >
+            <Ionicons name="share-outline" size={18} color={chrome.accent} />
+            {!trailerUrl && <Text style={styles.trailerText}>Share</Text>}
+          </Pressable>
+        </View>
+
         {watch && watch.providers.length > 0 && (
           <View style={styles.watchSection}>
             <Text style={[styles.sectionLabel, accentText]}>Where to watch</Text>
@@ -380,6 +380,7 @@ const makeStyles = (c: ThemeChrome) =>
   actionRow: {
     flexDirection: 'row',
     gap: spacing.sm,
+    marginBottom: spacing.md,
   },
   actionFill: {
     flex: 1,
