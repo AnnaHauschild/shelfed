@@ -40,27 +40,27 @@ export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
   const { chosen } = useMediaTypeControls();
-  const [genre, setGenre] = useState<string | null>(null);
+  const [genres, setGenres] = useState<string[]>([]);
   const [era, setEra] = useState<string | null>(null);
-  const [country, setCountry] = useState<string | null>(null);
+  const [countries, setCountries] = useState<string[]>([]);
   const [collection, setCollection] = useState<string | null>(null);
   const [vibe, setVibe] = useState<string | null>(null);
   const [actor, setActor] = useState<SelectedActor | null>(null);
-  const [platform, setPlatform] = useState<string | null>(null);
-  const [provider, setProvider] = useState<string | null>(null);
+  const [platforms, setPlatforms] = useState<string[]>([]);
+  const [providers, setProviders] = useState<string[]>([]);
   const [mustSee, setMustSee] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Filters differ per category, so clear them all when switching.
   useEffect(() => {
-    setGenre(null);
+    setGenres([]);
     setEra(null);
-    setCountry(null);
+    setCountries([]);
     setCollection(null);
     setVibe(null);
     setActor(null);
-    setPlatform(null);
-    setProvider(null);
+    setPlatforms([]);
+    setProviders([]);
     setMustSee(false);
   }, [mediaType]);
 
@@ -101,44 +101,56 @@ export default function DiscoverScreen() {
   const isCollectionId = (id: string) =>
     genreCollections.some((c) => c.id === id) ||
     vibeOptions.some((c) => c.id === id);
-  const selectGenreOrCollection = (id: string | null) => {
-    if (id == null) {
-      setGenre(null);
-      setCollection(null);
-      return;
-    }
+  // Movies/series allow multiple TMDB genres (OR); books/games stay single.
+  const genreMulti = mediaType === 'movie' || mediaType === 'tv';
+  // The Genre picker holds either a single curated collection OR a set of
+  // genres — the two are mutually exclusive.
+  const genreSelected = collection ? [collection] : genres;
+  const toggleId = (list: string[], id: string) =>
+    list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+  const onGenreToggle = (id: string) => {
     setMustSee(false);
     if (isCollectionId(id)) {
-      setCollection(id);
-      setGenre(null);
-    } else {
-      setGenre(id);
-      setCollection(null);
+      setCollection((c) => (c === id ? null : id));
+      setGenres([]);
+      return;
     }
+    setCollection(null);
+    setGenres((g) => (genreMulti ? toggleId(g, id) : g[0] === id ? [] : [id]));
+  };
+  const onCountryToggle = (id: string) => {
+    setMustSee(false);
+    setCountries((c) => toggleId(c, id));
+  };
+  const onPlatformToggle = (id: string) =>
+    setPlatforms((p) => toggleId(p, id));
+  const onProviderToggle = (id: string) => {
+    setMustSee(false);
+    setProviders((p) => toggleId(p, id));
   };
   // Must-See is a self-contained curated feed, so it's exclusive: turning it on
   // clears every other filter, and picking any other filter turns it off.
   const selectMustSee = (value: boolean) => {
     setMustSee(value);
     if (value) {
-      setGenre(null);
+      setGenres([]);
       setCollection(null);
       setVibe(null);
       setEra(null);
-      setCountry(null);
+      setCountries([]);
       setActor(null);
-      setProvider(null);
+      setProviders([]);
     }
   };
   const activeFilterCount =
-    (genre ? 1 : 0) +
+    genres.length +
     (era ? 1 : 0) +
-    (country ? 1 : 0) +
+    countries.length +
     (collection ? 1 : 0) +
     (vibe ? 1 : 0) +
     (actor ? 1 : 0) +
-    (platform ? 1 : 0) +
-    (provider ? 1 : 0) +
+    platforms.length +
+    providers.length +
     (mustSee ? 1 : 0);
   const {
     data,
@@ -150,14 +162,14 @@ export default function DiscoverScreen() {
     isFetchingNextPage,
     refetch,
   } = useMovieFeed(
-    genre ?? undefined,
+    genres,
     era ?? undefined,
-    country ?? undefined,
+    countries,
     mustSee ? MUST_SEE_ID : collection ?? undefined,
     actor?.id ?? undefined,
-    platform ?? undefined,
+    platforms,
     vibe ?? undefined,
-    provider ?? undefined,
+    providers,
   );
   const { markWatched, skip, toggleWatchlist, toggleFavorite, undo } =
     useInteractions();
@@ -292,7 +304,7 @@ export default function DiscoverScreen() {
         ) : (
           <>
             <SwipeDeck
-              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibe ?? 'all'}:${actor?.id ?? 'all'}:${platform ?? 'all'}:${provider ?? 'all'}`}
+              key={`${mediaType}:${genres.join(',') || 'all'}:${era ?? 'all'}:${countries.join(',') || 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibe ?? 'all'}:${actor?.id ?? 'all'}:${platforms.join(',') || 'all'}:${providers.join(',') || 'all'}`}
               cards={movies}
               onSwipeRight={(movie) => markWatched(movie)}
               onSwipeLeft={(movie) => skip(movie)}
@@ -333,8 +345,9 @@ export default function DiscoverScreen() {
         visible={filtersOpen}
         onClose={() => setFiltersOpen(false)}
         genreOptions={genreFilterOptions}
-        genre={collection ?? genre}
-        onGenreChange={selectGenreOrCollection}
+        genreSelected={genreSelected}
+        genreMulti={genreMulti}
+        onGenreToggle={onGenreToggle}
         vibeOptions={vibeOptions}
         vibe={vibe}
         onVibeChange={(id) => {
@@ -354,33 +367,27 @@ export default function DiscoverScreen() {
           if (id) setMustSee(false);
         }}
         countryOptions={COUNTRY_OPTIONS}
-        country={country}
-        onCountryChange={(id) => {
-          setCountry(id);
-          if (id) setMustSee(false);
-        }}
+        countrySelected={countries}
+        onCountryToggle={onCountryToggle}
         hideCountry={mediaType === 'book' || mediaType === 'game'}
         platformOptions={mediaType === 'game' ? PLATFORM_OPTIONS : []}
-        platform={platform}
-        onPlatformChange={setPlatform}
+        platformSelected={platforms}
+        onPlatformToggle={onPlatformToggle}
         providerOptions={providerOptions}
-        provider={provider}
-        onProviderChange={(id) => {
-          setProvider(id);
-          if (id) setMustSee(false);
-        }}
+        providerSelected={providers}
+        onProviderToggle={onProviderToggle}
         mustSee={mustSee}
         onMustSeeChange={selectMustSee}
         hideMustSee={mediaType !== 'movie'}
         onClearAll={() => {
-          setGenre(null);
+          setGenres([]);
           setEra(null);
-          setCountry(null);
+          setCountries([]);
           setCollection(null);
           setVibe(null);
           setActor(null);
-          setPlatform(null);
-          setProvider(null);
+          setPlatforms([]);
+          setProviders([]);
           setMustSee(false);
         }}
       />

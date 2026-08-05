@@ -336,14 +336,14 @@ async function fetchUpcomingMovies(
 export async function fetchFeedPage(
   page: number,
   mediaType: MediaType,
-  genre?: string,
+  genres?: string[],
   eraId?: string,
-  country?: string,
+  countries?: string[],
   collectionId?: string,
   actorId?: string,
-  platform?: string,
+  platforms?: string[],
   vibeId?: string,
-  provider?: string,
+  providers?: string[],
 ): Promise<FeedPage> {
   // The bundled Must-See list bypasses TMDB entirely (instant + offline).
   if (mediaType === 'movie' && collectionId === MUST_SEE_ID) {
@@ -367,7 +367,7 @@ export async function fetchFeedPage(
           to: Number(eraWindow.lte.slice(0, 4)),
         }
       : undefined;
-    return fetchBookFeedPage(page, genre, years);
+    return fetchBookFeedPage(page, genres?.[0], years);
   }
 
   // Games come from RAWG (needs its own key). Genre = RAWG slug, era = date range,
@@ -379,7 +379,12 @@ export async function fetchFeedPage(
           to: Number(eraWindow.lte.slice(0, 4)),
         }
       : undefined;
-    return fetchGameFeedPage(page, genre, years, platform);
+    return fetchGameFeedPage(
+      page,
+      genres?.length ? genres.join(',') : undefined,
+      years,
+      platforms?.length ? platforms.join(',') : undefined,
+    );
   }
 
   // No token yet? Serve a built-in demo feed so the app is fully usable, then
@@ -405,18 +410,26 @@ export async function fetchFeedPage(
   const withKeywords =
     [collectionKeywords, vibeKeywords].filter(Boolean).join(',') || undefined;
   const withGenres =
-    [genre, collection?.genres?.join(','), vibe?.genres?.join(',')]
+    [
+      genres?.length ? genres.join('|') : undefined,
+      collection?.genres?.join(','),
+      vibe?.genres?.join(','),
+    ]
       .filter(Boolean)
       .join(',') || undefined;
+  const withProviders = providers?.length ? providers.join('|') : undefined;
   const originalLanguage = collection?.language ?? vibe?.language;
-  const originCountry = collection?.country ?? vibe?.country ?? country;
+  const originCountry =
+    collection?.country ??
+    vibe?.country ??
+    (countries?.length ? countries.join('|') : undefined);
   // A collection/vibe, a country or an actor filter is niche, so when one is
   // active (and the user hasn't pinned a specific era) we search the FULL
   // catalogue instead of a single random decade, and drop the US-certification
   // requirement — that filter only returns titles with a US rating, which
   // excludes most foreign / niche films (K-dramas, Brazilian cinema, etc.).
   // The erotic keyword + title guards still apply.
-  const broaden = !!collection || !!vibe || !!originCountry || !!actorId || !!provider;
+  const broaden = !!collection || !!vibe || !!originCountry || !!actorId || !!withProviders;
 
   if (mediaType === 'tv') {
     // No explicit era → weighted-random recent decade (skips 70s/80s by
@@ -438,9 +451,9 @@ export async function fetchFeedPage(
       with_keywords: withKeywords,
       with_original_language: originalLanguage,
       with_origin_country: originCountry,
-      with_watch_providers: provider,
-      watch_region: provider ? watchRegion() : undefined,
-      with_watch_monetization_types: provider ? 'flatrate' : undefined,
+      with_watch_providers: withProviders,
+      watch_region: withProviders ? watchRegion() : undefined,
+      with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
       'first_air_date.gte': tvWindow?.gte,
       'first_air_date.lte': tvWindow?.lte,
       page,
@@ -480,9 +493,9 @@ export async function fetchFeedPage(
     certification_country: broaden ? undefined : 'US',
     'certification.lte': broaden ? undefined : 'R',
     with_origin_country: originCountry,
-    with_watch_providers: provider,
-    watch_region: provider ? watchRegion() : undefined,
-    with_watch_monetization_types: provider ? 'flatrate' : undefined,
+    with_watch_providers: withProviders,
+    watch_region: withProviders ? watchRegion() : undefined,
+    with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
     page,
   });
 
@@ -498,7 +511,13 @@ export async function fetchFeedPage(
   // On the first page of the plain (unfiltered) feed, surface a few genuinely
   // upcoming cinema releases up top so the "Coming Soon" badge is actually seen
   // — the US-certification filter above otherwise hides unreleased films.
-  const isPlainFeed = !genre && !collection && !country && !actorId && !eraId && !provider;
+  const isPlainFeed =
+    !genres?.length &&
+    !collection &&
+    !countries?.length &&
+    !actorId &&
+    !eraId &&
+    !withProviders;
   if (page === 1 && isPlainFeed) {
     const upcoming = await fetchUpcomingMovies(genreMap);
     const ids = new Set(movies.map((m) => m.id));

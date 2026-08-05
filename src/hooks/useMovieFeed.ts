@@ -12,14 +12,14 @@ import { interactionRepository } from '@/repositories';
  * app restarts (the "seen" set is read from SQLite).
  */
 export function useMovieFeed(
-  genre?: string,
+  genres: string[],
   era?: string,
-  country?: string,
+  countries: string[] = [],
   collection?: string,
   actor?: string,
-  platform?: string,
+  platforms: string[] = [],
   vibe?: string,
-  provider?: string,
+  providers: string[] = [],
 ) {
   const mediaType = useMediaType();
   const { language } = useLanguage();
@@ -28,28 +28,28 @@ export function useMovieFeed(
       'movie-feed',
       mediaType,
       language,
-      genre ?? null,
+      genres.join(','),
       era ?? null,
-      country ?? null,
+      countries.join(','),
       collection ?? null,
       actor ?? null,
-      platform ?? null,
+      platforms.join(','),
       vibe ?? null,
-      provider ?? null,
+      providers.join(','),
     ],
     queryFn: async ({ pageParam }) => {
       const [page, seen] = await Promise.all([
         fetchFeedPage(
           pageParam,
           mediaType,
-          genre,
+          genres,
           era,
-          country,
+          countries,
           collection,
           actor,
-          platform,
+          platforms,
           vibe,
-          provider,
+          providers,
         ),
         interactionRepository.getSeenIds(mediaType),
       ]);

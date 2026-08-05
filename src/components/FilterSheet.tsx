@@ -25,8 +25,9 @@ interface FilterDef {
   key: string;
   label: string;
   options: Option[];
-  selected: string | null;
-  onSelect: (id: string | null) => void;
+  selected: string[];
+  multi: boolean;
+  onToggle: (id: string) => void;
   accent: string;
 }
 
@@ -34,8 +35,11 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   genreOptions: Option[];
-  genre: string | null;
-  onGenreChange: (id: string | null) => void;
+  /** Selected genre + collection ids (collection is single, genres are multi). */
+  genreSelected: string[];
+  /** Whether multiple TMDB genres can be picked (movies/series only). */
+  genreMulti: boolean;
+  onGenreToggle: (id: string) => void;
   /** Mood/atmosphere collections (Road Trip, Melancholy …). */
   vibeOptions?: Option[];
   /** Selected vibe collection id, independent from the Genre selection. */
@@ -49,18 +53,18 @@ interface Props {
   era: string | null;
   onEraChange: (id: string | null) => void;
   countryOptions?: Option[];
-  country: string | null;
-  onCountryChange: (id: string | null) => void;
+  countrySelected?: string[];
+  onCountryToggle?: (id: string) => void;
   /** When true (books), the country filter is hidden. */
   hideCountry?: boolean;
   /** Console/platform filter (games only, RAWG parent-platform ids). */
   platformOptions?: Option[];
-  platform: string | null;
-  onPlatformChange: (id: string | null) => void;
+  platformSelected?: string[];
+  onPlatformToggle?: (id: string) => void;
   /** Streaming-service filter (movies/series only, TMDB watch-provider ids). */
   providerOptions?: Option[];
-  provider?: string | null;
-  onProviderChange?: (id: string | null) => void;
+  providerSelected?: string[];
+  onProviderToggle?: (id: string) => void;
   /** The curated "Must-See" list toggle (movies only). */
   mustSee?: boolean;
   onMustSeeChange?: (value: boolean) => void;
@@ -77,8 +81,9 @@ export function FilterSheet({
   visible,
   onClose,
   genreOptions,
-  genre,
-  onGenreChange,
+  genreSelected,
+  genreMulti,
+  onGenreToggle,
   vibeOptions = [],
   vibe = null,
   onVibeChange,
@@ -86,18 +91,18 @@ export function FilterSheet({
   era,
   onEraChange,
   countryOptions = [],
-  country,
-  onCountryChange,
+  countrySelected = [],
+  onCountryToggle,
   actor,
   onActorChange,
   hideActor = false,
   hideCountry = false,
   platformOptions = [],
-  platform,
-  onPlatformChange,
+  platformSelected = [],
+  onPlatformToggle,
   providerOptions = [],
-  provider = null,
-  onProviderChange,
+  providerSelected = [],
+  onProviderToggle,
   mustSee = false,
   onMustSeeChange,
   hideMustSee = false,
@@ -140,55 +145,61 @@ export function FilterSheet({
       key: 'genre',
       label: 'Genre',
       options: genreOptions,
-      selected: genre,
-      onSelect: onGenreChange,
+      selected: genreSelected,
+      multi: genreMulti,
+      onToggle: onGenreToggle,
       accent: chrome.accent,
     },
     vibeOptions.length > 0 && {
       key: 'vibe',
       label: 'Vibe',
       options: vibeOptions,
-      selected: vibe,
-      onSelect: (id: string | null) => onVibeChange?.(id),
+      selected: vibe ? [vibe] : [],
+      multi: false,
+      onToggle: (id: string) => onVibeChange?.(vibe === id ? null : id),
       accent: chrome.accent,
     },
     {
       key: 'year',
       label: 'Year',
       options: eraOptions,
-      selected: era,
-      onSelect: onEraChange,
+      selected: era ? [era] : [],
+      multi: false,
+      onToggle: (id: string) => onEraChange(era === id ? null : id),
       accent: chrome.accent,
     },
     platformOptions.length > 0 && {
       key: 'console',
       label: 'Console',
       options: platformOptions,
-      selected: platform,
-      onSelect: onPlatformChange,
+      selected: platformSelected,
+      multi: true,
+      onToggle: (id: string) => onPlatformToggle?.(id),
       accent: chrome.accent,
     },
     !hideCountry && countryOptions.length > 0 && {
       key: 'country',
       label: 'Country',
       options: countryOptions,
-      selected: country,
-      onSelect: onCountryChange,
+      selected: countrySelected,
+      multi: true,
+      onToggle: (id: string) => onCountryToggle?.(id),
       accent: chrome.accent,
     },
     providerOptions.length > 0 && {
       key: 'provider',
       label: 'Streaming',
       options: providerOptions,
-      selected: provider,
-      onSelect: (id: string | null) => onProviderChange?.(id),
+      selected: providerSelected,
+      multi: true,
+      onToggle: (id: string) => onProviderToggle?.(id),
       accent: chrome.accent,
     },
   ].filter(Boolean) as FilterDef[];
   const openDef = filterDefs.find((f) => f.key === openKey) ?? null;
-  const selectOption = (def: FilterDef, id: string | null) => {
-    def.onSelect(id);
-    setOpenKey(null);
+  const selectOption = (def: FilterDef, id: string) => {
+    def.onToggle(id);
+    if (!def.multi) setOpenKey(null);
   };
 
   return (
@@ -241,7 +252,13 @@ export function FilterSheet({
 
           <View style={styles.filterGrid}>
             {filterDefs.map((f) => {
-              const current = f.options.find((o) => o.id === f.selected) ?? null;
+              const chosen = f.options.filter((o) => f.selected.includes(o.id));
+              const valueLabel =
+                chosen.length === 0
+                  ? ''
+                  : chosen.length === 1
+                    ? chosen[0].name
+                    : `${chosen.length} selected`;
               const isOpen = openKey === f.key;
               return (
                 <Pressable
@@ -253,10 +270,10 @@ export function FilterSheet({
                   <View style={styles.gridTextWrap}>
                     <Text style={styles.gridLabel}>{f.label}</Text>
                     <Text
-                      style={[styles.gridValue, !!current && { color: f.accent }]}
+                      style={[styles.gridValue, chosen.length > 0 && { color: f.accent }]}
                       numberOfLines={1}
                     >
-                      {current ? current.name : ''}
+                      {valueLabel}
                     </Text>
                   </View>
                   <Ionicons
@@ -272,11 +289,11 @@ export function FilterSheet({
           {openDef && (
             <View style={[styles.dropdownList, { backgroundColor: chrome.surface, borderColor: chrome.border }]}>
               {openDef.options.map((o) => {
-                const active = openDef.selected === o.id;
+                const active = openDef.selected.includes(o.id);
                 return (
                   <Pressable
                     key={o.id}
-                    onPress={() => selectOption(openDef, active ? null : o.id)}
+                    onPress={() => selectOption(openDef, o.id)}
                     style={({ pressed }) => [
                       styles.dropdownItem,
                       pressed && styles.itemPressed,
