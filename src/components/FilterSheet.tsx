@@ -150,7 +150,7 @@ export function FilterSheet({
       options: vibeOptions,
       selected: vibe,
       onSelect: (id: string | null) => onVibeChange?.(id),
-      accent: colors.favorite,
+      accent: chrome.accent,
     },
     {
       key: 'year',
@@ -166,7 +166,7 @@ export function FilterSheet({
       options: platformOptions,
       selected: platform,
       onSelect: onPlatformChange,
-      accent: colors.rust,
+      accent: chrome.accent,
     },
     !hideCountry && countryOptions.length > 0 && {
       key: 'country',
@@ -174,7 +174,7 @@ export function FilterSheet({
       options: countryOptions,
       selected: country,
       onSelect: onCountryChange,
-      accent: colors.watched,
+      accent: chrome.accent,
     },
     providerOptions.length > 0 && {
       key: 'provider',
@@ -182,7 +182,7 @@ export function FilterSheet({
       options: providerOptions,
       selected: provider,
       onSelect: (id: string | null) => onProviderChange?.(id),
-      accent: colors.star,
+      accent: chrome.accent,
     },
   ].filter(Boolean) as FilterDef[];
   const openDef = filterDefs.find((f) => f.key === openKey) ?? null;
