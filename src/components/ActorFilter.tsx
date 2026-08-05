@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { PersonHit, searchPeople } from '@/api/movies';
 import { posterUrl } from '@/api/tmdb';
 import { colors, fonts, radius, spacing } from '@/theme';
+import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 
 export interface SelectedActor {
   id: string;
@@ -26,16 +27,34 @@ interface Props {
 
 /** Small round actor avatar with a person-icon fallback. */
 function Avatar({ path, size }: { path: string | null; size: number }) {
+  const chrome = useThemeChrome();
   const uri = posterUrl(path, 'w185');
   const dims = { width: size, height: size, borderRadius: size / 2 };
   if (!uri) {
     return (
-      <View style={[styles.avatar, styles.avatarFallback, dims]}>
-        <Ionicons name="person" size={size * 0.55} color={colors.textOnDarkMuted} />
+      <View
+        style={[
+          dims,
+          {
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderWidth: 1,
+            backgroundColor: chrome.background,
+            borderColor: chrome.border,
+          },
+        ]}
+      >
+        <Ionicons name="person" size={size * 0.55} color={chrome.muted} />
       </View>
     );
   }
-  return <Image source={{ uri }} style={[styles.avatar, dims]} contentFit="cover" />;
+  return (
+    <Image
+      source={{ uri }}
+      style={[dims, { backgroundColor: chrome.background }]}
+      contentFit="cover"
+    />
+  );
 }
 
 /**
@@ -47,6 +66,8 @@ export function ActorFilter({ selected, onSelect }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PersonHit[]>([]);
   const [loading, setLoading] = useState(false);
+  const chrome = useThemeChrome();
+  const styles = useMemo(() => makeStyles(chrome), [chrome]);
 
   // Debounced live search; skipped while an actor is already selected.
   useEffect(() => {
@@ -83,7 +104,7 @@ export function ActorFilter({ selected, onSelect }: Props) {
         <Text style={styles.selectedText} numberOfLines={1}>
           {selected.name}
         </Text>
-        <Ionicons name="close" size={16} color={colors.textOnDarkMuted} />
+        <Ionicons name="close" size={16} color={chrome.muted} />
       </Pressable>
     );
   }
@@ -91,18 +112,18 @@ export function ActorFilter({ selected, onSelect }: Props) {
   return (
     <View>
       <View style={styles.inputRow}>
-        <Ionicons name="search" size={16} color={colors.textOnDarkMuted} />
+        <Ionicons name="search" size={16} color={chrome.muted} />
         <TextInput
           style={styles.input}
           value={query}
           onChangeText={setQuery}
           placeholder="Search an actor…"
-          placeholderTextColor={colors.textOnDarkMuted}
+          placeholderTextColor={chrome.muted}
           autoCorrect={false}
           returnKeyType="search"
         />
         {loading && (
-          <ActivityIndicator size="small" color={colors.textOnDarkMuted} />
+          <ActivityIndicator size="small" color={chrome.muted} />
         )}
       </View>
       {results.length > 0 && (
@@ -138,84 +159,76 @@ export function ActorFilter({ selected, onSelect }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
-  },
-  input: {
-    flex: 1,
-    color: colors.textOnDark,
-    fontFamily: fonts.body,
-    fontSize: 15,
-    paddingVertical: 2,
-  },
-  results: {
-    marginTop: spacing.xs,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
-    overflow: 'hidden',
-  },
-  resultRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  resultRowPressed: {
-    backgroundColor: `${colors.favorite}22`,
-  },
-  resultInfo: {
-    flex: 1,
-  },
-  resultName: {
-    color: colors.textOnDark,
-    fontFamily: fonts.label,
-    fontSize: 14,
-  },
-  resultHint: {
-    color: colors.textOnDarkMuted,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    marginTop: 1,
-  },
-  avatar: {
-    backgroundColor: colors.background,
-  },
-  avatarFallback: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  selectedChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.favorite,
-    backgroundColor: `${colors.favorite}22`,
-  },
-  selectedText: {
-    color: colors.favorite,
-    fontFamily: fonts.label,
-    fontSize: 13,
-    maxWidth: 220,
-  },
-});
+const makeStyles = (c: ThemeChrome) =>
+  StyleSheet.create({
+    inputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surfaceRaised,
+    },
+    input: {
+      flex: 1,
+      color: colors.textOnDark,
+      fontFamily: fonts.body,
+      fontSize: 15,
+      paddingVertical: 2,
+    },
+    results: {
+      marginTop: spacing.xs,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surfaceRaised,
+      overflow: 'hidden',
+    },
+    resultRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: c.border,
+    },
+    resultRowPressed: {
+      backgroundColor: `${c.accent}22`,
+    },
+    resultInfo: {
+      flex: 1,
+    },
+    resultName: {
+      color: colors.textOnDark,
+      fontFamily: fonts.label,
+      fontSize: 14,
+    },
+    resultHint: {
+      color: c.muted,
+      fontFamily: fonts.body,
+      fontSize: 12,
+      marginTop: 1,
+    },
+    selectedChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      alignSelf: 'flex-start',
+      gap: spacing.sm,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: colors.favorite,
+      backgroundColor: `${colors.favorite}22`,
+    },
+    selectedText: {
+      color: colors.favorite,
+      fontFamily: fonts.label,
+      fontSize: 13,
+      maxWidth: 220,
+    },
+  });
