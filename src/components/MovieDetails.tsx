@@ -15,6 +15,7 @@ import { useWatchProviders } from '@/hooks/useWatchProviders';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { useThemeChrome, type ThemeChrome } from '@/context/ThemeProvider';
 import { PosterImage } from './PosterImage';
+import { TvSeasons } from './TvSeasons';
 
 /**
  * Cleans a TMDB character label for display: strips annotations like "(voice)"
@@ -218,6 +219,10 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
 
         <Text style={[styles.sectionLabel, accentText]}>Synopsis</Text>
         <Text style={styles.overview}>{overview}</Text>
+
+        {movie.mediaType === 'tv' && dragGesture && (
+          <TvSeasons tvId={movie.id} />
+        )}
 
         {cast && cast.length > 0 && (
           <>

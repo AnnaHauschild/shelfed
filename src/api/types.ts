@@ -162,3 +162,60 @@ export interface Movie {
   releaseDate?: string;
   mediaType: MediaType;
 }
+
+// --- TV seasons & episodes --------------------------------------------------
+
+/** A season summary from /tv/{id} (`seasons[]`). */
+export interface TmdbSeasonSummary {
+  season_number: number;
+  name: string;
+  episode_count: number;
+  air_date: string | null;
+  poster_path: string | null;
+  overview: string;
+}
+
+/** Subset of /tv/{id} used for the season list. */
+export interface TmdbTvDetails {
+  id: number;
+  name: string;
+  number_of_seasons: number;
+  seasons: TmdbSeasonSummary[];
+}
+
+/** A single episode from /tv/{id}/season/{n}. */
+export interface TmdbEpisode {
+  episode_number: number;
+  name: string;
+  air_date: string | null;
+  overview: string;
+  still_path: string | null;
+  runtime: number | null;
+  vote_average: number;
+}
+
+/** Envelope from /tv/{id}/season/{n}. */
+export interface TmdbSeasonDetails {
+  season_number: number;
+  episodes: TmdbEpisode[];
+}
+
+/** Normalised season shown in the details view. */
+export interface TvSeason {
+  seasonNumber: number;
+  name: string;
+  episodeCount: number;
+  airYear: number | null;
+  posterPath: string | null;
+}
+
+/** Normalised episode shown in the details view. */
+export interface TvEpisode {
+  episodeNumber: number;
+  name: string;
+  airDate: string | null;
+  overview: string;
+  stillPath: string | null;
+  runtime: number | null;
+  voteAverage: number;
+}

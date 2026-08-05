@@ -29,6 +29,10 @@ import {
   TmdbVideosResponse,
   TmdbWatchProvidersResponse,
   TmdbWatchProvidersListResponse,
+  TmdbTvDetails,
+  TmdbSeasonDetails,
+  TvSeason,
+  TvEpisode,
   WatchInfo,
 } from './types';
 
@@ -673,6 +677,55 @@ export async function fetchProviderOptions(
     .sort((a, b) => a.display_priority - b.display_priority)
     .slice(0, 15)
     .map((p) => ({ id: String(p.provider_id), name: p.provider_name }));
+}
+
+/**
+ * Seasons of a series (from /tv/{id}), newest data first-party from TMDB. Drops
+ * "Specials" (season 0) and empty seasons. Empty in demo mode / on error.
+ */
+export async function fetchTvSeasons(tvId: string): Promise<TvSeason[]> {
+  if (!hasTmdbToken()) return [];
+  try {
+    const data = await tmdbGet<TmdbTvDetails>(`/tv/${tvId}`, {
+      language: contentLanguage(),
+    });
+    return (data.seasons ?? [])
+      .filter((s) => s.season_number > 0 && s.episode_count > 0)
+      .map((s) => ({
+        seasonNumber: s.season_number,
+        name: s.name,
+        episodeCount: s.episode_count,
+        airYear: s.air_date ? Number(s.air_date.slice(0, 4)) : null,
+        posterPath: s.poster_path,
+      }));
+  } catch {
+    return [];
+  }
+}
+
+/** Episodes of one season (from /tv/{id}/season/{n}). Empty on error. */
+export async function fetchSeasonEpisodes(
+  tvId: string,
+  seasonNumber: number,
+): Promise<TvEpisode[]> {
+  if (!hasTmdbToken()) return [];
+  try {
+    const data = await tmdbGet<TmdbSeasonDetails>(
+      `/tv/${tvId}/season/${seasonNumber}`,
+      { language: contentLanguage() },
+    );
+    return (data.episodes ?? []).map((e) => ({
+      episodeNumber: e.episode_number,
+      name: e.name,
+      airDate: e.air_date,
+      overview: e.overview,
+      stillPath: e.still_path,
+      runtime: e.runtime,
+      voteAverage: e.vote_average,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 /**
