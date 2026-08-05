@@ -342,6 +342,7 @@ export async function fetchFeedPage(
   actorId?: string,
   platform?: string,
   vibeId?: string,
+  provider?: string,
 ): Promise<FeedPage> {
   // The bundled Must-See list bypasses TMDB entirely (instant + offline).
   if (mediaType === 'movie' && collectionId === MUST_SEE_ID) {
@@ -414,7 +415,7 @@ export async function fetchFeedPage(
   // requirement — that filter only returns titles with a US rating, which
   // excludes most foreign / niche films (K-dramas, Brazilian cinema, etc.).
   // The erotic keyword + title guards still apply.
-  const broaden = !!collection || !!vibe || !!originCountry || !!actorId;
+  const broaden = !!collection || !!vibe || !!originCountry || !!actorId || !!provider;
 
   if (mediaType === 'tv') {
     // No explicit era → weighted-random recent decade (skips 70s/80s by
@@ -436,6 +437,9 @@ export async function fetchFeedPage(
       with_keywords: withKeywords,
       with_original_language: originalLanguage,
       with_origin_country: originCountry,
+      with_watch_providers: provider,
+      watch_region: provider ? WATCH_REGION : undefined,
+      with_watch_monetization_types: provider ? 'flatrate' : undefined,
       'first_air_date.gte': tvWindow?.gte,
       'first_air_date.lte': tvWindow?.lte,
       page,
@@ -475,6 +479,9 @@ export async function fetchFeedPage(
     certification_country: broaden ? undefined : 'US',
     'certification.lte': broaden ? undefined : 'R',
     with_origin_country: originCountry,
+    with_watch_providers: provider,
+    watch_region: provider ? WATCH_REGION : undefined,
+    with_watch_monetization_types: provider ? 'flatrate' : undefined,
     page,
   });
 
@@ -490,7 +497,7 @@ export async function fetchFeedPage(
   // On the first page of the plain (unfiltered) feed, surface a few genuinely
   // upcoming cinema releases up top so the "Coming Soon" badge is actually seen
   // — the US-certification filter above otherwise hides unreleased films.
-  const isPlainFeed = !genre && !collection && !country && !actorId && !eraId;
+  const isPlainFeed = !genre && !collection && !country && !actorId && !eraId && !provider;
   if (page === 1 && isPlainFeed) {
     const upcoming = await fetchUpcomingMovies(genreMap);
     const ids = new Set(movies.map((m) => m.id));

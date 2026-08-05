@@ -93,6 +93,23 @@ export const COUNTRY_OPTIONS: { id: string; name: string }[] = [
   { id: 'US', name: 'USA' },
 ];
 
+/**
+ * Popular streaming services for the Discover "Streaming" filter, as TMDB/
+ * JustWatch `with_watch_providers` ids. Availability is resolved for
+ * WATCH_REGION (DE) and limited to flatrate (subscription) offers. Ordered by
+ * popularity rather than A–Z so the big services sit at the top.
+ */
+export const PROVIDER_OPTIONS: { id: string; name: string }[] = [
+  { id: '8', name: 'Netflix' },
+  { id: '9', name: 'Amazon Prime Video' },
+  { id: '337', name: 'Disney+' },
+  { id: '350', name: 'Apple TV+' },
+  { id: '30', name: 'WOW' },
+  { id: '531', name: 'Paramount+' },
+  { id: '283', name: 'Crunchyroll' },
+  { id: '11', name: 'MUBI' },
+];
+
 /** RAWG parent-platform ids for the games "Console" filter (platform families). */
 export const PLATFORM_OPTIONS: { id: string; name: string }[] = [
   { id: '2', name: 'PlayStation' },

@@ -57,6 +57,10 @@ interface Props {
   platformOptions?: Option[];
   platform: string | null;
   onPlatformChange: (id: string | null) => void;
+  /** Streaming-service filter (movies/series only, TMDB watch-provider ids). */
+  providerOptions?: Option[];
+  provider?: string | null;
+  onProviderChange?: (id: string | null) => void;
   /** The curated "Must-See" list toggle (movies only). */
   mustSee?: boolean;
   onMustSeeChange?: (value: boolean) => void;
@@ -91,6 +95,9 @@ export function FilterSheet({
   platformOptions = [],
   platform,
   onPlatformChange,
+  providerOptions = [],
+  provider = null,
+  onProviderChange,
   mustSee = false,
   onMustSeeChange,
   hideMustSee = false,
@@ -168,6 +175,14 @@ export function FilterSheet({
       selected: country,
       onSelect: onCountryChange,
       accent: colors.watched,
+    },
+    providerOptions.length > 0 && {
+      key: 'provider',
+      label: 'Streaming',
+      options: providerOptions,
+      selected: provider,
+      onSelect: (id: string | null) => onProviderChange?.(id),
+      accent: colors.star,
     },
   ].filter(Boolean) as FilterDef[];
   const openDef = filterDefs.find((f) => f.key === openKey) ?? null;

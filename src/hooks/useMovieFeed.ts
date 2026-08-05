@@ -19,6 +19,7 @@ export function useMovieFeed(
   actor?: string,
   platform?: string,
   vibe?: string,
+  provider?: string,
 ) {
   const mediaType = useMediaType();
   const { language } = useLanguage();
@@ -34,6 +35,7 @@ export function useMovieFeed(
       actor ?? null,
       platform ?? null,
       vibe ?? null,
+      provider ?? null,
     ],
     queryFn: async ({ pageParam }) => {
       const [page, seen] = await Promise.all([
@@ -47,6 +49,7 @@ export function useMovieFeed(
           actor,
           platform,
           vibe,
+          provider,
         ),
         interactionRepository.getSeenIds(mediaType),
       ]);

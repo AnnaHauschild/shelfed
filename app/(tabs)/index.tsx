@@ -12,7 +12,7 @@ import { SCREENSHOT_MODE, screenshotFeed } from '@/api/screenshotData';
 import { MUST_SEE_ID } from '@/api/movies';
 import { type SelectedActor } from '@/components/ActorFilter';
 import { collectionsFor } from '@/constants/collections';
-import { COUNTRY_OPTIONS, ERA_OPTIONS, PLATFORM_OPTIONS } from '@/constants/config';
+import { COUNTRY_OPTIONS, ERA_OPTIONS, PLATFORM_OPTIONS, PROVIDER_OPTIONS } from '@/constants/config';
 import { FilterSheet } from '@/components/FilterSheet';
 import { GenreChips } from '@/components/GenreChips';
 import { LoadingReel } from '@/components/LoadingReel';
@@ -46,6 +46,7 @@ export default function DiscoverScreen() {
   const [vibe, setVibe] = useState<string | null>(null);
   const [actor, setActor] = useState<SelectedActor | null>(null);
   const [platform, setPlatform] = useState<string | null>(null);
+  const [provider, setProvider] = useState<string | null>(null);
   const [mustSee, setMustSee] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -58,6 +59,7 @@ export default function DiscoverScreen() {
     setVibe(null);
     setActor(null);
     setPlatform(null);
+    setProvider(null);
     setMustSee(false);
   }, [mediaType]);
 
@@ -115,6 +117,7 @@ export default function DiscoverScreen() {
       setEra(null);
       setCountry(null);
       setActor(null);
+      setProvider(null);
     }
   };
   const activeFilterCount =
@@ -125,6 +128,7 @@ export default function DiscoverScreen() {
     (vibe ? 1 : 0) +
     (actor ? 1 : 0) +
     (platform ? 1 : 0) +
+    (provider ? 1 : 0) +
     (mustSee ? 1 : 0);
   const {
     data,
@@ -143,6 +147,7 @@ export default function DiscoverScreen() {
     actor?.id ?? undefined,
     platform ?? undefined,
     vibe ?? undefined,
+    provider ?? undefined,
   );
   const { markWatched, skip, toggleWatchlist, toggleFavorite, undo } =
     useInteractions();
@@ -277,7 +282,7 @@ export default function DiscoverScreen() {
         ) : (
           <>
             <SwipeDeck
-              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibe ?? 'all'}:${actor?.id ?? 'all'}:${platform ?? 'all'}`}
+              key={`${mediaType}:${genre ?? 'all'}:${era ?? 'all'}:${country ?? 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibe ?? 'all'}:${actor?.id ?? 'all'}:${platform ?? 'all'}:${provider ?? 'all'}`}
               cards={movies}
               onSwipeRight={(movie) => markWatched(movie)}
               onSwipeLeft={(movie) => skip(movie)}
@@ -348,6 +353,14 @@ export default function DiscoverScreen() {
         platformOptions={mediaType === 'game' ? PLATFORM_OPTIONS : []}
         platform={platform}
         onPlatformChange={setPlatform}
+        providerOptions={
+          mediaType === 'movie' || mediaType === 'tv' ? PROVIDER_OPTIONS : []
+        }
+        provider={provider}
+        onProviderChange={(id) => {
+          setProvider(id);
+          if (id) setMustSee(false);
+        }}
         mustSee={mustSee}
         onMustSeeChange={selectMustSee}
         hideMustSee={mediaType !== 'movie'}
@@ -359,6 +372,7 @@ export default function DiscoverScreen() {
           setVibe(null);
           setActor(null);
           setPlatform(null);
+          setProvider(null);
           setMustSee(false);
         }}
       />
