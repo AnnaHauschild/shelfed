@@ -108,14 +108,14 @@ const CHROME: Record<ShelfTheme, ThemeChrome> = {
     plank: ['#24406e', '#12233f'],
   },
   minimal: {
-    accent: '#eaeaec',
-    onAccent: '#1f1f22',
-    surface: '#35353a',
-    surfaceRaised: '#434349',
-    background: '#2a2a2e',
-    border: '#5a5a61',
-    muted: '#a8a8ad',
-    plank: ['#6a6a70', '#4a4a4f'],
+    accent: '#ece0c8',
+    onAccent: '#26211a',
+    surface: '#34302a',
+    surfaceRaised: '#413b32',
+    background: '#2a2620',
+    border: '#5b5346',
+    muted: '#b3a891',
+    plank: ['#6a5f4e', '#4a4238'],
   },
 };
 
