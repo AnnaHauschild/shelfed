@@ -103,6 +103,18 @@ export interface TmdbWatchProvidersResponse {
   results: Record<string, TmdbWatchRegion>;
 }
 
+/** One entry from the /watch/providers/{media} region provider list. */
+export interface TmdbWatchProviderListItem {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string | null;
+  display_priority: number;
+}
+
+export interface TmdbWatchProvidersListResponse {
+  results: TmdbWatchProviderListItem[];
+}
+
 /** A streaming provider shown in the details view. */
 export interface WatchProvider {
   id: number;

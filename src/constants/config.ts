@@ -7,6 +7,8 @@
  * calls should move behind a server proxy that keeps the token private.
  */
 
+import { getLocales } from 'expo-localization';
+
 export const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 export const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 
@@ -22,8 +24,16 @@ export const TMDB_ACCESS_TOKEN = process.env.EXPO_PUBLIC_TMDB_ACCESS_TOKEN ?? ''
 export const RAWG_BASE_URL = 'https://api.rawg.io/api';
 export const RAWG_API_KEY = process.env.EXPO_PUBLIC_RAWG_API_KEY ?? '';
 
-// Region used for streaming availability (TMDB watch/providers via JustWatch).
-export const WATCH_REGION = 'DE';
+// Streaming-availability region (ISO 3166-1) for TMDB watch/providers. Detected
+// from the device locale once and cached; falls back to a neutral default when
+// the OS doesn't expose a region.
+let cachedRegion: string | null = null;
+export function watchRegion(): string {
+  if (!cachedRegion) {
+    cachedRegion = (getLocales()[0]?.regionCode ?? 'US').toUpperCase();
+  }
+  return cachedRegion;
+}
 
 // The feed rotates through these release-date windows (one per page) so the
 // swipe deck mixes movies across decades instead of only recent releases.
@@ -94,17 +104,17 @@ export const COUNTRY_OPTIONS: { id: string; name: string }[] = [
 ];
 
 /**
- * Popular streaming services for the Discover "Streaming" filter, as TMDB/
- * JustWatch `with_watch_providers` ids. Availability is resolved for
- * WATCH_REGION (DE) and limited to flatrate (subscription) offers. Ordered by
- * popularity rather than A–Z so the big services sit at the top.
+ * Fallback streaming services for the Discover "Streaming" filter, used when the
+ * region-specific list can't be loaded (offline / demo mode). Internationally
+ * available services as TMDB/JustWatch `with_watch_providers` ids, in popularity
+ * order. The live list normally comes from the device region — see
+ * `fetchProviderOptions`.
  */
 export const PROVIDER_OPTIONS: { id: string; name: string }[] = [
   { id: '8', name: 'Netflix' },
   { id: '9', name: 'Amazon Prime Video' },
   { id: '337', name: 'Disney+' },
   { id: '350', name: 'Apple TV+' },
-  { id: '30', name: 'WOW' },
   { id: '531', name: 'Paramount+' },
   { id: '283', name: 'Crunchyroll' },
   { id: '11', name: 'MUBI' },

@@ -1,5 +1,5 @@
 import { COLLECTIONS } from '@/constants/collections';
-import { ERA_OPTIONS, ERA_WINDOWS, WATCH_REGION } from '@/constants/config';
+import { ERA_OPTIONS, ERA_WINDOWS, watchRegion } from '@/constants/config';
 import { GENRE_FALLBACK } from '@/constants/genres';
 import {
   BOOK_GENRE_OPTIONS,
@@ -28,6 +28,7 @@ import {
   TmdbTv,
   TmdbVideosResponse,
   TmdbWatchProvidersResponse,
+  TmdbWatchProvidersListResponse,
   WatchInfo,
 } from './types';
 
@@ -438,7 +439,7 @@ export async function fetchFeedPage(
       with_original_language: originalLanguage,
       with_origin_country: originCountry,
       with_watch_providers: provider,
-      watch_region: provider ? WATCH_REGION : undefined,
+      watch_region: provider ? watchRegion() : undefined,
       with_watch_monetization_types: provider ? 'flatrate' : undefined,
       'first_air_date.gte': tvWindow?.gte,
       'first_air_date.lte': tvWindow?.lte,
@@ -480,7 +481,7 @@ export async function fetchFeedPage(
     'certification.lte': broaden ? undefined : 'R',
     with_origin_country: originCountry,
     with_watch_providers: provider,
-    watch_region: provider ? WATCH_REGION : undefined,
+    watch_region: provider ? watchRegion() : undefined,
     with_watch_monetization_types: provider ? 'flatrate' : undefined,
     page,
   });
@@ -604,7 +605,7 @@ export async function fetchWatchProviders(
   const data = await tmdbGet<TmdbWatchProvidersResponse>(
     `/${mediaType}/${id}/watch/providers`,
   );
-  const region = data.results[WATCH_REGION];
+  const region = data.results[watchRegion()];
   if (!region) return null;
 
   const raw = [
@@ -626,6 +627,28 @@ export async function fetchWatchProviders(
     }));
 
   return { providers, link: region.link ?? null };
+}
+
+/**
+ * The streaming services available in the user's region (device locale), most
+ * prominent first, for the Discover "Streaming" filter. Empty in demo mode.
+ */
+export async function fetchProviderOptions(
+  mediaType: MediaType,
+): Promise<{ id: string; name: string }[]> {
+  if (mediaType !== 'movie' && mediaType !== 'tv') return [];
+  if (!hasTmdbToken()) return [];
+  const path =
+    mediaType === 'tv' ? '/watch/providers/tv' : '/watch/providers/movie';
+  const data = await tmdbGet<TmdbWatchProvidersListResponse>(path, {
+    watch_region: watchRegion(),
+    language: 'en-US',
+  });
+  return data.results
+    .slice()
+    .sort((a, b) => a.display_priority - b.display_priority)
+    .slice(0, 15)
+    .map((p) => ({ id: String(p.provider_id), name: p.provider_name }));
 }
 
 /**

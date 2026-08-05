@@ -25,6 +25,7 @@ import { useGenres } from '@/hooks/useGenres';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieFeed } from '@/hooks/useMovieFeed';
+import { useProviderOptions } from '@/hooks/useProviderOptions';
 import { getSetting, setSetting } from '@/db/settings';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 
@@ -78,6 +79,15 @@ export default function DiscoverScreen() {
     [mediaType],
   );
   const { data: genreOptions } = useGenres(mediaType);
+  // Streaming services for the filter, resolved for the user's device region;
+  // falls back to a static international list when the live list is unavailable.
+  const { data: dynamicProviders } = useProviderOptions(mediaType);
+  const providerOptions = useMemo(() => {
+    if (mediaType !== 'movie' && mediaType !== 'tv') return [];
+    return dynamicProviders && dynamicProviders.length
+      ? dynamicProviders
+      : PROVIDER_OPTIONS;
+  }, [mediaType, dynamicProviders]);
   // Genre section = genre collections + TMDB genres, sorted A–Z. Vibe section is
   // its own list. Single choice across everything: picking a collection sets
   // `collection`, picking a TMDB genre sets `genre`, each clears the other.
@@ -353,9 +363,7 @@ export default function DiscoverScreen() {
         platformOptions={mediaType === 'game' ? PLATFORM_OPTIONS : []}
         platform={platform}
         onPlatformChange={setPlatform}
-        providerOptions={
-          mediaType === 'movie' || mediaType === 'tv' ? PROVIDER_OPTIONS : []
-        }
+        providerOptions={providerOptions}
         provider={provider}
         onProviderChange={(id) => {
           setProvider(id);
