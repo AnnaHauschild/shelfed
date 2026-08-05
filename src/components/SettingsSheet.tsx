@@ -30,6 +30,7 @@ import { colors, fonts, radius, spacing } from '@/theme';
 import { ShelfTheme, ThemeChrome, useTheme, useThemeChrome } from '@/context/ThemeProvider';
 import { MediaType } from '@/api/types';
 import { useStats } from '@/hooks/useStats';
+import { AccountSection } from './AccountSection';
 
 const SCREEN_H = Dimensions.get('window').height;
 
@@ -183,6 +184,8 @@ export function SettingsSheet({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
+            <AccountSection />
+
             {/* ---------------- Profile ---------------- */}
             <Text style={styles.section}>Profile</Text>
             <Text style={styles.hint}>Your name, shown when you share a title.</Text>
