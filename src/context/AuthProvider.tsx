@@ -34,6 +34,8 @@ interface AuthValue {
     username: string,
     displayName: string,
   ) => Promise<{ error?: string }>;
+  /** Whether a username is free (case-insensitive), ignoring the user's own. */
+  usernameAvailable: (name: string) => Promise<boolean>;
   /** Permanently deletes the account (auth row + owned data). */
   deleteAccount: () => Promise<{ error?: string }>;
 }
@@ -123,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!userId) return { error: 'Not signed in.' };
       const { error } = await supabase.from('profiles').upsert({
         id: userId,
-        username: username.trim(),
+        username: username.trim().toLowerCase(),
         display_name: displayName.trim() || null,
       });
       if (error) {
@@ -138,6 +140,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return {};
     },
     [userId, loadProfile],
+  );
+
+  const usernameAvailable = useCallback(
+    async (name: string) => {
+      const clean = name.trim().toLowerCase();
+      if (clean.length < 3) return false;
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', clean)
+        .neq('id', userId ?? '00000000-0000-0000-0000-000000000000')
+        .maybeSingle();
+      return !data;
+    },
+    [userId],
   );
 
   const deleteAccount = useCallback(async () => {
@@ -161,6 +178,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       verifyCode,
       signOut,
       saveProfile,
+      usernameAvailable,
       deleteAccount,
     }),
     [
@@ -173,6 +191,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       verifyCode,
       signOut,
       saveProfile,
+      usernameAvailable,
       deleteAccount,
     ],
   );

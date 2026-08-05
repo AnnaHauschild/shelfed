@@ -20,7 +20,7 @@ import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 export function AccountSection() {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
-  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, deleteAccount } =
+  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable, deleteAccount } =
     useAuth();
 
   const [step, setStep] = useState<'email' | 'code'>('email');
@@ -30,6 +30,9 @@ export function AccountSection() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [check, setCheck] = useState<'idle' | 'checking' | 'free' | 'taken'>(
+    'idle',
+  );
 
   // Reset the transient sign-in form whenever the auth state flips.
   useEffect(() => {
@@ -44,6 +47,25 @@ export function AccountSection() {
       setUsername(profile.username ?? '');
     }
   }, [profile]);
+
+  // Debounced live username availability check during profile setup.
+  useEffect(() => {
+    const name = username.trim();
+    if (name.length < 3) {
+      setCheck('idle');
+      return;
+    }
+    setCheck('checking');
+    let alive = true;
+    const t = setTimeout(async () => {
+      const ok = await usernameAvailable(name);
+      if (alive) setCheck(ok ? 'free' : 'taken');
+    }, 400);
+    return () => {
+      alive = false;
+      clearTimeout(t);
+    };
+  }, [username, usernameAvailable]);
 
   if (!enabled) return null;
 
@@ -141,19 +163,28 @@ export function AccountSection() {
         <TextInput
           style={styles.input}
           value={username}
-          onChangeText={(t) => setUsername(t.replace(/[^a-zA-Z0-9_]/g, ''))}
+          onChangeText={(t) =>
+            setUsername(t.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase())
+          }
           placeholder="username"
           placeholderTextColor={chrome.muted}
           autoCapitalize="none"
           autoCorrect={false}
           maxLength={20}
         />
+        {check === 'checking' && (
+          <Text style={styles.checkMuted}>Checking…</Text>
+        )}
+        {check === 'free' && <Text style={styles.checkOk}>✓ Available</Text>}
+        {check === 'taken' && (
+          <Text style={styles.checkBad}>✗ Already taken</Text>
+        )}
         <PrimaryButton
           styles={styles}
           chrome={chrome}
           label="Save"
           busy={busy}
-          disabled={username.trim().length < 3}
+          disabled={username.trim().length < 3 || check !== 'free'}
           onPress={() => run(() => saveProfile(username, ''))}
         />
         {error && <Text style={styles.error}>{error}</Text>}
@@ -289,6 +320,21 @@ const makeStyles = (c: ThemeChrome) =>
       color: colors.favorite,
       fontFamily: fonts.body,
       fontSize: 13,
+    },
+    checkOk: {
+      color: colors.watched,
+      fontFamily: fonts.body,
+      fontSize: 12,
+    },
+    checkBad: {
+      color: colors.favorite,
+      fontFamily: fonts.body,
+      fontSize: 12,
+    },
+    checkMuted: {
+      color: c.muted,
+      fontFamily: fonts.body,
+      fontSize: 12,
     },
     profileRow: {
       flexDirection: 'row',
