@@ -27,7 +27,6 @@ export function AccountSection() {
   const [emailInput, setEmailInput] = useState('');
   const [code, setCode] = useState('');
   const [username, setUsername] = useState('');
-  const [displayName, setDisplayName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -43,7 +42,6 @@ export function AccountSection() {
   useEffect(() => {
     if (profile) {
       setUsername(profile.username ?? '');
-      setDisplayName(profile.displayName ?? '');
     }
   }, [profile]);
 
@@ -111,10 +109,10 @@ export function AccountSection() {
               style={styles.input}
               value={code}
               onChangeText={setCode}
-              placeholder="123456"
+              placeholder="12345678"
               placeholderTextColor={chrome.muted}
               keyboardType="number-pad"
-              maxLength={6}
+              maxLength={8}
             />
             <PrimaryButton
               styles={styles}
@@ -150,21 +148,13 @@ export function AccountSection() {
           autoCorrect={false}
           maxLength={20}
         />
-        <TextInput
-          style={styles.input}
-          value={displayName}
-          onChangeText={setDisplayName}
-          placeholder="Display name (optional)"
-          placeholderTextColor={chrome.muted}
-          maxLength={40}
-        />
         <PrimaryButton
           styles={styles}
           chrome={chrome}
           label="Save"
           busy={busy}
           disabled={username.trim().length < 3}
-          onPress={() => run(() => saveProfile(username, displayName))}
+          onPress={() => run(() => saveProfile(username, ''))}
         />
         {error && <Text style={styles.error}>{error}</Text>}
         <Pressable onPress={() => signOut()} hitSlop={6}>
