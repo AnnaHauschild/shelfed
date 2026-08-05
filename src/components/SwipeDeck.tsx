@@ -21,6 +21,7 @@ import { Movie } from '@/api/types';
 import { watchedLabel } from '@/constants/labels';
 import { InteractionType } from '@/repositories';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
+import { useThemeChrome } from '@/context/ThemeProvider';
 import { ActionButtons } from './ActionButtons';
 import { MovieCard } from './MovieCard';
 import { MovieDetails } from './MovieDetails';
@@ -94,6 +95,7 @@ function TopCard({
   demoX,
   onFlipChange,
 }: TopCardProps) {
+  const chrome = useThemeChrome();
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const flip = useSharedValue(0);
@@ -290,7 +292,7 @@ function TopCard({
             style={[styles.face, styles.back, backStyle]}
             pointerEvents={detailsReady ? 'auto' : 'none'}
           >
-            <View style={styles.backInner}>
+            <View style={[styles.backInner, { backgroundColor: chrome.surface, borderColor: chrome.border }]}>
               <MovieDetails movie={movie} />
               <View style={styles.flipHint} pointerEvents="none">
                 <Ionicons
