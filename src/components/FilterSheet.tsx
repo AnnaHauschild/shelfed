@@ -35,11 +35,15 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   genreOptions: Option[];
-  /** Selected genre + collection ids (collection is single, genres are multi). */
+  /** Selected TMDB genre ids (multi on movies/series). */
   genreSelected: string[];
   /** Whether multiple TMDB genres can be picked (movies/series only). */
   genreMulti: boolean;
   onGenreToggle: (id: string) => void;
+  /** Curated genre collections (K-Dramas, True Crime …), single-select. */
+  collectionOptions?: Option[];
+  collectionSelected?: string[];
+  onCollectionToggle?: (id: string) => void;
   /** Mood/atmosphere collections (Road Trip, Melancholy …). */
   vibeOptions?: Option[];
   /** Selected vibe collection ids (multi-select, OR). */
@@ -84,6 +88,9 @@ export function FilterSheet({
   genreSelected,
   genreMulti,
   onGenreToggle,
+  collectionOptions = [],
+  collectionSelected = [],
+  onCollectionToggle,
   vibeOptions = [],
   vibeSelected = [],
   onVibeToggle,
@@ -148,6 +155,15 @@ export function FilterSheet({
       selected: genreSelected,
       multi: genreMulti,
       onToggle: onGenreToggle,
+      accent: chrome.accent,
+    },
+    collectionOptions.length > 0 && {
+      key: 'collection',
+      label: 'Collections',
+      options: collectionOptions,
+      selected: collectionSelected,
+      multi: false,
+      onToggle: (id: string) => onCollectionToggle?.(id),
       accent: chrome.accent,
     },
     vibeOptions.length > 0 && {

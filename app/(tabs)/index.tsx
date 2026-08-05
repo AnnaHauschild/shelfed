@@ -88,35 +88,29 @@ export default function DiscoverScreen() {
       ? dynamicProviders
       : PROVIDER_OPTIONS;
   }, [mediaType, dynamicProviders]);
-  // Genre section = genre collections + TMDB genres, sorted A–Z. Vibe section is
-  // its own list. Single choice across everything: picking a collection sets
-  // `collection`, picking a TMDB genre sets `genre`, each clears the other.
-  const genreFilterOptions = useMemo(
-    () =>
-      [...genreCollections, ...(genreOptions ?? [])].sort((a, b) =>
-        a.name.localeCompare(b.name),
-      ),
-    [genreCollections, genreOptions],
-  );
-  const isCollectionId = (id: string) =>
-    genreCollections.some((c) => c.id === id) ||
-    vibeOptions.some((c) => c.id === id);
-  // Movies/series allow multiple TMDB genres (OR); books/games stay single.
-  const genreMulti = mediaType === 'movie' || mediaType === 'tv';
-  // The Genre picker holds either a single curated collection OR a set of
-  // genres — the two are mutually exclusive.
-  const genreSelected = collection ? [collection] : genres;
   const toggleId = (list: string[], id: string) =>
     list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+  // Genre = plain TMDB genres, sorted A–Z; multi on movies/series, single on
+  // books/games.
+  const genreSorted = useMemo(
+    () =>
+      [...(genreOptions ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
+    [genreOptions],
+  );
+  const genreMulti = mediaType === 'movie' || mediaType === 'tv';
   const onGenreToggle = (id: string) => {
     setMustSee(false);
-    if (isCollectionId(id)) {
-      setCollection((c) => (c === id ? null : id));
-      setGenres([]);
-      return;
-    }
-    setCollection(null);
     setGenres((g) => (genreMulti ? toggleId(g, id) : g[0] === id ? [] : [id]));
+  };
+  // Curated "Collections" (K-Dramas, True Crime …) are their own single-select
+  // dimension that combines (AND) with the plain genres, sorted A–Z.
+  const collectionOptions = useMemo(
+    () => [...genreCollections].sort((a, b) => a.name.localeCompare(b.name)),
+    [genreCollections],
+  );
+  const onCollectionToggle = (id: string) => {
+    setMustSee(false);
+    setCollection((c) => (c === id ? null : id));
   };
   const onCountryToggle = (id: string) => {
     setMustSee(false);
@@ -348,10 +342,13 @@ export default function DiscoverScreen() {
       <FilterSheet
         visible={filtersOpen}
         onClose={() => setFiltersOpen(false)}
-        genreOptions={genreFilterOptions}
-        genreSelected={genreSelected}
+        genreOptions={genreSorted}
+        genreSelected={genres}
         genreMulti={genreMulti}
         onGenreToggle={onGenreToggle}
+        collectionOptions={collectionOptions}
+        collectionSelected={collection ? [collection] : []}
+        onCollectionToggle={onCollectionToggle}
         vibeOptions={vibeOptions}
         vibeSelected={vibes}
         onVibeToggle={onVibeToggle}
