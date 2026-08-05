@@ -28,6 +28,8 @@ import { useLanguage } from '@/context/LanguageProvider';
 import { useProfile } from '@/context/ProfileProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ShelfTheme, ThemeChrome, useTheme, useThemeChrome } from '@/context/ThemeProvider';
+import { MediaType } from '@/api/types';
+import { useStats } from '@/hooks/useStats';
 
 const SCREEN_H = Dimensions.get('window').height;
 
@@ -66,6 +68,17 @@ const THEMES: ThemeOption[] = [
   },
 ];
 
+const STAT_TYPES: {
+  key: MediaType;
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}[] = [
+  { key: 'movie', label: 'Movies', icon: 'film' },
+  { key: 'tv', label: 'Series', icon: 'tv' },
+  { key: 'book', label: 'Books', icon: 'book' },
+  { key: 'game', label: 'Games', icon: 'game-controller' },
+];
+
 /**
  * Central settings hub reached from the landing screen. Bundles the display
  * name, content language and (soon) the shelf background theme in one sheet.
@@ -84,6 +97,7 @@ export function SettingsSheet({
   const { theme, setTheme } = useTheme();
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
+  const { data: stats } = useStats(visible);
   const [draft, setDraft] = useState(name ?? '');
   const [langOpen, setLangOpen] = useState(false);
 
@@ -289,6 +303,44 @@ export function SettingsSheet({
                 );
               })}
             </View>
+
+            {/* ---------------- Statistics ---------------- */}
+            <Text style={[styles.section, styles.sectionSpaced]}>Statistics</Text>
+            {stats && stats.totalWatched > 0 ? (
+              <>
+                <Text style={styles.hint}>
+                  You&apos;ve watched {stats.totalWatched}{' '}
+                  {stats.totalWatched === 1 ? 'title' : 'titles'}.
+                </Text>
+                <View style={styles.statGrid}>
+                  {STAT_TYPES.map((t) => (
+                    <View key={t.key} style={styles.statCard}>
+                      <Ionicons name={t.icon} size={16} color={chrome.accent} />
+                      <Text style={styles.statNum}>{stats.byType[t.key]}</Text>
+                      <Text style={styles.statLabel}>{t.label}</Text>
+                    </View>
+                  ))}
+                </View>
+                {stats.genres.length > 0 && (
+                  <>
+                    <Text style={styles.statSub}>Top genres</Text>
+                    <View style={styles.genreStatWrap}>
+                      {stats.genres.slice(0, 6).map((g) => (
+                        <View key={g.name} style={styles.genreStat}>
+                          <Text style={styles.genreStatName}>{g.name}</Text>
+                          <Text style={styles.genreStatCount}>{g.count}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </>
+                )}
+              </>
+            ) : (
+              <Text style={styles.hint}>
+                Nothing watched yet — swipe right on a title to add it to your
+                shelf.
+              </Text>
+            )}
           </ScrollView>
         </Animated.View>
       </GestureHandlerRootView>
@@ -498,6 +550,71 @@ const makeStyles = (c: ThemeChrome) =>
     fontFamily: fonts.label,
     fontSize: 9,
     letterSpacing: 1,
+  },
+  statGrid: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  statCard: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: c.border,
+    backgroundColor: c.surface,
+  },
+  statNum: {
+    color: c.accent,
+    fontFamily: fonts.display,
+    fontSize: 20,
+  },
+  statLabel: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.label,
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  statSub: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginTop: spacing.md,
+    marginBottom: spacing.xs,
+  },
+  genreStatWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  genreStat: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: c.border,
+    backgroundColor: c.surfaceRaised,
+  },
+  genreStatName: {
+    color: colors.textOnDark,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  genreStatCount: {
+    color: c.accent,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    fontWeight: '700',
   },
   pressed: {
     opacity: 0.7,

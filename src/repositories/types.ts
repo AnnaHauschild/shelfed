@@ -25,6 +25,16 @@ export interface RecommendationSignals {
   skipped: string[];
 }
 
+/** Aggregated stats over the Watched shelf (for the Settings statistics view). */
+export interface WatchedStats {
+  /** Watched count per media type. */
+  byType: Record<MediaType, number>;
+  /** Total watched across all media types. */
+  totalWatched: number;
+  /** Genre name + how many watched titles have it, most-watched first. */
+  genres: { name: string; count: number }[];
+}
+
 /**
  * Persistence interface for movie metadata. Implemented today by SQLite; a
  * cloud-backed implementation can be dropped in later without touching the UI.
@@ -63,4 +73,6 @@ export interface InteractionRepository {
   getStateMap(mediaType: MediaType): Promise<Map<string, Set<InteractionType>>>;
   /** Snapshot of all signals (for the recommender) within a category. */
   exportSignals(mediaType: MediaType): Promise<RecommendationSignals>;
+  /** Aggregated stats over the Watched shelf (counts + genre breakdown). */
+  getStats(): Promise<WatchedStats>;
 }

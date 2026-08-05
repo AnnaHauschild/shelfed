@@ -1,11 +1,12 @@
 import { MediaType } from '@/api/types';
 import { getDatabase } from '@/db/database';
-import { MovieRow, rowToStoredMovie } from './mappers';
+import { MovieRow, rowToStoredMovie, safeParseArray } from './mappers';
 import {
   InteractionRepository,
   InteractionType,
   RecommendationSignals,
   StoredMovie,
+  WatchedStats,
 } from './types';
 
 /**
@@ -55,6 +56,40 @@ export const interactionRepository: InteractionRepository = {
       [type, mediaType],
     );
     return rows.map(rowToStoredMovie);
+  },
+
+  async getStats(): Promise<WatchedStats> {
+    const db = await getDatabase();
+    const typeRows = await db.getAllAsync<{ media_type: string; n: number }>(
+      "SELECT media_type, COUNT(*) AS n FROM interactions WHERE type = 'watched' GROUP BY media_type;",
+    );
+    const genreRows = await db.getAllAsync<{ genres: string }>(
+      `SELECT m.genres FROM movies m
+         INNER JOIN interactions i
+           ON i.movie_id = m.id AND i.media_type = m.media_type
+       WHERE i.type = 'watched';`,
+    );
+    const byType: Record<MediaType, number> = {
+      movie: 0,
+      tv: 0,
+      book: 0,
+      game: 0,
+    };
+    let totalWatched = 0;
+    for (const r of typeRows) {
+      if (r.media_type in byType) byType[r.media_type as MediaType] = r.n;
+      totalWatched += r.n;
+    }
+    const counts = new Map<string, number>();
+    for (const r of genreRows) {
+      for (const g of safeParseArray<string>(r.genres)) {
+        counts.set(g, (counts.get(g) ?? 0) + 1);
+      }
+    }
+    const genres = Array.from(counts, ([name, count]) => ({ name, count })).sort(
+      (a, b) => b.count - a.count,
+    );
+    return { byType, totalWatched, genres };
   },
 
   async getSeenIds(mediaType: MediaType): Promise<Set<string>> {

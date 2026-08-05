@@ -19,7 +19,7 @@ export interface MovieRow {
   lang: string | null;
 }
 
-function safeParseArray<T>(json: string | null): T[] {
+export function safeParseArray<T>(json: string | null): T[] {
   if (!json) return [];
   try {
     const parsed = JSON.parse(json);
