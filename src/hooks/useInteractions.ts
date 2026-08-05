@@ -7,6 +7,8 @@ import {
   interactionRepository,
   movieRepository,
 } from '@/repositories';
+import { isShelfType, pushItem, removeItem } from '@/api/shelfSync';
+import { useAuth } from '@/context/AuthProvider';
 
 /**
  * Records user interactions and keeps caches/shelves in sync.
@@ -28,6 +30,7 @@ import {
  */
 export function useInteractions() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
 
   const invalidate = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ['shelf'] });
@@ -38,9 +41,12 @@ export function useInteractions() {
     async (movie: Movie, type: InteractionType, source = 'swipe') => {
       await movieRepository.upsert(movie);
       await interactionRepository.add(movie.id, type, movie.mediaType, source);
+      if (userId && isShelfType(type)) {
+        pushItem(userId, movie, type).catch(() => {});
+      }
       invalidate();
     },
-    [invalidate],
+    [invalidate, userId],
   );
 
   /** Adds the signal if missing, removes it if present. Returns the new state. */
@@ -53,23 +59,32 @@ export function useInteractions() {
       );
       if (exists) {
         await interactionRepository.remove(movie.id, type, movie.mediaType);
+        if (userId && isShelfType(type)) {
+          removeItem(userId, movie.mediaType, movie.id, type).catch(() => {});
+        }
       } else {
         await movieRepository.upsert(movie);
         await interactionRepository.add(movie.id, type, movie.mediaType, source);
+        if (userId && isShelfType(type)) {
+          pushItem(userId, movie, type).catch(() => {});
+        }
       }
       invalidate();
       return !exists;
     },
-    [invalidate],
+    [invalidate, userId],
   );
 
   /** Removes a single (movie, type) signal from any list. */
   const removeInteraction = useCallback(
     async (movieId: string, type: InteractionType, mediaType: MediaType) => {
       await interactionRepository.remove(movieId, type, mediaType);
+      if (userId && isShelfType(type)) {
+        removeItem(userId, mediaType, movieId, type).catch(() => {});
+      }
       invalidate();
     },
-    [invalidate],
+    [invalidate, userId],
   );
 
   const markWatched = useCallback(

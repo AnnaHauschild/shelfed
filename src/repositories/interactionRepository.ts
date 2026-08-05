@@ -6,6 +6,7 @@ import {
   InteractionType,
   RecommendationSignals,
   StoredMovie,
+  SyncShelfItem,
   WatchedStats,
 } from './types';
 
@@ -56,6 +57,33 @@ export const interactionRepository: InteractionRepository = {
       [type, mediaType],
     );
     return rows.map(rowToStoredMovie);
+  },
+
+  async getSyncItems(): Promise<SyncShelfItem[]> {
+    const db = await getDatabase();
+    const rows = await db.getAllAsync<{
+      media_type: string;
+      movie_id: string | number;
+      type: string;
+      title: string;
+      poster_path: string | null;
+      year: number | null;
+    }>(
+      `SELECT i.media_type AS media_type, i.movie_id AS movie_id, i.type AS type,
+              m.title AS title, m.poster_path AS poster_path, m.year AS year
+         FROM interactions i
+         INNER JOIN movies m
+           ON m.id = i.movie_id AND m.media_type = i.media_type
+        WHERE i.type IN ('watched', 'watchlist', 'favorite');`,
+    );
+    return rows.map((r) => ({
+      mediaType: r.media_type as MediaType,
+      movieId: String(r.movie_id),
+      type: r.type as InteractionType,
+      title: r.title,
+      posterPath: r.poster_path,
+      year: r.year,
+    }));
   },
 
   async getStats(): Promise<WatchedStats> {

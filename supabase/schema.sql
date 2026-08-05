@@ -51,3 +51,27 @@ $$;
 
 revoke all on function public.delete_own_account() from public;
 grant execute on function public.delete_own_account() to authenticated;
+
+-- Phase 2: cloud mirror of the shareable shelves (watched / watchlist / favorite).
+-- Local SQLite stays the source of truth; this is a per-user mirror for
+-- cross-device restore and (later) sharing. 'skipped' is never synced.
+create table if not exists public.shelf_items (
+  user_id     uuid not null references auth.users (id) on delete cascade,
+  media_type  text not null,
+  movie_id    text not null,
+  type        text not null check (type in ('watched', 'watchlist', 'favorite')),
+  title       text,
+  poster_path text,
+  year        int,
+  updated_at  timestamptz not null default now(),
+  primary key (user_id, media_type, movie_id, type)
+);
+
+alter table public.shelf_items enable row level security;
+
+-- Private to the owner for now; relaxed to a follows/public model when sharing lands.
+drop policy if exists "shelf_items private to owner" on public.shelf_items;
+create policy "shelf_items private to owner"
+  on public.shelf_items for all to authenticated
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+

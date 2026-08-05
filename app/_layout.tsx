@@ -11,6 +11,7 @@ import { fetchMediaById } from '@/api/movies';
 import { MediaType } from '@/api/types';
 import { getDatabase } from '@/db/database';
 import { LandingScreen } from '@/components/LandingScreen';
+import { ShelfSyncGate } from '@/components/ShelfSyncGate';
 import {
   MovieDetailsProvider,
   useMovieDetails,
@@ -78,6 +79,7 @@ export default function RootLayout() {
                 <DeeplinkHandler />
               </MovieDetailsProvider>
               <LandingGate />
+              <ShelfSyncGate />
             </MediaTypeProvider>
             </ThemeProvider>
           </ProfileProvider>

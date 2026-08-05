@@ -44,6 +44,16 @@ export interface MovieRepository {
   getById(id: string, mediaType: MediaType): Promise<StoredMovie | null>;
 }
 
+/** A local shareable shelf entry with the minimal metadata needed to sync. */
+export interface SyncShelfItem {
+  mediaType: MediaType;
+  movieId: string;
+  type: InteractionType;
+  title: string;
+  posterPath: string | null;
+  year: number | null;
+}
+
 /** Persistence interface for user interactions / shelves. */
 export interface InteractionRepository {
   add(
@@ -75,4 +85,6 @@ export interface InteractionRepository {
   exportSignals(mediaType: MediaType): Promise<RecommendationSignals>;
   /** Aggregated stats over the Watched shelf (counts + genre breakdown). */
   getStats(): Promise<WatchedStats>;
+  /** All watched/watchlist/favorite items with metadata, for cloud sync. */
+  getSyncItems(): Promise<SyncShelfItem[]>;
 }
