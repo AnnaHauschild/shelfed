@@ -250,6 +250,13 @@ export function UserShelfSheet({
     ),
   }));
 
+  // Opaque backer: follows the vertical drag (so the panel + its background
+  // slide down together and reveal the grid) but ignores the horizontal swipe
+  // (so it keeps covering the grid while paging left/right).
+  const detailBgStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: tY.value }],
+  }));
+
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: sheetY.value }],
   }));
@@ -373,6 +380,7 @@ export function UserShelfSheet({
 
         {index != null && detail && (
           <View style={styles.detailOverlay}>
+            <Animated.View style={[styles.detailBackdrop, detailBgStyle]} />
             <GestureDetector gesture={pager}>
               <Animated.View style={[styles.detailInner, detailStyle]}>
                 <GestureDetector gesture={dismissHandle}>
@@ -604,7 +612,10 @@ const makeStyles = (c: ThemeChrome) =>
       bottom: -spacing.xl,
       left: -spacing.lg,
       right: -spacing.lg,
-      // Opaque so the shelf grid never flashes through while paging.
+    },
+    detailBackdrop: {
+      // Opaque backer so the shelf grid never flashes through while paging.
+      ...StyleSheet.absoluteFillObject,
       backgroundColor: c.background,
     },
     detailInner: {
