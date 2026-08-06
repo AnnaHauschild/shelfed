@@ -9,15 +9,18 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { posterUrl } from '@/api/tmdb';
 import { MediaType, Movie } from '@/api/types';
 import { fetchMediaById } from '@/api/movies';
 import { ShelfItem } from '@/api/shelfSync';
 import { UserSummary } from '@/api/follows';
 import { useUserShelf } from '@/hooks/useUserShelf';
+import { useInteractions } from '@/hooks/useInteractions';
+import { interactionRepository } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
-import { useMovieDetails } from './MovieDetailsProvider';
+import { MovieDetails } from './MovieDetails';
 
 const SHELF_TYPES: { type: ShelfItem['type']; label: string }[] = [
   { type: 'watched', label: 'Watched' },
@@ -64,13 +67,13 @@ export function UserShelfSheet({
   const { data: items, isLoading } = useUserShelf(user?.id ?? null);
   const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
   const [media, setMedia] = useState<MediaType | 'all'>('all');
-  const { open } = useMovieDetails();
+  const [detail, setDetail] = useState<Movie | null>(null);
 
-  // Fetch full metadata, then open the shared details modal (info + trailer +
-  // the Watched/Wishlist/Favorite buttons) over the friend's shelf.
+  // Load full metadata, then show the details inline (above the grid) so we
+  // don't stack another modal — info, trailer and add-to-shelf actions.
   const openFilm = async (it: ShelfItem) => {
     const full = await fetchMediaById(it.mediaType, it.movieId).catch(() => null);
-    open(full ?? toMovie(it));
+    setDetail(full ?? toMovie(it));
   };
 
   const shown = (items ?? []).filter(
@@ -173,6 +176,21 @@ export function UserShelfSheet({
             })}
           </View>
         </ScrollView>
+        {detail && (
+          <View style={styles.detailOverlay}>
+            <Pressable
+              style={styles.detailBack}
+              onPress={() => setDetail(null)}
+              hitSlop={8}
+            >
+              <Ionicons name="chevron-back" size={20} color={chrome.accent} />
+              <Text style={styles.detailBackText}>Back</Text>
+            </Pressable>
+            <MovieDetails movie={detail}>
+              <FriendFilmActions movie={detail} />
+            </MovieDetails>
+          </View>
+        )}
       </View>
     </Modal>
   );
@@ -294,5 +312,100 @@ const makeStyles = (c: ThemeChrome) =>
       fontFamily: fonts.body,
       fontSize: 11,
       marginTop: 4,
+    },
+    detailOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: c.background,
+      paddingTop: spacing.sm,
+    },
+    detailBack: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 2,
+      paddingHorizontal: spacing.md,
+      paddingBottom: spacing.xs,
+    },
+    detailBackText: {
+      color: c.accent,
+      fontFamily: fonts.label,
+      fontSize: 14,
+    },
+  });
+
+const ACTIONS: {
+  type: 'watched' | 'watchlist' | 'favorite';
+  icon: keyof typeof Ionicons.glyphMap;
+  activeIcon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  color: string;
+}[] = [
+  { type: 'watched', icon: 'albums-outline', activeIcon: 'albums', label: 'Watched', color: colors.watched },
+  { type: 'watchlist', icon: 'star-outline', activeIcon: 'star', label: 'Wishlist', color: colors.star },
+  { type: 'favorite', icon: 'heart-outline', activeIcon: 'heart', label: 'Favorite', color: colors.favorite },
+];
+
+/** Add/remove a friend's title to your own shelves, from the inline detail view. */
+function FriendFilmActions({ movie }: { movie: Movie }) {
+  const chrome = useThemeChrome();
+  const styles = useMemo(() => makeActionStyles(chrome), [chrome]);
+  const { toggleWatched, toggleWatchlist, toggleFavorite } = useInteractions();
+  const qc = useQueryClient();
+  const key = ['film-state', movie.mediaType, movie.id];
+  const { data: state } = useQuery({
+    queryKey: key,
+    queryFn: async () => ({
+      watched: await interactionRepository.has(movie.id, 'watched', movie.mediaType),
+      watchlist: await interactionRepository.has(movie.id, 'watchlist', movie.mediaType),
+      favorite: await interactionRepository.has(movie.id, 'favorite', movie.mediaType),
+    }),
+  });
+  const toggles = {
+    watched: toggleWatched,
+    watchlist: toggleWatchlist,
+    favorite: toggleFavorite,
+  };
+  const run = async (type: 'watched' | 'watchlist' | 'favorite') => {
+    await toggles[type](movie);
+    qc.invalidateQueries({ queryKey: key });
+  };
+  return (
+    <View style={styles.row}>
+      {ACTIONS.map((a) => {
+        const active = !!state?.[a.type];
+        return (
+          <Pressable key={a.type} style={styles.btn} onPress={() => run(a.type)}>
+            <Ionicons
+              name={active ? a.activeIcon : a.icon}
+              size={22}
+              color={active ? a.color : chrome.muted}
+            />
+            <Text style={[styles.label, active && { color: a.color }]}>
+              {a.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+const makeActionStyles = (c: ThemeChrome) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingTop: spacing.sm,
+    },
+    btn: {
+      alignItems: 'center',
+      gap: spacing.xs,
+      paddingVertical: spacing.sm,
+    },
+    label: {
+      color: c.muted,
+      fontFamily: fonts.label,
+      fontSize: 12,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
     },
   });
