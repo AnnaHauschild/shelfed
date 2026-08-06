@@ -10,12 +10,14 @@ import {
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { posterUrl } from '@/api/tmdb';
-import { MediaType } from '@/api/types';
+import { MediaType, Movie } from '@/api/types';
+import { fetchMediaById } from '@/api/movies';
 import { ShelfItem } from '@/api/shelfSync';
 import { UserSummary } from '@/api/follows';
 import { useUserShelf } from '@/hooks/useUserShelf';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useMovieDetails } from './MovieDetailsProvider';
 
 const SHELF_TYPES: { type: ShelfItem['type']; label: string }[] = [
   { type: 'watched', label: 'Watched' },
@@ -31,6 +33,24 @@ const MEDIA_TYPES: { key: MediaType | 'all'; label: string }[] = [
   { key: 'game', label: 'Games' },
 ];
 
+/** A shelf item carries only minimal metadata; the rest is filled on open. */
+function toMovie(it: ShelfItem): Movie {
+  return {
+    id: it.movieId,
+    title: it.title,
+    year: it.year,
+    genreIds: [],
+    genres: [],
+    posterPath: it.posterPath,
+    backdropPath: null,
+    overview: '',
+    voteAverage: 0,
+    voteCount: 0,
+    popularity: 0,
+    mediaType: it.mediaType,
+  };
+}
+
 /** Read-only view of a followed user's shelves (watched / favorites / wishlist). */
 export function UserShelfSheet({
   user,
@@ -44,6 +64,14 @@ export function UserShelfSheet({
   const { data: items, isLoading } = useUserShelf(user?.id ?? null);
   const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
   const [media, setMedia] = useState<MediaType | 'all'>('all');
+  const { open } = useMovieDetails();
+
+  // Fetch full metadata, then open the shared details modal (info + trailer +
+  // the Watched/Wishlist/Favorite buttons) over the friend's shelf.
+  const openFilm = async (it: ShelfItem) => {
+    const full = await fetchMediaById(it.mediaType, it.movieId).catch(() => null);
+    open(full ?? toMovie(it));
+  };
 
   const shown = (items ?? []).filter(
     (i) => i.type === shelfType && (media === 'all' || i.mediaType === media),
@@ -117,9 +145,10 @@ export function UserShelfSheet({
             {shown.map((it) => {
               const uri = posterUrl(it.posterPath);
               return (
-                <View
+                <Pressable
                   key={`${it.mediaType}:${it.movieId}`}
                   style={styles.poster}
+                  onPress={() => openFilm(it)}
                 >
                   {uri ? (
                     <Image
@@ -139,7 +168,7 @@ export function UserShelfSheet({
                   <Text style={styles.posterTitle} numberOfLines={2}>
                     {it.title}
                   </Text>
-                </View>
+                </Pressable>
               );
             })}
           </View>
@@ -162,7 +191,7 @@ const makeStyles = (c: ThemeChrome) =>
       left: 0,
       right: 0,
       bottom: 0,
-      maxHeight: '86%',
+      height: '86%',
       backgroundColor: c.background,
       borderTopLeftRadius: radius.xl,
       borderTopRightRadius: radius.xl,
