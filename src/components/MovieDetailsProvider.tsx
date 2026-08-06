@@ -25,6 +25,7 @@ import { colors, fonts, radius, spacing } from '@/theme';
 import { AddToMoodSheet } from './AddToMoodSheet';
 import { NoteSheet } from './NoteSheet';
 import { MovieDetails } from './MovieDetails';
+import { FilmMatch } from './FilmMatch';
 
 const SCREEN_H = Dimensions.get('window').height;
 const SCREEN_W = Dimensions.get('window').width;
@@ -245,6 +246,7 @@ function DetailsModal({
             dragGesture={headerDrag}
             onOpenNote={() => setNoteOpen(true)}
             hasNote={(noteText ?? '').length > 0}
+            matchSlot={<FilmMatch movie={movie} />}
           >
           <View style={styles.actions}>
             <DetailAction

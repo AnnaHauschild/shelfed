@@ -60,6 +60,8 @@ interface Props {
   onOpenNote?: () => void;
   /** Whether this title already has a saved note (lights the note button). */
   hasNote?: boolean;
+  /** Optional "friends who like this" node, rendered above the synopsis. */
+  matchSlot?: React.ReactNode;
 }
 
 /**
@@ -68,7 +70,7 @@ interface Props {
  * details modal, so it stays background-agnostic (its parent provides the
  * surface + framing).
  */
-export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote }: Props) {
+export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote, matchSlot }: Props) {
   const chrome = useThemeChrome();
   const accentText = { color: chrome.accent };
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
@@ -217,13 +219,14 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
           </View>
         )}
 
+        {matchSlot}
+
         <Text style={[styles.sectionLabel, accentText]}>Synopsis</Text>
         <Text style={styles.overview}>{overview}</Text>
 
         {movie.mediaType === 'tv' && dragGesture && (
           <TvSeasons tvId={movie.id} />
         )}
-
         {cast && cast.length > 0 && (
           <>
             <Text style={[styles.sectionLabel, styles.castLabel, accentText]}>Cast</Text>
