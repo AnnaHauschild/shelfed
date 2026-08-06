@@ -14,6 +14,8 @@ import { useFollows } from '@/hooks/useFollows';
 import { useUserSearch } from '@/hooks/useUserSearch';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { UserSummary } from '@/api/follows';
+import { UserShelfSheet } from './UserShelfSheet';
 
 const SCREEN_H = Dimensions.get('window').height;
 
@@ -31,17 +33,25 @@ export function FriendsSheet({
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [query, setQuery] = useState('');
+  const [viewUser, setViewUser] = useState<UserSummary | null>(null);
   const { results, loading } = useUserSearch(query);
   const { following, isFollowing, follow, unfollow } = useFollows();
 
   const searching = query.trim().length >= 2;
 
-  const userRow = (id: string, username: string, followed: boolean) => (
+  const userRow = (
+    id: string,
+    username: string,
+    followed: boolean,
+    onOpen?: () => void,
+  ) => (
     <View key={id} style={styles.userRow}>
-      <Ionicons name="person-circle" size={30} color={chrome.muted} />
-      <Text style={styles.username} numberOfLines={1}>
-        @{username}
-      </Text>
+      <Pressable style={styles.userTap} onPress={onOpen} disabled={!onOpen}>
+        <Ionicons name="person-circle" size={30} color={chrome.muted} />
+        <Text style={styles.username} numberOfLines={1}>
+          @{username}
+        </Text>
+      </Pressable>
       <Pressable
         style={[styles.followBtn, followed && styles.followingBtn]}
         onPress={() => (followed ? unfollow(id) : follow(id))}
@@ -94,7 +104,14 @@ export function FriendsSheet({
               {!loading && results.length === 0 && (
                 <Text style={styles.hint}>No one found.</Text>
               )}
-              {results.map((u) => userRow(u.id, u.username, isFollowing(u.id)))}
+              {results.map((u) =>
+                userRow(
+                  u.id,
+                  u.username,
+                  isFollowing(u.id),
+                  isFollowing(u.id) ? () => setViewUser(u) : undefined,
+                ),
+              )}
             </>
           ) : (
             <>
@@ -105,10 +122,13 @@ export function FriendsSheet({
                   friends.
                 </Text>
               )}
-              {following.map((u) => userRow(u.id, u.username, true))}
+              {following.map((u) =>
+                userRow(u.id, u.username, true, () => setViewUser(u)),
+              )}
             </>
           )}
         </ScrollView>
+        <UserShelfSheet user={viewUser} onClose={() => setViewUser(null)} />
       </View>
     </Modal>
   );
@@ -198,6 +218,12 @@ const makeStyles = (c: ThemeChrome) =>
       alignItems: 'center',
       gap: spacing.sm,
       paddingVertical: spacing.sm,
+    },
+    userTap: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
     },
     username: {
       flex: 1,
