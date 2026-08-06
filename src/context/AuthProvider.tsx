@@ -7,12 +7,14 @@ import {
   useState,
 } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { hasSupabase, supabase } from '@/api/supabase';
 
 export interface Profile {
   id: string;
   username: string | null;
   displayName: string | null;
+  avatarUrl: string | null;
 }
 
 interface AuthValue {
@@ -36,6 +38,8 @@ interface AuthValue {
   ) => Promise<{ error?: string }>;
   /** Whether a username is free (case-insensitive), ignoring the user's own. */
   usernameAvailable: (name: string) => Promise<boolean>;
+  /** Picks a photo, shrinks it and saves it as the profile avatar. */
+  uploadAvatar: (uri: string) => Promise<{ error?: string }>;
   /** Permanently deletes the account (auth row + owned data). */
   deleteAccount: () => Promise<{ error?: string }>;
 }
@@ -71,13 +75,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     const { data } = await supabase
       .from('profiles')
-      .select('id, username, display_name')
+      .select('id, username, display_name, avatar_url')
       .eq('id', id)
       .maybeSingle();
     setProfile(
       data
-        ? { id: data.id, username: data.username, displayName: data.display_name }
-        : { id, username: null, displayName: null },
+        ? {
+            id: data.id,
+            username: data.username,
+            displayName: data.display_name,
+            avatarUrl: data.avatar_url ?? null,
+          }
+        : { id, username: null, displayName: null, avatarUrl: null },
     );
   }, []);
 
@@ -166,6 +175,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return {};
   }, [userId]);
 
+  // Small avatars are stored inline as a data URI on the profile row (readable
+  // by friends via the existing profiles RLS) — no storage bucket needed.
+  const uploadAvatar = useCallback(
+    async (uri: string) => {
+      if (!userId) return { error: 'Not signed in.' };
+      try {
+        const out = await manipulateAsync(uri, [{ resize: { width: 256 } }], {
+          compress: 0.6,
+          format: SaveFormat.JPEG,
+          base64: true,
+        });
+        if (!out.base64) return { error: 'Could not read that image.' };
+        const dataUri = `data:image/jpeg;base64,${out.base64}`;
+        const { error } = await supabase
+          .from('profiles')
+          .update({ avatar_url: dataUri })
+          .eq('id', userId);
+        if (error) return { error: msg(error, 'Could not save the photo.') };
+        await loadProfile(userId);
+        return {};
+      } catch (e) {
+        return { error: msg(e, 'Could not process the image.') };
+      }
+    },
+    [userId, loadProfile],
+  );
+
   const value = useMemo<AuthValue>(
     () => ({
       enabled: hasSupabase,
@@ -179,6 +215,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut,
       saveProfile,
       usernameAvailable,
+      uploadAvatar,
       deleteAccount,
     }),
     [
@@ -192,6 +229,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut,
       saveProfile,
       usernameAvailable,
+      uploadAvatar,
       deleteAccount,
     ],
   );

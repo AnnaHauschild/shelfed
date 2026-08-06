@@ -9,6 +9,9 @@ create table if not exists public.profiles (
   created_at   timestamptz not null default now()
 );
 
+-- Profile photo, stored inline as a small data URI (no storage bucket needed).
+alter table public.profiles add column if not exists avatar_url text;
+
 alter table public.profiles enable row level security;
 
 -- Any signed-in user can read profiles (needed to find/follow people);

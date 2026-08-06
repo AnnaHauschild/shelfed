@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '@/context/AuthProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
@@ -21,7 +23,7 @@ import { FriendsSheet } from './FriendsSheet';
 export function AccountSection() {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
-  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable } =
+  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable, uploadAvatar } =
     useAuth();
 
   const [step, setStep] = useState<'email' | 'code'>('email');
@@ -30,6 +32,7 @@ export function AccountSection() {
   const [username, setUsername] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [avatarBusy, setAvatarBusy] = useState(false);
   const [check, setCheck] = useState<'idle' | 'checking' | 'free' | 'taken'>(
     'idle',
   );
@@ -76,6 +79,26 @@ export function AccountSection() {
     setBusy(false);
     if (err) setError(err);
     return !err;
+  };
+
+  const pickAvatar = async () => {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      setError('Photo access was denied.');
+      return;
+    }
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (res.canceled || !res.assets?.[0]) return;
+    setAvatarBusy(true);
+    setError(null);
+    const { error: err } = await uploadAvatar(res.assets[0].uri);
+    setAvatarBusy(false);
+    if (err) setError(err);
   };
 
   const label = <Text style={styles.label}>Account</Text>;
@@ -200,7 +223,20 @@ export function AccountSection() {
     <View style={styles.section}>
       {label}
       <View style={styles.profileRow}>
-        <Ionicons name="person-circle" size={34} color={chrome.accent} />
+        <Pressable onPress={pickAvatar} style={styles.avatarBtn} disabled={avatarBusy}>
+          {profile?.avatarUrl ? (
+            <Image source={{ uri: profile.avatarUrl }} style={styles.avatarImg} />
+          ) : (
+            <Ionicons name="person-circle" size={44} color={chrome.accent} />
+          )}
+          <View style={styles.avatarEdit}>
+            {avatarBusy ? (
+              <ActivityIndicator color={chrome.onAccent} size="small" />
+            ) : (
+              <Ionicons name="camera" size={12} color={chrome.onAccent} />
+            )}
+          </View>
+        </Pressable>
         <View style={styles.profileInfo}>
           <Text style={styles.username}>@{profile?.username}</Text>
           <Text style={styles.subtle}>{profile?.displayName || email}</Text>
@@ -329,6 +365,30 @@ const makeStyles = (c: ThemeChrome) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.sm,
+    },
+    avatarBtn: {
+      width: 44,
+      height: 44,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    avatarImg: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      borderWidth: 1,
+      borderColor: c.accent,
+    },
+    avatarEdit: {
+      position: 'absolute',
+      right: -2,
+      bottom: -2,
+      width: 18,
+      height: 18,
+      borderRadius: 9,
+      backgroundColor: c.accent,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     profileInfo: {
       flex: 1,
