@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import {
   Dimensions,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -70,6 +72,10 @@ export function FriendsSheet({
       animationType="slide"
       onRequestClose={onClose}
     >
+      <KeyboardAvoidingView
+        style={styles.root}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
       <Pressable style={styles.backdrop} onPress={onClose} />
       <View style={styles.sheet}>
         <View style={styles.handle} />
@@ -128,23 +134,24 @@ export function FriendsSheet({
             </>
           )}
         </ScrollView>
-        <UserShelfSheet user={viewUser} onClose={() => setViewUser(null)} />
       </View>
+      </KeyboardAvoidingView>
+      <UserShelfSheet user={viewUser} onClose={() => setViewUser(null)} />
     </Modal>
   );
 }
 
 const makeStyles = (c: ThemeChrome) =>
   StyleSheet.create({
+    root: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: 'rgba(10, 6, 2, 0.6)',
     },
     sheet: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
       maxHeight: '82%',
       backgroundColor: c.background,
       borderTopLeftRadius: radius.xl,

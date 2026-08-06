@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -10,16 +10,25 @@ import {
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { posterUrl } from '@/api/tmdb';
+import { MediaType } from '@/api/types';
 import { ShelfItem } from '@/api/shelfSync';
 import { UserSummary } from '@/api/follows';
 import { useUserShelf } from '@/hooks/useUserShelf';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 
-const SECTIONS: { type: ShelfItem['type']; label: string }[] = [
+const SHELF_TYPES: { type: ShelfItem['type']; label: string }[] = [
   { type: 'watched', label: 'Watched' },
-  { type: 'favorite', label: 'Favorites' },
+  { type: 'favorite', label: 'Liked' },
   { type: 'watchlist', label: 'Wishlist' },
+];
+
+const MEDIA_TYPES: { key: MediaType | 'all'; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'movie', label: 'Movies' },
+  { key: 'tv', label: 'Series' },
+  { key: 'book', label: 'Books' },
+  { key: 'game', label: 'Games' },
 ];
 
 /** Read-only view of a followed user's shelves (watched / favorites / wishlist). */
@@ -33,7 +42,12 @@ export function UserShelfSheet({
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { data: items, isLoading } = useUserShelf(user?.id ?? null);
-  const empty = !isLoading && (!items || items.length === 0);
+  const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
+  const [media, setMedia] = useState<MediaType | 'all'>('all');
+
+  const shown = (items ?? []).filter(
+    (i) => i.type === shelfType && (media === 'all' || i.mediaType === media),
+  );
 
   return (
     <Modal
@@ -53,55 +67,82 @@ export function UserShelfSheet({
             <Ionicons name="close" size={20} color={chrome.muted} />
           </Pressable>
         </View>
+
+        <View style={styles.chipRow}>
+          {SHELF_TYPES.map((t) => {
+            const active = shelfType === t.type;
+            return (
+              <Pressable
+                key={t.type}
+                onPress={() => setShelfType(t.type)}
+                style={[styles.chip, active && styles.chipActive]}
+              >
+                <Text
+                  style={[styles.chipText, active && styles.chipTextActive]}
+                >
+                  {t.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+        <View style={styles.chipRow}>
+          {MEDIA_TYPES.map((m) => {
+            const active = media === m.key;
+            return (
+              <Pressable
+                key={m.key}
+                onPress={() => setMedia(m.key)}
+                style={[styles.chip, active && styles.chipActive]}
+              >
+                <Text
+                  style={[styles.chipText, active && styles.chipTextActive]}
+                >
+                  {m.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
         <ScrollView
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
           {isLoading && <Text style={styles.hint}>Loading…</Text>}
-          {empty && <Text style={styles.hint}>Nothing on this shelf yet.</Text>}
-          {!isLoading &&
-            items &&
-            SECTIONS.map(({ type, label }) => {
-              const group = items.filter((i) => i.type === type);
-              if (group.length === 0) return null;
+          {!isLoading && shown.length === 0 && (
+            <Text style={styles.hint}>Nothing here.</Text>
+          )}
+          <View style={styles.grid}>
+            {shown.map((it) => {
+              const uri = posterUrl(it.posterPath);
               return (
-                <View key={type} style={styles.group}>
-                  <Text style={styles.section}>
-                    {label} ({group.length})
+                <View
+                  key={`${it.mediaType}:${it.movieId}`}
+                  style={styles.poster}
+                >
+                  {uri ? (
+                    <Image
+                      source={{ uri }}
+                      style={styles.posterImg}
+                      contentFit="cover"
+                    />
+                  ) : (
+                    <View style={[styles.posterImg, styles.posterFallback]}>
+                      <Ionicons
+                        name="image-outline"
+                        size={20}
+                        color={chrome.muted}
+                      />
+                    </View>
+                  )}
+                  <Text style={styles.posterTitle} numberOfLines={2}>
+                    {it.title}
                   </Text>
-                  <View style={styles.grid}>
-                    {group.map((it) => {
-                      const uri = posterUrl(it.posterPath);
-                      return (
-                        <View
-                          key={`${it.mediaType}:${it.movieId}`}
-                          style={styles.poster}
-                        >
-                          {uri ? (
-                            <Image
-                              source={{ uri }}
-                              style={styles.posterImg}
-                              contentFit="cover"
-                            />
-                          ) : (
-                            <View style={[styles.posterImg, styles.posterFallback]}>
-                              <Ionicons
-                                name="image-outline"
-                                size={20}
-                                color={chrome.muted}
-                              />
-                            </View>
-                          )}
-                          <Text style={styles.posterTitle} numberOfLines={2}>
-                            {it.title}
-                          </Text>
-                        </View>
-                      );
-                    })}
-                  </View>
                 </View>
               );
             })}
+          </View>
         </ScrollView>
       </View>
     </Modal>
@@ -161,6 +202,32 @@ const makeStyles = (c: ThemeChrome) =>
       fontFamily: fonts.body,
       fontSize: 13,
       paddingVertical: spacing.sm,
+    },
+    chipRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.xs,
+      marginBottom: spacing.xs,
+    },
+    chip: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: 6,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surfaceRaised,
+    },
+    chipActive: {
+      backgroundColor: c.accent,
+      borderColor: c.accent,
+    },
+    chipText: {
+      color: c.muted,
+      fontFamily: fonts.label,
+      fontSize: 12,
+    },
+    chipTextActive: {
+      color: c.onAccent,
     },
     group: {
       marginBottom: spacing.md,
