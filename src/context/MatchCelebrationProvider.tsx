@@ -7,15 +7,15 @@ import { useAuth } from '@/context/AuthProvider';
 import { MatchInfo, MatchModal } from '@/components/MatchModal';
 
 interface MatchCelebrationValue {
-  /** If this title is also a followee's favourite, show "It's a Match!". */
-  celebrate: (movie: Movie) => void;
+  /** If this title is also a followee's on the same shelf, show "It's a Match!". */
+  celebrate: (movie: Movie, kind: 'favorite' | 'watchlist') => void;
 }
 
 const MatchCelebrationContext = createContext<MatchCelebrationValue>({
   celebrate: () => {},
 });
 
-/** Fires the match celebration from anywhere a favourite is added. */
+/** Fires the match celebration from anywhere a favourite/wishlist is added. */
 export function useMatchCelebration(): MatchCelebrationValue {
   return useContext(MatchCelebrationContext);
 }
@@ -29,15 +29,16 @@ export function MatchCelebrationProvider({
   const [info, setInfo] = useState<MatchInfo | null>(null);
 
   const celebrate = useCallback(
-    (movie: Movie) => {
+    (movie: Movie, kind: 'favorite' | 'watchlist') => {
       if (!hasSupabase || !userId) return;
-      getFilmMatches(userId, movie.mediaType, movie.id)
+      const type = kind === 'watchlist' ? 'watchlist' : 'favorite';
+      getFilmMatches(userId, movie.mediaType, movie.id, type)
         .then((friends) => {
           if (friends.length > 0) {
             Haptics.notificationAsync(
               Haptics.NotificationFeedbackType.Success,
             ).catch(() => {});
-            setInfo({ movie, friends });
+            setInfo({ movie, friends, kind });
           }
         })
         .catch(() => {});

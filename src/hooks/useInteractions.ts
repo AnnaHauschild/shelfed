@@ -103,18 +103,20 @@ export function useInteractions() {
   );
 
   const toggleWatchlist = useCallback(
-    (movie: Movie) => {
+    async (movie: Movie) => {
       Haptics.selectionAsync();
-      return toggle(movie, 'watchlist', 'button');
+      const added = await toggle(movie, 'watchlist', 'button');
+      if (added) celebrate(movie, 'watchlist');
+      return added;
     },
-    [toggle],
+    [toggle, celebrate],
   );
 
   const toggleFavorite = useCallback(
     async (movie: Movie) => {
       Haptics.selectionAsync();
       const added = await toggle(movie, 'favorite', 'button');
-      if (added) celebrate(movie);
+      if (added) celebrate(movie, 'favorite');
       return added;
     },
     [toggle, celebrate],

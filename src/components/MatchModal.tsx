@@ -11,6 +11,7 @@ import { PosterImage } from './PosterImage';
 export interface MatchInfo {
   movie: Movie;
   friends: UserSummary[];
+  kind: 'favorite' | 'watchlist';
 }
 
 /** Tinder-style "It's a Match!" celebration when you favourite a shared film. */
@@ -23,12 +24,13 @@ export function MatchModal({
 }) {
   const chrome = useThemeChrome();
   if (!info) return null;
-  const { movie, friends } = info;
+  const { movie, friends, kind } = info;
   const names = friends
     .slice(0, 3)
     .map((f) => `@${f.username}`)
     .join(', ');
   const extra = friends.length > 3 ? ` +${friends.length - 3}` : '';
+  const feeling = kind === 'watchlist' ? 'both want to see' : 'both love';
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
@@ -55,7 +57,7 @@ export function MatchModal({
               {names}
               {extra}
             </Text>{' '}
-            both love
+            {feeling}
           </Text>
           <Text style={styles.filmTitle} numberOfLines={2}>
             {movie.title}
