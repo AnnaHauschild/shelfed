@@ -70,3 +70,50 @@ export async function getFolloweeFavorites(
   }
   return byMovie;
 }
+
+export interface FilmMatchGroups {
+  favorite: UserSummary[];
+  watchlist: UserSummary[];
+}
+
+/**
+ * Followees who share this title, split by shelf: who loves it (favorite) and
+ * who still wants to see it (watchlist). One round-trip for the detail view.
+ */
+export async function getFilmMatchGroups(
+  userId: string,
+  mediaType: MediaType,
+  movieId: string,
+): Promise<FilmMatchGroups> {
+  const empty: FilmMatchGroups = { favorite: [], watchlist: [] };
+  const followeeIds = await getFollowingIds(userId);
+  if (followeeIds.length === 0) return empty;
+  const { data } = await supabase
+    .from('shelf_items')
+    .select('user_id, type')
+    .eq('media_type', mediaType)
+    .eq('movie_id', movieId)
+    .in('type', ['favorite', 'watchlist'])
+    .in('user_id', followeeIds);
+  if (!data || data.length === 0) return empty;
+  const uniqueUsers = Array.from(new Set(data.map((r) => r.user_id)));
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, username')
+    .in('id', uniqueUsers);
+  const nameById = new Map(
+    (profiles ?? []).map((p) => [p.id, p.username as string]),
+  );
+  const groups: FilmMatchGroups = { favorite: [], watchlist: [] };
+  const seen = { favorite: new Set<string>(), watchlist: new Set<string>() };
+  for (const r of data) {
+    const name = nameById.get(r.user_id);
+    if (!name) continue;
+    const key = r.type === 'watchlist' ? 'watchlist' : 'favorite';
+    if (seen[key].has(r.user_id)) continue;
+    seen[key].add(r.user_id);
+    groups[key].push({ id: r.user_id, username: name });
+  }
+  return groups;
+}
+

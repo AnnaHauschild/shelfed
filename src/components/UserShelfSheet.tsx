@@ -88,8 +88,20 @@ export function UserShelfSheet({
   const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
   const [media, setMedia] = useState<MediaType | 'all'>('all');
   const [query, setQuery] = useState('');
+  const [matchesOnly, setMatchesOnly] = useState(false);
   const [index, setIndex] = useState<number | null>(null);
   const [detail, setDetail] = useState<Movie | null>(null);
+
+  // My own shelf rows, to flag titles we both have on the same list ("matches").
+  const { data: mine } = useQuery({
+    queryKey: ['my-sync-items'],
+    queryFn: () => interactionRepository.getSyncItems(),
+    staleTime: 1000 * 30,
+  });
+  const mineKeys = useMemo(
+    () => new Set((mine ?? []).map((m) => `${m.type}:${m.mediaType}:${m.movieId}`)),
+    [mine],
+  );
 
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -97,9 +109,11 @@ export function UserShelfSheet({
       (i) =>
         i.type === shelfType &&
         (media === 'all' || i.mediaType === media) &&
-        (q === '' || i.title.toLowerCase().includes(q)),
+        (q === '' || i.title.toLowerCase().includes(q)) &&
+        (!matchesOnly ||
+          mineKeys.has(`${i.type}:${i.mediaType}:${i.movieId}`)),
     );
-  }, [items, shelfType, media, query]);
+  }, [items, shelfType, media, query, matchesOnly, mineKeys]);
 
   const tY = useSharedValue(0);
   const tX = useSharedValue(0);
@@ -387,6 +401,19 @@ export function UserShelfSheet({
               </Pressable>
             );
           })}
+          <Pressable
+            onPress={() => setMatchesOnly((v) => !v)}
+            style={[styles.chip, styles.matchChip, matchesOnly && styles.matchChipActive]}
+          >
+            <Ionicons
+              name="git-compare"
+              size={13}
+              color={matchesOnly ? chrome.onAccent : colors.favorite}
+            />
+            <Text style={[styles.chipText, matchesOnly && styles.chipTextActive]}>
+              Matches
+            </Text>
+          </Pressable>
         </View>
 
         <ScrollView
@@ -396,7 +423,11 @@ export function UserShelfSheet({
           {isLoading && <Text style={styles.hint}>Loading…</Text>}
           {!isLoading && shown.length === 0 && (
             <Text style={styles.hint}>
-              {query.trim() ? 'No matches.' : 'Nothing here.'}
+              {matchesOnly
+                ? 'No shared titles on this list yet.'
+                : query.trim()
+                  ? 'No matches.'
+                  : 'Nothing here.'}
             </Text>
           )}
           {gridEl}
@@ -592,6 +623,16 @@ const makeStyles = (c: ThemeChrome) =>
       backgroundColor: c.surfaceRaised,
     },
     chipActive: {
+      backgroundColor: c.accent,
+      borderColor: c.accent,
+    },
+    matchChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      borderColor: colors.favorite,
+    },
+    matchChipActive: {
       backgroundColor: c.accent,
       borderColor: c.accent,
     },
