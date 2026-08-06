@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   Modal,
@@ -111,41 +111,47 @@ export function UserShelfSheet({
 
   // Set the shown item to `i` WITHOUT touching the drag offsets. Uses cached
   // full metadata when present (so no minimal-poster flash), else fills it in.
-  const swapTo = (i: number) => {
-    const it = shown[i];
-    if (!it) return;
-    setIndex(i);
-    const cached = qc.getQueryData<Movie | null>([
-      'media',
-      it.mediaType,
-      it.movieId,
-    ]);
-    setDetail(cached ?? toMovie(it));
-    if (!cached) {
-      fetchTitle(qc, it.movieId, it.mediaType)
-        .then((full) => {
-          if (full) {
-            setDetail((cur) => (cur && cur.id === it.movieId ? full : cur));
-          }
-        })
-        .catch(() => {});
-    }
-    // Warm this title's extras + both neighbours so swiping feels instant.
-    prefetchTitleExtras(qc, it.movieId, it.mediaType);
-    for (const n of [shown[i - 1], shown[i + 1]]) {
-      if (n) {
-        prefetchTitle(qc, n.movieId, n.mediaType);
-        prefetchTitleExtras(qc, n.movieId, n.mediaType);
+  const swapTo = useCallback(
+    (i: number) => {
+      const it = shown[i];
+      if (!it) return;
+      setIndex(i);
+      const cached = qc.getQueryData<Movie | null>([
+        'media',
+        it.mediaType,
+        it.movieId,
+      ]);
+      setDetail(cached ?? toMovie(it));
+      if (!cached) {
+        fetchTitle(qc, it.movieId, it.mediaType)
+          .then((full) => {
+            if (full) {
+              setDetail((cur) => (cur && cur.id === it.movieId ? full : cur));
+            }
+          })
+          .catch(() => {});
       }
-    }
-  };
+      // Warm this title's extras + both neighbours so swiping feels instant.
+      prefetchTitleExtras(qc, it.movieId, it.mediaType);
+      for (const n of [shown[i - 1], shown[i + 1]]) {
+        if (n) {
+          prefetchTitle(qc, n.movieId, n.mediaType);
+          prefetchTitleExtras(qc, n.movieId, n.mediaType);
+        }
+      }
+    },
+    [shown, qc],
+  );
 
   // Open item `i` from the grid: recentre the offsets, then show it.
-  const showAt = (i: number) => {
-    tY.value = 0;
-    tX.value = 0;
-    swapTo(i);
-  };
+  const showAt = useCallback(
+    (i: number) => {
+      tY.value = 0;
+      tX.value = 0;
+      swapTo(i);
+    },
+    [swapTo, tX, tY],
+  );
   const closeDetail = () => {
     setIndex(null);
     setDetail(null);
@@ -216,7 +222,7 @@ export function UserShelfSheet({
           }
         }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [canPrev, canNext, index],
+    [canPrev, canNext, index, swapTo],
   );
 
   const sheetDismiss = useMemo(
@@ -260,6 +266,41 @@ export function UserShelfSheet({
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: sheetY.value }],
   }));
+
+  // Memoised so opening / closing a detail (which flips index+detail state)
+  // doesn't re-render the poster images and make the grid flash black.
+  const gridEl = useMemo(
+    () => (
+      <View style={styles.grid}>
+        {shown.map((it, i) => {
+          const uri = posterUrl(it.posterPath);
+          return (
+            <Pressable
+              key={`${it.mediaType}:${it.movieId}`}
+              style={styles.poster}
+              onPress={() => showAt(i)}
+            >
+              {uri ? (
+                <Image
+                  source={{ uri }}
+                  style={styles.posterImg}
+                  contentFit="cover"
+                />
+              ) : (
+                <View style={[styles.posterImg, styles.posterFallback]}>
+                  <Ionicons name="image-outline" size={22} color={chrome.muted} />
+                </View>
+              )}
+              <Text style={styles.posterTitle} numberOfLines={2}>
+                {it.title}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    ),
+    [shown, styles, chrome.muted, showAt],
+  );
 
   return (
     <Modal
@@ -345,37 +386,7 @@ export function UserShelfSheet({
               {query.trim() ? 'No matches.' : 'Nothing here.'}
             </Text>
           )}
-          <View style={styles.grid}>
-            {shown.map((it, i) => {
-              const uri = posterUrl(it.posterPath);
-              return (
-                <Pressable
-                  key={`${it.mediaType}:${it.movieId}`}
-                  style={styles.poster}
-                  onPress={() => showAt(i)}
-                >
-                  {uri ? (
-                    <Image
-                      source={{ uri }}
-                      style={styles.posterImg}
-                      contentFit="cover"
-                    />
-                  ) : (
-                    <View style={[styles.posterImg, styles.posterFallback]}>
-                      <Ionicons
-                        name="image-outline"
-                        size={22}
-                        color={chrome.muted}
-                      />
-                    </View>
-                  )}
-                  <Text style={styles.posterTitle} numberOfLines={2}>
-                    {it.title}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          {gridEl}
         </ScrollView>
 
         {index != null && detail && (
