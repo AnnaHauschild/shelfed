@@ -23,7 +23,7 @@ import Animated, {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { posterUrl } from '@/api/tmdb';
 import { MediaType, Movie } from '@/api/types';
-import { fetchMediaById } from '@/api/movies';
+import { fetchTitle, prefetchTitle, prefetchTitleExtras } from '@/api/prefetch';
 import { ShelfItem } from '@/api/shelfSync';
 import { UserSummary } from '@/api/follows';
 import { useUserShelf } from '@/hooks/useUserShelf';
@@ -82,6 +82,7 @@ export function UserShelfSheet({
 }) {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
+  const qc = useQueryClient();
   const { data: items, isLoading } = useUserShelf(user?.id ?? null);
   const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
   const [media, setMedia] = useState<MediaType | 'all'>('all');
@@ -107,13 +108,22 @@ export function UserShelfSheet({
     tX.value = 0;
     setIndex(i);
     setDetail(toMovie(it));
-    fetchMediaById(it.mediaType, it.movieId)
+    // Full metadata (cached; instant when a neighbour already warmed it).
+    fetchTitle(qc, it.movieId, it.mediaType)
       .then((full) => {
         if (full) {
           setDetail((cur) => (cur && cur.id === it.movieId ? full : cur));
         }
       })
       .catch(() => {});
+    // Warm this title's extras + both neighbours so swiping feels instant.
+    prefetchTitleExtras(qc, it.movieId, it.mediaType);
+    for (const n of [shown[i - 1], shown[i + 1]]) {
+      if (n) {
+        prefetchTitle(qc, n.movieId, n.mediaType);
+        prefetchTitleExtras(qc, n.movieId, n.mediaType);
+      }
+    }
   };
   const closeDetail = () => {
     setIndex(null);
@@ -390,7 +400,7 @@ const makeStyles = (c: ThemeChrome) =>
       left: 0,
       right: 0,
       bottom: 0,
-      height: '86%',
+      height: '92%',
       backgroundColor: c.background,
       borderTopLeftRadius: radius.xl,
       borderTopRightRadius: radius.xl,
@@ -485,7 +495,12 @@ const makeStyles = (c: ThemeChrome) =>
       marginTop: 4,
     },
     detailOverlay: {
-      ...StyleSheet.absoluteFillObject,
+      // Break out of the sheet's padding so the detail fills it edge-to-edge.
+      position: 'absolute',
+      top: -spacing.sm,
+      bottom: -spacing.xl,
+      left: -spacing.lg,
+      right: -spacing.lg,
     },
     detailInner: {
       flex: 1,
