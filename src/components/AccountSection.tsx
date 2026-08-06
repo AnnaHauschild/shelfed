@@ -21,7 +21,7 @@ import { FriendsSheet } from './FriendsSheet';
 export function AccountSection() {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
-  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable, deleteAccount } =
+  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable } =
     useAuth();
 
   const [step, setStep] = useState<'email' | 'code'>('email');
@@ -30,7 +30,6 @@ export function AccountSection() {
   const [username, setUsername] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [check, setCheck] = useState<'idle' | 'checking' | 'free' | 'taken'>(
     'idle',
   );
@@ -41,7 +40,6 @@ export function AccountSection() {
     setStep('email');
     setCode('');
     setError(null);
-    setConfirmDelete(false);
   }, [session]);
 
   useEffect(() => {
@@ -211,25 +209,6 @@ export function AccountSection() {
       <Pressable style={styles.row} onPress={() => setFriendsOpen(true)}>
         <Ionicons name="people-outline" size={18} color={chrome.accent} />
         <Text style={[styles.rowText, { color: chrome.accent }]}>Friends</Text>
-      </Pressable>
-      <Pressable style={styles.row} onPress={() => signOut()}>
-        <Ionicons name="log-out-outline" size={18} color={chrome.muted} />
-        <Text style={styles.rowText}>Sign out</Text>
-      </Pressable>
-      <Pressable
-        style={styles.row}
-        onPress={async () => {
-          if (!confirmDelete) {
-            setConfirmDelete(true);
-            return;
-          }
-          await run(() => deleteAccount());
-        }}
-      >
-        <Ionicons name="trash-outline" size={18} color={colors.favorite} />
-        <Text style={[styles.rowText, { color: colors.favorite }]}>
-          {confirmDelete ? 'Tap again to permanently delete' : 'Delete account'}
-        </Text>
       </Pressable>
       {error && <Text style={styles.error}>{error}</Text>}
       <FriendsSheet

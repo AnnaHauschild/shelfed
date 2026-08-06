@@ -31,6 +31,7 @@ import { ShelfTheme, ThemeChrome, useTheme, useThemeChrome } from '@/context/The
 import { MediaType } from '@/api/types';
 import { useStats } from '@/hooks/useStats';
 import { AccountSection } from './AccountSection';
+import { AccountActions } from './AccountActions';
 
 const SCREEN_H = Dimensions.get('window').height;
 
@@ -115,6 +116,11 @@ export function SettingsSheet({
   const activeLabel = STAT_TYPES.find((t) => t.key === activeType)?.label ?? '';
   const [draft, setDraft] = useState(name ?? '');
   const [langOpen, setLangOpen] = useState(false);
+  const [bgOpen, setBgOpen] = useState(false);
+  const currentTheme = useMemo(
+    () => THEMES.find((t) => t.id === theme) ?? THEMES[0],
+    [theme],
+  );
 
   const translateY = useSharedValue(0);
   useEffect(() => {
@@ -122,6 +128,7 @@ export function SettingsSheet({
       translateY.value = 0;
       setDraft(name ?? '');
       setLangOpen(false);
+      setBgOpen(false);
     }
   }, [visible, name, translateY]);
 
@@ -267,59 +274,6 @@ export function SettingsSheet({
               </View>
             )}
 
-            {/* ---------------- Background ---------------- */}
-            <Text style={[styles.section, styles.sectionSpaced]}>Background</Text>
-            <Text style={styles.hint}>Choose the look of your shelf.</Text>
-            <View style={styles.themeCol}>
-              {THEMES.map((t) => {
-                const active = !t.soon && t.id === theme;
-                return (
-                  <Pressable
-                    key={t.id}
-                    disabled={t.soon}
-                    onPress={() => setTheme(t.id)}
-                    style={({ pressed }) => [
-                      styles.themeRow,
-                      active && styles.themeRowActive,
-                      t.soon && styles.themeRowSoon,
-                      pressed && styles.pressed,
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.swatch,
-                        { backgroundColor: t.swatch[0], borderColor: t.swatch[1] },
-                      ]}
-                    >
-                      <View
-                        style={[styles.swatchLower, { backgroundColor: t.swatch[1] }]}
-                      />
-                      {t.dot && (
-                        <View style={[styles.swatchDot, { backgroundColor: t.dot }]} />
-                      )}
-                    </View>
-                    <View style={styles.themeText}>
-                      <View style={styles.themeLabelRow}>
-                        <Text style={styles.themeLabel}>{t.label}</Text>
-                        {t.soon && (
-                          <View style={styles.soonBadge}>
-                            <Text style={styles.soonText}>SOON</Text>
-                          </View>
-                        )}
-                      </View>
-                    </View>
-                    {active && (
-                      <Ionicons
-                        name="checkmark-circle"
-                        size={20}
-                        color={chrome.accent}
-                      />
-                    )}
-                  </Pressable>
-                );
-              })}
-            </View>
-
             {/* ---------------- Statistics ---------------- */}
             <Text style={[styles.section, styles.sectionSpaced]}>Statistics</Text>
             {stats && stats.totalWatched > 0 ? (
@@ -380,6 +334,100 @@ export function SettingsSheet({
                 Nothing on your shelf yet — swipe right on a title to add it.
               </Text>
             )}
+
+            {/* ---------------- Background (dropdown) ---------------- */}
+            <Text style={[styles.section, styles.sectionSpaced]}>Background</Text>
+            <Text style={styles.hint}>Choose the look of your shelf.</Text>
+            <Pressable
+              style={styles.dropdown}
+              onPress={() => setBgOpen((o) => !o)}
+            >
+              <View style={styles.dropdownValueRow}>
+                <View
+                  style={[
+                    styles.swatch,
+                    {
+                      backgroundColor: currentTheme.swatch[0],
+                      borderColor: currentTheme.swatch[1],
+                    },
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.swatchLower,
+                      { backgroundColor: currentTheme.swatch[1] },
+                    ]}
+                  />
+                  {currentTheme.dot && (
+                    <View
+                      style={[styles.swatchDot, { backgroundColor: currentTheme.dot }]}
+                    />
+                  )}
+                </View>
+                <Text style={styles.dropdownValue}>{currentTheme.label}</Text>
+              </View>
+              <Ionicons
+                name={bgOpen ? 'chevron-up' : 'chevron-down'}
+                size={18}
+                color={colors.textOnDarkMuted}
+              />
+            </Pressable>
+            {bgOpen && (
+              <View style={styles.themeCol}>
+                {THEMES.map((t) => {
+                  const active = !t.soon && t.id === theme;
+                  return (
+                    <Pressable
+                      key={t.id}
+                      disabled={t.soon}
+                      onPress={() => {
+                        setTheme(t.id);
+                        setBgOpen(false);
+                      }}
+                      style={({ pressed }) => [
+                        styles.themeRow,
+                        active && styles.themeRowActive,
+                        t.soon && styles.themeRowSoon,
+                        pressed && styles.pressed,
+                      ]}
+                    >
+                      <View
+                        style={[
+                          styles.swatch,
+                          { backgroundColor: t.swatch[0], borderColor: t.swatch[1] },
+                        ]}
+                      >
+                        <View
+                          style={[styles.swatchLower, { backgroundColor: t.swatch[1] }]}
+                        />
+                        {t.dot && (
+                          <View style={[styles.swatchDot, { backgroundColor: t.dot }]} />
+                        )}
+                      </View>
+                      <View style={styles.themeText}>
+                        <View style={styles.themeLabelRow}>
+                          <Text style={styles.themeLabel}>{t.label}</Text>
+                          {t.soon && (
+                            <View style={styles.soonBadge}>
+                              <Text style={styles.soonText}>SOON</Text>
+                            </View>
+                          )}
+                        </View>
+                      </View>
+                      {active && (
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={20}
+                          color={chrome.accent}
+                        />
+                      )}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+
+            <AccountActions />
           </ScrollView>
         </Animated.View>
       </GestureHandlerRootView>
@@ -490,6 +538,11 @@ const makeStyles = (c: ThemeChrome) =>
     color: colors.textOnDark,
     fontFamily: fonts.body,
     fontSize: 15,
+  },
+  dropdownValueRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
   },
   dropdownList: {
     marginTop: spacing.xs,
