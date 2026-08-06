@@ -15,7 +15,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Movie } from '@/api/types';
 import { watchedLabel, WATCHLIST_LABEL } from '@/constants/labels';
 import { MOOD_LABEL } from '@/constants/moods';
-import { prefetchTitleExtras } from '@/api/prefetch';
+import { prefetchTitleExtras, prefetchPoster } from '@/api/prefetch';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useNote } from '@/hooks/useNotes';
@@ -108,13 +108,17 @@ function DetailsModal({
   );
 
   const qc = useQueryClient();
-  // Warm the current title's extras and both neighbours (cast/trailer/providers)
-  // so opening and swiping left/right show a fully-loaded page without waiting.
+  // Warm the current title's extras and both neighbours (cast/trailer/providers
+  // + poster image) so opening and swiping left/right show a fully-loaded page
+  // without the picture/info popping in after the slide.
   useEffect(() => {
     if (!movie) return;
     prefetchTitleExtras(qc, movie.id, movie.mediaType);
     for (const n of [list[index - 1], list[index + 1]]) {
-      if (n) prefetchTitleExtras(qc, n.id, n.mediaType);
+      if (n) {
+        prefetchTitleExtras(qc, n.id, n.mediaType);
+        prefetchPoster(n.posterPath);
+      }
     }
   }, [movie, index, list, qc]);
 

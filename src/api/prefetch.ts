@@ -1,4 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
+import { Image } from 'expo-image';
 import { MediaType } from './types';
 import {
   fetchMediaById,
@@ -8,7 +9,8 @@ import {
 } from './movies';
 import { fetchBookDescription } from './openLibrary';
 import { fetchGameDescription } from './rawg';
-import { hasTmdbToken } from './tmdb';
+import { hasTmdbToken, posterUrl } from './tmdb';
+import { POSTER_SIZE_SMALL } from '@/constants/config';
 
 const HOUR = 1000 * 60 * 60;
 
@@ -66,6 +68,12 @@ export function prefetchTitle(
     queryFn: () => fetchMediaById(mediaType, id),
     staleTime: HOUR,
   });
+}
+
+/** Decodes + caches a poster (detail size) ahead of time so it shows instantly. */
+export function prefetchPoster(posterPath: string | null): void {
+  const url = posterUrl(posterPath, POSTER_SIZE_SMALL);
+  if (url) void Image.prefetch(url);
 }
 
 /** Fetches full Movie metadata via the cache (instant if already warmed). */

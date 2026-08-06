@@ -24,7 +24,7 @@ import Animated, {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { posterUrl } from '@/api/tmdb';
 import { MediaType, Movie } from '@/api/types';
-import { fetchTitle, prefetchTitle, prefetchTitleExtras } from '@/api/prefetch';
+import { fetchTitle, prefetchPoster, prefetchTitle, prefetchTitleExtras } from '@/api/prefetch';
 import { ShelfItem } from '@/api/shelfSync';
 import { UserSummary } from '@/api/follows';
 import { useUserShelf } from '@/hooks/useUserShelf';
@@ -137,6 +137,7 @@ export function UserShelfSheet({
         if (n) {
           prefetchTitle(qc, n.movieId, n.mediaType);
           prefetchTitleExtras(qc, n.movieId, n.mediaType);
+          prefetchPoster(n.posterPath);
         }
       }
     },
