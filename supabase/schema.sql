@@ -75,3 +75,52 @@ create policy "shelf_items private to owner"
   on public.shelf_items for all to authenticated
   using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+-- Phase 3: social graph (who follows whom).
+create table if not exists public.follows (
+  follower_id uuid not null references public.profiles (id) on delete cascade,
+  followee_id uuid not null references public.profiles (id) on delete cascade,
+  created_at  timestamptz not null default now(),
+  primary key (follower_id, followee_id),
+  check (follower_id <> followee_id)
+);
+
+alter table public.follows enable row level security;
+
+drop policy if exists "follows visible to involved users" on public.follows;
+create policy "follows visible to involved users"
+  on public.follows for select to authenticated
+  using (auth.uid() = follower_id or auth.uid() = followee_id);
+
+drop policy if exists "follows insert own" on public.follows;
+create policy "follows insert own"
+  on public.follows for insert to authenticated with check (auth.uid() = follower_id);
+
+drop policy if exists "follows delete own" on public.follows;
+create policy "follows delete own"
+  on public.follows for delete to authenticated using (auth.uid() = follower_id);
+
+-- Phase 3: let followers READ a user's shelf (writes stay owner-only). This
+-- replaces the owner-only "for all" policy above with per-command policies.
+drop policy if exists "shelf_items private to owner" on public.shelf_items;
+drop policy if exists "shelf_items select owner or follower" on public.shelf_items;
+create policy "shelf_items select owner or follower"
+  on public.shelf_items for select to authenticated
+  using (
+    auth.uid() = user_id
+    or exists (
+      select 1 from public.follows f
+      where f.followee_id = public.shelf_items.user_id
+        and f.follower_id = auth.uid()
+    )
+  );
+drop policy if exists "shelf_items insert owner" on public.shelf_items;
+create policy "shelf_items insert owner"
+  on public.shelf_items for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "shelf_items update owner" on public.shelf_items;
+create policy "shelf_items update owner"
+  on public.shelf_items for update to authenticated
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "shelf_items delete owner" on public.shelf_items;
+create policy "shelf_items delete owner"
+  on public.shelf_items for delete to authenticated using (auth.uid() = user_id);
+

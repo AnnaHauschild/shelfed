@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { FriendsSheet } from './FriendsSheet';
 
 /**
  * Opt-in account area in Settings: passwordless email-code sign-in, a public
@@ -33,6 +34,7 @@ export function AccountSection() {
   const [check, setCheck] = useState<'idle' | 'checking' | 'free' | 'taken'>(
     'idle',
   );
+  const [friendsOpen, setFriendsOpen] = useState(false);
 
   // Reset the transient sign-in form whenever the auth state flips.
   useEffect(() => {
@@ -206,6 +208,10 @@ export function AccountSection() {
           <Text style={styles.subtle}>{profile?.displayName || email}</Text>
         </View>
       </View>
+      <Pressable style={styles.row} onPress={() => setFriendsOpen(true)}>
+        <Ionicons name="people-outline" size={18} color={chrome.accent} />
+        <Text style={[styles.rowText, { color: chrome.accent }]}>Friends</Text>
+      </Pressable>
       <Pressable style={styles.row} onPress={() => signOut()}>
         <Ionicons name="log-out-outline" size={18} color={chrome.muted} />
         <Text style={styles.rowText}>Sign out</Text>
@@ -226,6 +232,10 @@ export function AccountSection() {
         </Text>
       </Pressable>
       {error && <Text style={styles.error}>{error}</Text>}
+      <FriendsSheet
+        visible={friendsOpen}
+        onClose={() => setFriendsOpen(false)}
+      />
     </View>
   );
 }
