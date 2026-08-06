@@ -21,6 +21,7 @@ import { useMediaType } from '@/context/MediaTypeProvider';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
+import { useFolloweeFavorites } from '@/hooks/useFolloweeFavorites';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ShelfBackground } from '@/components/ShelfBackground';
 import { FeatureHeader } from '@/components/FeatureHeader';
@@ -42,6 +43,9 @@ export default function SearchScreen() {
   const { data, isLoading, isError, error } = useMovieSearch(query);
   const results = useMemo(() => data?.movies ?? [], [data]);
   const trimmed = query.trim();
+  // Which followees favourited each visible result, so we can badge the rows.
+  const resultIds = useMemo(() => results.map((m) => String(m.id)), [results]);
+  const { data: matches } = useFolloweeFavorites(mediaType, resultIds);
   // See Discover: header = exactly one shelf row (measured screen / 5) so 4 equal
   // cubbies always show below it, device-independent.
   const [screenH, setScreenH] = useState(0);
@@ -113,7 +117,9 @@ export default function SearchScreen() {
         <FlatList
           data={results}
           keyExtractor={(m) => String(m.id)}
-          renderItem={({ item }) => <ResultRow movie={item} />}
+          renderItem={({ item }) => (
+            <ResultRow movie={item} matchNames={matches?.[String(item.id)]} />
+          )}
           contentContainerStyle={styles.list}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
@@ -125,13 +131,19 @@ export default function SearchScreen() {
 }
 
 /** One search result with a poster, meta and quick add-to-list buttons. */
-function ResultRow({ movie }: { movie: Movie }) {
+function ResultRow({ movie, matchNames }: { movie: Movie; matchNames?: string[] }) {
   const { open } = useMovieDetails();
   const chrome = useThemeChrome();
   const { toggleWatchlist, toggleFavorite } = useInteractions();
   const states = useInteractionStates();
   const isWatchlisted = states.isWatchlisted(movie.id);
   const isFavorite = states.isFavorite(movie.id);
+  const matchLabel =
+    matchNames && matchNames.length > 0
+      ? matchNames.length === 1
+        ? `@${matchNames[0]} likes this`
+        : `@${matchNames[0]} +${matchNames.length - 1} like this`
+      : null;
 
   return (
     <Pressable
@@ -168,6 +180,14 @@ function ResultRow({ movie }: { movie: Movie }) {
           <Text style={[styles.rowGenres, { color: chrome.accent }]} numberOfLines={1}>
             {movie.genres.slice(0, 3).join('  •  ')}
           </Text>
+        )}
+        {matchLabel && (
+          <View style={styles.matchBadge}>
+            <Ionicons name="heart" size={11} color={colors.favorite} />
+            <Text style={styles.matchBadgeText} numberOfLines={1}>
+              {matchLabel}
+            </Text>
+          </View>
         )}
       </View>
       <View style={styles.rowActions}>
@@ -312,6 +332,17 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginTop: 2,
+  },
+  matchBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  },
+  matchBadgeText: {
+    color: colors.favorite,
+    fontFamily: fonts.body,
+    fontSize: 12,
   },
   rowActions: {
     flexDirection: 'row',
