@@ -9,6 +9,7 @@ import {
 } from '@/repositories';
 import { isShelfType, pushItem, removeItem } from '@/api/shelfSync';
 import { useAuth } from '@/context/AuthProvider';
+import { useMatchCelebration } from '@/context/MatchCelebrationProvider';
 
 /**
  * Records user interactions and keeps caches/shelves in sync.
@@ -31,6 +32,7 @@ import { useAuth } from '@/context/AuthProvider';
 export function useInteractions() {
   const queryClient = useQueryClient();
   const { userId } = useAuth();
+  const { celebrate } = useMatchCelebration();
 
   const invalidate = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ['shelf'] });
@@ -109,11 +111,13 @@ export function useInteractions() {
   );
 
   const toggleFavorite = useCallback(
-    (movie: Movie) => {
+    async (movie: Movie) => {
       Haptics.selectionAsync();
-      return toggle(movie, 'favorite', 'button');
+      const added = await toggle(movie, 'favorite', 'button');
+      if (added) celebrate(movie);
+      return added;
     },
-    [toggle],
+    [toggle, celebrate],
   );
 
   const toggleWatched = useCallback(
