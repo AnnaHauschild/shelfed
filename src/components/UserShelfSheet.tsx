@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   Modal,
@@ -161,6 +161,25 @@ export function UserShelfSheet({
     setDetail(null);
   };
 
+  // After a page commit, slide the NEW title in from the incoming edge. Runs
+  // after render (layout effect) so the previous title never slides back in
+  // before the new one loads.
+  const pendingDir = useRef<0 | 1 | -1>(0);
+  const commitPage = useCallback(
+    (newIndex: number, dir: 1 | -1) => {
+      pendingDir.current = dir;
+      swapTo(newIndex);
+    },
+    [swapTo],
+  );
+  useLayoutEffect(() => {
+    if (pendingDir.current !== 0) {
+      tX.value = pendingDir.current * SCREEN_W;
+      tX.value = withTiming(0, { duration: 190 });
+      pendingDir.current = 0;
+    }
+  }, [index, tX]);
+
   const canPrev = index != null && index > 0;
   const canNext = index != null && index < shown.length - 1;
 
@@ -205,26 +224,18 @@ export function UserShelfSheet({
             Math.abs(e.translationX) > 80 || Math.abs(e.velocityX) > 650;
           if (decisive && e.translationX < 0 && canNext) {
             tX.value = withTiming(-SCREEN_W, { duration: 160 }, (fin) => {
-              if (fin) {
-                runOnJS(swapTo)((index as number) + 1);
-                tX.value = SCREEN_W;
-                tX.value = withTiming(0, { duration: 190 });
-              }
+              if (fin) runOnJS(commitPage)((index as number) + 1, 1);
             });
           } else if (decisive && e.translationX > 0 && canPrev) {
             tX.value = withTiming(SCREEN_W, { duration: 160 }, (fin) => {
-              if (fin) {
-                runOnJS(swapTo)((index as number) - 1);
-                tX.value = -SCREEN_W;
-                tX.value = withTiming(0, { duration: 190 });
-              }
+              if (fin) runOnJS(commitPage)((index as number) - 1, -1);
             });
           } else {
             tX.value = withSpring(0, { damping: 20, stiffness: 220 });
           }
         }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [canPrev, canNext, index, swapTo],
+    [canPrev, canNext, index, commitPage],
   );
 
   const sheetDismiss = useMemo(

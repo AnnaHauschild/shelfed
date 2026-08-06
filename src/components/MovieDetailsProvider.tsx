@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Dimensions, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -140,6 +140,25 @@ function DetailsModal({
     wasOpen.current = !!session;
   }, [session, pageX]);
 
+  // After a page commit, slide the NEW title in from the incoming edge. Runs
+  // after render (layout effect) so the animation never briefly shows the old
+  // title sliding back in before the new one loads.
+  const pendingDir = useRef<0 | 1 | -1>(0);
+  const commitPage = useCallback(
+    (newIndex: number, dir: 1 | -1) => {
+      pendingDir.current = dir;
+      onIndexChange(newIndex);
+    },
+    [onIndexChange],
+  );
+  useLayoutEffect(() => {
+    if (pendingDir.current !== 0) {
+      pageX.value = pendingDir.current * SCREEN_W;
+      pageX.value = withTiming(0, { duration: 190 });
+      pendingDir.current = 0;
+    }
+  }, [index, pageX]);
+
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
@@ -191,19 +210,11 @@ function DetailsModal({
         Math.abs(e.translationX) > 80 || Math.abs(e.velocityX) > 650;
       if (decisive && e.translationX < 0 && canNext) {
         pageX.value = withTiming(-SCREEN_W, { duration: 160 }, (fin) => {
-          if (fin) {
-            runOnJS(onIndexChange)(index + 1);
-            pageX.value = SCREEN_W;
-            pageX.value = withTiming(0, { duration: 190 });
-          }
+          if (fin) runOnJS(commitPage)(index + 1, 1);
         });
       } else if (decisive && e.translationX > 0 && canPrev) {
         pageX.value = withTiming(SCREEN_W, { duration: 160 }, (fin) => {
-          if (fin) {
-            runOnJS(onIndexChange)(index - 1);
-            pageX.value = -SCREEN_W;
-            pageX.value = withTiming(0, { duration: 190 });
-          }
+          if (fin) runOnJS(commitPage)(index - 1, -1);
         });
       } else {
         pageX.value = withSpring(0, { damping: 20, stiffness: 220 });
