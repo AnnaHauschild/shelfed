@@ -153,10 +153,11 @@ export function UserShelfSheet({
     [swapTo, tX, tY],
   );
   const closeDetail = () => {
+    // Leave tY/tX where the dismiss animation left them (off-screen); resetting
+    // here would snap the panel back to the top for one frame before it
+    // unmounts (a visible flicker). showAt() recentres them on the next open.
     setIndex(null);
     setDetail(null);
-    tY.value = 0;
-    tX.value = 0;
   };
 
   const canPrev = index != null && index > 0;
