@@ -77,8 +77,8 @@ export default function RootLayout() {
                   <Stack.Screen name="(tabs)" />
                 </Stack>
                 <DeeplinkHandler />
+                <LandingGate />
               </MovieDetailsProvider>
-              <LandingGate />
               <ShelfSyncGate />
             </MediaTypeProvider>
             </ThemeProvider>
