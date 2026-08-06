@@ -154,13 +154,13 @@ function DetailsModal({
   // card's poster/title header, so the sheet can be pulled down from either.
   const buildDismiss = () =>
     Gesture.Pan()
-      .activeOffsetY([-12, 12])
+      .activeOffsetY([-8, 8])
       .failOffsetX([-24, 24])
       .onUpdate((e) => {
         translateY.value = Math.max(0, e.translationY);
       })
       .onEnd((e) => {
-        if (e.translationY > 140 || e.velocityY > 900) {
+        if (e.translationY > 110 || e.velocityY > 800) {
           translateY.value = withTiming(SCREEN_H, { duration: 220 }, (finished) => {
             if (finished) runOnJS(onClose)();
           });
@@ -367,8 +367,8 @@ const styles = StyleSheet.create({
   },
   handleZone: {
     alignItems: 'center',
-    paddingTop: spacing.xs,
-    paddingBottom: spacing.sm,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.md,
   },
   actions: {
     flexDirection: 'row',

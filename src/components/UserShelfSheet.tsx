@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   Modal,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { Image } from 'expo-image';
@@ -86,36 +87,49 @@ export function UserShelfSheet({
   const { data: items, isLoading } = useUserShelf(user?.id ?? null);
   const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
   const [media, setMedia] = useState<MediaType | 'all'>('all');
+  const [query, setQuery] = useState('');
   const [index, setIndex] = useState<number | null>(null);
   const [detail, setDetail] = useState<Movie | null>(null);
 
-  const shown = useMemo(
-    () =>
-      (items ?? []).filter(
-        (i) => i.type === shelfType && (media === 'all' || i.mediaType === media),
-      ),
-    [items, shelfType, media],
-  );
+  const shown = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return (items ?? []).filter(
+      (i) =>
+        i.type === shelfType &&
+        (media === 'all' || i.mediaType === media) &&
+        (q === '' || i.title.toLowerCase().includes(q)),
+    );
+  }, [items, shelfType, media, query]);
 
   const tY = useSharedValue(0);
   const tX = useSharedValue(0);
+  // Drag-to-close for the whole friend-shelf sheet (from its top header).
+  const sheetY = useSharedValue(0);
+  useEffect(() => {
+    if (user) sheetY.value = 0;
+  }, [user, sheetY]);
 
-  // Show item at `i`: minimal instantly, then enrich with full metadata.
-  const showAt = (i: number) => {
+  // Set the shown item to `i` WITHOUT touching the drag offsets. Uses cached
+  // full metadata when present (so no minimal-poster flash), else fills it in.
+  const swapTo = (i: number) => {
     const it = shown[i];
     if (!it) return;
-    tY.value = 0;
-    tX.value = 0;
     setIndex(i);
-    setDetail(toMovie(it));
-    // Full metadata (cached; instant when a neighbour already warmed it).
-    fetchTitle(qc, it.movieId, it.mediaType)
-      .then((full) => {
-        if (full) {
-          setDetail((cur) => (cur && cur.id === it.movieId ? full : cur));
-        }
-      })
-      .catch(() => {});
+    const cached = qc.getQueryData<Movie | null>([
+      'media',
+      it.mediaType,
+      it.movieId,
+    ]);
+    setDetail(cached ?? toMovie(it));
+    if (!cached) {
+      fetchTitle(qc, it.movieId, it.mediaType)
+        .then((full) => {
+          if (full) {
+            setDetail((cur) => (cur && cur.id === it.movieId ? full : cur));
+          }
+        })
+        .catch(() => {});
+    }
     // Warm this title's extras + both neighbours so swiping feels instant.
     prefetchTitleExtras(qc, it.movieId, it.mediaType);
     for (const n of [shown[i - 1], shown[i + 1]]) {
@@ -124,6 +138,13 @@ export function UserShelfSheet({
         prefetchTitleExtras(qc, n.movieId, n.mediaType);
       }
     }
+  };
+
+  // Open item `i` from the grid: recentre the offsets, then show it.
+  const showAt = (i: number) => {
+    tY.value = 0;
+    tX.value = 0;
+    swapTo(i);
   };
   const closeDetail = () => {
     setIndex(null);
@@ -135,29 +156,32 @@ export function UserShelfSheet({
   const canPrev = index != null && index > 0;
   const canNext = index != null && index < shown.length - 1;
 
-  // Drag the detail down to dismiss (on the grab handle).
-  const dismiss = useMemo(
-    () =>
-      Gesture.Pan()
-        .activeOffsetY([-12, 12])
-        .failOffsetX([-24, 24])
-        .onUpdate((e) => {
-          tY.value = Math.max(0, e.translationY);
-        })
-        .onEnd((e) => {
-          if (e.translationY > 120 || e.velocityY > 900) {
-            tY.value = withTiming(SCREEN_H, { duration: 220 }, (fin) => {
-              if (fin) runOnJS(closeDetail)();
-            });
-          } else {
-            tY.value = withSpring(0, { damping: 22, stiffness: 220 });
-          }
-        }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  // Drag the detail down to dismiss. A fresh instance is wired to BOTH the grab
+  // handle and the details header (a gesture can't be shared across detectors).
+  const makeDismiss = () =>
+    Gesture.Pan()
+      .activeOffsetY([-8, 8])
+      .failOffsetX([-24, 24])
+      .onUpdate((e) => {
+        tY.value = Math.max(0, e.translationY);
+      })
+      .onEnd((e) => {
+        if (e.translationY > 110 || e.velocityY > 800) {
+          tY.value = withTiming(SCREEN_H, { duration: 220 }, (fin) => {
+            if (fin) runOnJS(closeDetail)();
+          });
+        } else {
+          tY.value = withSpring(0, { damping: 22, stiffness: 220 });
+        }
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const dismissHandle = useMemo(makeDismiss, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const dismissHeader = useMemo(makeDismiss, []);
 
-  // Swipe left / right to page through the current filtered list.
+  // Swipe left / right to page through the current filtered list. The new page
+  // slides in from the opposite edge (over an opaque backdrop) so the shelf
+  // grid never flashes through mid-swipe.
   const pager = useMemo(
     () =>
       Gesture.Pan()
@@ -172,12 +196,20 @@ export function UserShelfSheet({
           const decisive =
             Math.abs(e.translationX) > 80 || Math.abs(e.velocityX) > 650;
           if (decisive && e.translationX < 0 && canNext) {
-            tX.value = withTiming(-SCREEN_W, { duration: 150 }, (fin) => {
-              if (fin) runOnJS(showAt)((index as number) + 1);
+            tX.value = withTiming(-SCREEN_W, { duration: 160 }, (fin) => {
+              if (fin) {
+                runOnJS(swapTo)((index as number) + 1);
+                tX.value = SCREEN_W;
+                tX.value = withTiming(0, { duration: 190 });
+              }
             });
           } else if (decisive && e.translationX > 0 && canPrev) {
-            tX.value = withTiming(SCREEN_W, { duration: 150 }, (fin) => {
-              if (fin) runOnJS(showAt)((index as number) - 1);
+            tX.value = withTiming(SCREEN_W, { duration: 160 }, (fin) => {
+              if (fin) {
+                runOnJS(swapTo)((index as number) - 1);
+                tX.value = -SCREEN_W;
+                tX.value = withTiming(0, { duration: 190 });
+              }
             });
           } else {
             tX.value = withSpring(0, { damping: 20, stiffness: 220 });
@@ -185,6 +217,27 @@ export function UserShelfSheet({
         }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [canPrev, canNext, index],
+  );
+
+  const sheetDismiss = useMemo(
+    () =>
+      Gesture.Pan()
+        .activeOffsetY([-8, 8])
+        .failOffsetX([-24, 24])
+        .onUpdate((e) => {
+          sheetY.value = Math.max(0, e.translationY);
+        })
+        .onEnd((e) => {
+          if (e.translationY > 110 || e.velocityY > 800) {
+            sheetY.value = withTiming(SCREEN_H, { duration: 220 }, (fin) => {
+              if (fin) runOnJS(onClose)();
+            });
+          } else {
+            sheetY.value = withSpring(0, { damping: 22, stiffness: 220 });
+          }
+        }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onClose],
   );
 
   const detailStyle = useAnimatedStyle(() => ({
@@ -197,6 +250,10 @@ export function UserShelfSheet({
     ),
   }));
 
+  const sheetStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: sheetY.value }],
+  }));
+
   return (
     <Modal
       visible={!!user}
@@ -205,15 +262,37 @@ export function UserShelfSheet({
       onRequestClose={onClose}
     >
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={styles.sheet}>
-        <View style={styles.handle} />
-        <View style={styles.headerRow}>
-          <Text style={styles.title} numberOfLines={1}>
-            @{user?.username}
-          </Text>
-          <Pressable onPress={onClose} hitSlop={8}>
-            <Ionicons name="close" size={20} color={chrome.muted} />
-          </Pressable>
+      <Animated.View style={[styles.sheet, sheetStyle]}>
+        <GestureDetector gesture={sheetDismiss}>
+          <View style={styles.grabZone}>
+            <View style={styles.handle} />
+            <View style={styles.headerRow}>
+              <Text style={styles.title} numberOfLines={1}>
+                @{user?.username}
+              </Text>
+              <Pressable onPress={onClose} hitSlop={8}>
+                <Ionicons name="close" size={20} color={chrome.muted} />
+              </Pressable>
+            </View>
+          </View>
+        </GestureDetector>
+
+        <View style={styles.searchRow}>
+          <Ionicons name="search" size={16} color={chrome.muted} />
+          <TextInput
+            style={styles.searchInput}
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search this shelf…"
+            placeholderTextColor={chrome.muted}
+            autoCorrect={false}
+            returnKeyType="search"
+          />
+          {query.length > 0 && (
+            <Pressable onPress={() => setQuery('')} hitSlop={8}>
+              <Ionicons name="close-circle" size={16} color={chrome.muted} />
+            </Pressable>
+          )}
         </View>
 
         <View style={styles.chipRow}>
@@ -255,7 +334,9 @@ export function UserShelfSheet({
         >
           {isLoading && <Text style={styles.hint}>Loading…</Text>}
           {!isLoading && shown.length === 0 && (
-            <Text style={styles.hint}>Nothing here.</Text>
+            <Text style={styles.hint}>
+              {query.trim() ? 'No matches.' : 'Nothing here.'}
+            </Text>
           )}
           <View style={styles.grid}>
             {shown.map((it, i) => {
@@ -294,19 +375,19 @@ export function UserShelfSheet({
           <View style={styles.detailOverlay}>
             <GestureDetector gesture={pager}>
               <Animated.View style={[styles.detailInner, detailStyle]}>
-                <GestureDetector gesture={dismiss}>
+                <GestureDetector gesture={dismissHandle}>
                   <View style={styles.detailGrab}>
                     <View style={styles.detailHandle} />
                   </View>
                 </GestureDetector>
-                <MovieDetails movie={detail}>
+                <MovieDetails movie={detail} dragGesture={dismissHeader}>
                   <FriendFilmActions movie={detail} />
                 </MovieDetails>
               </Animated.View>
             </GestureDetector>
           </View>
         )}
-      </View>
+      </Animated.View>
     </Modal>
   );
 }
@@ -419,6 +500,28 @@ const makeStyles = (c: ThemeChrome) =>
       alignSelf: 'center',
       marginBottom: spacing.sm,
     },
+    grabZone: {
+      paddingTop: spacing.xs,
+    },
+    searchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surfaceRaised,
+      paddingHorizontal: spacing.md,
+      paddingVertical: 6,
+      marginBottom: spacing.sm,
+    },
+    searchInput: {
+      flex: 1,
+      color: colors.textOnDark,
+      fontFamily: fonts.body,
+      fontSize: 14,
+      padding: 0,
+    },
     headerRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -501,6 +604,8 @@ const makeStyles = (c: ThemeChrome) =>
       bottom: -spacing.xl,
       left: -spacing.lg,
       right: -spacing.lg,
+      // Opaque so the shelf grid never flashes through while paging.
+      backgroundColor: c.background,
     },
     detailInner: {
       flex: 1,
@@ -508,8 +613,8 @@ const makeStyles = (c: ThemeChrome) =>
     },
     detailGrab: {
       alignItems: 'center',
-      paddingTop: spacing.sm,
-      paddingBottom: spacing.xs,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.sm,
     },
     detailHandle: {
       width: 44,
