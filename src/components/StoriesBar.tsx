@@ -20,7 +20,7 @@ import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { Avatar } from './Avatar';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 function timeAgo(iso: string): string {
   const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
@@ -104,6 +104,7 @@ function StoryViewer({
           keyExtractor={(p) => p.id}
           horizontal
           pagingEnabled
+          style={styles.list}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <View style={styles.page}>
@@ -180,9 +181,10 @@ const makeViewerStyles = (c: ThemeChrome) =>
       flex: 1,
       backgroundColor: 'rgba(6, 4, 2, 0.96)',
     },
+    list: { flex: 1 },
     page: {
       width: SCREEN_W,
-      flex: 1,
+      height: SCREEN_H,
       alignItems: 'center',
       justifyContent: 'center',
       padding: spacing.xl,
