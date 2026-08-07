@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   Pressable,
@@ -19,6 +19,7 @@ import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
 import { Skeleton } from '@/components/Skeleton';
 import { useMediaType } from '@/context/MediaTypeProvider';
+import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useShelf } from '@/hooks/useShelf';
 import { InteractionType, StoredMovie } from '@/repositories';
@@ -80,6 +81,17 @@ export function ShelfGrid({
   const [sort, setSort] = useState<SortKey>('recent');
   const [menuSection, setMenuSection] = useState<ShelfMenuSection | null>(null);
   const [activeMoodId, setActiveMoodId] = useState<number | null>(null);
+
+  // Apply a genre preselected elsewhere (e.g. tapped in Statistics) to the
+  // Watched shelf once it opens for the matching category.
+  const { pending, clearPending } = useShelfFilter();
+  useEffect(() => {
+    if (type === 'watched' && pending && pending.mediaType === mediaType) {
+      setGenre(pending.genre);
+      setActiveMoodId(null);
+      clearPending();
+    }
+  }, [type, pending, mediaType, clearPending]);
 
   const movies = useMemo(() => data ?? [], [data]);
 

@@ -23,12 +23,15 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { useRouter } from 'expo-router';
 import { LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/context/LanguageProvider';
 import { useProfile } from '@/context/ProfileProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ShelfTheme, ThemeChrome, useTheme, useThemeChrome } from '@/context/ThemeProvider';
 import { MediaType } from '@/api/types';
+import { useMediaTypeControls } from '@/context/MediaTypeProvider';
+import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useStats } from '@/hooks/useStats';
 import { AccountSection } from './AccountSection';
 import { AccountActions } from './AccountActions';
@@ -138,6 +141,17 @@ export function SettingsSheet({
   const handleClose = () => {
     commitName();
     onClose();
+  };
+
+  const router = useRouter();
+  const { choose } = useMediaTypeControls();
+  const { requestGenre } = useShelfFilter();
+  // Jump to the Watched shelf for this category, pre-filtered to a genre.
+  const openGenre = (genre: string) => {
+    choose(activeType);
+    requestGenre({ mediaType: activeType, genre });
+    handleClose();
+    router.push('/shelf');
   };
 
   const sheetStyle = useAnimatedStyle(() => ({
@@ -316,10 +330,22 @@ export function SettingsSheet({
                     <Text style={styles.statSub}>Top genres · {activeLabel}</Text>
                     <View style={styles.genreStatWrap}>
                       {activeGenres.slice(0, 6).map((g) => (
-                        <View key={g.name} style={styles.genreStat}>
+                        <Pressable
+                          key={g.name}
+                          style={({ pressed }) => [
+                            styles.genreStat,
+                            pressed && styles.pressed,
+                          ]}
+                          onPress={() => openGenre(g.name)}
+                        >
                           <Text style={styles.genreStatName}>{g.name}</Text>
                           <Text style={styles.genreStatCount}>{g.count}</Text>
-                        </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={12}
+                            color={chrome.muted}
+                          />
+                        </Pressable>
                       ))}
                     </View>
                   </>
