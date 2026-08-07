@@ -64,7 +64,7 @@ export function StoriesBar({ onOpen }: { onOpen: (group: StoryGroup) => void }) 
       {groups.map((g) => (
         <Pressable key={g.user.id} style={styles.item} onPress={() => onOpen(g)}>
           <View style={styles.ring}>
-            <Avatar uri={g.user.avatarUrl} size={54} />
+            <Avatar uri={g.user.avatarUrl} size={54} noZoom />
           </View>
           <Text style={styles.name} numberOfLines={1}>
             @{g.user.username}

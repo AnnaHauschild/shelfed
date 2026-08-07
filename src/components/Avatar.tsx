@@ -9,10 +9,13 @@ export function Avatar({
   uri,
   size,
   color,
+  noZoom,
 }: {
   uri?: string | null;
   size: number;
   color?: string;
+  /** When true, tapping does nothing (lets a parent handle the press). */
+  noZoom?: boolean;
 }) {
   const chrome = useThemeChrome();
   const [zoom, setZoom] = useState(false);
@@ -20,7 +23,11 @@ export function Avatar({
 
   return (
     <>
-      <Pressable onPress={() => uri && setZoom(true)} disabled={!uri}>
+      <Pressable
+        onPress={() => uri && setZoom(true)}
+        disabled={noZoom || !uri}
+        pointerEvents={noZoom ? 'none' : 'auto'}
+      >
         {uri ? (
           <Image
             source={{ uri }}

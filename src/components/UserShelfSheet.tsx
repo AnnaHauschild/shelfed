@@ -32,6 +32,8 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { interactionRepository } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useAuth } from '@/context/AuthProvider';
+import { useComposer } from '@/context/PostComposerProvider';
 import { Avatar } from './Avatar';
 import { MovieDetails } from './MovieDetails';
 
@@ -85,6 +87,9 @@ export function UserShelfSheet({
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const qc = useQueryClient();
+  const { enabled, session: authSession } = useAuth();
+  const signedIn = enabled && !!authSession;
+  const composer = useComposer();
   const { data: items, isLoading } = useUserShelf(user?.id ?? null);
   const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
   const [media, setMedia] = useState<MediaType | 'all'>('all');
@@ -447,7 +452,11 @@ export function UserShelfSheet({
                     <View style={styles.detailHandle} />
                   </View>
                 </GestureDetector>
-                <MovieDetails movie={detail} dragGesture={dismissHeader}>
+                <MovieDetails
+                  movie={detail}
+                  dragGesture={dismissHeader}
+                  onShare={signedIn ? () => composer.open(detail) : undefined}
+                >
                   <FriendFilmActions movie={detail} />
                 </MovieDetails>
               </Animated.View>
