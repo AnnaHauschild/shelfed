@@ -1,8 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   Dimensions,
   FlatList,
-  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -48,43 +47,39 @@ function toMovie(p: StoryPost): Movie {
   };
 }
 
-/** Horizontal row of friends' stories (last 24h); tap to view full-screen. */
-export function StoriesBar() {
+/** Horizontal row of friends' stories (last 24h); tap calls onOpen. */
+export function StoriesBar({ onOpen }: { onOpen: (group: StoryGroup) => void }) {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { data: groups } = useStories();
-  const [viewer, setViewer] = useState<StoryGroup | null>(null);
 
   if (!groups || groups.length === 0) return null;
 
   return (
-    <>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.row}
-      >
-        {groups.map((g) => (
-          <Pressable
-            key={g.user.id}
-            style={styles.item}
-            onPress={() => setViewer(g)}
-          >
-            <View style={styles.ring}>
-              <Avatar uri={g.user.avatarUrl} size={54} />
-            </View>
-            <Text style={styles.name} numberOfLines={1}>
-              @{g.user.username}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
-      <StoryViewer group={viewer} onClose={() => setViewer(null)} />
-    </>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.row}
+    >
+      {groups.map((g) => (
+        <Pressable key={g.user.id} style={styles.item} onPress={() => onOpen(g)}>
+          <View style={styles.ring}>
+            <Avatar uri={g.user.avatarUrl} size={54} />
+          </View>
+          <Text style={styles.name} numberOfLines={1}>
+            @{g.user.username}
+          </Text>
+        </Pressable>
+      ))}
+    </ScrollView>
   );
 }
 
-function StoryViewer({
+/**
+ * Full-screen story viewer, rendered as an in-tree overlay (NOT a nested Modal,
+ * which would stack behind the Friends sheet). The parent gives it a group.
+ */
+export function StoryViewer({
   group,
   onClose,
 }: {
@@ -97,59 +92,57 @@ function StoryViewer({
   if (!group) return null;
 
   return (
-    <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles.root}>
-        <FlatList
-          data={group.posts}
-          keyExtractor={(p) => p.id}
-          horizontal
-          pagingEnabled
-          style={styles.list}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <View style={styles.page}>
-              <View style={styles.header}>
-                <Avatar uri={group.user.avatarUrl} size={30} />
-                <Text style={styles.headerName}>@{group.user.username}</Text>
-                <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>
-              </View>
-              <PosterImage
-                posterPath={item.posterPath}
-                title={item.title ?? ''}
-                size={POSTER_SIZE}
-                style={styles.poster}
-              />
-              <Text style={styles.movieTitle} numberOfLines={2}>
-                {item.title}
-                {item.year != null ? `  ·  ${item.year}` : ''}
-              </Text>
-              {item.caption ? (
-                <Text style={styles.caption}>{item.caption}</Text>
-              ) : null}
-              <View style={styles.actions}>
-                <Pressable
-                  style={styles.actionBtn}
-                  onPress={() => toggleWatchlist(toMovie(item))}
-                >
-                  <Ionicons name="star-outline" size={20} color={colors.star} />
-                  <Text style={styles.actionLabel}>Wishlist</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.actionBtn}
-                  onPress={() => toggleFavorite(toMovie(item))}
-                >
-                  <Ionicons name="heart-outline" size={20} color={colors.favorite} />
-                  <Text style={styles.actionLabel}>Favorite</Text>
-                </Pressable>
-              </View>
+    <View style={styles.overlay}>
+      <FlatList
+        data={group.posts}
+        keyExtractor={(p) => p.id}
+        horizontal
+        pagingEnabled
+        style={styles.list}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <View style={styles.page}>
+            <View style={styles.header}>
+              <Avatar uri={group.user.avatarUrl} size={30} />
+              <Text style={styles.headerName}>@{group.user.username}</Text>
+              <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>
             </View>
-          )}
-        />
-        <Pressable style={styles.close} onPress={onClose} hitSlop={10}>
-          <Ionicons name="close" size={26} color={colors.textOnDark} />
-        </Pressable>
-      </View>
-    </Modal>
+            <PosterImage
+              posterPath={item.posterPath}
+              title={item.title ?? ''}
+              size={POSTER_SIZE}
+              style={styles.poster}
+            />
+            <Text style={styles.movieTitle} numberOfLines={2}>
+              {item.title}
+              {item.year != null ? `  ·  ${item.year}` : ''}
+            </Text>
+            {item.caption ? (
+              <Text style={styles.caption}>{item.caption}</Text>
+            ) : null}
+            <View style={styles.actions}>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => toggleWatchlist(toMovie(item))}
+              >
+                <Ionicons name="star-outline" size={20} color={colors.star} />
+                <Text style={styles.actionLabel}>Wishlist</Text>
+              </Pressable>
+              <Pressable
+                style={styles.actionBtn}
+                onPress={() => toggleFavorite(toMovie(item))}
+              >
+                <Ionicons name="heart-outline" size={20} color={colors.favorite} />
+                <Text style={styles.actionLabel}>Favorite</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
+      />
+      <Pressable style={styles.close} onPress={onClose} hitSlop={10}>
+        <Ionicons name="close" size={26} color={colors.textOnDark} />
+      </Pressable>
+    </View>
   );
 }
 
@@ -177,9 +170,11 @@ const makeStyles = (c: ThemeChrome) =>
 
 const makeViewerStyles = (c: ThemeChrome) =>
   StyleSheet.create({
-    root: {
-      flex: 1,
-      backgroundColor: 'rgba(6, 4, 2, 0.96)',
+    overlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(6, 4, 2, 0.98)',
+      zIndex: 100,
+      elevation: 100,
     },
     list: { flex: 1 },
     page: {
