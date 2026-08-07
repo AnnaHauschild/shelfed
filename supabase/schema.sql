@@ -127,3 +127,61 @@ drop policy if exists "shelf_items delete owner" on public.shelf_items;
 create policy "shelf_items delete owner"
   on public.shelf_items for delete to authenticated using (auth.uid() = user_id);
 
+-- Phase 3b: private accounts + follow requests -------------------------------
+-- Accounts are PRIVATE by default. Following a private account creates a
+-- 'pending' request the owner must accept; a public account auto-accepts.
+alter table public.profiles
+  add column if not exists is_private boolean not null default true;
+
+alter table public.follows
+  add column if not exists status text not null default 'pending'
+    check (status in ('pending', 'accepted'));
+
+-- Grandfather every existing follow as accepted (they were implicitly open).
+update public.follows set status = 'accepted' where status is distinct from 'accepted';
+
+-- Insert: a user may REQUEST to follow anyone ('pending'); they may create an
+-- already-accepted follow only when the target account is public.
+drop policy if exists "follows insert own" on public.follows;
+create policy "follows insert own"
+  on public.follows for insert to authenticated with check (
+    auth.uid() = follower_id
+    and (
+      status = 'pending'
+      or (
+        status = 'accepted'
+        and exists (
+          select 1 from public.profiles p
+          where p.id = followee_id and p.is_private = false
+        )
+      )
+    )
+  );
+
+-- Update: only the followee can change a row (accept a pending request).
+drop policy if exists "follows update by followee" on public.follows;
+create policy "follows update by followee"
+  on public.follows for update to authenticated
+  using (auth.uid() = followee_id) with check (auth.uid() = followee_id);
+
+-- Delete: the follower (unfollow / cancel) OR the followee (reject / remove).
+drop policy if exists "follows delete own" on public.follows;
+drop policy if exists "follows delete by involved" on public.follows;
+create policy "follows delete by involved"
+  on public.follows for delete to authenticated
+  using (auth.uid() = follower_id or auth.uid() = followee_id);
+
+-- Shelves: only ACCEPTED followers (or the owner) may read.
+drop policy if exists "shelf_items select owner or follower" on public.shelf_items;
+create policy "shelf_items select owner or follower"
+  on public.shelf_items for select to authenticated
+  using (
+    auth.uid() = user_id
+    or exists (
+      select 1 from public.follows f
+      where f.followee_id = public.shelf_items.user_id
+        and f.follower_id = auth.uid()
+        and f.status = 'accepted'
+    )
+  );
+

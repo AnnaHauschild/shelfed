@@ -7,6 +7,13 @@ export interface UserSummary {
   avatarUrl?: string | null;
 }
 
+export type FollowStatus = 'pending' | 'accepted';
+
+/** A followed user plus the state of that follow (accepted vs. requested). */
+export interface FollowEntry extends UserSummary {
+  status: FollowStatus;
+}
+
 /** Case-insensitive username search, excluding the current user. */
 export async function searchUsers(
   query: string,
@@ -37,9 +44,38 @@ export async function getFollowingIds(userId: string): Promise<string[]> {
   return (data ?? []).map((r) => r.followee_id);
 }
 
-/** The profiles the given user follows. */
-export async function getFollowing(userId: string): Promise<UserSummary[]> {
-  const ids = await getFollowingIds(userId);
+/** The profiles the given user follows, each with its follow status. */
+export async function getFollowing(userId: string): Promise<FollowEntry[]> {
+  const build = (cols: string) =>
+    supabase.from('follows').select(cols).eq('follower_id', userId);
+  let res = await build('followee_id, status');
+  if (res.error) res = await build('followee_id');
+  const rows = (res.data ?? []) as unknown as {
+    followee_id: string;
+    status?: string;
+  }[];
+  if (rows.length === 0) return [];
+  const statusById = new Map<string, FollowStatus>(
+    rows.map((r) => [r.followee_id, (r.status as FollowStatus) ?? 'accepted']),
+  );
+  const users = await getProfiles([...statusById.keys()]);
+  return users.map((u) => ({ ...u, status: statusById.get(u.id) ?? 'accepted' }));
+}
+
+/** Incoming follow requests (people awaiting the user's approval). */
+export async function getFollowRequests(userId: string): Promise<UserSummary[]> {
+  const { data, error } = await supabase
+    .from('follows')
+    .select('follower_id, status')
+    .eq('followee_id', userId)
+    .eq('status', 'pending');
+  if (error) return []; // status column not in schema yet
+  const ids = (data ?? []).map((r) => r.follower_id);
+  return getProfiles(ids);
+}
+
+/** Loads UserSummary rows for a set of profile ids (avatar-tolerant). */
+async function getProfiles(ids: string[]): Promise<UserSummary[]> {
   if (ids.length === 0) return [];
   const build = (cols: string) =>
     supabase.from('profiles').select(cols).in('id', ids);
@@ -64,16 +100,58 @@ function rowsToUsers(data: unknown): UserSummary[] {
     }));
 }
 
+// Public accounts auto-accept a follow; private accounts get a pending request.
 export async function followUser(
+  followerId: string,
+  followeeId: string,
+): Promise<void> {
+  let isPrivate = true;
+  const { data } = await supabase
+    .from('profiles')
+    .select('is_private')
+    .eq('id', followeeId)
+    .maybeSingle();
+  const flag = (data as { is_private?: boolean } | null)?.is_private;
+  if (typeof flag === 'boolean') isPrivate = flag;
+  const status: FollowStatus = isPrivate ? 'pending' : 'accepted';
+  const res = await supabase.from('follows').upsert(
+    { follower_id: followerId, followee_id: followeeId, status },
+    { onConflict: 'follower_id,followee_id', ignoreDuplicates: true },
+  );
+  if (res.error) {
+    // status/is_private not in schema yet — fall back to a legacy open follow.
+    await supabase.from('follows').upsert(
+      { follower_id: followerId, followee_id: followeeId },
+      { onConflict: 'follower_id,followee_id', ignoreDuplicates: true },
+    );
+  }
+}
+
+export async function unfollowUser(
   followerId: string,
   followeeId: string,
 ): Promise<void> {
   await supabase
     .from('follows')
-    .upsert({ follower_id: followerId, followee_id: followeeId });
+    .delete()
+    .eq('follower_id', followerId)
+    .eq('followee_id', followeeId);
 }
 
-export async function unfollowUser(
+/** The followee approves an incoming request. */
+export async function acceptFollowRequest(
+  followerId: string,
+  followeeId: string,
+): Promise<void> {
+  await supabase
+    .from('follows')
+    .update({ status: 'accepted' })
+    .eq('follower_id', followerId)
+    .eq('followee_id', followeeId);
+}
+
+/** The followee rejects (removes) an incoming request. */
+export async function rejectFollowRequest(
   followerId: string,
   followeeId: string,
 ): Promise<void> {

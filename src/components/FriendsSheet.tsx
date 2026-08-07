@@ -38,29 +38,46 @@ export function FriendsSheet({
   const [query, setQuery] = useState('');
   const [viewUser, setViewUser] = useState<UserSummary | null>(null);
   const { results, loading } = useUserSearch(query);
-  const { following, isFollowing, follow, unfollow } = useFollows();
+  const { following, requests, isFollowing, isRequested, follow, unfollow, accept, reject } =
+    useFollows();
 
   const searching = query.trim().length >= 2;
 
-  const userRow = (
-    u: UserSummary,
-    followed: boolean,
-    onOpen?: () => void,
-  ) => (
+  const userRow = (u: UserSummary, onOpen?: () => void) => {
+    const followed = isFollowing(u.id);
+    const requested = isRequested(u.id);
+    const off = followed || requested;
+    return (
+      <View key={u.id} style={styles.userRow}>
+        <Avatar uri={u.avatarUrl} size={30} color={chrome.muted} />
+        <Pressable style={styles.userTap} onPress={onOpen} disabled={!onOpen}>
+          <Text style={styles.username} numberOfLines={1}>
+            @{u.username}
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[styles.followBtn, off && styles.followingBtn]}
+          onPress={() => (off ? unfollow(u.id) : follow(u.id))}
+        >
+          <Text style={[styles.followText, off && styles.followingText]}>
+            {followed ? 'Following' : requested ? 'Requested' : 'Follow'}
+          </Text>
+        </Pressable>
+      </View>
+    );
+  };
+
+  const requestRow = (u: UserSummary) => (
     <View key={u.id} style={styles.userRow}>
       <Avatar uri={u.avatarUrl} size={30} color={chrome.muted} />
-      <Pressable style={styles.userTap} onPress={onOpen} disabled={!onOpen}>
-        <Text style={styles.username} numberOfLines={1}>
-          @{u.username}
-        </Text>
+      <Text style={[styles.username, styles.userTap]} numberOfLines={1}>
+        @{u.username}
+      </Text>
+      <Pressable style={styles.iconBtn} onPress={() => reject(u.id)} hitSlop={6}>
+        <Ionicons name="close" size={18} color={chrome.muted} />
       </Pressable>
-      <Pressable
-        style={[styles.followBtn, followed && styles.followingBtn]}
-        onPress={() => (followed ? unfollow(u.id) : follow(u.id))}
-      >
-        <Text style={[styles.followText, followed && styles.followingText]}>
-          {followed ? 'Following' : 'Follow'}
-        </Text>
+      <Pressable style={styles.followBtn} onPress={() => accept(u.id)}>
+        <Text style={styles.followText}>Accept</Text>
       </Pressable>
     </View>
   );
@@ -111,15 +128,17 @@ export function FriendsSheet({
                 <Text style={styles.hint}>No one found.</Text>
               )}
               {results.map((u) =>
-                userRow(
-                  u,
-                  isFollowing(u.id),
-                  isFollowing(u.id) ? () => setViewUser(u) : undefined,
-                ),
+                userRow(u, isFollowing(u.id) ? () => setViewUser(u) : undefined),
               )}
             </>
           ) : (
             <>
+              {requests.length > 0 && (
+                <>
+                  <Text style={styles.section}>Requests ({requests.length})</Text>
+                  {requests.map(requestRow)}
+                </>
+              )}
               <Text style={styles.section}>Following ({following.length})</Text>
               {following.length === 0 && (
                 <Text style={styles.hint}>
@@ -127,9 +146,7 @@ export function FriendsSheet({
                   friends.
                 </Text>
               )}
-              {following.map((u) =>
-                userRow(u, true, () => setViewUser(u)),
-              )}
+              {following.map((u) => userRow(u, () => setViewUser(u)))}
             </>
           )}
         </ScrollView>
@@ -257,5 +274,15 @@ const makeStyles = (c: ThemeChrome) =>
     },
     followingText: {
       color: c.muted,
+    },
+    iconBtn: {
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surfaceRaised,
     },
   });

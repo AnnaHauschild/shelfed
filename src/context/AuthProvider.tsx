@@ -15,6 +15,7 @@ export interface Profile {
   username: string | null;
   displayName: string | null;
   avatarUrl: string | null;
+  isPrivate: boolean;
 }
 
 interface AuthValue {
@@ -40,6 +41,8 @@ interface AuthValue {
   usernameAvailable: (name: string) => Promise<boolean>;
   /** Picks a photo, shrinks it and saves it as the profile avatar. */
   uploadAvatar: (uri: string) => Promise<{ error?: string }>;
+  /** Toggles whether the account is private (follow requests) or public. */
+  setPrivate: (value: boolean) => Promise<void>;
   /** Permanently deletes the account (auth row + owned data). */
   deleteAccount: () => Promise<{ error?: string }>;
 }
@@ -78,10 +81,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       username: string | null;
       display_name: string | null;
       avatar_url?: string | null;
+      is_private?: boolean;
     };
     const withAvatar = await supabase
       .from('profiles')
-      .select('id, username, display_name, avatar_url')
+      .select('id, username, display_name, avatar_url, is_private')
       .eq('id', id)
       .maybeSingle();
     let row = withAvatar.data as Row | null;
@@ -102,8 +106,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             username: row.username,
             displayName: row.display_name,
             avatarUrl: row.avatar_url ?? null,
+            isPrivate: row.is_private ?? true,
           }
-        : { id, username: null, displayName: null, avatarUrl: null },
+        : {
+            id,
+            username: null,
+            displayName: null,
+            avatarUrl: null,
+            isPrivate: true,
+          },
     );
   }, []);
 
@@ -219,6 +230,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [userId, loadProfile],
   );
 
+  const setPrivate = useCallback(
+    async (val: boolean) => {
+      if (!userId) return;
+      await supabase.from('profiles').update({ is_private: val }).eq('id', userId);
+      await loadProfile(userId);
+    },
+    [userId, loadProfile],
+  );
+
   const value = useMemo<AuthValue>(
     () => ({
       enabled: hasSupabase,
@@ -233,6 +253,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       saveProfile,
       usernameAvailable,
       uploadAvatar,
+      setPrivate,
       deleteAccount,
     }),
     [
@@ -247,6 +268,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       saveProfile,
       usernameAvailable,
       uploadAvatar,
+      setPrivate,
       deleteAccount,
     ],
   );

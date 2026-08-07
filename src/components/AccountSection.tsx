@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Pressable,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
@@ -23,7 +24,7 @@ import { FriendsSheet } from './FriendsSheet';
 export function AccountSection() {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
-  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable, uploadAvatar } =
+  const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable, uploadAvatar, setPrivate } =
     useAuth();
 
   const [step, setStep] = useState<'email' | 'code'>('email');
@@ -247,6 +248,26 @@ export function AccountSection() {
         <Ionicons name="people-outline" size={18} color={chrome.accent} />
         <Text style={[styles.rowText, { color: chrome.accent }]}>Friends</Text>
       </Pressable>
+      <View style={styles.row}>
+        <Ionicons
+          name={profile?.isPrivate ? 'lock-closed-outline' : 'earth-outline'}
+          size={18}
+          color={chrome.muted}
+        />
+        <View style={styles.privacyText}>
+          <Text style={styles.rowText}>Private account</Text>
+          <Text style={styles.subtle}>
+            {profile?.isPrivate
+              ? 'New followers need your approval.'
+              : 'Anyone can follow and see your shelves.'}
+          </Text>
+        </View>
+        <Switch
+          value={!!profile?.isPrivate}
+          onValueChange={(v) => setPrivate(v)}
+          trackColor={{ true: chrome.accent, false: chrome.border }}
+        />
+      </View>
       {error && <Text style={styles.error}>{error}</Text>}
       <FriendsSheet
         visible={friendsOpen}
@@ -392,6 +413,9 @@ const makeStyles = (c: ThemeChrome) =>
       justifyContent: 'center',
     },
     profileInfo: {
+      flex: 1,
+    },
+    privacyText: {
       flex: 1,
     },
     username: {
