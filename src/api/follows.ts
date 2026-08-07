@@ -75,7 +75,7 @@ export async function getFollowRequests(userId: string): Promise<UserSummary[]> 
 }
 
 /** Loads UserSummary rows for a set of profile ids (avatar-tolerant). */
-async function getProfiles(ids: string[]): Promise<UserSummary[]> {
+export async function getProfiles(ids: string[]): Promise<UserSummary[]> {
   if (ids.length === 0) return [];
   const build = (cols: string) =>
     supabase.from('profiles').select(cols).in('id', ids);

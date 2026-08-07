@@ -185,3 +185,42 @@ create policy "shelf_items select owner or follower"
     )
   );
 
+-- Phase 4: in-app "Stories" — a user manually posts a title (poster + caption).
+-- Ephemeral by convention: the app only shows posts from the last 24h.
+create table if not exists public.posts (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references public.profiles (id) on delete cascade,
+  media_type  text not null,
+  movie_id    text not null,
+  title       text,
+  poster_path text,
+  year        int,
+  caption     text,
+  created_at  timestamptz not null default now()
+);
+create index if not exists posts_user_created_idx
+  on public.posts (user_id, created_at desc);
+
+alter table public.posts enable row level security;
+
+-- Read your own posts + those of people you have an ACCEPTED follow with.
+drop policy if exists "posts select owner or follower" on public.posts;
+create policy "posts select owner or follower"
+  on public.posts for select to authenticated
+  using (
+    auth.uid() = user_id
+    or exists (
+      select 1 from public.follows f
+      where f.followee_id = public.posts.user_id
+        and f.follower_id = auth.uid()
+        and f.status = 'accepted'
+    )
+  );
+drop policy if exists "posts insert own" on public.posts;
+create policy "posts insert own"
+  on public.posts for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "posts delete own" on public.posts;
+create policy "posts delete own"
+  on public.posts for delete to authenticated using (auth.uid() = user_id);
+
+

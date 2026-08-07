@@ -62,6 +62,8 @@ interface Props {
   hasNote?: boolean;
   /** Optional "friends who like this" node, rendered above the synopsis. */
   matchSlot?: React.ReactNode;
+  /** Overrides the Share button (e.g. to open the in-app Story composer). */
+  onShare?: () => void;
 }
 
 /**
@@ -70,7 +72,7 @@ interface Props {
  * details modal, so it stays background-agnostic (its parent provides the
  * surface + framing).
  */
-export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote, matchSlot }: Props) {
+export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote, matchSlot, onShare }: Props) {
   const chrome = useThemeChrome();
   const accentText = { color: chrome.accent };
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
@@ -187,7 +189,8 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
           <Pressable
             style={[styles.trailerButton, trailerUrl ? styles.shareCompact : styles.actionFill]}
             onPress={() => {
-              shareMovie(movie, name);
+              if (onShare) onShare();
+              else shareMovie(movie, name);
             }}
           >
             <Ionicons name="share-outline" size={18} color={chrome.accent} />

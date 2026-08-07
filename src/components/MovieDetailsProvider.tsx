@@ -21,11 +21,13 @@ import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useNote } from '@/hooks/useNotes';
 import { useLanguage } from '@/context/LanguageProvider';
 import { useThemeChrome } from '@/context/ThemeProvider';
+import { useAuth } from '@/context/AuthProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { AddToMoodSheet } from './AddToMoodSheet';
 import { NoteSheet } from './NoteSheet';
 import { MovieDetails } from './MovieDetails';
 import { FilmMatch } from './FilmMatch';
+import { PostComposer } from './PostComposer';
 
 const SCREEN_H = Dimensions.get('window').height;
 const SCREEN_W = Dimensions.get('window').width;
@@ -101,8 +103,11 @@ function DetailsModal({
   const { toggleWatched, toggleWatchlist, toggleFavorite } = useInteractions();
   const states = useInteractionStates();
   const { text } = useLanguage();
+  const { enabled, session: authSession } = useAuth();
+  const signedIn = enabled && !!authSession;
   const [moodSheetOpen, setMoodSheetOpen] = useState(false);
   const [noteOpen, setNoteOpen] = useState(false);
+  const [composerMovie, setComposerMovie] = useState<Movie | null>(null);
   const { data: noteText } = useNote(
     movie?.id ?? '',
     movie?.mediaType ?? 'movie',
@@ -247,6 +252,7 @@ function DetailsModal({
             onOpenNote={() => setNoteOpen(true)}
             hasNote={(noteText ?? '').length > 0}
             matchSlot={<FilmMatch movie={movie} />}
+            onShare={signedIn ? () => setComposerMovie(movie) : undefined}
           >
           <View style={styles.actions}>
             <DetailAction
@@ -301,6 +307,10 @@ function DetailsModal({
           movie={movie}
           visible={noteOpen}
           onClose={() => setNoteOpen(false)}
+        />
+        <PostComposer
+          movie={composerMovie}
+          onClose={() => setComposerMovie(null)}
         />
       </GestureHandlerRootView>
     </Modal>

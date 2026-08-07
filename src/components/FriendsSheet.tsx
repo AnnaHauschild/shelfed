@@ -18,6 +18,7 @@ import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { UserSummary } from '@/api/follows';
 import { Avatar } from './Avatar';
+import { StoriesBar } from './StoriesBar';
 import { UserShelfSheet } from './UserShelfSheet';
 
 const SCREEN_H = Dimensions.get('window').height;
@@ -102,6 +103,8 @@ export function FriendsSheet({
             <Ionicons name="close" size={20} color={chrome.muted} />
           </Pressable>
         </View>
+
+        <StoriesBar />
 
         <View style={styles.searchRow}>
           <Ionicons name="search" size={16} color={chrome.muted} />
