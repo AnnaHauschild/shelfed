@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   Pressable,
@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from 'expo-router';
 import { mediaPlural, watchedLabel } from '@/constants/labels';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { ShelfMenu, ShelfMenuSection } from '@/components/ShelfMenu';
@@ -18,7 +19,7 @@ import { useThemeChrome } from '@/context/ThemeProvider';
 import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
 import { Skeleton } from '@/components/Skeleton';
-import { useMediaType } from '@/context/MediaTypeProvider';
+import { useMediaType, useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useSettings } from '@/context/SettingsProvider';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
@@ -87,6 +88,7 @@ export function ShelfGrid({
   // Watched shelf once it opens for the matching category.
   const { pending, clearPending } = useShelfFilter();
   const { open: openSettings } = useSettings();
+  const { backToLanding } = useMediaTypeControls();
   const [cameFromStats, setCameFromStats] = useState(false);
   useEffect(() => {
     if (type === 'watched' && pending && pending.mediaType === mediaType) {
@@ -96,6 +98,36 @@ export function ShelfGrid({
       clearPending();
     }
   }, [type, pending, mediaType, clearPending]);
+
+  // The "from Statistics" state is transient: leaving the shelf (switching tab
+  // or category) drops both the back button and its genre filter.
+  const fromStats = useRef(false);
+  useEffect(() => {
+    fromStats.current = cameFromStats;
+  }, [cameFromStats]);
+  const clearFromStats = useCallback(() => {
+    if (fromStats.current) {
+      setGenre(null);
+      setCameFromStats(false);
+    }
+  }, []);
+  // On category switch (but not while a Statistics jump is arriving).
+  const prevMedia = useRef(mediaType);
+  useEffect(() => {
+    if (prevMedia.current !== mediaType && !pending) clearFromStats();
+    prevMedia.current = mediaType;
+  }, [mediaType, pending, clearFromStats]);
+  // On blur (leaving this tab).
+  useFocusEffect(useCallback(() => clearFromStats, [clearFromStats]));
+
+  // Returns to Statistics over the home page (so swiping Settings down lands
+  // home), and drops the shelf's Statistics state.
+  const backToStats = () => {
+    setGenre(null);
+    setCameFromStats(false);
+    backToLanding();
+    openSettings({ stats: true });
+  };
 
   const movies = useMemo(() => data ?? [], [data]);
 
@@ -131,15 +163,6 @@ export function ShelfGrid({
       </View>
 
       <View style={styles.controlsRow}>
-        {cameFromStats && genre && (
-          <ControlButton
-            icon="arrow-back"
-            label="Statistics"
-            active
-            accent={accent}
-            onPress={() => openSettings({ stats: true })}
-          />
-        )}
         <ControlButton
           icon="swap-vertical"
           label={
@@ -170,6 +193,18 @@ export function ShelfGrid({
           />
         )}
       </View>
+
+      {cameFromStats && genre && (
+        <View style={styles.statsBackRow}>
+          <ControlButton
+            icon="arrow-back"
+            label="Statistics"
+            active
+            accent={accent}
+            onPress={backToStats}
+          />
+        </View>
+      )}
 
       {isLoading ? (
         <View style={styles.skeletonGrid}>
@@ -310,6 +345,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
+    marginBottom: spacing.lg,
+    zIndex: 2,
+  },
+  statsBackRow: {
+    flexDirection: 'row',
+    marginTop: -spacing.sm,
     marginBottom: spacing.lg,
     zIndex: 2,
   },
