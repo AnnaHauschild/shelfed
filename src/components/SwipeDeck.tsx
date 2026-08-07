@@ -22,6 +22,8 @@ import { watchedLabel } from '@/constants/labels';
 import { InteractionType } from '@/repositories';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { useThemeChrome } from '@/context/ThemeProvider';
+import { useAuth } from '@/context/AuthProvider';
+import { useComposer } from '@/context/PostComposerProvider';
 import { ActionButtons } from './ActionButtons';
 import { MovieCard } from './MovieCard';
 import { MovieDetails } from './MovieDetails';
@@ -96,6 +98,9 @@ function TopCard({
   onFlipChange,
 }: TopCardProps) {
   const chrome = useThemeChrome();
+  const { enabled, session: authSession } = useAuth();
+  const signedIn = enabled && !!authSession;
+  const composer = useComposer();
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const flip = useSharedValue(0);
@@ -293,7 +298,10 @@ function TopCard({
             pointerEvents={detailsReady ? 'auto' : 'none'}
           >
             <View style={[styles.backInner, { backgroundColor: chrome.surface, borderColor: chrome.border }]}>
-              <MovieDetails movie={movie} />
+              <MovieDetails
+                movie={movie}
+                onShare={signedIn ? () => composer.open(movie) : undefined}
+              />
               <View style={styles.flipHint} pointerEvents="none">
                 <Ionicons
                   name="sync-outline"
