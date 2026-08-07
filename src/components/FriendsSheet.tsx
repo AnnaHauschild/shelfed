@@ -17,6 +17,7 @@ import { useUserSearch } from '@/hooks/useUserSearch';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { UserSummary } from '@/api/follows';
+import { Avatar } from './Avatar';
 import { UserShelfSheet } from './UserShelfSheet';
 
 const SCREEN_H = Dimensions.get('window').height;
@@ -42,21 +43,20 @@ export function FriendsSheet({
   const searching = query.trim().length >= 2;
 
   const userRow = (
-    id: string,
-    username: string,
+    u: UserSummary,
     followed: boolean,
     onOpen?: () => void,
   ) => (
-    <View key={id} style={styles.userRow}>
+    <View key={u.id} style={styles.userRow}>
+      <Avatar uri={u.avatarUrl} size={30} color={chrome.muted} />
       <Pressable style={styles.userTap} onPress={onOpen} disabled={!onOpen}>
-        <Ionicons name="person-circle" size={30} color={chrome.muted} />
         <Text style={styles.username} numberOfLines={1}>
-          @{username}
+          @{u.username}
         </Text>
       </Pressable>
       <Pressable
         style={[styles.followBtn, followed && styles.followingBtn]}
-        onPress={() => (followed ? unfollow(id) : follow(id))}
+        onPress={() => (followed ? unfollow(u.id) : follow(u.id))}
       >
         <Text style={[styles.followText, followed && styles.followingText]}>
           {followed ? 'Following' : 'Follow'}
@@ -112,8 +112,7 @@ export function FriendsSheet({
               )}
               {results.map((u) =>
                 userRow(
-                  u.id,
-                  u.username,
+                  u,
                   isFollowing(u.id),
                   isFollowing(u.id) ? () => setViewUser(u) : undefined,
                 ),
@@ -129,7 +128,7 @@ export function FriendsSheet({
                 </Text>
               )}
               {following.map((u) =>
-                userRow(u.id, u.username, true, () => setViewUser(u)),
+                userRow(u, true, () => setViewUser(u)),
               )}
             </>
           )}

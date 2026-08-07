@@ -32,6 +32,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { interactionRepository } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { Avatar } from './Avatar';
 import { MovieDetails } from './MovieDetails';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
@@ -342,9 +343,12 @@ export function UserShelfSheet({
           <View style={styles.grabZone}>
             <View style={styles.handle} />
             <View style={styles.headerRow}>
-              <Text style={styles.title} numberOfLines={1}>
-                @{user?.username}
-              </Text>
+              <View style={styles.headerUser}>
+                <Avatar uri={user?.avatarUrl} size={30} />
+                <Text style={styles.title} numberOfLines={1}>
+                  @{user?.username}
+                </Text>
+              </View>
               <Pressable onPress={onClose} hitSlop={8}>
                 <Ionicons name="close" size={20} color={chrome.muted} />
               </Pressable>
@@ -590,6 +594,12 @@ const makeStyles = (c: ThemeChrome) =>
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: spacing.sm,
+    },
+    headerUser: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
     },
     title: {
       flex: 1,

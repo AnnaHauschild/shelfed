@@ -73,18 +73,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(null);
       return;
     }
-    const { data } = await supabase
+    type Row = {
+      id: string;
+      username: string | null;
+      display_name: string | null;
+      avatar_url?: string | null;
+    };
+    const withAvatar = await supabase
       .from('profiles')
       .select('id, username, display_name, avatar_url')
       .eq('id', id)
       .maybeSingle();
+    let row = withAvatar.data as Row | null;
+    // The avatar_url column may not exist yet — fall back so the profile still
+    // loads (username/icon keep working until the column is added).
+    if (withAvatar.error) {
+      const base = await supabase
+        .from('profiles')
+        .select('id, username, display_name')
+        .eq('id', id)
+        .maybeSingle();
+      row = base.data as Row | null;
+    }
     setProfile(
-      data
+      row
         ? {
-            id: data.id,
-            username: data.username,
-            displayName: data.display_name,
-            avatarUrl: data.avatar_url ?? null,
+            id: row.id,
+            username: row.username,
+            displayName: row.display_name,
+            avatarUrl: row.avatar_url ?? null,
           }
         : { id, username: null, displayName: null, avatarUrl: null },
     );

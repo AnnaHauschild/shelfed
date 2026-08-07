@@ -8,11 +8,11 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '@/context/AuthProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { Avatar } from './Avatar';
 import { FriendsSheet } from './FriendsSheet';
 
 /**
@@ -223,20 +223,21 @@ export function AccountSection() {
     <View style={styles.section}>
       {label}
       <View style={styles.profileRow}>
-        <Pressable onPress={pickAvatar} style={styles.avatarBtn} disabled={avatarBusy}>
-          {profile?.avatarUrl ? (
-            <Image source={{ uri: profile.avatarUrl }} style={styles.avatarImg} />
-          ) : (
-            <Ionicons name="person-circle" size={44} color={chrome.accent} />
-          )}
-          <View style={styles.avatarEdit}>
+        <View style={styles.avatarBtn}>
+          <Avatar uri={profile?.avatarUrl} size={44} color={chrome.accent} />
+          <Pressable
+            style={styles.avatarEdit}
+            onPress={pickAvatar}
+            disabled={avatarBusy}
+            hitSlop={6}
+          >
             {avatarBusy ? (
               <ActivityIndicator color={chrome.onAccent} size="small" />
             ) : (
               <Ionicons name="camera" size={12} color={chrome.onAccent} />
             )}
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
         <View style={styles.profileInfo}>
           <Text style={styles.username}>@{profile?.username}</Text>
           <Text style={styles.subtle}>{profile?.displayName || email}</Text>
