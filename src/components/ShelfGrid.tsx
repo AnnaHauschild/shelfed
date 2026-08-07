@@ -20,6 +20,7 @@ import { ShelfRack } from '@/components/ShelfRack';
 import { Skeleton } from '@/components/Skeleton';
 import { useMediaType } from '@/context/MediaTypeProvider';
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
+import { useSettings } from '@/context/SettingsProvider';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useShelf } from '@/hooks/useShelf';
 import { InteractionType, StoredMovie } from '@/repositories';
@@ -85,10 +86,13 @@ export function ShelfGrid({
   // Apply a genre preselected elsewhere (e.g. tapped in Statistics) to the
   // Watched shelf once it opens for the matching category.
   const { pending, clearPending } = useShelfFilter();
+  const { open: openSettings } = useSettings();
+  const [cameFromStats, setCameFromStats] = useState(false);
   useEffect(() => {
     if (type === 'watched' && pending && pending.mediaType === mediaType) {
       setGenre(pending.genre);
       setActiveMoodId(null);
+      setCameFromStats(true);
       clearPending();
     }
   }, [type, pending, mediaType, clearPending]);
@@ -127,6 +131,15 @@ export function ShelfGrid({
       </View>
 
       <View style={styles.controlsRow}>
+        {cameFromStats && genre && (
+          <ControlButton
+            icon="arrow-back"
+            label="Statistics"
+            active
+            accent={accent}
+            onPress={() => openSettings({ stats: true })}
+          />
+        )}
         <ControlButton
           icon="swap-vertical"
           label={

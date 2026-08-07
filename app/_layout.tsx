@@ -26,6 +26,7 @@ import { ThemeProvider } from '@/context/ThemeProvider';
 import { AuthProvider } from '@/context/AuthProvider';
 import { MatchCelebrationProvider } from '@/context/MatchCelebrationProvider';
 import { ShelfFilterProvider } from '@/context/ShelfFilterProvider';
+import { SettingsProvider } from '@/context/SettingsProvider';
 import { colors, fontMap } from '@/theme';
 
 // Keep the splash screen up until fonts are ready (avoids a flash of system font).
@@ -70,6 +71,7 @@ export default function RootLayout() {
             <MatchCelebrationProvider>
             <ShelfFilterProvider>
             <MediaTypeProvider>
+            <SettingsProvider>
               <StatusBar style="light" />
               <MovieDetailsProvider>
                 <Stack
@@ -84,6 +86,7 @@ export default function RootLayout() {
                 <LandingGate />
               </MovieDetailsProvider>
               <ShelfSyncGate />
+            </SettingsProvider>
             </MediaTypeProvider>
             </ShelfFilterProvider>
             </MatchCelebrationProvider>

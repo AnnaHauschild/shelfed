@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   Modal,
@@ -94,9 +94,12 @@ const STAT_TYPES: {
 export function SettingsSheet({
   visible,
   onClose,
+  scrollTo,
 }: {
   visible: boolean;
   onClose: () => void;
+  /** When 'stats', open scrolled to the Statistics section. */
+  scrollTo?: 'stats' | null;
 }) {
   const insets = useSafeAreaInsets();
   const { name, setName } = useProfile();
@@ -134,6 +137,18 @@ export function SettingsSheet({
       setBgOpen(false);
     }
   }, [visible, name, translateY]);
+
+  // Optionally open scrolled straight to the Statistics section.
+  const scrollRef = useRef<ScrollView>(null);
+  const statsY = useRef(0);
+  useEffect(() => {
+    if (visible && scrollTo === 'stats') {
+      const t = setTimeout(() => {
+        scrollRef.current?.scrollTo({ y: statsY.current, animated: false });
+      }, 160);
+      return () => clearTimeout(t);
+    }
+  }, [visible, scrollTo]);
 
   const commitName = () => {
     if ((draft ?? '').trim() !== (name ?? '')) setName(draft).catch(() => {});
@@ -207,6 +222,7 @@ export function SettingsSheet({
           </GestureDetector>
 
           <ScrollView
+            ref={scrollRef}
             contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
@@ -289,6 +305,11 @@ export function SettingsSheet({
             )}
 
             {/* ---------------- Statistics ---------------- */}
+            <View
+              onLayout={(e) => {
+                statsY.current = e.nativeEvent.layout.y;
+              }}
+            >
             <Text style={[styles.section, styles.sectionSpaced]}>Statistics</Text>
             {stats && stats.totalWatched > 0 ? (
               <>
@@ -360,6 +381,7 @@ export function SettingsSheet({
                 Nothing on your shelf yet — swipe right on a title to add it.
               </Text>
             )}
+            </View>
 
             {/* ---------------- Background (dropdown) ---------------- */}
             <Text style={[styles.section, styles.sectionSpaced]}>Background</Text>

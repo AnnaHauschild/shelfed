@@ -16,12 +16,12 @@ import { useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useProfile } from '@/context/ProfileProvider';
 import { useAuth } from '@/context/AuthProvider';
 import { useFollows } from '@/hooks/useFollows';
+import { useSettings } from '@/context/SettingsProvider';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { AboutModal } from './AboutModal';
 import { ShelfBackground } from './ShelfBackground';
 import { FeatureHeader } from './FeatureHeader';
 import { FriendsSheet } from './FriendsSheet';
-import { SettingsSheet } from './SettingsSheet';
 
 interface Category {
   type: MediaType | null;
@@ -73,8 +73,8 @@ export function LandingScreen() {
   const { name } = useProfile();
   const { enabled, session, profile } = useAuth();
   const { requests } = useFollows();
+  const { open: openSettings } = useSettings();
   const signedIn = enabled && !!session;
-  const [showSettings, setShowSettings] = useState(false);
   const [showFriends, setShowFriends] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
 
@@ -98,7 +98,7 @@ export function LandingScreen() {
 
       <View style={[styles.content, { paddingTop: headerHeight + spacing.lg }]}>
         <View style={styles.topRow}>
-          <Pressable style={styles.profilePill} onPress={() => setShowSettings(true)} hitSlop={8}>
+          <Pressable style={styles.profilePill} onPress={() => openSettings()} hitSlop={8}>
             {profile?.avatarUrl ? (
               <Image source={{ uri: profile.avatarUrl }} style={styles.pillAvatar} />
             ) : (
@@ -129,7 +129,6 @@ export function LandingScreen() {
         </View>
       </View>
 
-      <SettingsSheet visible={showSettings} onClose={() => setShowSettings(false)} />
       <FriendsSheet visible={showFriends} onClose={() => setShowFriends(false)} />
       <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
 
