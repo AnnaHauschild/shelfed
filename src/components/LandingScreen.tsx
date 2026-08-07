@@ -9,14 +9,18 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MediaType } from '@/api/types';
 import { useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useProfile } from '@/context/ProfileProvider';
+import { useAuth } from '@/context/AuthProvider';
+import { useFollows } from '@/hooks/useFollows';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { AboutModal } from './AboutModal';
 import { ShelfBackground } from './ShelfBackground';
 import { FeatureHeader } from './FeatureHeader';
+import { FriendsSheet } from './FriendsSheet';
 import { SettingsSheet } from './SettingsSheet';
 
 interface Category {
@@ -67,7 +71,11 @@ export function LandingScreen() {
   const insets = useSafeAreaInsets();
   const { choose } = useMediaTypeControls();
   const { name } = useProfile();
+  const { enabled, session, profile } = useAuth();
+  const { requests } = useFollows();
+  const signedIn = enabled && !!session;
   const [showSettings, setShowSettings] = useState(false);
+  const [showFriends, setShowFriends] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
 
   // Header = exactly one shelf row (measured screen / 5), matching Discover/Search,
@@ -91,12 +99,27 @@ export function LandingScreen() {
       <View style={[styles.content, { paddingTop: headerHeight + spacing.lg }]}>
         <View style={styles.topRow}>
           <Pressable style={styles.profilePill} onPress={() => setShowSettings(true)} hitSlop={8}>
-            <Ionicons name="person-circle-outline" size={18} color={colors.textOnPaper} />
+            {profile?.avatarUrl ? (
+              <Image source={{ uri: profile.avatarUrl }} style={styles.pillAvatar} />
+            ) : (
+              <Ionicons name="person-circle-outline" size={18} color={colors.textOnPaper} />
+            )}
             <Text style={styles.profileText}>
               {name ? `Hi, ${name}` : 'Tap to set your name'}
             </Text>
             <Ionicons name="pencil" size={12} color={colors.textOnPaperMuted} />
           </Pressable>
+          {signedIn && (
+            <Pressable style={styles.friendsBtn} onPress={() => setShowFriends(true)} hitSlop={8}>
+              <Ionicons name="people" size={18} color={colors.textOnPaper} />
+              <Text style={styles.friendsText}>Friends</Text>
+              {requests.length > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{requests.length}</Text>
+                </View>
+              )}
+            </Pressable>
+          )}
         </View>
 
         <View style={styles.cards}>
@@ -107,6 +130,7 @@ export function LandingScreen() {
       </View>
 
       <SettingsSheet visible={showSettings} onClose={() => setShowSettings(false)} />
+      <FriendsSheet visible={showFriends} onClose={() => setShowFriends(false)} />
       <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
 
       <Pressable
@@ -392,6 +416,44 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+  },
+  pillAvatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+  friendsBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: colors.paperShade,
+    backgroundColor: colors.paper,
+  },
+  friendsText: {
+    color: colors.textOnPaper,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  badge: {
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    backgroundColor: colors.favorite,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: colors.textOnDark,
+    fontFamily: fonts.label,
+    fontSize: 10,
+    fontWeight: '700',
   },
   aboutLink: {
     position: 'absolute',
