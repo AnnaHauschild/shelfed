@@ -33,9 +33,9 @@ import { interactionRepository } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { useAuth } from '@/context/AuthProvider';
-import { useComposer } from '@/context/PostComposerProvider';
 import { Avatar } from './Avatar';
 import { MovieDetails } from './MovieDetails';
+import { PostComposer } from './PostComposer';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const COLS = 3;
@@ -89,7 +89,7 @@ export function UserShelfSheet({
   const qc = useQueryClient();
   const { enabled, session: authSession } = useAuth();
   const signedIn = enabled && !!authSession;
-  const composer = useComposer();
+  const [composerMovie, setComposerMovie] = useState<Movie | null>(null);
   const { data: items, isLoading } = useUserShelf(user?.id ?? null);
   const [shelfType, setShelfType] = useState<ShelfItem['type']>('watched');
   const [media, setMedia] = useState<MediaType | 'all'>('all');
@@ -455,7 +455,7 @@ export function UserShelfSheet({
                 <MovieDetails
                   movie={detail}
                   dragGesture={dismissHeader}
-                  onShare={signedIn ? () => composer.open(detail) : undefined}
+                  onShare={signedIn ? () => setComposerMovie(detail) : undefined}
                 >
                   <FriendFilmActions movie={detail} />
                 </MovieDetails>
@@ -463,6 +463,10 @@ export function UserShelfSheet({
             </GestureDetector>
           </View>
         )}
+        <PostComposer
+          movie={composerMovie}
+          onClose={() => setComposerMovie(null)}
+        />
       </Animated.View>
     </Modal>
   );

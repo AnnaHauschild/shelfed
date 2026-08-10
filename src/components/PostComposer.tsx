@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   Pressable,
   StyleSheet,
@@ -54,30 +53,29 @@ export function PostComposer({
   };
 
   return (
-    <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        style={styles.root}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
-          <Text style={styles.title}>Share to your friends</Text>
-          <View style={styles.card}>
-            <PosterImage
-              posterPath={movie.posterPath}
-              title={movie.title}
-              size={POSTER_SIZE_SMALL}
-              style={styles.poster}
-            />
-            <View style={styles.cardInfo}>
-              <Text style={styles.movieTitle} numberOfLines={3}>
-                {movie.title}
-              </Text>
-              {movie.year != null && (
-                <Text style={styles.year}>{movie.year}</Text>
-              )}
-            </View>
+    <KeyboardAvoidingView
+      style={styles.root}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <Pressable style={styles.backdrop} onPress={onClose} />
+      <View style={styles.sheet}>
+        <View style={styles.handle} />
+        <Text style={styles.title}>Share to your friends</Text>
+        <View style={styles.card}>
+          <PosterImage
+            posterPath={movie.posterPath}
+            title={movie.title}
+            size={POSTER_SIZE_SMALL}
+            style={styles.poster}
+          />
+          <View style={styles.cardInfo}>
+            <Text style={styles.movieTitle} numberOfLines={3}>
+              {movie.title}
+            </Text>
+            {movie.year != null && (
+              <Text style={styles.year}>{movie.year}</Text>
+            )}
+          </View>
           </View>
           <TextInput
             style={styles.input}
@@ -107,13 +105,17 @@ export function PostComposer({
           </Text>
         </View>
       </KeyboardAvoidingView>
-    </Modal>
   );
 }
 
 const makeStyles = (c: ThemeChrome) =>
   StyleSheet.create({
-    root: { flex: 1, justifyContent: 'flex-end' },
+    root: {
+      ...StyleSheet.absoluteFillObject,
+      justifyContent: 'flex-end',
+      zIndex: 200,
+      elevation: 200,
+    },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: 'rgba(10, 6, 2, 0.6)',

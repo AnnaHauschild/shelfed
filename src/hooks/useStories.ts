@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createPost, getStories } from '@/api/posts';
+import { createPost, deletePost, getStories } from '@/api/posts';
 import { hasSupabase } from '@/api/supabase';
 import { MediaType } from '@/api/types';
 import { useAuth } from '@/context/AuthProvider';
@@ -30,6 +30,15 @@ export function useCreatePost() {
   return useMutation({
     mutationFn: ({ movie, caption }: { movie: PostableMovie; caption: string }) =>
       createPost(userId as string, movie, caption),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['stories'] }),
+  });
+}
+
+/** Deletes one of the user's own stories (removes it for everyone). */
+export function useDeletePost() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deletePost(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['stories'] }),
   });
 }

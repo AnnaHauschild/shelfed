@@ -39,7 +39,9 @@ export function FriendsSheet({
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [query, setQuery] = useState('');
   const [viewUser, setViewUser] = useState<UserSummary | null>(null);
-  const [story, setStory] = useState<StoryGroup | null>(null);
+  const [story, setStory] = useState<{ groups: StoryGroup[]; index: number } | null>(
+    null,
+  );
   const { results, loading } = useUserSearch(query);
   const { following, requests, isFollowing, isRequested, follow, unfollow, accept, reject } =
     useFollows();
@@ -106,7 +108,7 @@ export function FriendsSheet({
           </Pressable>
         </View>
 
-        <StoriesBar onOpen={setStory} />
+        <StoriesBar onOpen={(groups, index) => setStory({ groups, index })} />
 
         <View style={styles.searchRow}>
           <Ionicons name="search" size={16} color={chrome.muted} />
@@ -156,7 +158,7 @@ export function FriendsSheet({
           )}
         </ScrollView>
       </View>
-      <StoryViewer group={story} onClose={() => setStory(null)} />
+      <StoryViewer story={story} onClose={() => setStory(null)} />
       </KeyboardAvoidingView>
       <UserShelfSheet user={viewUser} onClose={() => setViewUser(null)} />
     </Modal>

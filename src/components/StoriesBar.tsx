@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Alert,
   Dimensions,
   Pressable,
   ScrollView,
@@ -8,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import Animated, {
+  cancelAnimation,
   Easing,
   runOnJS,
   useAnimatedStyle,
@@ -17,8 +19,9 @@ import Animated, {
 import { Ionicons } from '@expo/vector-icons';
 import { StoryGroup, StoryPost } from '@/api/posts';
 import { Movie } from '@/api/types';
-import { useStories } from '@/hooks/useStories';
+import { useStories, useDeletePost } from '@/hooks/useStories';
 import { useInteractions } from '@/hooks/useInteractions';
+import { useAuth } from '@/context/AuthProvider';
 import { PosterImage } from './PosterImage';
 import { POSTER_SIZE } from '@/constants/config';
 import { colors, fonts, radius, spacing } from '@/theme';
@@ -56,8 +59,12 @@ function toMovie(p: StoryPost): Movie {
   };
 }
 
-/** Horizontal row of friends' stories (last 24h); tap calls onOpen. */
-export function StoriesBar({ onOpen }: { onOpen: (group: StoryGroup) => void }) {
+/** Horizontal row of friends' stories (last 24h); tap opens the viewer. */
+export function StoriesBar({
+  onOpen,
+}: {
+  onOpen: (groups: StoryGroup[], index: number) => void;
+}) {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { data: groups } = useStories();
@@ -70,8 +77,12 @@ export function StoriesBar({ onOpen }: { onOpen: (group: StoryGroup) => void }) 
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.row}
     >
-      {groups.map((g) => (
-        <Pressable key={g.user.id} style={styles.item} onPress={() => onOpen(g)}>
+      {groups.map((g, i) => (
+        <Pressable
+          key={g.user.id}
+          style={styles.item}
+          onPress={() => onOpen(groups, i)}
+        >
           <View style={styles.ring}>
             <Avatar uri={g.user.avatarUrl} size={54} noZoom />
           </View>
@@ -87,43 +98,62 @@ export function StoriesBar({ onOpen }: { onOpen: (group: StoryGroup) => void }) 
 /**
  * Full-screen story viewer, rendered as an in-tree overlay (NOT a nested Modal,
  * which would stack behind the Friends sheet). Instagram-style: one progress
- * segment per post, auto-advancing; tap the right/left edge to skip forward/back.
+ * segment per post, auto-advancing; tap right/left to skip, hold to pause, and
+ * it rolls on to the next friend's story after the last post. Your own posts
+ * can be deleted.
  */
 export function StoryViewer({
-  group,
+  story,
   onClose,
 }: {
-  group: StoryGroup | null;
+  story: { groups: StoryGroup[]; index: number } | null;
   onClose: () => void;
 }) {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeViewerStyles(chrome), [chrome]);
   const { toggleWatchlist, toggleFavorite } = useInteractions();
-  // getStories returns newest-first; play a person's posts oldest-first.
-  const posts = useMemo(() => (group ? [...group.posts].reverse() : []), [group]);
-  const [index, setIndex] = useState(0);
+  const { userId } = useAuth();
+  const del = useDeletePost();
+  const [gi, setGi] = useState(0);
+  const [pi, setPi] = useState(0);
   const progress = useSharedValue(0);
+  const paused = useRef(false);
 
-  // Restart from the first post whenever a different person's story opens.
+  // Jump to the tapped friend whenever a new viewing session starts.
   useEffect(() => {
-    setIndex(0);
-  }, [group?.user.id]);
+    if (story) {
+      setGi(story.index);
+      setPi(0);
+    }
+  }, [story]);
+
+  const groups = story?.groups ?? [];
+  const group = groups[gi] ?? null;
+  // getStories returns newest-first; play each person's posts oldest-first.
+  const posts = useMemo(() => (group ? [...group.posts].reverse() : []), [group]);
+  const item = posts.length ? posts[Math.min(pi, posts.length - 1)] : null;
+  const isMine = !!group && group.user.id === userId;
 
   const goNext = useCallback(() => {
-    setIndex((i) => {
-      if (i < posts.length - 1) return i + 1;
-      onClose();
-      return i;
-    });
-  }, [posts.length, onClose]);
+    if (pi < posts.length - 1) setPi(pi + 1);
+    else if (gi < groups.length - 1) {
+      setGi(gi + 1);
+      setPi(0);
+    } else onClose();
+  }, [pi, posts.length, gi, groups.length, onClose]);
 
   const goPrev = useCallback(() => {
-    setIndex((i) => (i > 0 ? i - 1 : 0));
-  }, []);
+    if (pi > 0) setPi(pi - 1);
+    else if (gi > 0) {
+      setGi(gi - 1);
+      setPi(0);
+    }
+  }, [pi, gi]);
 
-  // Fill the active segment over STORY_MS, then auto-advance.
+  // Fill the active segment, then auto-advance.
   useEffect(() => {
-    if (!group) return;
+    if (!item) return;
+    paused.current = false;
     progress.value = 0;
     progress.value = withTiming(
       1,
@@ -132,27 +162,69 @@ export function StoryViewer({
         if (finished) runOnJS(goNext)();
       },
     );
-  }, [index, group, goNext, progress]);
+  }, [gi, pi, item, goNext, progress]);
+
+  const pause = useCallback(() => {
+    paused.current = true;
+    cancelAnimation(progress);
+  }, [progress]);
+
+  const resume = useCallback(() => {
+    if (!paused.current) return;
+    paused.current = false;
+    const remaining = Math.max(250, (1 - progress.value) * STORY_MS);
+    progress.value = withTiming(
+      1,
+      { duration: remaining, easing: Easing.linear },
+      (finished) => {
+        if (finished) runOnJS(goNext)();
+      },
+    );
+  }, [progress, goNext]);
+
+  const confirmDelete = useCallback(() => {
+    if (!item) return;
+    pause();
+    Alert.alert('Delete this story?', 'It will be removed for everyone.', [
+      { text: 'Cancel', style: 'cancel', onPress: resume },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => del.mutate(item.id, { onSuccess: onClose }),
+      },
+    ]);
+  }, [item, pause, resume, del, onClose]);
 
   const fillStyle = useAnimatedStyle(() => ({
     width: `${progress.value * 100}%`,
   }));
 
-  if (!group || posts.length === 0) return null;
-  const item = posts[Math.min(index, posts.length - 1)];
+  if (!group || posts.length === 0 || !item) return null;
 
   return (
     <View style={styles.overlay}>
-      <Pressable style={styles.tapLeft} onPress={goPrev} />
-      <Pressable style={styles.tapRight} onPress={goNext} />
+      <Pressable
+        style={styles.tapLeft}
+        onPress={goPrev}
+        onLongPress={pause}
+        onPressOut={resume}
+        delayLongPress={220}
+      />
+      <Pressable
+        style={styles.tapRight}
+        onPress={goNext}
+        onLongPress={pause}
+        onPressOut={resume}
+        delayLongPress={220}
+      />
 
       <View style={styles.content} pointerEvents="box-none">
         <View style={styles.bars}>
           {posts.map((p, i) => (
             <View key={p.id} style={styles.barTrack}>
-              {i < index ? (
+              {i < pi ? (
                 <View style={[styles.barFill, styles.barFillDone]} />
-              ) : i === index ? (
+              ) : i === pi ? (
                 <Animated.View style={[styles.barFill, fillStyle]} />
               ) : null}
             </View>
@@ -160,10 +232,19 @@ export function StoryViewer({
         </View>
 
         <View style={styles.page} pointerEvents="box-none">
-          <View style={styles.header} pointerEvents="none">
+          <View style={styles.header} pointerEvents="box-none">
             <Avatar uri={group.user.avatarUrl} size={30} noZoom />
             <Text style={styles.headerName}>@{group.user.username}</Text>
             <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>
+            {isMine && (
+              <Pressable onPress={confirmDelete} hitSlop={10} style={styles.trash}>
+                <Ionicons
+                  name="trash-outline"
+                  size={20}
+                  color={colors.textOnDark}
+                />
+              </Pressable>
+            )}
           </View>
           <View style={styles.info} pointerEvents="none">
             <PosterImage
@@ -292,6 +373,7 @@ const makeViewerStyles = (c: ThemeChrome) =>
       fontSize: 15,
     },
     time: { color: c.muted, fontFamily: fonts.body, fontSize: 12 },
+    trash: { marginLeft: spacing.sm },
     poster: {
       width: SCREEN_W * 0.6,
       height: SCREEN_W * 0.9,
