@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -38,6 +38,8 @@ interface DetailsContextValue {
    * (e.g. the current shelf) to let the user swipe left/right between items.
    */
   open: (movie: Movie, list?: Movie[]) => void;
+  /** Whether the details modal is currently showing. */
+  isOpen: boolean;
 }
 
 const DetailsContext = createContext<DetailsContextValue | null>(null);
@@ -79,8 +81,10 @@ export function MovieDetailsProvider({
     );
   }, []);
 
+  const value = useMemo(() => ({ open, isOpen: !!session }), [open, session]);
+
   return (
-    <DetailsContext.Provider value={{ open }}>
+    <DetailsContext.Provider value={value}>
       {children}
       <DetailsModal session={session} onClose={close} onIndexChange={goTo} />
     </DetailsContext.Provider>

@@ -201,18 +201,29 @@ export function StoryViewer({
     ]);
   }, [item, pause, resume, del, onClose]);
 
-  // Open the full details card for this title (fetch the rich data first).
+  // Open the full details card ON TOP of the story (paused), so closing it
+  // returns to the story rather than the home page.
   const openInfo = useCallback(async () => {
     if (!item) return;
+    pause();
     const base = toMovie(item);
-    onClose();
     try {
       const full = await fetchMediaById(item.mediaType, item.movieId);
       details.open(full ?? base);
     } catch {
       details.open(base);
     }
-  }, [item, onClose, details]);
+  }, [item, pause, details]);
+
+  // Resume the segment once the details card is dismissed.
+  const detailsWasOpen = useRef(false);
+  useEffect(() => {
+    if (details.isOpen) detailsWasOpen.current = true;
+    else if (detailsWasOpen.current) {
+      detailsWasOpen.current = false;
+      resume();
+    }
+  }, [details.isOpen, resume]);
 
   const fillStyle = useAnimatedStyle(() => ({
     width: `${progress.value * 100}%`,
