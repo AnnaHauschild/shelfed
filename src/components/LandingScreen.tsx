@@ -93,6 +93,11 @@ export function LandingScreen() {
   const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
   const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
 
+  // Keep the About link above the Android system nav bar even if the bottom
+  // inset is under-reported (some devices report 0 under edge-to-edge).
+  const aboutBottom =
+    Math.max(insets.bottom, Platform.OS === 'android' ? 48 : 0) + spacing.md;
+
   return (
     <View style={styles.root} onLayout={(e) => setScreenH(e.nativeEvent.layout.height)}>
       <ShelfBackground />
@@ -151,7 +156,7 @@ export function LandingScreen() {
       <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
 
       <Pressable
-        style={[styles.aboutLink, { bottom: insets.bottom + spacing.md }]}
+        style={[styles.aboutLink, { bottom: aboutBottom }]}
         onPress={() => setShowAbout(true)}
         hitSlop={10}
       >

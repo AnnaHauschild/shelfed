@@ -16,13 +16,16 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { StoryGroup, StoryPost } from '@/api/posts';
 import { Movie } from '@/api/types';
+import { fetchMediaById } from '@/api/movies';
 import { useStories, useDeletePost } from '@/hooks/useStories';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useAuth } from '@/context/AuthProvider';
 import { PosterImage } from './PosterImage';
+import { useMovieDetails } from './MovieDetailsProvider';
 import { POSTER_SIZE } from '@/constants/config';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
@@ -112,8 +115,10 @@ export function StoryViewer({
 }) {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeViewerStyles(chrome), [chrome]);
+  const insets = useSafeAreaInsets();
   const { toggleWatchlist, toggleFavorite } = useInteractions();
   const { userId } = useAuth();
+  const details = useMovieDetails();
   const del = useDeletePost();
   const [gi, setGi] = useState(0);
   const [pi, setPi] = useState(0);
@@ -196,6 +201,19 @@ export function StoryViewer({
     ]);
   }, [item, pause, resume, del, onClose]);
 
+  // Open the full details card for this title (fetch the rich data first).
+  const openInfo = useCallback(async () => {
+    if (!item) return;
+    const base = toMovie(item);
+    onClose();
+    try {
+      const full = await fetchMediaById(item.mediaType, item.movieId);
+      details.open(full ?? base);
+    } catch {
+      details.open(base);
+    }
+  }, [item, onClose, details]);
+
   const fillStyle = useAnimatedStyle(() => ({
     width: `${progress.value * 100}%`,
   }));
@@ -220,7 +238,7 @@ export function StoryViewer({
       />
 
       <View style={styles.content} pointerEvents="box-none">
-        <View style={styles.bars}>
+        <View style={[styles.bars, { top: insets.top + 8 }]}>
           {posts.map((p, i) => (
             <View key={p.id} style={styles.barTrack}>
               {i < pi ? (
@@ -277,10 +295,22 @@ export function StoryViewer({
               <Ionicons name="heart-outline" size={20} color={colors.favorite} />
               <Text style={styles.actionLabel}>Favorite</Text>
             </Pressable>
+            <Pressable style={styles.actionBtn} onPress={openInfo}>
+              <Ionicons
+                name="information-circle-outline"
+                size={20}
+                color={colors.textOnDark}
+              />
+              <Text style={styles.actionLabel}>Details</Text>
+            </Pressable>
           </View>
         </View>
 
-        <Pressable style={styles.close} onPress={onClose} hitSlop={10}>
+        <Pressable
+          style={[styles.close, { top: insets.top + 22 }]}
+          onPress={onClose}
+          hitSlop={10}
+        >
           <Ionicons name="close" size={26} color={colors.textOnDark} />
         </Pressable>
       </View>
