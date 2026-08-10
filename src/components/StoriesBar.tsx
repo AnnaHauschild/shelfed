@@ -23,7 +23,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { StoryGroup, StoryPost } from '@/api/posts';
+import { CardLayout, Sticker, StoryGroup, StoryPost } from '@/api/posts';
 import { Movie } from '@/api/types';
 import { fetchMediaById } from '@/api/movies';
 import { useStories, useDeletePost } from '@/hooks/useStories';
@@ -31,16 +31,24 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useAuth } from '@/context/AuthProvider';
 import { useMovieDetails } from './MovieDetailsProvider';
-import { CARD_RATIO, StaticOverlays, StoryCard, storyPalette } from './StoryOverlays';
-import { colors, fonts, radius, spacing } from '@/theme';
+import {
+  CARD_RATIO,
+  DEFAULT_CARD,
+  StaticCard,
+  StaticOverlays,
+  storyPalette,
+} from './StoryOverlays';
+import { colors, fonts, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { Avatar } from './Avatar';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
-// Story card (9:16), matching the composer, taking up most of the screen.
-const CARD_W = Math.min(SCREEN_W - 24, (SCREEN_H * 0.82) / CARD_RATIO);
-const CARD_H = CARD_W * CARD_RATIO;
+// Story stage (9:16), taking up most of the screen; the card lives on it.
+const STAGE_W = Math.min(SCREEN_W - 24, (SCREEN_H * 0.82) / CARD_RATIO);
+const STAGE_H = STAGE_W * CARD_RATIO;
+// Below this scaled card width, the card actions drop their text labels.
+const ACTIONS_LABEL_MIN = 260;
 
 // How long each story segment plays before auto-advancing to the next.
 const STORY_MS = 6000;
@@ -247,6 +255,15 @@ export function StoryViewer({
   if (!group || posts.length === 0 || !item) return null;
 
   const palette = storyPalette(item.title ?? item.movieId);
+  const cardLayout =
+    (item.overlays.find((o) => o.kind === 'card') as CardLayout | undefined) ??
+    DEFAULT_CARD;
+  const stickers = item.overlays.filter((o): o is Sticker => o.kind !== 'card');
+  const iconsOnly = STAGE_W * cardLayout.scale < ACTIONS_LABEL_MIN;
+  // Pin the actions just inside the card's bottom edge, wherever it sits.
+  const actionsTx = cardLayout.tx * STAGE_W;
+  const actionsTy =
+    cardLayout.ty * STAGE_H + (STAGE_H * cardLayout.scale) / 2 - 34;
 
   return (
     <View style={[styles.overlay, { backgroundColor: palette.bg }]}>
@@ -296,54 +313,63 @@ export function StoryViewer({
             </Pressable>
           </View>
           <View
-            style={[styles.cardArea, { backgroundColor: palette.card }]}
+            style={[styles.stage, { width: STAGE_W, height: STAGE_H }]}
             pointerEvents="box-none"
           >
-            <View style={styles.cardClip} pointerEvents="none">
-              <StoryCard
-                title={item.title}
-                posterPath={item.posterPath}
-                year={item.year}
-                width={CARD_W}
-                height={CARD_H}
-                cardColor={palette.card}
-                textColor={palette.text}
-              />
-            </View>
-            <StaticOverlays
-              overlays={item.overlays}
-              width={CARD_W}
-              height={CARD_H}
+            <StaticCard
+              layout={cardLayout}
+              stageW={STAGE_W}
+              stageH={STAGE_H}
+              title={item.title}
+              posterPath={item.posterPath}
+              year={item.year}
+              cardColor={palette.card}
+              textColor={palette.text}
             />
-            <View style={styles.cardActions}>
-              <StoryAction
-                icon="star-outline"
-                activeIcon="star"
-                active={states.isWatchlisted(item.movieId)}
-                color={colors.star}
-                label="Wishlist"
-                onPress={() => toggleWatchlist(toMovie(item))}
-                btnStyle={styles.actionBtn}
-                labelStyle={styles.actionLabel}
-              />
-              <StoryAction
-                icon="heart-outline"
-                activeIcon="heart"
-                active={states.isFavorite(item.movieId)}
-                color={colors.favorite}
-                label="Favorite"
-                onPress={() => toggleFavorite(toMovie(item))}
-                btnStyle={styles.actionBtn}
-                labelStyle={styles.actionLabel}
-              />
-              <Pressable style={styles.actionBtn} onPress={openInfo}>
-                <Ionicons
-                  name="information-circle-outline"
-                  size={20}
-                  color={palette.text}
+            <StaticOverlays overlays={stickers} width={STAGE_W} height={STAGE_H} />
+            <View style={styles.actionLayer} pointerEvents="box-none">
+              <View
+                style={[
+                  styles.cardActions,
+                  {
+                    transform: [
+                      { translateX: actionsTx },
+                      { translateY: actionsTy },
+                    ],
+                  },
+                ]}
+              >
+                <StoryAction
+                  icon="star-outline"
+                  activeIcon="star"
+                  active={states.isWatchlisted(item.movieId)}
+                  color={colors.star}
+                  label="Wishlist"
+                  compact={iconsOnly}
+                  onPress={() => toggleWatchlist(toMovie(item))}
+                  btnStyle={styles.actionBtn}
+                  labelStyle={styles.actionLabel}
                 />
-                <Text style={styles.actionLabel}>Details</Text>
-              </Pressable>
+                <StoryAction
+                  icon="heart-outline"
+                  activeIcon="heart"
+                  active={states.isFavorite(item.movieId)}
+                  color={colors.favorite}
+                  label="Favorite"
+                  compact={iconsOnly}
+                  onPress={() => toggleFavorite(toMovie(item))}
+                  btnStyle={styles.actionBtn}
+                  labelStyle={styles.actionLabel}
+                />
+                <Pressable style={styles.actionBtn} onPress={openInfo}>
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={20}
+                    color={palette.text}
+                  />
+                  {!iconsOnly && <Text style={styles.actionLabel}>Details</Text>}
+                </Pressable>
+              </View>
             </View>
           </View>
         </View>
@@ -362,6 +388,7 @@ function StoryAction({
   onPress,
   btnStyle,
   labelStyle,
+  compact,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   activeIcon: keyof typeof Ionicons.glyphMap;
@@ -371,6 +398,8 @@ function StoryAction({
   onPress: () => void;
   btnStyle: StyleProp<ViewStyle>;
   labelStyle: StyleProp<TextStyle>;
+  /** Icon-only (no label) when the card is too small to fit the text. */
+  compact?: boolean;
 }) {
   const scale = useSharedValue(1);
   const aStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
@@ -384,7 +413,9 @@ function StoryAction({
   return (
     <AnimatedPressable style={[btnStyle, aStyle]} onPress={handle} hitSlop={6}>
       <Ionicons name={active ? activeIcon : icon} size={20} color={color} />
-      <Text style={[labelStyle, active && { color }]}>{label}</Text>
+      {!compact && (
+        <Text style={[labelStyle, active && { color }]}>{label}</Text>
+      )}
     </AnimatedPressable>
   );
 }
@@ -478,26 +509,13 @@ const makeViewerStyles = (c: ThemeChrome) =>
     time: { color: 'rgba(43,29,13,0.6)', fontFamily: fonts.body, fontSize: 12 },
     trash: { marginLeft: spacing.sm },
     headerClose: { marginLeft: spacing.xs },
-    cardArea: {
-      width: CARD_W,
-      height: CARD_H,
-      borderRadius: radius.lg,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.4,
-      shadowRadius: 16,
-      elevation: 10,
-    },
-    cardClip: {
+    stage: { position: 'relative' },
+    actionLayer: {
       ...StyleSheet.absoluteFillObject,
-      borderRadius: radius.lg,
-      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     cardActions: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 14,
       flexDirection: 'row',
       justifyContent: 'center',
       gap: spacing.xl,
@@ -509,10 +527,5 @@ const makeViewerStyles = (c: ThemeChrome) =>
       fontSize: 11,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
-    },
-    close: {
-      position: 'absolute',
-      top: spacing.xxl,
-      right: spacing.lg,
     },
   });

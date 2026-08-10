@@ -26,7 +26,17 @@ export interface EmojiOverlay {
   rotation?: number; // radians
 }
 
-export type Overlay = TextOverlay | EmojiOverlay;
+/** The resizable/movable film card itself (one per post, kind 'card'). */
+export interface CardLayout {
+  id: 'card';
+  kind: 'card';
+  tx: number; // centre offset, normalized to stage width
+  ty: number; // centre offset, normalized to stage height
+  scale: number;
+}
+
+export type Sticker = TextOverlay | EmojiOverlay;
+export type Overlay = Sticker | CardLayout;
 
 export interface StoryPost {
   id: string;

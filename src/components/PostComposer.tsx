@@ -14,15 +14,15 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '@/api/types';
-import { EmojiOverlay, Overlay, TextOverlay } from '@/api/posts';
+import { CardLayout, EmojiOverlay, Overlay, Sticker, TextOverlay } from '@/api/posts';
 import { useCreatePost } from '@/hooks/useStories';
 import { fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import {
   CARD_RATIO,
+  EditableCard,
   EditableOverlay,
   fontFamilyFor,
-  StoryCard,
   storyPalette,
   STORY_COLORS,
   STORY_FONTS,
@@ -30,9 +30,9 @@ import {
 
 const SCREEN_W = Dimensions.get('window').width;
 const SCREEN_H = Dimensions.get('window').height;
-// A 9:16 story card that fits between the top bar and the Post button.
-const CARD_W = Math.min(SCREEN_W - spacing.lg * 2, (SCREEN_H - 300) / CARD_RATIO);
-const CARD_H = CARD_W * CARD_RATIO;
+// The 9:16 stage; the card fills it at scale 1 and can be shrunk within it.
+const STAGE_W = Math.min(SCREEN_W - spacing.lg * 2, (SCREEN_H - 300) / CARD_RATIO);
+const STAGE_H = STAGE_W * CARD_RATIO;
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 // Dark ink for chrome on the light (film-tinted) stage.
@@ -50,13 +50,15 @@ export function PostComposer({
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const create = useCreatePost();
-  const [overlays, setOverlays] = useState<Overlay[]>([]);
+  const [stickers, setStickers] = useState<Sticker[]>([]);
+  const [card, setCard] = useState({ tx: 0, ty: 0, scale: 1 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (movie) {
-      setOverlays([]);
+      setStickers([]);
+      setCard({ tx: 0, ty: 0, scale: 1 });
       setSelectedId(null);
       setEditingId(null);
     }
@@ -68,11 +70,11 @@ export function PostComposer({
     id: string,
     patch: Partial<TextOverlay> & Partial<EmojiOverlay>,
   ) =>
-    setOverlays((v) =>
-      v.map((o) => (o.id === id ? ({ ...o, ...patch } as Overlay) : o)),
+    setStickers((v) =>
+      v.map((o) => (o.id === id ? ({ ...o, ...patch } as Sticker) : o)),
     );
   const remove = (id: string) => {
-    setOverlays((v) => v.filter((o) => o.id !== id));
+    setStickers((v) => v.filter((o) => o.id !== id));
     setSelectedId((s) => (s === id ? null : s));
   };
   const addText = () => {
@@ -86,12 +88,12 @@ export function PostComposer({
       ty: 0,
       scale: 1,
     };
-    setOverlays((v) => [...v, o]);
+    setStickers((v) => [...v, o]);
     setSelectedId(o.id);
     setEditingId(o.id);
   };
   const finishEdit = () => {
-    setOverlays((v) =>
+    setStickers((v) =>
       v.filter(
         (o) => !(o.id === editingId && o.kind === 'text' && !o.text.trim()),
       ),
@@ -99,9 +101,10 @@ export function PostComposer({
     setEditingId(null);
   };
   const post = () => {
-    const clean = overlays.filter(
+    const clean = stickers.filter(
       (o) => o.kind !== 'text' || o.text.trim().length > 0,
     );
+    const cardEl: CardLayout = { id: 'card', kind: 'card', ...card };
     create.mutate(
       {
         movie: {
@@ -112,18 +115,19 @@ export function PostComposer({
           year: movie.year,
         },
         caption: '',
-        overlays: clean,
+        overlays: [cardEl, ...clean] as Overlay[],
       },
       { onSuccess: onClose },
     );
   };
 
   const palette = storyPalette(movie.title ?? movie.id);
-  const selected = overlays.find((o) => o.id === selectedId) ?? null;
+  const cardLayout: CardLayout = { id: 'card', kind: 'card', ...card };
+  const selected = stickers.find((o) => o.id === selectedId) ?? null;
   const selectedText = selected && selected.kind === 'text' ? selected : null;
   const editing =
     editingId != null
-      ? (overlays.find((o) => o.id === editingId && o.kind === 'text') as
+      ? (stickers.find((o) => o.id === editingId && o.kind === 'text') as
           | TextOverlay
           | undefined)
       : undefined;
@@ -147,24 +151,25 @@ export function PostComposer({
       </View>
 
       <View style={styles.canvasWrap}>
-        <View style={[styles.cardArea, { width: CARD_W, height: CARD_H }]}>
-          <View style={styles.cardClip}>
-            <StoryCard
-              title={movie.title}
-              posterPath={movie.posterPath}
-              year={movie.year}
-              width={CARD_W}
-              height={CARD_H}
-              cardColor={palette.card}
-              textColor={palette.text}
-            />
-          </View>
-          {overlays.map((o) => (
+        <View style={[styles.stage, { width: STAGE_W, height: STAGE_H }]}>
+          <EditableCard
+            key={movie.id}
+            layout={cardLayout}
+            stageW={STAGE_W}
+            stageH={STAGE_H}
+            title={movie.title}
+            posterPath={movie.posterPath}
+            year={movie.year}
+            cardColor={palette.card}
+            textColor={palette.text}
+            onChange={(patch) => setCard((c) => ({ ...c, ...patch }))}
+          />
+          {stickers.map((o) => (
             <EditableOverlay
               key={o.id}
               overlay={o}
-              canvasW={CARD_W}
-              canvasH={CARD_H}
+              canvasW={STAGE_W}
+              canvasH={STAGE_H}
               selected={selectedId === o.id}
               onSelect={setSelectedId}
               onEditText={(id) => {
@@ -297,12 +302,7 @@ const makeStyles = (c: ThemeChrome) =>
     },
     toolAa: { color: INK, fontFamily: fonts.display, fontSize: 18 },
     canvasWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-    cardArea: { position: 'relative' },
-    cardClip: {
-      ...StyleSheet.absoluteFillObject,
-      borderRadius: radius.lg,
-      overflow: 'hidden',
-    },
+    stage: { position: 'relative' },
     quickBar: {
       flexDirection: 'row',
       justifyContent: 'center',

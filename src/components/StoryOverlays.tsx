@@ -6,13 +6,21 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Overlay } from '@/api/posts';
-import { fonts } from '@/theme';
+import { CardLayout, Sticker } from '@/api/posts';
+import { fonts, radius } from '@/theme';
 import { POSTER_SIZE } from '@/constants/config';
 import { PosterImage } from './PosterImage';
 
 // Story card aspect (portrait 9:16): height / width.
 export const CARD_RATIO = 16 / 9;
+export const CARD_MIN_SCALE = 0.34;
+export const DEFAULT_CARD: CardLayout = {
+  id: 'card',
+  kind: 'card',
+  tx: 0,
+  ty: 0,
+  scale: 1,
+};
 
 function hslToHex(h: number, s: number, l: number): string {
   const sf = s / 100;
@@ -89,7 +97,7 @@ export function OverlayContent({
   overlay,
   canvasW,
 }: {
-  overlay: Overlay;
+  overlay: Sticker;
   canvasW: number;
 }) {
   if (overlay.kind === 'emoji') {
@@ -195,13 +203,155 @@ export function StoryCard({
   );
 }
 
+/** The film card positioned + scaled on the stage (non-interactive, viewer). */
+export function StaticCard({
+  layout,
+  stageW,
+  stageH,
+  title,
+  posterPath,
+  year,
+  cardColor,
+  textColor,
+}: {
+  layout: CardLayout;
+  stageW: number;
+  stageH: number;
+  title: string | null;
+  posterPath: string | null;
+  year: number | null;
+  cardColor: string;
+  textColor: string;
+}) {
+  return (
+    <View style={styles.layer} pointerEvents="none">
+      <View
+        style={[
+          styles.cardShadow,
+          {
+            width: stageW,
+            height: stageH,
+            backgroundColor: cardColor,
+            transform: [
+              { translateX: layout.tx * stageW },
+              { translateY: layout.ty * stageH },
+              { scale: layout.scale },
+            ],
+          },
+        ]}
+      >
+        <View style={styles.cardClip}>
+          <StoryCard
+            title={title}
+            posterPath={posterPath}
+            year={year}
+            width={stageW}
+            height={stageH}
+            cardColor={cardColor}
+            textColor={textColor}
+          />
+        </View>
+      </View>
+    </View>
+  );
+}
+
+/** The film card with pinch-to-resize + drag (composer). */
+export function EditableCard({
+  layout,
+  stageW,
+  stageH,
+  title,
+  posterPath,
+  year,
+  cardColor,
+  textColor,
+  onChange,
+}: {
+  layout: CardLayout;
+  stageW: number;
+  stageH: number;
+  title: string | null;
+  posterPath: string | null;
+  year: number | null;
+  cardColor: string;
+  textColor: string;
+  onChange: (patch: { tx?: number; ty?: number; scale?: number }) => void;
+}) {
+  const tx = useSharedValue(layout.tx * stageW);
+  const ty = useSharedValue(layout.ty * stageH);
+  const scale = useSharedValue(layout.scale);
+  const sTx = useSharedValue(0);
+  const sTy = useSharedValue(0);
+  const sScale = useSharedValue(1);
+
+  const pan = Gesture.Pan()
+    .onBegin(() => {
+      sTx.value = tx.value;
+      sTy.value = ty.value;
+    })
+    .onUpdate((e) => {
+      tx.value = sTx.value + e.translationX;
+      ty.value = sTy.value + e.translationY;
+    })
+    .onEnd(() => {
+      runOnJS(onChange)({ tx: tx.value / stageW, ty: ty.value / stageH });
+    });
+
+  const pinch = Gesture.Pinch()
+    .onBegin(() => {
+      sScale.value = scale.value;
+    })
+    .onUpdate((e) => {
+      scale.value = Math.min(1, Math.max(CARD_MIN_SCALE, sScale.value * e.scale));
+    })
+    .onEnd(() => {
+      runOnJS(onChange)({ scale: scale.value });
+    });
+
+  const gesture = Gesture.Simultaneous(pan, pinch);
+  const aStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: tx.value },
+      { translateY: ty.value },
+      { scale: scale.value },
+    ],
+  }));
+
+  return (
+    <View style={styles.layer} pointerEvents="box-none">
+      <GestureDetector gesture={gesture}>
+        <Animated.View
+          style={[
+            styles.cardShadow,
+            { width: stageW, height: stageH, backgroundColor: cardColor },
+            aStyle,
+          ]}
+        >
+          <View style={styles.cardClip}>
+            <StoryCard
+              title={title}
+              posterPath={posterPath}
+              year={year}
+              width={stageW}
+              height={stageH}
+              cardColor={cardColor}
+              textColor={textColor}
+            />
+          </View>
+        </Animated.View>
+      </GestureDetector>
+    </View>
+  );
+}
+
 /** Non-interactive overlays, positioned on the poster (used in the viewer). */
 export function StaticOverlays({
   overlays,
   width,
   height,
 }: {
-  overlays: Overlay[];
+  overlays: Sticker[];
   width: number;
   height: number;
 }) {
@@ -237,7 +387,7 @@ export function EditableOverlay({
   onEditText,
   onChange,
 }: {
-  overlay: Overlay;
+  overlay: Sticker;
   canvasW: number;
   canvasH: number;
   selected: boolean;
@@ -334,6 +484,19 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
     backgroundColor: '#00000010',
+  },
+  cardShadow: {
+    borderRadius: radius.lg,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  cardClip: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
   },
   editItem: {
     minWidth: 64,
