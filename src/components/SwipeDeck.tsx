@@ -273,22 +273,46 @@ function TopCard({
   }));
 
   const watchedStampStyle = useAnimatedStyle(() => {
-    const p = interpolate(
-      translateX.value + demoX.value,
-      [0, SWIPE_THRESHOLD],
-      [0, 1],
-      Extrapolation.CLAMP,
-    );
+    const x = translateX.value + demoX.value;
+    const horizontal = Math.abs(x) >= Math.abs(translateY.value);
+    const p = horizontal
+      ? interpolate(x, [0, SWIPE_THRESHOLD], [0, 1], Extrapolation.CLAMP)
+      : 0;
     return { opacity: p, transform: [{ scale: 0.85 + p * 0.15 }] };
   });
 
   const skipStampStyle = useAnimatedStyle(() => {
-    const p = interpolate(
-      translateX.value + demoX.value,
-      [-SWIPE_THRESHOLD, 0],
-      [1, 0],
-      Extrapolation.CLAMP,
-    );
+    const x = translateX.value + demoX.value;
+    const horizontal = Math.abs(x) >= Math.abs(translateY.value);
+    const p = horizontal
+      ? interpolate(x, [-SWIPE_THRESHOLD, 0], [1, 0], Extrapolation.CLAMP)
+      : 0;
+    return { opacity: p, transform: [{ scale: 0.85 + p * 0.15 }] };
+  });
+
+  const wishlistStampStyle = useAnimatedStyle(() => {
+    const vertical = Math.abs(translateY.value) > Math.abs(translateX.value);
+    const p = vertical
+      ? interpolate(
+          translateY.value,
+          [-VERTICAL_THRESHOLD, 0],
+          [1, 0],
+          Extrapolation.CLAMP,
+        )
+      : 0;
+    return { opacity: p, transform: [{ scale: 0.85 + p * 0.15 }] };
+  });
+
+  const favoriteStampStyle = useAnimatedStyle(() => {
+    const vertical = Math.abs(translateY.value) > Math.abs(translateX.value);
+    const p = vertical
+      ? interpolate(
+          translateY.value,
+          [0, VERTICAL_THRESHOLD],
+          [0, 1],
+          Extrapolation.CLAMP,
+        )
+      : 0;
     return { opacity: p, transform: [{ scale: 0.85 + p * 0.15 }] };
   });
 
@@ -317,6 +341,40 @@ function TopCard({
               pointerEvents="none"
             >
               <SwipeStamp label="Skip" color={colors.skip} side="left" />
+            </Animated.View>
+            <Animated.View
+              style={[styles.stampLayerV, wishlistStampStyle]}
+              pointerEvents="none"
+            >
+              <Text
+                style={[
+                  styles.vStamp,
+                  {
+                    color: colors.star,
+                    borderColor: colors.star,
+                    transform: [{ rotate: '-8deg' }],
+                  },
+                ]}
+              >
+                Wishlist
+              </Text>
+            </Animated.View>
+            <Animated.View
+              style={[styles.stampLayerV, favoriteStampStyle]}
+              pointerEvents="none"
+            >
+              <Text
+                style={[
+                  styles.vStamp,
+                  {
+                    color: colors.favorite,
+                    borderColor: colors.favorite,
+                    transform: [{ rotate: '8deg' }],
+                  },
+                ]}
+              >
+                Favorites
+              </Text>
             </Animated.View>
             <View style={styles.flipHint} pointerEvents="none">
               <Ionicons
@@ -645,6 +703,23 @@ const styles = StyleSheet.create({
   },
   stampLayer: {
     ...absoluteFill,
+  },
+  stampLayerV: {
+    ...absoluteFill,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 40,
+  },
+  vStamp: {
+    fontFamily: fonts.display,
+    fontSize: 34,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderWidth: 4,
+    borderRadius: radius.md,
+    overflow: 'hidden',
   },
   dimOverlay: {
     ...absoluteFill,
