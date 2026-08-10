@@ -14,6 +14,40 @@ import { PosterImage } from './PosterImage';
 // Story card aspect (portrait 9:16): height / width.
 export const CARD_RATIO = 16 / 9;
 
+function hslToHex(h: number, s: number, l: number): string {
+  const sf = s / 100;
+  const lf = l / 100;
+  const k = (n: number) => (n + h / 30) % 12;
+  const a = sf * Math.min(lf, 1 - lf);
+  const f = (n: number) => {
+    const c = lf - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return Math.round(255 * c)
+      .toString(16)
+      .padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function hashHue(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return h % 360;
+}
+
+/** Per-film palette (same hue): a light background + a darker card. */
+export function storyPalette(seed: string): {
+  bg: string;
+  card: string;
+  text: string;
+} {
+  const hue = hashHue(seed || 'shelfed');
+  return {
+    bg: hslToHex(hue, 30, 90),
+    card: hslToHex(hue, 42, 20),
+    text: '#f3ece0',
+  };
+}
+
 /** Selectable fonts for a text sticker (key persisted, family resolved here). */
 export const STORY_FONTS: { key: string; family?: string; label: string }[] = [
   { key: 'display', family: fonts.display, label: 'Poster' },
@@ -88,22 +122,29 @@ export function StoryCard({
   year,
   width,
   height,
+  cardColor,
+  textColor,
 }: {
   title: string | null;
   posterPath: string | null;
   year: number | null;
   width: number;
   height: number;
+  cardColor: string;
+  textColor: string;
 }) {
-  const pad = width * 0.08;
-  const posterW = width * 0.66;
-  const posterH = posterW * 1.5;
+  const pad = width * 0.05;
+  const maxPosterH = height * 0.66;
+  let posterW = width - pad * 2;
+  let posterH = posterW * 1.5;
+  if (posterH > maxPosterH) {
+    posterH = maxPosterH;
+    posterW = posterH / 1.5;
+  }
   return (
-    <View style={{ width, height }}>
+    <View style={{ width, height, backgroundColor: cardColor }}>
       <LinearGradient
-        colors={['#f6ecd6', '#e7d0a4']}
-        start={{ x: 0.2, y: 0 }}
-        end={{ x: 0.85, y: 1 }}
+        colors={['rgba(255,255,255,0.08)', 'rgba(0,0,0,0.22)']}
         style={StyleSheet.absoluteFill}
       />
       <View
@@ -111,8 +152,7 @@ export function StoryCard({
           flex: 1,
           alignItems: 'center',
           paddingHorizontal: pad,
-          paddingTop: height * 0.08,
-          paddingBottom: pad,
+          paddingTop: height * 0.05,
         }}
       >
         <View style={[styles.posterShadow, { borderRadius: width * 0.04 }]}>
@@ -126,10 +166,10 @@ export function StoryCard({
         <Text
           numberOfLines={2}
           style={{
-            marginTop: height * 0.035,
+            marginTop: height * 0.028,
             fontFamily: fonts.display,
-            fontSize: width * 0.08,
-            color: '#2b1d0d',
+            fontSize: width * 0.075,
+            color: textColor,
             textAlign: 'center',
             textTransform: 'uppercase',
             letterSpacing: 0.5,
@@ -142,24 +182,14 @@ export function StoryCard({
             style={{
               marginTop: 2,
               fontFamily: fonts.body,
-              fontSize: width * 0.045,
-              color: '#6a5433',
+              fontSize: width * 0.042,
+              color: textColor,
+              opacity: 0.7,
             }}
           >
             {year}
           </Text>
         )}
-        <View style={{ flex: 1 }} />
-        <Text
-          style={{
-            fontFamily: fonts.display,
-            fontSize: width * 0.05,
-            color: 'rgba(43,29,13,0.5)',
-            letterSpacing: 2,
-          }}
-        >
-          SHELFED
-        </Text>
       </View>
     </View>
   );
@@ -184,6 +214,7 @@ export function StaticOverlays({
               transform: [
                 { translateX: o.tx * width },
                 { translateY: o.ty * height },
+                { rotate: `${o.rotation ?? 0}rad` },
                 { scale: o.scale },
               ],
             }}
@@ -212,14 +243,19 @@ export function EditableOverlay({
   selected: boolean;
   onSelect: (id: string) => void;
   onEditText: (id: string) => void;
-  onChange: (id: string, patch: { tx?: number; ty?: number; scale?: number }) => void;
+  onChange: (
+    id: string,
+    patch: { tx?: number; ty?: number; scale?: number; rotation?: number },
+  ) => void;
 }) {
   const tx = useSharedValue(overlay.tx * canvasW);
   const ty = useSharedValue(overlay.ty * canvasH);
   const scale = useSharedValue(overlay.scale);
+  const rot = useSharedValue(overlay.rotation ?? 0);
   const sTx = useSharedValue(0);
   const sTy = useSharedValue(0);
   const sScale = useSharedValue(1);
+  const sRot = useSharedValue(0);
 
   const pan = Gesture.Pan()
     .onBegin(() => {
@@ -246,6 +282,17 @@ export function EditableOverlay({
       runOnJS(onChange)(overlay.id, { scale: scale.value });
     });
 
+  const rotate = Gesture.Rotation()
+    .onBegin(() => {
+      sRot.value = rot.value;
+    })
+    .onUpdate((e) => {
+      rot.value = sRot.value + e.rotation;
+    })
+    .onEnd(() => {
+      runOnJS(onChange)(overlay.id, { rotation: rot.value });
+    });
+
   const tap = Gesture.Tap()
     .maxDuration(250)
     .onEnd(() => {
@@ -253,11 +300,12 @@ export function EditableOverlay({
       if (overlay.kind === 'text') runOnJS(onEditText)(overlay.id);
     });
 
-  const gesture = Gesture.Simultaneous(pan, pinch, tap);
+  const gesture = Gesture.Simultaneous(pan, pinch, rotate, tap);
   const aStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: tx.value },
       { translateY: ty.value },
+      { rotate: `${rot.value}rad` },
       { scale: scale.value },
     ],
   }));
@@ -288,10 +336,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000010',
   },
   editItem: {
-    padding: 6,
+    minWidth: 64,
+    minHeight: 44,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'transparent',
-    borderRadius: 8,
+    borderRadius: 10,
   },
   selected: {
     borderColor: 'rgba(255,255,255,0.9)',

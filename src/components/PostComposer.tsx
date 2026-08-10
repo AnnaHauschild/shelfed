@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -24,8 +23,8 @@ import {
   EditableOverlay,
   fontFamilyFor,
   StoryCard,
+  storyPalette,
   STORY_COLORS,
-  STORY_EMOJIS,
   STORY_FONTS,
 } from './StoryOverlays';
 
@@ -36,6 +35,8 @@ const CARD_W = Math.min(SCREEN_W - spacing.lg * 2, (SCREEN_H - 300) / CARD_RATIO
 const CARD_H = CARD_W * CARD_RATIO;
 
 const uid = () => Math.random().toString(36).slice(2, 10);
+// Dark ink for chrome on the light (film-tinted) stage.
+const INK = '#2b1d0d';
 
 /** Instagram-style story editor: poster + draggable text/emoji stickers. */
 export function PostComposer({
@@ -52,14 +53,12 @@ export function PostComposer({
   const [overlays, setOverlays] = useState<Overlay[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [emojiOpen, setEmojiOpen] = useState(false);
 
   useEffect(() => {
     if (movie) {
       setOverlays([]);
       setSelectedId(null);
       setEditingId(null);
-      setEmojiOpen(false);
     }
   }, [movie]);
 
@@ -91,12 +90,6 @@ export function PostComposer({
     setSelectedId(o.id);
     setEditingId(o.id);
   };
-  const addEmoji = (emoji: string) => {
-    const o: EmojiOverlay = { id: uid(), kind: 'emoji', emoji, tx: 0, ty: 0, scale: 1 };
-    setOverlays((v) => [...v, o]);
-    setSelectedId(o.id);
-    setEmojiOpen(false);
-  };
   const finishEdit = () => {
     setOverlays((v) =>
       v.filter(
@@ -125,6 +118,7 @@ export function PostComposer({
     );
   };
 
+  const palette = storyPalette(movie.title ?? movie.id);
   const selected = overlays.find((o) => o.id === selectedId) ?? null;
   const selectedText = selected && selected.kind === 'text' ? selected : null;
   const editing =
@@ -135,35 +129,36 @@ export function PostComposer({
       : undefined;
 
   return (
-    <GestureHandlerRootView style={styles.root}>
+    <GestureHandlerRootView style={[styles.root, { backgroundColor: palette.bg }]}>
       <View style={[styles.topbar, { paddingTop: insets.top + 8 }]}>
         <Pressable onPress={onClose} hitSlop={10}>
-          <Ionicons name="close" size={26} color="#fff" />
+          <Ionicons name="close" size={26} color={INK} />
         </Pressable>
         <View style={styles.tools}>
           <Pressable onPress={addText} style={styles.tool} hitSlop={6}>
             <Text style={styles.toolAa}>Aa</Text>
           </Pressable>
-          <Pressable onPress={() => setEmojiOpen(true)} style={styles.tool} hitSlop={6}>
-            <Ionicons name="happy-outline" size={24} color="#fff" />
-          </Pressable>
           {selected && (
             <Pressable onPress={() => remove(selected.id)} style={styles.tool} hitSlop={6}>
-              <Ionicons name="trash-outline" size={22} color="#fff" />
+              <Ionicons name="trash-outline" size={22} color={INK} />
             </Pressable>
           )}
         </View>
       </View>
 
       <View style={styles.canvasWrap}>
-        <View style={[styles.canvas, { width: CARD_W, height: CARD_H }]}>
-          <StoryCard
-            title={movie.title}
-            posterPath={movie.posterPath}
-            year={movie.year}
-            width={CARD_W}
-            height={CARD_H}
-          />
+        <View style={[styles.cardArea, { width: CARD_W, height: CARD_H }]}>
+          <View style={styles.cardClip}>
+            <StoryCard
+              title={movie.title}
+              posterPath={movie.posterPath}
+              year={movie.year}
+              width={CARD_W}
+              height={CARD_H}
+              cardColor={palette.card}
+              textColor={palette.text}
+            />
+          </View>
           {overlays.map((o) => (
             <EditableOverlay
               key={o.id}
@@ -188,9 +183,9 @@ export function PostComposer({
             <Pressable
               key={f.key}
               onPress={() => update(selectedText.id, { font: f.key })}
-              style={[styles.fontChip, selectedText.font === f.key && styles.fontChipOn]}
+              style={[styles.chipLight, selectedText.font === f.key && styles.chipLightOn]}
             >
-              <Text style={{ fontFamily: f.family, color: '#fff', fontSize: 14 }}>
+              <Text style={{ fontFamily: f.family, color: INK, fontSize: 14 }}>
                 {f.label}
               </Text>
             </Pressable>
@@ -217,22 +212,6 @@ export function PostComposer({
           Only your accepted friends can see this. Disappears after 24h.
         </Text>
       </View>
-
-      {emojiOpen && (
-        <View style={styles.paletteRoot}>
-          <Pressable style={styles.paletteBackdrop} onPress={() => setEmojiOpen(false)} />
-          <View style={[styles.palette, { paddingBottom: insets.bottom + spacing.md }]}>
-            <View style={styles.paletteHandle} />
-            <ScrollView contentContainerStyle={styles.emojiGrid}>
-              {STORY_EMOJIS.map((e) => (
-                <Pressable key={e} onPress={() => addEmoji(e)} style={styles.emojiCell}>
-                  <Text style={styles.emojiTxt}>{e}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-      )}
 
       {editing && (
         <KeyboardAvoidingView
@@ -314,14 +293,15 @@ const makeStyles = (c: ThemeChrome) =>
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(255,255,255,0.12)',
+      backgroundColor: 'rgba(0,0,0,0.06)',
     },
-    toolAa: { color: '#fff', fontFamily: fonts.display, fontSize: 18 },
+    toolAa: { color: INK, fontFamily: fonts.display, fontSize: 18 },
     canvasWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-    canvas: {
+    cardArea: { position: 'relative' },
+    cardClip: {
+      ...StyleSheet.absoluteFillObject,
       borderRadius: radius.lg,
       overflow: 'hidden',
-      backgroundColor: '#000',
     },
     quickBar: {
       flexDirection: 'row',
@@ -339,6 +319,14 @@ const makeStyles = (c: ThemeChrome) =>
       borderColor: 'rgba(255,255,255,0.3)',
     },
     fontChipOn: { backgroundColor: 'rgba(255,255,255,0.22)', borderColor: '#fff' },
+    chipLight: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.25)',
+    },
+    chipLightOn: { backgroundColor: 'rgba(0,0,0,0.12)', borderColor: INK },
     footer: { paddingHorizontal: spacing.lg, gap: spacing.sm },
     postBtn: {
       flexDirection: 'row',
@@ -358,7 +346,7 @@ const makeStyles = (c: ThemeChrome) =>
       letterSpacing: 0.5,
     },
     hint: {
-      color: 'rgba(255,255,255,0.6)',
+      color: 'rgba(43,29,13,0.55)',
       fontFamily: fonts.body,
       fontSize: 12,
       textAlign: 'center',

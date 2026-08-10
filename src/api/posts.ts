@@ -12,6 +12,7 @@ export interface TextOverlay {
   tx: number; // x offset from canvas centre, normalized to canvas width
   ty: number; // y offset from canvas centre, normalized to canvas height
   scale: number;
+  rotation?: number; // radians
 }
 
 /** A draggable emoji sticker placed on the story poster. */
@@ -22,6 +23,7 @@ export interface EmojiOverlay {
   tx: number;
   ty: number;
   scale: number;
+  rotation?: number; // radians
 }
 
 export type Overlay = TextOverlay | EmojiOverlay;

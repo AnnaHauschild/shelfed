@@ -31,7 +31,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useAuth } from '@/context/AuthProvider';
 import { useMovieDetails } from './MovieDetailsProvider';
-import { CARD_RATIO, StaticOverlays, StoryCard } from './StoryOverlays';
+import { CARD_RATIO, StaticOverlays, StoryCard, storyPalette } from './StoryOverlays';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { Avatar } from './Avatar';
@@ -45,6 +45,9 @@ const CARD_H = CARD_W * CARD_RATIO;
 
 // How long each story segment plays before auto-advancing to the next.
 const STORY_MS = 6000;
+
+// Dark ink for chrome sitting on the light (film-tinted) stage.
+const INK = '#2b1d0d';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -244,8 +247,10 @@ export function StoryViewer({
 
   if (!group || posts.length === 0 || !item) return null;
 
+  const palette = storyPalette(item.title ?? item.movieId);
+
   return (
-    <View style={styles.overlay}>
+    <View style={[styles.overlay, { backgroundColor: palette.bg }]}>
       <Pressable
         style={styles.tapLeft}
         onPress={goPrev}
@@ -281,62 +286,60 @@ export function StoryViewer({
             <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>
             {isMine && (
               <Pressable onPress={confirmDelete} hitSlop={10} style={styles.trash}>
-                <Ionicons
-                  name="trash-outline"
-                  size={20}
-                  color={colors.textOnDark}
-                />
+                <Ionicons name="trash-outline" size={20} color={INK} />
               </Pressable>
             )}
           </View>
-          <View style={styles.info} pointerEvents="none">
-            <View style={styles.cardWrap}>
+          <View
+            style={[styles.cardArea, { backgroundColor: palette.card }]}
+            pointerEvents="box-none"
+          >
+            <View style={styles.cardClip} pointerEvents="none">
               <StoryCard
                 title={item.title}
                 posterPath={item.posterPath}
                 year={item.year}
                 width={CARD_W}
                 height={CARD_H}
-              />
-              <StaticOverlays
-                overlays={item.overlays}
-                width={CARD_W}
-                height={CARD_H}
+                cardColor={palette.card}
+                textColor={palette.text}
               />
             </View>
-            {item.overlays.length === 0 && item.caption ? (
-              <Text style={styles.caption}>{item.caption}</Text>
-            ) : null}
-          </View>
-          <View style={styles.actions}>
-            <StoryAction
-              icon="star-outline"
-              activeIcon="star"
-              active={states.isWatchlisted(item.movieId)}
-              color={colors.star}
-              label="Wishlist"
-              onPress={() => toggleWatchlist(toMovie(item))}
-              btnStyle={styles.actionBtn}
-              labelStyle={styles.actionLabel}
+            <StaticOverlays
+              overlays={item.overlays}
+              width={CARD_W}
+              height={CARD_H}
             />
-            <StoryAction
-              icon="heart-outline"
-              activeIcon="heart"
-              active={states.isFavorite(item.movieId)}
-              color={colors.favorite}
-              label="Favorite"
-              onPress={() => toggleFavorite(toMovie(item))}
-              btnStyle={styles.actionBtn}
-              labelStyle={styles.actionLabel}
-            />
-            <Pressable style={styles.actionBtn} onPress={openInfo}>
-              <Ionicons
-                name="information-circle-outline"
-                size={20}
-                color={colors.textOnDark}
+            <View style={styles.cardActions}>
+              <StoryAction
+                icon="star-outline"
+                activeIcon="star"
+                active={states.isWatchlisted(item.movieId)}
+                color={colors.star}
+                label="Wishlist"
+                onPress={() => toggleWatchlist(toMovie(item))}
+                btnStyle={styles.actionBtn}
+                labelStyle={styles.actionLabel}
               />
-              <Text style={styles.actionLabel}>Details</Text>
-            </Pressable>
+              <StoryAction
+                icon="heart-outline"
+                activeIcon="heart"
+                active={states.isFavorite(item.movieId)}
+                color={colors.favorite}
+                label="Favorite"
+                onPress={() => toggleFavorite(toMovie(item))}
+                btnStyle={styles.actionBtn}
+                labelStyle={styles.actionLabel}
+              />
+              <Pressable style={styles.actionBtn} onPress={openInfo}>
+                <Ionicons
+                  name="information-circle-outline"
+                  size={20}
+                  color={palette.text}
+                />
+                <Text style={styles.actionLabel}>Details</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
 
@@ -345,7 +348,7 @@ export function StoryViewer({
           onPress={onClose}
           hitSlop={10}
         >
-          <Ionicons name="close" size={26} color={colors.textOnDark} />
+          <Ionicons name="close" size={26} color={INK} />
         </Pressable>
       </View>
     </View>
@@ -452,10 +455,10 @@ const makeViewerStyles = (c: ThemeChrome) =>
       flex: 1,
       height: 3,
       borderRadius: 2,
-      backgroundColor: 'rgba(255, 255, 255, 0.28)',
+      backgroundColor: 'rgba(0, 0, 0, 0.18)',
       overflow: 'hidden',
     },
-    barFill: { height: '100%', backgroundColor: colors.textOnDark },
+    barFill: { height: '100%', backgroundColor: INK },
     barFillDone: { width: '100%' },
     page: {
       flex: 1,
@@ -473,37 +476,39 @@ const makeViewerStyles = (c: ThemeChrome) =>
     },
     headerName: {
       flex: 1,
-      color: colors.textOnDark,
+      color: INK,
       fontFamily: fonts.heading,
       fontSize: 15,
     },
-    time: { color: c.muted, fontFamily: fonts.body, fontSize: 12 },
+    time: { color: 'rgba(43,29,13,0.6)', fontFamily: fonts.body, fontSize: 12 },
     trash: { marginLeft: spacing.sm },
-    cardWrap: {
+    cardArea: {
       width: CARD_W,
       height: CARD_H,
       borderRadius: radius.lg,
-      overflow: 'hidden',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.4,
       shadowRadius: 16,
       elevation: 10,
     },
-    caption: {
-      color: colors.textOnDark,
-      fontFamily: fonts.body,
-      fontSize: 15,
-      textAlign: 'center',
+    cardClip: {
+      ...StyleSheet.absoluteFillObject,
+      borderRadius: radius.lg,
+      overflow: 'hidden',
     },
-    actions: {
+    cardActions: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 14,
       flexDirection: 'row',
+      justifyContent: 'center',
       gap: spacing.xl,
-      marginTop: spacing.sm,
     },
     actionBtn: { alignItems: 'center', gap: 4 },
     actionLabel: {
-      color: c.muted,
+      color: 'rgba(243,236,224,0.9)',
       fontFamily: fonts.label,
       fontSize: 11,
       textTransform: 'uppercase',
