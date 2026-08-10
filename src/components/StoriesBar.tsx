@@ -75,6 +75,7 @@ export function StoriesBar({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={styles.bar}
       contentContainerStyle={styles.row}
     >
       {groups.map((g, i) => (
@@ -289,6 +290,9 @@ export function StoryViewer({
 
 const makeStyles = (c: ThemeChrome) =>
   StyleSheet.create({
+    // Wrap to content height; without this a horizontal ScrollView stretches
+    // to fill a flex column and pushes siblings down.
+    bar: { flexGrow: 0 },
     row: {
       gap: spacing.md,
       paddingVertical: spacing.sm,

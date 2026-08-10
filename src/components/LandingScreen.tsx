@@ -22,6 +22,8 @@ import { AboutModal } from './AboutModal';
 import { ShelfBackground } from './ShelfBackground';
 import { FeatureHeader } from './FeatureHeader';
 import { FriendsSheet } from './FriendsSheet';
+import { StoriesBar, StoryViewer } from './StoriesBar';
+import { StoryGroup } from '@/api/posts';
 
 interface Category {
   type: MediaType | null;
@@ -31,6 +33,10 @@ interface Category {
   accent: string;
   disabled?: boolean;
 }
+
+// TRIAL: where the Stories row sits on the home screen — 'top' (above the
+// category cards) or 'bottom' (below Games). Flip to compare the two.
+const STORIES_POSITION: 'top' | 'bottom' = 'top';
 
 const CATEGORIES: Category[] = [
   {
@@ -77,6 +83,9 @@ export function LandingScreen() {
   const signedIn = enabled && !!session;
   const [showFriends, setShowFriends] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [story, setStory] = useState<{ groups: StoryGroup[]; index: number } | null>(
+    null,
+  );
 
   // Header = exactly one shelf row (measured screen / 5), matching Discover/Search,
   // so 4 equal cubbies always show below it on any device (no per-format tuning).
@@ -122,14 +131,23 @@ export function LandingScreen() {
           )}
         </View>
 
+        {STORIES_POSITION === 'top' && signedIn && (
+          <StoriesBar onOpen={(groups, index) => setStory({ groups, index })} />
+        )}
+
         <View style={styles.cards}>
           {CATEGORIES.map((c) => (
             <CategoryCard key={c.label} category={c} onPick={choose} />
           ))}
         </View>
+
+        {STORIES_POSITION === 'bottom' && signedIn && (
+          <StoriesBar onOpen={(groups, index) => setStory({ groups, index })} />
+        )}
       </View>
 
       <FriendsSheet visible={showFriends} onClose={() => setShowFriends(false)} />
+      <StoryViewer story={story} onClose={() => setStory(null)} />
       <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
 
       <Pressable
