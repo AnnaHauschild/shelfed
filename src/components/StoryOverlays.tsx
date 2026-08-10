@@ -291,8 +291,11 @@ export function EditableCard({
       sTy.value = ty.value;
     })
     .onUpdate((e) => {
-      tx.value = sTx.value + e.translationX;
-      ty.value = sTy.value + e.translationY;
+      // Keep the card inside the stage (can't move at full size).
+      const maxX = ((1 - scale.value) / 2) * stageW;
+      const maxY = ((1 - scale.value) / 2) * stageH;
+      tx.value = Math.min(maxX, Math.max(-maxX, sTx.value + e.translationX));
+      ty.value = Math.min(maxY, Math.max(-maxY, sTy.value + e.translationY));
     })
     .onEnd(() => {
       runOnJS(onChange)({ tx: tx.value / stageW, ty: ty.value / stageH });
@@ -303,10 +306,20 @@ export function EditableCard({
       sScale.value = scale.value;
     })
     .onUpdate((e) => {
-      scale.value = Math.min(1, Math.max(CARD_MIN_SCALE, sScale.value * e.scale));
+      const s = Math.min(1, Math.max(CARD_MIN_SCALE, sScale.value * e.scale));
+      scale.value = s;
+      // Re-clamp position to the new (smaller/larger) allowed range.
+      const maxX = ((1 - s) / 2) * stageW;
+      const maxY = ((1 - s) / 2) * stageH;
+      tx.value = Math.min(maxX, Math.max(-maxX, tx.value));
+      ty.value = Math.min(maxY, Math.max(-maxY, ty.value));
     })
     .onEnd(() => {
-      runOnJS(onChange)({ scale: scale.value });
+      runOnJS(onChange)({
+        scale: scale.value,
+        tx: tx.value / stageW,
+        ty: ty.value / stageH,
+      });
     });
 
   const gesture = Gesture.Simultaneous(pan, pinch);
@@ -482,7 +495,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
-    elevation: 8,
     backgroundColor: '#00000010',
   },
   cardShadow: {
@@ -491,7 +503,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 16,
-    elevation: 10,
   },
   cardClip: {
     ...StyleSheet.absoluteFillObject,
