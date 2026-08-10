@@ -2,6 +2,30 @@ import { supabase } from './supabase';
 import { getFollowingIds, getProfiles, UserSummary } from './follows';
 import { MediaType } from './types';
 
+/** A draggable text sticker placed on the story poster. */
+export interface TextOverlay {
+  id: string;
+  kind: 'text';
+  text: string;
+  font: string; // STORY_FONTS key
+  color: string; // hex
+  tx: number; // x offset from canvas centre, normalized to canvas width
+  ty: number; // y offset from canvas centre, normalized to canvas height
+  scale: number;
+}
+
+/** A draggable emoji sticker placed on the story poster. */
+export interface EmojiOverlay {
+  id: string;
+  kind: 'emoji';
+  emoji: string;
+  tx: number;
+  ty: number;
+  scale: number;
+}
+
+export type Overlay = TextOverlay | EmojiOverlay;
+
 export interface StoryPost {
   id: string;
   userId: string;
@@ -11,6 +35,7 @@ export interface StoryPost {
   posterPath: string | null;
   year: number | null;
   caption: string | null;
+  overlays: Overlay[];
   createdAt: string;
 }
 
@@ -33,6 +58,7 @@ export async function createPost(
   userId: string,
   movie: PostableMovie,
   caption: string,
+  overlays: Overlay[] = [],
 ): Promise<{ error?: string }> {
   const { error } = await supabase.from('posts').insert({
     user_id: userId,
@@ -42,6 +68,7 @@ export async function createPost(
     poster_path: movie.posterPath,
     year: movie.year,
     caption: caption.trim() || null,
+    overlays,
   });
   return error ? { error: error.message } : {};
 }
@@ -55,6 +82,7 @@ function rowToPost(r: {
   poster_path: string | null;
   year: number | null;
   caption: string | null;
+  overlays: Overlay[] | null;
   created_at: string;
 }): StoryPost {
   return {
@@ -66,6 +94,7 @@ function rowToPost(r: {
     posterPath: r.poster_path,
     year: r.year,
     caption: r.caption,
+    overlays: Array.isArray(r.overlays) ? r.overlays : [],
     createdAt: r.created_at,
   };
 }

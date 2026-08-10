@@ -201,6 +201,10 @@ create table if not exists public.posts (
 create index if not exists posts_user_created_idx
   on public.posts (user_id, created_at desc);
 
+-- Draggable text/emoji/GIF stickers placed on the poster (JSON array).
+alter table public.posts
+  add column if not exists overlays jsonb not null default '[]'::jsonb;
+
 alter table public.posts enable row level security;
 
 -- Read your own posts + those of people you have an ACCEPTED follow with.

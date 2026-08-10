@@ -32,12 +32,17 @@ import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useAuth } from '@/context/AuthProvider';
 import { PosterImage } from './PosterImage';
 import { useMovieDetails } from './MovieDetailsProvider';
+import { StaticOverlays } from './StoryOverlays';
 import { POSTER_SIZE } from '@/constants/config';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { Avatar } from './Avatar';
 
 const { width: SCREEN_W } = Dimensions.get('window');
+
+// Story poster canvas (2:3) — overlays are positioned relative to this.
+const POSTER_W = SCREEN_W * 0.6;
+const POSTER_H = SCREEN_W * 0.9;
 
 // How long each story segment plays before auto-advancing to the next.
 const STORY_MS = 6000;
@@ -286,12 +291,19 @@ export function StoryViewer({
             )}
           </View>
           <View style={styles.info} pointerEvents="none">
-            <PosterImage
-              posterPath={item.posterPath}
-              title={item.title ?? ''}
-              size={POSTER_SIZE}
-              style={styles.poster}
-            />
+            <View style={styles.posterWrap}>
+              <PosterImage
+                posterPath={item.posterPath}
+                title={item.title ?? ''}
+                size={POSTER_SIZE}
+                style={styles.poster}
+              />
+              <StaticOverlays
+                overlays={item.overlays}
+                width={POSTER_W}
+                height={POSTER_H}
+              />
+            </View>
             <Text style={styles.movieTitle} numberOfLines={2}>
               {item.title}
               {item.year != null ? `  ·  ${item.year}` : ''}
@@ -471,10 +483,15 @@ const makeViewerStyles = (c: ThemeChrome) =>
     },
     time: { color: c.muted, fontFamily: fonts.body, fontSize: 12 },
     trash: { marginLeft: spacing.sm },
-    poster: {
-      width: SCREEN_W * 0.6,
-      height: SCREEN_W * 0.9,
+    posterWrap: {
+      width: POSTER_W,
+      height: POSTER_H,
       borderRadius: radius.md,
+      overflow: 'hidden',
+    },
+    poster: {
+      width: '100%',
+      height: '100%',
     },
     movieTitle: {
       color: colors.textOnDark,

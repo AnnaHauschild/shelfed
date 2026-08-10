@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createPost, deletePost, getStories } from '@/api/posts';
+import { createPost, deletePost, getStories, Overlay } from '@/api/posts';
 import { hasSupabase } from '@/api/supabase';
 import { MediaType } from '@/api/types';
 import { useAuth } from '@/context/AuthProvider';
@@ -28,8 +28,15 @@ export function useCreatePost() {
   const { userId } = useAuth();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ movie, caption }: { movie: PostableMovie; caption: string }) =>
-      createPost(userId as string, movie, caption),
+    mutationFn: ({
+      movie,
+      caption,
+      overlays,
+    }: {
+      movie: PostableMovie;
+      caption: string;
+      overlays?: Overlay[];
+    }) => createPost(userId as string, movie, caption, overlays ?? []),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['stories'] }),
   });
 }
