@@ -169,7 +169,7 @@ export default function DiscoverScreen() {
     vibes,
     providers,
   );
-  const { markWatched, skip, toggleWatchlist, toggleFavorite, undo } =
+  const { markWatched, skip, toggleWatchlist, toggleFavorite, wishlistSwipe, watchedFavoriteSwipe, undo } =
     useInteractions();
   const states = useInteractionStates();
 
@@ -306,6 +306,8 @@ export default function DiscoverScreen() {
               cards={movies}
               onSwipeRight={(movie) => markWatched(movie)}
               onSwipeLeft={(movie) => skip(movie)}
+              onSwipeUp={(movie) => wishlistSwipe(movie)}
+              onSwipeDown={(movie) => watchedFavoriteSwipe(movie)}
               onStar={toggleWatchlist}
               onHeart={toggleFavorite}
               onUndo={(movie, type) => undo(movie.id, type, movie.mediaType)}

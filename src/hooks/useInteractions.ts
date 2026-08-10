@@ -137,12 +137,33 @@ export function useInteractions() {
     [removeInteraction],
   );
 
+  /** Swipe UP — add to the Wishlist (idempotent add, not a toggle). */
+  const wishlistSwipe = useCallback(
+    (movie: Movie) => {
+      Haptics.selectionAsync();
+      return record(movie, 'watchlist', 'swipe');
+    },
+    [record],
+  );
+
+  /** Swipe DOWN — add to Watched AND Favorites at once. */
+  const watchedFavoriteSwipe = useCallback(
+    async (movie: Movie) => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await record(movie, 'watched', 'swipe');
+      await record(movie, 'favorite', 'swipe');
+    },
+    [record],
+  );
+
   return {
     markWatched,
     skip,
     toggleWatchlist,
     toggleFavorite,
     toggleWatched,
+    wishlistSwipe,
+    watchedFavoriteSwipe,
     removeInteraction,
     undo,
   };

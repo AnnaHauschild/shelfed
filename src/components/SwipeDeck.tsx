@@ -31,11 +31,14 @@ import { SwipeStamp } from './SwipeStamp';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 // Drag distance past which a release commits the swipe.
 const SWIPE_THRESHOLD = width * 0.28;
+// Vertical drag distance past which an up/down swipe commits.
+const VERTICAL_THRESHOLD = height * 0.16;
 // Where the card flies off to when dismissed.
 const OUT_DISTANCE = width * 1.5;
+const OUT_DISTANCE_Y = height * 1.1;
 // A fast flick also commits even if the threshold wasn't reached.
 const VELOCITY_THRESHOLD = 800;
 
@@ -46,6 +49,10 @@ interface Props {
   onSwipeRight: (movie: Movie) => void;
   /** Swipe LEFT — user has not watched it (skip). */
   onSwipeLeft: (movie: Movie) => void;
+  /** Swipe UP — add to the Wishlist. */
+  onSwipeUp: (movie: Movie) => void;
+  /** Swipe DOWN — add to Watched + Favorites. */
+  onSwipeDown: (movie: Movie) => void;
   onStar: (movie: Movie) => void;
   onHeart: (movie: Movie) => void;
   /** Reverses the last swipe: removes its signal so the card returns. */
@@ -64,6 +71,10 @@ interface TopCardProps {
   movie: Movie;
   onSwipeRight: (movie: Movie) => void;
   onSwipeLeft: (movie: Movie) => void;
+  /** Swipe UP — add to Wishlist. */
+  onSwipeUp: (movie: Movie) => void;
+  /** Swipe DOWN — add to Watched + Favorites. */
+  onSwipeDown: (movie: Movie) => void;
   onStar: (movie: Movie) => void;
   onHeart: (movie: Movie) => void;
   isWatchlisted: boolean;
@@ -89,6 +100,8 @@ function TopCard({
   movie,
   onSwipeRight,
   onSwipeLeft,
+  onSwipeUp,
+  onSwipeDown,
   onStar,
   onHeart,
   isWatchlisted,
@@ -117,6 +130,14 @@ function TopCard({
       else onSwipeLeft(movie);
     },
     [movie, onSwipeRight, onSwipeLeft],
+  );
+
+  const commitVertical = useCallback(
+    (direction: 'up' | 'down') => {
+      if (direction === 'up') onSwipeUp(movie);
+      else onSwipeDown(movie);
+    },
+    [movie, onSwipeUp, onSwipeDown],
   );
 
   const toggleFlip = useCallback(() => {
@@ -148,32 +169,46 @@ function TopCard({
       .enabled(!isFlipped)
       .onUpdate((event) => {
         translateX.value = event.translationX;
-        translateY.value = event.translationY * 0.15;
+        translateY.value = event.translationY;
         dragX.value = event.translationX;
       })
       .onEnd((event) => {
-        const dismiss =
-          Math.abs(translateX.value) > SWIPE_THRESHOLD ||
-          Math.abs(event.velocityX) > VELOCITY_THRESHOLD;
-
-        if (dismiss) {
-          const direction = translateX.value > 0 ? 'right' : 'left';
-          dragX.value = withTiming(
-            direction === 'right' ? OUT_DISTANCE : -OUT_DISTANCE,
-            { duration: 220 },
-          );
-          translateX.value = withTiming(
-            direction === 'right' ? OUT_DISTANCE : -OUT_DISTANCE,
-            { duration: 220 },
-            () => {
+        const dx = translateX.value;
+        const dy = translateY.value;
+        // Whichever axis the finger travelled furthest along wins.
+        if (Math.abs(dx) >= Math.abs(dy)) {
+          const dismiss =
+            Math.abs(dx) > SWIPE_THRESHOLD ||
+            Math.abs(event.velocityX) > VELOCITY_THRESHOLD;
+          if (dismiss) {
+            const direction = dx > 0 ? 'right' : 'left';
+            const to = direction === 'right' ? OUT_DISTANCE : -OUT_DISTANCE;
+            dragX.value = withTiming(to, { duration: 220 });
+            translateY.value = withTiming(0, { duration: 220 });
+            translateX.value = withTiming(to, { duration: 220 }, () => {
               runOnJS(commit)(direction);
-            },
-          );
+            });
+            return;
+          }
         } else {
-          dragX.value = withSpring(0);
-          translateX.value = withSpring(0);
-          translateY.value = withSpring(0);
+          const dismiss =
+            Math.abs(dy) > VERTICAL_THRESHOLD ||
+            Math.abs(event.velocityY) > VELOCITY_THRESHOLD;
+          if (dismiss) {
+            const direction = dy < 0 ? 'up' : 'down';
+            const to = direction === 'up' ? -OUT_DISTANCE_Y : OUT_DISTANCE_Y;
+            dragX.value = withSpring(0);
+            translateX.value = withTiming(0, { duration: 220 });
+            translateY.value = withTiming(to, { duration: 220 }, () => {
+              runOnJS(commitVertical)(direction);
+            });
+            return;
+          }
         }
+        // Not dismissed — spring everything back to centre.
+        dragX.value = withSpring(0);
+        translateX.value = withSpring(0);
+        translateY.value = withSpring(0);
       });
 
     const tap = Gesture.Tap()
@@ -183,7 +218,7 @@ function TopCard({
       });
 
     return Gesture.Exclusive(pan, tap);
-  }, [isFlipped, commit, toggleFlip, translateX, translateY, dragX]);
+  }, [isFlipped, commit, commitVertical, toggleFlip, translateX, translateY, dragX]);
 
   const cardStyle = useAnimatedStyle(() => {
     const x = translateX.value + demoX.value;
@@ -342,6 +377,8 @@ export function SwipeDeck({
   initialIndex = 0,
   onSwipeRight,
   onSwipeLeft,
+  onSwipeUp,
+  onSwipeDown,
   onStar,
   onHeart,
   onUndo,
@@ -353,7 +390,7 @@ export function SwipeDeck({
 }: Props) {
   const [index, setIndex] = useState(initialIndex);
   const [history, setHistory] = useState<
-    { movie: Movie; type: InteractionType }[]
+    { movie: Movie; types: InteractionType[] }[]
   >([]);
   // Whether the top card is flipped to its details side. When it is, the Undo
   // button is hidden (mirroring the Star/Heart buttons) and shown again once
@@ -426,9 +463,9 @@ export function SwipeDeck({
   }, [hint, replay, arrowLeft, arrowRight, demoX]);
 
   const advance = useCallback(
-    (handler: (movie: Movie) => void, movie: Movie, type: InteractionType) => {
+    (handler: (movie: Movie) => void, movie: Movie, types: InteractionType[]) => {
       handler(movie);
-      setHistory((prev) => [...prev, { movie, type }]);
+      setHistory((prev) => [...prev, { movie, types }]);
       setIndex((current) => current + 1);
     },
     [],
@@ -449,19 +486,27 @@ export function SwipeDeck({
   }, [index, onIndexChange, dragX, demoX, arrowLeft, arrowRight]);
 
   const handleRight = useCallback(
-    (movie: Movie) => advance(onSwipeRight, movie, 'watched'),
+    (movie: Movie) => advance(onSwipeRight, movie, ['watched']),
     [advance, onSwipeRight],
   );
   const handleLeft = useCallback(
-    (movie: Movie) => advance(onSwipeLeft, movie, 'skipped'),
+    (movie: Movie) => advance(onSwipeLeft, movie, ['skipped']),
     [advance, onSwipeLeft],
+  );
+  const handleUp = useCallback(
+    (movie: Movie) => advance(onSwipeUp, movie, ['watchlist']),
+    [advance, onSwipeUp],
+  );
+  const handleDown = useCallback(
+    (movie: Movie) => advance(onSwipeDown, movie, ['watched', 'favorite']),
+    [advance, onSwipeDown],
   );
 
   const handleUndo = useCallback(() => {
     setHistory((prev) => {
       if (prev.length === 0) return prev;
       const last = prev[prev.length - 1];
-      onUndo?.(last.movie, last.type);
+      last.types.forEach((t) => onUndo?.(last.movie, t));
       setIndex((current) => Math.max(0, current - 1));
       return prev.slice(0, -1);
     });
@@ -521,6 +566,8 @@ export function SwipeDeck({
             movie={movie}
             onSwipeRight={handleRight}
             onSwipeLeft={handleLeft}
+            onSwipeUp={handleUp}
+            onSwipeDown={handleDown}
             onStar={onStar}
             onHeart={onHeart}
             isWatchlisted={isWatchlisted?.(movie) ?? false}
