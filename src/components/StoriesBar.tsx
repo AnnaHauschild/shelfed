@@ -38,9 +38,8 @@ import { Avatar } from './Avatar';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
-// Story card (9:16), matching the composer, sized to sit between the header
-// and the action row.
-const CARD_W = Math.min(SCREEN_W - 40, (SCREEN_H * 0.6) / CARD_RATIO);
+// Story card (9:16), matching the composer, taking up most of the screen.
+const CARD_W = Math.min(SCREEN_W - 24, (SCREEN_H * 0.82) / CARD_RATIO);
 const CARD_H = CARD_W * CARD_RATIO;
 
 // How long each story segment plays before auto-advancing to the next.
@@ -279,7 +278,10 @@ export function StoryViewer({
           ))}
         </View>
 
-        <View style={styles.page} pointerEvents="box-none">
+        <View
+          style={[styles.page, { paddingTop: insets.top + 26 }]}
+          pointerEvents="box-none"
+        >
           <View style={styles.header} pointerEvents="box-none">
             <Avatar uri={group.user.avatarUrl} size={30} noZoom />
             <Text style={styles.headerName}>@{group.user.username}</Text>
@@ -289,6 +291,9 @@ export function StoryViewer({
                 <Ionicons name="trash-outline" size={20} color={INK} />
               </Pressable>
             )}
+            <Pressable onPress={onClose} hitSlop={10} style={styles.headerClose}>
+              <Ionicons name="close" size={24} color={INK} />
+            </Pressable>
           </View>
           <View
             style={[styles.cardArea, { backgroundColor: palette.card }]}
@@ -342,14 +347,6 @@ export function StoryViewer({
             </View>
           </View>
         </View>
-
-        <Pressable
-          style={[styles.close, { top: insets.top + 22 }]}
-          onPress={onClose}
-          hitSlop={10}
-        >
-          <Ionicons name="close" size={26} color={INK} />
-        </Pressable>
       </View>
     </View>
   );
@@ -463,11 +460,9 @@ const makeViewerStyles = (c: ThemeChrome) =>
     page: {
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'center',
-      padding: spacing.xl,
-      gap: spacing.md,
+      paddingHorizontal: spacing.md,
+      gap: spacing.sm,
     },
-    info: { alignSelf: 'stretch', alignItems: 'center', gap: spacing.md },
     header: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -482,6 +477,7 @@ const makeViewerStyles = (c: ThemeChrome) =>
     },
     time: { color: 'rgba(43,29,13,0.6)', fontFamily: fonts.body, fontSize: 12 },
     trash: { marginLeft: spacing.sm },
+    headerClose: { marginLeft: spacing.xs },
     cardArea: {
       width: CARD_W,
       height: CARD_H,

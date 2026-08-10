@@ -42,7 +42,7 @@ export function storyPalette(seed: string): {
 } {
   const hue = hashHue(seed || 'shelfed');
   return {
-    bg: hslToHex(hue, 30, 90),
+    bg: hslToHex(hue, 55, 82),
     card: hslToHex(hue, 42, 20),
     text: '#f3ece0',
   };
