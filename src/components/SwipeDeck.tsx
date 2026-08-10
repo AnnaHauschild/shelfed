@@ -3,6 +3,8 @@ import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { useIsFocused } from '@react-navigation/native';
 import Animated, {
   Easing,
   Extrapolation,
@@ -24,6 +26,7 @@ import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { useThemeChrome } from '@/context/ThemeProvider';
 import { useAuth } from '@/context/AuthProvider';
 import { useComposer } from '@/context/PostComposerProvider';
+import { useShake } from '@/hooks/useShake';
 import { ActionButtons } from './ActionButtons';
 import { MovieCard } from './MovieCard';
 import { MovieDetails } from './MovieDetails';
@@ -569,6 +572,13 @@ export function SwipeDeck({
       return prev.slice(0, -1);
     });
   }, [onUndo]);
+
+  // Shake the phone to undo the last swipe (only on the focused Discover deck).
+  const focused = useIsFocused();
+  useShake(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    handleUndo();
+  }, focused && history.length > 0 && !topFlipped);
 
   // Fade the Undo button out as the card is dragged, mirroring Star/Heart.
   const undoStyle = useAnimatedStyle(() => ({
