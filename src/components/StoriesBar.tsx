@@ -4,9 +4,12 @@ import {
   Dimensions,
   Pressable,
   ScrollView,
+  StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   View,
+  ViewStyle,
 } from 'react-native';
 import Animated, {
   cancelAnimation,
@@ -14,6 +17,8 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,6 +28,7 @@ import { Movie } from '@/api/types';
 import { fetchMediaById } from '@/api/movies';
 import { useStories, useDeletePost } from '@/hooks/useStories';
 import { useInteractions } from '@/hooks/useInteractions';
+import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useAuth } from '@/context/AuthProvider';
 import { PosterImage } from './PosterImage';
 import { useMovieDetails } from './MovieDetailsProvider';
@@ -35,6 +41,8 @@ const { width: SCREEN_W } = Dimensions.get('window');
 
 // How long each story segment plays before auto-advancing to the next.
 const STORY_MS = 6000;
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function timeAgo(iso: string): string {
   const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
@@ -117,6 +125,7 @@ export function StoryViewer({
   const styles = useMemo(() => makeViewerStyles(chrome), [chrome]);
   const insets = useSafeAreaInsets();
   const { toggleWatchlist, toggleFavorite } = useInteractions();
+  const states = useInteractionStates();
   const { userId } = useAuth();
   const details = useMovieDetails();
   const del = useDeletePost();
@@ -292,20 +301,26 @@ export function StoryViewer({
             ) : null}
           </View>
           <View style={styles.actions}>
-            <Pressable
-              style={styles.actionBtn}
+            <StoryAction
+              icon="star-outline"
+              activeIcon="star"
+              active={states.isWatchlisted(item.movieId)}
+              color={colors.star}
+              label="Wishlist"
               onPress={() => toggleWatchlist(toMovie(item))}
-            >
-              <Ionicons name="star-outline" size={20} color={colors.star} />
-              <Text style={styles.actionLabel}>Wishlist</Text>
-            </Pressable>
-            <Pressable
-              style={styles.actionBtn}
+              btnStyle={styles.actionBtn}
+              labelStyle={styles.actionLabel}
+            />
+            <StoryAction
+              icon="heart-outline"
+              activeIcon="heart"
+              active={states.isFavorite(item.movieId)}
+              color={colors.favorite}
+              label="Favorite"
               onPress={() => toggleFavorite(toMovie(item))}
-            >
-              <Ionicons name="heart-outline" size={20} color={colors.favorite} />
-              <Text style={styles.actionLabel}>Favorite</Text>
-            </Pressable>
+              btnStyle={styles.actionBtn}
+              labelStyle={styles.actionLabel}
+            />
             <Pressable style={styles.actionBtn} onPress={openInfo}>
               <Ionicons
                 name="information-circle-outline"
@@ -326,6 +341,43 @@ export function StoryViewer({
         </Pressable>
       </View>
     </View>
+  );
+}
+
+/** A story quick-action (Wishlist/Favorite) that fills in and pops on tap. */
+function StoryAction({
+  icon,
+  activeIcon,
+  active,
+  color,
+  label,
+  onPress,
+  btnStyle,
+  labelStyle,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  activeIcon: keyof typeof Ionicons.glyphMap;
+  active: boolean;
+  color: string;
+  label: string;
+  onPress: () => void;
+  btnStyle: StyleProp<ViewStyle>;
+  labelStyle: StyleProp<TextStyle>;
+}) {
+  const scale = useSharedValue(1);
+  const aStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const handle = () => {
+    scale.value = withSequence(
+      withTiming(1.18, { duration: 100 }),
+      withSpring(1, { damping: 14, stiffness: 200 }),
+    );
+    onPress();
+  };
+  return (
+    <AnimatedPressable style={[btnStyle, aStyle]} onPress={handle} hitSlop={6}>
+      <Ionicons name={active ? activeIcon : icon} size={20} color={color} />
+      <Text style={[labelStyle, active && { color }]}>{label}</Text>
+    </AnimatedPressable>
   );
 }
 
