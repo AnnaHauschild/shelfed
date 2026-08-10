@@ -17,13 +17,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '@/api/types';
 import { EmojiOverlay, Overlay, TextOverlay } from '@/api/posts';
 import { useCreatePost } from '@/hooks/useStories';
-import { POSTER_SIZE } from '@/constants/config';
 import { fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
-import { PosterImage } from './PosterImage';
 import {
+  CARD_RATIO,
   EditableOverlay,
   fontFamilyFor,
+  StoryCard,
   STORY_COLORS,
   STORY_EMOJIS,
   STORY_FONTS,
@@ -31,9 +31,9 @@ import {
 
 const SCREEN_W = Dimensions.get('window').width;
 const SCREEN_H = Dimensions.get('window').height;
-// A 2:3 poster canvas that fits between the top bar and the Post button.
-const CANVAS_W = Math.min(SCREEN_W - spacing.lg * 2, (SCREEN_H - 300) / 1.5);
-const CANVAS_H = CANVAS_W * 1.5;
+// A 9:16 story card that fits between the top bar and the Post button.
+const CARD_W = Math.min(SCREEN_W - spacing.lg * 2, (SCREEN_H - 300) / CARD_RATIO);
+const CARD_H = CARD_W * CARD_RATIO;
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
@@ -156,19 +156,20 @@ export function PostComposer({
       </View>
 
       <View style={styles.canvasWrap}>
-        <View style={[styles.canvas, { width: CANVAS_W, height: CANVAS_H }]}>
-          <PosterImage
-            posterPath={movie.posterPath}
+        <View style={[styles.canvas, { width: CARD_W, height: CARD_H }]}>
+          <StoryCard
             title={movie.title}
-            size={POSTER_SIZE}
-            style={styles.canvasImg}
+            posterPath={movie.posterPath}
+            year={movie.year}
+            width={CARD_W}
+            height={CARD_H}
           />
           {overlays.map((o) => (
             <EditableOverlay
               key={o.id}
               overlay={o}
-              canvasW={CANVAS_W}
-              canvasH={CANVAS_H}
+              canvasW={CARD_W}
+              canvasH={CARD_H}
               selected={selectedId === o.id}
               onSelect={setSelectedId}
               onEditText={(id) => {
@@ -322,7 +323,6 @@ const makeStyles = (c: ThemeChrome) =>
       overflow: 'hidden',
       backgroundColor: '#000',
     },
-    canvasImg: { width: '100%', height: '100%' },
     quickBar: {
       flexDirection: 'row',
       justifyContent: 'center',

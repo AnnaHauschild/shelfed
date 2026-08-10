@@ -30,19 +30,18 @@ import { useStories, useDeletePost } from '@/hooks/useStories';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useAuth } from '@/context/AuthProvider';
-import { PosterImage } from './PosterImage';
 import { useMovieDetails } from './MovieDetailsProvider';
-import { StaticOverlays } from './StoryOverlays';
-import { POSTER_SIZE } from '@/constants/config';
+import { CARD_RATIO, StaticOverlays, StoryCard } from './StoryOverlays';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { Avatar } from './Avatar';
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
-// Story poster canvas (2:3) — overlays are positioned relative to this.
-const POSTER_W = SCREEN_W * 0.6;
-const POSTER_H = SCREEN_W * 0.9;
+// Story card (9:16), matching the composer, sized to sit between the header
+// and the action row.
+const CARD_W = Math.min(SCREEN_W - 40, (SCREEN_H * 0.6) / CARD_RATIO);
+const CARD_H = CARD_W * CARD_RATIO;
 
 // How long each story segment plays before auto-advancing to the next.
 const STORY_MS = 6000;
@@ -291,24 +290,21 @@ export function StoryViewer({
             )}
           </View>
           <View style={styles.info} pointerEvents="none">
-            <View style={styles.posterWrap}>
-              <PosterImage
+            <View style={styles.cardWrap}>
+              <StoryCard
+                title={item.title}
                 posterPath={item.posterPath}
-                title={item.title ?? ''}
-                size={POSTER_SIZE}
-                style={styles.poster}
+                year={item.year}
+                width={CARD_W}
+                height={CARD_H}
               />
               <StaticOverlays
                 overlays={item.overlays}
-                width={POSTER_W}
-                height={POSTER_H}
+                width={CARD_W}
+                height={CARD_H}
               />
             </View>
-            <Text style={styles.movieTitle} numberOfLines={2}>
-              {item.title}
-              {item.year != null ? `  ·  ${item.year}` : ''}
-            </Text>
-            {item.caption ? (
+            {item.overlays.length === 0 && item.caption ? (
               <Text style={styles.caption}>{item.caption}</Text>
             ) : null}
           </View>
@@ -483,23 +479,16 @@ const makeViewerStyles = (c: ThemeChrome) =>
     },
     time: { color: c.muted, fontFamily: fonts.body, fontSize: 12 },
     trash: { marginLeft: spacing.sm },
-    posterWrap: {
-      width: POSTER_W,
-      height: POSTER_H,
-      borderRadius: radius.md,
+    cardWrap: {
+      width: CARD_W,
+      height: CARD_H,
+      borderRadius: radius.lg,
       overflow: 'hidden',
-    },
-    poster: {
-      width: '100%',
-      height: '100%',
-    },
-    movieTitle: {
-      color: colors.textOnDark,
-      fontFamily: fonts.heading,
-      fontSize: 18,
-      textAlign: 'center',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.4,
+      shadowRadius: 16,
+      elevation: 10,
     },
     caption: {
       color: colors.textOnDark,
