@@ -96,7 +96,19 @@ export function StoriesBar({
   const { data: groups } = useStories();
   const { data: seen } = useSeenStories();
 
-  if (!groups || groups.length === 0) return null;
+  // Unseen stories first (coloured rings on the left), else keep server order.
+  const ordered = useMemo(() => {
+    const items = (groups ?? []).map((g, i) => ({
+      group: g,
+      i,
+      unseen: g.posts.some((p) => !(seen?.has(p.id) ?? false)),
+    }));
+    return items.sort((a, b) =>
+      a.unseen === b.unseen ? a.i - b.i : a.unseen ? -1 : 1,
+    );
+  }, [groups, seen]);
+
+  if (ordered.length === 0) return null;
 
   return (
     <ScrollView
@@ -105,23 +117,20 @@ export function StoriesBar({
       style={styles.bar}
       contentContainerStyle={styles.row}
     >
-      {groups.map((g, i) => {
-        const unseen = g.posts.some((p) => !(seen?.has(p.id) ?? false));
-        return (
-          <Pressable
-            key={g.user.id}
-            style={styles.item}
-            onPress={() => onOpen(groups, i)}
-          >
-            <View style={[styles.ring, !unseen && styles.ringSeen]}>
-              <Avatar uri={g.user.avatarUrl} size={54} noZoom />
-            </View>
-            <Text style={styles.name} numberOfLines={1}>
-              @{g.user.username}
-            </Text>
-          </Pressable>
-        );
-      })}
+      {ordered.map(({ group: g, unseen }, i) => (
+        <Pressable
+          key={g.user.id}
+          style={styles.item}
+          onPress={() => onOpen(ordered.map((x) => x.group), i)}
+        >
+          <View style={[styles.ring, !unseen && styles.ringSeen]}>
+            <Avatar uri={g.user.avatarUrl} size={54} noZoom />
+          </View>
+          <Text style={styles.name} numberOfLines={1}>
+            @{g.user.username}
+          </Text>
+        </Pressable>
+      ))}
     </ScrollView>
   );
 }
