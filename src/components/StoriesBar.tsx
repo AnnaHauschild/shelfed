@@ -336,7 +336,7 @@ export function StoryViewer({
 
   const palette = storyPalette(item.title ?? item.movieId);
   const stickers = item.overlays.filter(
-    (o): o is Sticker => o.kind === 'text' || o.kind === 'emoji',
+    (o): o is Sticker => o.kind !== 'caption',
   );
   const captionMeta = item.overlays.find((o) => o.kind === 'caption') as
     | CaptionMeta
