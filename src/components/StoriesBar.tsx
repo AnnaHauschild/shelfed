@@ -27,6 +27,7 @@ import { CardLayout, Sticker, StoryGroup, StoryPost } from '@/api/posts';
 import { Movie } from '@/api/types';
 import { fetchMediaById } from '@/api/movies';
 import { useStories, useDeletePost } from '@/hooks/useStories';
+import { useSeenStories, useMarkStorySeen } from '@/hooks/useSeenStories';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useAuth } from '@/context/AuthProvider';
@@ -93,6 +94,7 @@ export function StoriesBar({
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { data: groups } = useStories();
+  const { data: seen } = useSeenStories();
 
   if (!groups || groups.length === 0) return null;
 
@@ -103,20 +105,23 @@ export function StoriesBar({
       style={styles.bar}
       contentContainerStyle={styles.row}
     >
-      {groups.map((g, i) => (
-        <Pressable
-          key={g.user.id}
-          style={styles.item}
-          onPress={() => onOpen(groups, i)}
-        >
-          <View style={styles.ring}>
-            <Avatar uri={g.user.avatarUrl} size={54} noZoom />
-          </View>
-          <Text style={styles.name} numberOfLines={1}>
-            @{g.user.username}
-          </Text>
-        </Pressable>
-      ))}
+      {groups.map((g, i) => {
+        const unseen = g.posts.some((p) => !(seen?.has(p.id) ?? false));
+        return (
+          <Pressable
+            key={g.user.id}
+            style={styles.item}
+            onPress={() => onOpen(groups, i)}
+          >
+            <View style={[styles.ring, !unseen && styles.ringSeen]}>
+              <Avatar uri={g.user.avatarUrl} size={54} noZoom />
+            </View>
+            <Text style={styles.name} numberOfLines={1}>
+              @{g.user.username}
+            </Text>
+          </Pressable>
+        );
+      })}
     </ScrollView>
   );
 }
@@ -143,6 +148,7 @@ export function StoryViewer({
   const { userId } = useAuth();
   const details = useMovieDetails();
   const del = useDeletePost();
+  const markSeen = useMarkStorySeen();
   const [gi, setGi] = useState(0);
   const [pi, setPi] = useState(0);
   const progress = useSharedValue(0);
@@ -181,8 +187,7 @@ export function StoryViewer({
 
   // Fill the active segment, then auto-advance.
   useEffect(() => {
-    if (!item) return;
-    paused.current = false;
+    if (!item) return;    markSeen(item.id);    paused.current = false;
     progress.value = 0;
     progress.value = withTiming(
       1,
@@ -437,6 +442,8 @@ const makeStyles = (c: ThemeChrome) =>
       borderWidth: 2,
       borderColor: c.accent,
     },
+    // Already-viewed stories fade the ring to a muted grey.
+    ringSeen: { borderColor: c.muted },
     name: {
       color: c.muted,
       fontFamily: fonts.body,
