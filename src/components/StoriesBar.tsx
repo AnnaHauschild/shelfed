@@ -22,6 +22,11 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  Directions,
+  Gesture,
+  GestureDetector,
+} from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { CaptionMeta, Sticker, StoryGroup, StoryPost } from '@/api/posts';
 import { Movie } from '@/api/types';
@@ -229,10 +234,10 @@ export function StoryViewer({
       {
         text: 'Delete',
         style: 'destructive',
-        onPress: () => del.mutate(item.id, { onSuccess: onClose }),
+        onPress: () => del.mutate(item.id, { onSuccess: goNext }),
       },
     ]);
-  }, [item, pause, resume, del, onClose]);
+  }, [item, pause, resume, del, goNext]);
 
   // Open the full details card ON TOP of the story (paused), so closing it
   // returns to the story rather than the home page.
@@ -262,6 +267,23 @@ export function StoryViewer({
     width: `${progress.value * 100}%`,
   }));
 
+  // Swipe left = next story, right = previous, down = close (tap zones remain).
+  const swipe = useMemo(
+    () =>
+      Gesture.Race(
+        Gesture.Fling()
+          .direction(Directions.LEFT)
+          .onEnd(() => runOnJS(goNext)()),
+        Gesture.Fling()
+          .direction(Directions.RIGHT)
+          .onEnd(() => runOnJS(goPrev)()),
+        Gesture.Fling()
+          .direction(Directions.DOWN)
+          .onEnd(() => runOnJS(onClose)()),
+      ),
+    [goNext, goPrev, onClose],
+  );
+
   if (!group || posts.length === 0 || !item) return null;
 
   const palette = storyPalette(item.title ?? item.movieId);
@@ -283,20 +305,22 @@ export function StoryViewer({
 
   return (
     <View style={[styles.overlay, { backgroundColor: palette.bg }]}>
-      <Pressable
-        style={styles.tapLeft}
-        onPress={goPrev}
-        onLongPress={pause}
-        onPressOut={resume}
-        delayLongPress={220}
-      />
-      <Pressable
-        style={styles.tapRight}
-        onPress={goNext}
-        onLongPress={pause}
-        onPressOut={resume}
-        delayLongPress={220}
-      />
+      <GestureDetector gesture={swipe}>
+        <View style={StyleSheet.absoluteFill}>
+          <Pressable
+            style={styles.tapLeft}
+            onPress={goPrev}
+            onLongPress={pause}
+            onPressOut={resume}
+            delayLongPress={220}
+          />
+          <Pressable
+            style={styles.tapRight}
+            onPress={goNext}
+            onLongPress={pause}
+            onPressOut={resume}
+            delayLongPress={220}
+          />
 
       <View style={styles.content} pointerEvents="box-none">
         <View style={[styles.bars, { top: insets.top + 8 }]}>
@@ -331,7 +355,7 @@ export function StoryViewer({
 
           <View
             style={[styles.posterWrap, { width: posterW, height: posterH }]}
-            pointerEvents="box-none"
+            pointerEvents="none"
           >
             <PosterImage
               posterPath={item.posterPath}
@@ -384,6 +408,8 @@ export function StoryViewer({
           )}
         </View>
       </View>
+        </View>
+      </GestureDetector>
     </View>
   );
 }

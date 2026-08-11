@@ -35,7 +35,6 @@ import {
   fontFamilyFor,
   storyPalette,
   STORY_COLORS,
-  STORY_EMOJIS,
   STORY_FONTS,
 } from './StoryOverlays';
 
@@ -72,7 +71,6 @@ export function PostComposer({
   const [decor, setDecor] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [emojiOpen, setEmojiOpen] = useState(false);
 
   useEffect(() => {
     if (movie) {
@@ -82,7 +80,6 @@ export function PostComposer({
       setDecor(false);
       setSelectedId(null);
       setEditingId(null);
-      setEmojiOpen(false);
     }
   }, [movie]);
 
@@ -110,12 +107,6 @@ export function PostComposer({
     setStickers((v) => [...v, o]);
     setSelectedId(o.id);
     setEditingId(o.id);
-  };
-  const addEmoji = (emoji: string) => {
-    const o: EmojiOverlay = { id: uid(), kind: 'emoji', emoji, tx: 0, ty: 0, scale: 1 };
-    setStickers((v) => [...v, o]);
-    setSelectedId(o.id);
-    setEmojiOpen(false);
   };
   const finishEdit = () => {
     setStickers((v) =>
@@ -161,9 +152,6 @@ export function PostComposer({
             <Pressable onPress={addText} style={styles.tool} hitSlop={6}>
               <Text style={styles.toolAa}>Aa</Text>
             </Pressable>
-            <Pressable onPress={() => setEmojiOpen(true)} style={styles.tool} hitSlop={6}>
-              <Ionicons name="happy-outline" size={22} color={INK} />
-            </Pressable>
             {selected && (
               <Pressable onPress={() => remove(selected.id)} style={styles.tool} hitSlop={6}>
                 <Ionicons name="trash-outline" size={20} color={INK} />
@@ -174,49 +162,54 @@ export function PostComposer({
             </Pressable>
           </View>
         ) : (
-          <Pressable onPress={() => setDecor(true)} style={styles.decorBtn} hitSlop={6}>
-            <Ionicons name="sparkles-outline" size={16} color={INK} />
-            <Text style={styles.decorText}>Decor</Text>
+          <Pressable onPress={() => setDecor(true)} style={styles.tool} hitSlop={6}>
+            <Ionicons name="sparkles-outline" size={20} color={INK} />
           </Pressable>
         )}
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
+      <KeyboardAvoidingView
+        style={styles.kav}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={[styles.posterArea, { width: POSTER_W, height: POSTER_H }]}>
-          <PosterImage
-            posterPath={movie.posterPath}
-            title={movie.title}
-            size={POSTER_SIZE}
-            style={styles.poster}
-          />
-          {stickers.map((o) => (
-            <EditableOverlay
-              key={o.id}
-              overlay={o}
-              canvasW={POSTER_W}
-              canvasH={POSTER_H}
-              selected={selectedId === o.id}
-              onSelect={setSelectedId}
-              onEditText={(id) => {
-                setSelectedId(id);
-                setEditingId(id);
-              }}
-              onChange={update}
+        <ScrollView
+          style={styles.scrollFlex}
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
+          <View style={[styles.posterArea, { width: POSTER_W, height: POSTER_H }]}>
+            <PosterImage
+              posterPath={movie.posterPath}
+              title={movie.title}
+              size={POSTER_SIZE}
+              style={styles.poster}
             />
-          ))}
-        </View>
+            {stickers.map((o) => (
+              <EditableOverlay
+                key={o.id}
+                overlay={o}
+                canvasW={POSTER_W}
+                canvasH={POSTER_H}
+                selected={selectedId === o.id}
+                onSelect={setSelectedId}
+                onEditText={(id) => {
+                  setSelectedId(id);
+                  setEditingId(id);
+                }}
+                onChange={update}
+              />
+            ))}
+          </View>
 
-        <Text style={styles.movieTitle} numberOfLines={2}>
-          {movie.title}
-          {movie.year != null ? `  ·  ${movie.year}` : ''}
-        </Text>
+          <Text style={styles.movieTitle} numberOfLines={2}>
+            {movie.title}
+            {movie.year != null ? `  ·  ${movie.year}` : ''}
+          </Text>
+        </ScrollView>
 
         {!decor && (
-          <>
+          <View style={[styles.bottomBar, { paddingBottom: insets.bottom + spacing.md }]}>
             <View style={styles.styleRow}>
               {CAPTION_STYLES.map((s) => (
                 <Pressable
@@ -236,52 +229,31 @@ export function PostComposer({
               style={[styles.input, captionTextStyle(captionStyle, INK, 16)]}
               value={caption}
               onChangeText={setCaption}
-              placeholder="Was denkst du über den Film? (optional)"
+              placeholder="(optional)"
               placeholderTextColor="rgba(42,32,24,0.45)"
               multiline
               maxLength={280}
             />
-          </>
-        )}
-      </ScrollView>
-
-      {!decor && (
-        <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
-          <Pressable
-            style={[styles.postBtn, create.isPending && styles.postBtnOff]}
-            onPress={post}
-            disabled={create.isPending}
-          >
-            {create.isPending ? (
-              <ActivityIndicator color={chrome.onAccent} size="small" />
-            ) : (
-              <>
-                <Ionicons name="paper-plane" size={16} color={chrome.onAccent} />
-                <Text style={styles.postText}>Share to friends</Text>
-              </>
-            )}
-          </Pressable>
-          <Text style={styles.hint}>
-            Only your accepted friends can see this. Disappears after 24h.
-          </Text>
-        </View>
-      )}
-
-      {emojiOpen && (
-        <View style={styles.paletteRoot}>
-          <Pressable style={styles.paletteBackdrop} onPress={() => setEmojiOpen(false)} />
-          <View style={[styles.palette, { paddingBottom: insets.bottom + spacing.md }]}>
-            <View style={styles.paletteHandle} />
-            <ScrollView contentContainerStyle={styles.emojiGrid}>
-              {STORY_EMOJIS.map((e) => (
-                <Pressable key={e} onPress={() => addEmoji(e)} style={styles.emojiCell}>
-                  <Text style={styles.emojiTxt}>{e}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
+            <Pressable
+              style={[styles.postBtn, create.isPending && styles.postBtnOff]}
+              onPress={post}
+              disabled={create.isPending}
+            >
+              {create.isPending ? (
+                <ActivityIndicator color={chrome.onAccent} size="small" />
+              ) : (
+                <>
+                  <Ionicons name="paper-plane" size={16} color={chrome.onAccent} />
+                  <Text style={styles.postText}>Share to friends</Text>
+                </>
+              )}
+            </Pressable>
+            <Text style={styles.hint}>
+              Only your accepted friends can see this. Disappears after 24h.
+            </Text>
           </View>
-        </View>
-      )}
+        )}
+      </KeyboardAvoidingView>
 
       {editing && (
         <KeyboardAvoidingView
@@ -365,23 +337,6 @@ const makeStyles = (c: ThemeChrome) =>
       backgroundColor: 'rgba(0,0,0,0.07)',
     },
     toolAa: { color: INK, fontFamily: fonts.display, fontSize: 17 },
-    decorBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-      paddingHorizontal: spacing.md,
-      paddingVertical: spacing.xs,
-      borderRadius: radius.xl,
-      borderWidth: 1,
-      borderColor: 'rgba(0,0,0,0.25)',
-    },
-    decorText: {
-      color: INK,
-      fontFamily: fonts.label,
-      fontSize: 13,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
     doneChip: {
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.xs,
@@ -394,7 +349,9 @@ const makeStyles = (c: ThemeChrome) =>
       fontSize: 13,
       textTransform: 'uppercase',
     },
-    scroll: { alignItems: 'center', paddingBottom: spacing.lg },
+    kav: { flex: 1 },
+    scrollFlex: { flex: 1 },
+    scroll: { alignItems: 'center', paddingTop: spacing.sm, paddingBottom: spacing.lg },
     posterArea: {
       borderRadius: radius.lg,
       overflow: 'hidden',
@@ -433,9 +390,9 @@ const makeStyles = (c: ThemeChrome) =>
     },
     styleChipTextOn: { color: '#f3ece0' },
     input: {
-      width: SCREEN_W - spacing.lg * 2,
-      minHeight: 56,
-      maxHeight: 140,
+      alignSelf: 'stretch',
+      minHeight: 52,
+      maxHeight: 120,
       borderWidth: 1,
       borderColor: 'rgba(0,0,0,0.18)',
       borderRadius: radius.md,
@@ -443,7 +400,13 @@ const makeStyles = (c: ThemeChrome) =>
       padding: spacing.md,
       textAlignVertical: 'top',
     },
-    footer: { paddingHorizontal: spacing.lg, gap: spacing.sm },
+    bottomBar: {
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.sm,
+      gap: spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: 'rgba(0,0,0,0.08)',
+    },
     postBtn: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -467,42 +430,6 @@ const makeStyles = (c: ThemeChrome) =>
       fontSize: 12,
       textAlign: 'center',
     },
-    paletteRoot: { ...StyleSheet.absoluteFillObject, justifyContent: 'flex-end' },
-    paletteBackdrop: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    palette: {
-      maxHeight: '55%',
-      backgroundColor: c.background,
-      borderTopLeftRadius: radius.xl,
-      borderTopRightRadius: radius.xl,
-      borderTopWidth: 2,
-      borderColor: c.border,
-      paddingTop: spacing.sm,
-      paddingHorizontal: spacing.md,
-    },
-    paletteHandle: {
-      width: 44,
-      height: 4,
-      borderRadius: 2,
-      backgroundColor: c.border,
-      alignSelf: 'center',
-      marginBottom: spacing.sm,
-    },
-    emojiGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between',
-      gap: spacing.xs,
-    },
-    emojiCell: {
-      width: '12%',
-      aspectRatio: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    emojiTxt: { fontSize: 30 },
     editRoot: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: 'rgba(0,0,0,0.6)',
