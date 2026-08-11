@@ -23,7 +23,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { CardLayout, Sticker, StoryGroup, StoryPost } from '@/api/posts';
+import { CaptionMeta, Sticker, StoryGroup, StoryPost } from '@/api/posts';
 import { Movie } from '@/api/types';
 import { fetchMediaById } from '@/api/movies';
 import { useStories, useDeletePost } from '@/hooks/useStories';
@@ -31,31 +31,27 @@ import { useSeenStories, useMarkStorySeen } from '@/hooks/useSeenStories';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useAuth } from '@/context/AuthProvider';
+import { POSTER_SIZE } from '@/constants/config';
 import { useMovieDetails } from './MovieDetailsProvider';
+import { PosterImage } from './PosterImage';
 import {
-  CARD_RATIO,
-  DEFAULT_CARD,
-  StaticCard,
+  POSTER_RATIO,
   StaticOverlays,
+  captionText,
+  captionTextStyle,
   storyPalette,
 } from './StoryOverlays';
-import { colors, fonts, spacing } from '@/theme';
+import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { Avatar } from './Avatar';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
-// Story stage (9:16), taking up most of the screen; the card lives on it.
-const STAGE_W = Math.min(SCREEN_W - 24, (SCREEN_H * 0.82) / CARD_RATIO);
-const STAGE_H = STAGE_W * CARD_RATIO;
-// Below this scaled card width, the card actions drop their text labels.
-const ACTIONS_LABEL_MIN = 260;
-
 // How long each story segment plays before auto-advancing to the next.
 const STORY_MS = 6000;
 
-// Dark ink for chrome sitting on the light (film-tinted) stage.
-const INK = '#2b1d0d';
+// Dark ink for chrome sitting on the light (film-tinted) background.
+const INK = '#2a2018';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -269,15 +265,21 @@ export function StoryViewer({
   if (!group || posts.length === 0 || !item) return null;
 
   const palette = storyPalette(item.title ?? item.movieId);
-  const cardLayout =
-    (item.overlays.find((o) => o.kind === 'card') as CardLayout | undefined) ??
-    DEFAULT_CARD;
-  const stickers = item.overlays.filter((o): o is Sticker => o.kind !== 'card');
-  const iconsOnly = STAGE_W * cardLayout.scale < ACTIONS_LABEL_MIN;
-  // Pin the actions just inside the card's bottom edge, wherever it sits.
-  const actionsTx = cardLayout.tx * STAGE_W;
-  const actionsTy =
-    cardLayout.ty * STAGE_H + (STAGE_H * cardLayout.scale) / 2 - 34;
+  const stickers = item.overlays.filter(
+    (o): o is Sticker => o.kind === 'text' || o.kind === 'emoji',
+  );
+  const captionMeta = item.overlays.find((o) => o.kind === 'caption') as
+    | CaptionMeta
+    | undefined;
+  const captionStyle = captionMeta?.style ?? 'normal';
+  const caption = item.caption?.trim() ?? '';
+  const hasCaption = caption.length > 0;
+  // Poster fills the whole space when there's no comment beneath it.
+  const posterW = Math.min(
+    SCREEN_W - spacing.lg * 2,
+    (SCREEN_H * (hasCaption ? 0.5 : 0.62)) / POSTER_RATIO,
+  );
+  const posterH = posterW * POSTER_RATIO;
 
   return (
     <View style={[styles.overlay, { backgroundColor: palette.bg }]}>
@@ -326,66 +328,60 @@ export function StoryViewer({
               <Ionicons name="close" size={24} color={INK} />
             </Pressable>
           </View>
+
           <View
-            style={[styles.stage, { width: STAGE_W, height: STAGE_H }]}
+            style={[styles.posterWrap, { width: posterW, height: posterH }]}
             pointerEvents="box-none"
           >
-            <StaticCard
-              layout={cardLayout}
-              stageW={STAGE_W}
-              stageH={STAGE_H}
-              title={item.title}
+            <PosterImage
               posterPath={item.posterPath}
-              year={item.year}
-              cardColor={palette.card}
-              textColor={palette.text}
+              title={item.title ?? ''}
+              size={POSTER_SIZE}
+              style={styles.poster}
             />
-            <StaticOverlays overlays={stickers} width={STAGE_W} height={STAGE_H} />
-            <View style={styles.actionLayer} pointerEvents="box-none">
-              <View
-                style={[
-                  styles.cardActions,
-                  {
-                    transform: [
-                      { translateX: actionsTx },
-                      { translateY: actionsTy },
-                    ],
-                  },
-                ]}
-              >
-                <StoryAction
-                  icon="star-outline"
-                  activeIcon="star"
-                  active={states.isWatchlisted(item.movieId)}
-                  color={colors.star}
-                  label="Wishlist"
-                  compact={iconsOnly}
-                  onPress={() => toggleWatchlist(toMovie(item))}
-                  btnStyle={styles.actionBtn}
-                  labelStyle={styles.actionLabel}
-                />
-                <StoryAction
-                  icon="heart-outline"
-                  activeIcon="heart"
-                  active={states.isFavorite(item.movieId)}
-                  color={colors.favorite}
-                  label="Favorite"
-                  compact={iconsOnly}
-                  onPress={() => toggleFavorite(toMovie(item))}
-                  btnStyle={styles.actionBtn}
-                  labelStyle={styles.actionLabel}
-                />
-                <Pressable style={styles.actionBtn} onPress={openInfo}>
-                  <Ionicons
-                    name="information-circle-outline"
-                    size={20}
-                    color={palette.text}
-                  />
-                  {!iconsOnly && <Text style={styles.actionLabel}>Details</Text>}
-                </Pressable>
-              </View>
-            </View>
+            <StaticOverlays overlays={stickers} width={posterW} height={posterH} />
           </View>
+
+          <Text style={styles.movieTitle} numberOfLines={2}>
+            {item.title}
+            {item.year != null ? `  ·  ${item.year}` : ''}
+          </Text>
+
+          <View style={styles.actions} pointerEvents="box-none">
+            <StoryAction
+              icon="star-outline"
+              activeIcon="star"
+              active={states.isWatchlisted(item.movieId)}
+              color={colors.star}
+              label="Wishlist"
+              onPress={() => toggleWatchlist(toMovie(item))}
+              btnStyle={styles.actionBtn}
+              labelStyle={styles.actionLabel}
+            />
+            <StoryAction
+              icon="heart-outline"
+              activeIcon="heart"
+              active={states.isFavorite(item.movieId)}
+              color={colors.favorite}
+              label="Favorite"
+              onPress={() => toggleFavorite(toMovie(item))}
+              btnStyle={styles.actionBtn}
+              labelStyle={styles.actionLabel}
+            />
+            <Pressable style={styles.actionBtn} onPress={openInfo}>
+              <Ionicons name="information-circle-outline" size={20} color={INK} />
+              <Text style={styles.actionLabel}>Details</Text>
+            </Pressable>
+          </View>
+
+          {hasCaption && (
+            <Text
+              style={[styles.caption, captionTextStyle(captionStyle, INK, 17)]}
+              numberOfLines={6}
+            >
+              {captionText(captionStyle, caption)}
+            </Text>
+          )}
         </View>
       </View>
     </View>
@@ -525,23 +521,41 @@ const makeViewerStyles = (c: ThemeChrome) =>
     time: { color: 'rgba(43,29,13,0.6)', fontFamily: fonts.body, fontSize: 12 },
     trash: { marginLeft: spacing.sm },
     headerClose: { marginLeft: spacing.xs },
-    stage: { position: 'relative' },
-    actionLayer: {
-      ...StyleSheet.absoluteFillObject,
-      alignItems: 'center',
-      justifyContent: 'center',
+    posterWrap: {
+      position: 'relative',
+      borderRadius: radius.lg,
+      overflow: 'hidden',
+      backgroundColor: '#000',
+      marginTop: spacing.md,
     },
-    cardActions: {
+    poster: { width: '100%', height: '100%' },
+    movieTitle: {
+      color: INK,
+      fontFamily: fonts.display,
+      fontSize: 20,
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginTop: spacing.md,
+      paddingHorizontal: spacing.lg,
+    },
+    actions: {
       flexDirection: 'row',
       justifyContent: 'center',
       gap: spacing.xl,
+      marginTop: spacing.sm,
     },
     actionBtn: { alignItems: 'center', gap: 4 },
     actionLabel: {
-      color: 'rgba(243,236,224,0.9)',
+      color: INK,
       fontFamily: fonts.label,
       fontSize: 11,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
+    },
+    caption: {
+      marginTop: spacing.md,
+      paddingHorizontal: spacing.lg,
+      textAlign: 'center',
     },
   });

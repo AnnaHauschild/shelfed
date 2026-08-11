@@ -26,17 +26,18 @@ export interface EmojiOverlay {
   rotation?: number; // radians
 }
 
-/** The resizable/movable film card itself (one per post, kind 'card'). */
-export interface CardLayout {
-  id: 'card';
-  kind: 'card';
-  tx: number; // centre offset, normalized to stage width
-  ty: number; // centre offset, normalized to stage height
-  scale: number;
+/** How the caption (comment) under the poster is styled. */
+export type CaptionStyle = 'normal' | 'quote' | 'loud';
+
+/** Per-post meta stored alongside stickers (caption style). */
+export interface CaptionMeta {
+  id: 'caption';
+  kind: 'caption';
+  style: CaptionStyle;
 }
 
 export type Sticker = TextOverlay | EmojiOverlay;
-export type Overlay = Sticker | CardLayout;
+export type Overlay = Sticker | CaptionMeta;
 
 export interface StoryPost {
   id: string;

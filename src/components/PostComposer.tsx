@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -14,31 +15,46 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '@/api/types';
-import { CardLayout, EmojiOverlay, Overlay, Sticker, TextOverlay } from '@/api/posts';
+import {
+  CaptionMeta,
+  CaptionStyle,
+  EmojiOverlay,
+  Overlay,
+  Sticker,
+  TextOverlay,
+} from '@/api/posts';
 import { useCreatePost } from '@/hooks/useStories';
+import { POSTER_SIZE } from '@/constants/config';
 import { fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { PosterImage } from './PosterImage';
 import {
-  CARD_RATIO,
-  EditableCard,
   EditableOverlay,
+  POSTER_RATIO,
+  captionTextStyle,
   fontFamilyFor,
   storyPalette,
   STORY_COLORS,
+  STORY_EMOJIS,
   STORY_FONTS,
 } from './StoryOverlays';
 
 const SCREEN_W = Dimensions.get('window').width;
 const SCREEN_H = Dimensions.get('window').height;
-// The 9:16 stage; the card fills it at scale 1 and can be shrunk within it.
-const STAGE_W = Math.min(SCREEN_W - spacing.lg * 2, (SCREEN_H - 300) / CARD_RATIO);
-const STAGE_H = STAGE_W * CARD_RATIO;
+// The poster sits in the upper area; leaves room for the caption + Share below.
+const POSTER_W = Math.min(SCREEN_W * 0.62, (SCREEN_H - 400) / POSTER_RATIO);
+const POSTER_H = POSTER_W * POSTER_RATIO;
 
 const uid = () => Math.random().toString(36).slice(2, 10);
-// Dark ink for chrome on the light (film-tinted) stage.
-const INK = '#2b1d0d';
+const INK = '#2a2018';
 
-/** Instagram-style story editor: poster + draggable text/emoji stickers. */
+const CAPTION_STYLES: { key: CaptionStyle; label: string }[] = [
+  { key: 'normal', label: 'Normal' },
+  { key: 'quote', label: 'Quote' },
+  { key: 'loud', label: 'Loud' },
+];
+
+/** Compose a story: poster + a comment, plus optional decor stickers. */
 export function PostComposer({
   movie,
   onClose,
@@ -50,29 +66,32 @@ export function PostComposer({
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const create = useCreatePost();
+  const [caption, setCaption] = useState('');
+  const [captionStyle, setCaptionStyle] = useState<CaptionStyle>('normal');
   const [stickers, setStickers] = useState<Sticker[]>([]);
-  const [card, setCard] = useState({ tx: 0, ty: 0, scale: 1 });
+  const [decor, setDecor] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [emojiOpen, setEmojiOpen] = useState(false);
 
   useEffect(() => {
     if (movie) {
+      setCaption('');
+      setCaptionStyle('normal');
       setStickers([]);
-      setCard({ tx: 0, ty: 0, scale: 1 });
+      setDecor(false);
       setSelectedId(null);
       setEditingId(null);
+      setEmojiOpen(false);
     }
   }, [movie]);
 
   if (!movie) return null;
 
-  const update = (
-    id: string,
-    patch: Partial<TextOverlay> & Partial<EmojiOverlay>,
-  ) =>
-    setStickers((v) =>
-      v.map((o) => (o.id === id ? ({ ...o, ...patch } as Sticker) : o)),
-    );
+  const palette = storyPalette(movie.title ?? movie.id);
+
+  const update = (id: string, patch: Partial<TextOverlay> & Partial<EmojiOverlay>) =>
+    setStickers((v) => v.map((o) => (o.id === id ? ({ ...o, ...patch } as Sticker) : o)));
   const remove = (id: string) => {
     setStickers((v) => v.filter((o) => o.id !== id));
     setSelectedId((s) => (s === id ? null : s));
@@ -92,19 +111,21 @@ export function PostComposer({
     setSelectedId(o.id);
     setEditingId(o.id);
   };
+  const addEmoji = (emoji: string) => {
+    const o: EmojiOverlay = { id: uid(), kind: 'emoji', emoji, tx: 0, ty: 0, scale: 1 };
+    setStickers((v) => [...v, o]);
+    setSelectedId(o.id);
+    setEmojiOpen(false);
+  };
   const finishEdit = () => {
     setStickers((v) =>
-      v.filter(
-        (o) => !(o.id === editingId && o.kind === 'text' && !o.text.trim()),
-      ),
+      v.filter((o) => !(o.id === editingId && o.kind === 'text' && !o.text.trim())),
     );
     setEditingId(null);
   };
   const post = () => {
-    const clean = stickers.filter(
-      (o) => o.kind !== 'text' || o.text.trim().length > 0,
-    );
-    const cardEl: CardLayout = { id: 'card', kind: 'card', ...card };
+    const clean = stickers.filter((o) => o.kind !== 'text' || o.text.trim().length > 0);
+    const meta: CaptionMeta = { id: 'caption', kind: 'caption', style: captionStyle };
     create.mutate(
       {
         movie: {
@@ -114,17 +135,14 @@ export function PostComposer({
           posterPath: movie.posterPath,
           year: movie.year,
         },
-        caption: '',
-        overlays: [cardEl, ...clean] as Overlay[],
+        caption: caption.trim(),
+        overlays: [meta, ...clean] as Overlay[],
       },
       { onSuccess: onClose },
     );
   };
 
-  const palette = storyPalette(movie.title ?? movie.id);
-  const cardLayout: CardLayout = { id: 'card', kind: 'card', ...card };
   const selected = stickers.find((o) => o.id === selectedId) ?? null;
-  const selectedText = selected && selected.kind === 'text' ? selected : null;
   const editing =
     editingId != null
       ? (stickers.find((o) => o.id === editingId && o.kind === 'text') as
@@ -138,38 +156,49 @@ export function PostComposer({
         <Pressable onPress={onClose} hitSlop={10}>
           <Ionicons name="close" size={26} color={INK} />
         </Pressable>
-        <View style={styles.tools}>
-          <Pressable onPress={addText} style={styles.tool} hitSlop={6}>
-            <Text style={styles.toolAa}>Aa</Text>
-          </Pressable>
-          {selected && (
-            <Pressable onPress={() => remove(selected.id)} style={styles.tool} hitSlop={6}>
-              <Ionicons name="trash-outline" size={22} color={INK} />
+        {decor ? (
+          <View style={styles.tools}>
+            <Pressable onPress={addText} style={styles.tool} hitSlop={6}>
+              <Text style={styles.toolAa}>Aa</Text>
             </Pressable>
-          )}
-        </View>
+            <Pressable onPress={() => setEmojiOpen(true)} style={styles.tool} hitSlop={6}>
+              <Ionicons name="happy-outline" size={22} color={INK} />
+            </Pressable>
+            {selected && (
+              <Pressable onPress={() => remove(selected.id)} style={styles.tool} hitSlop={6}>
+                <Ionicons name="trash-outline" size={20} color={INK} />
+              </Pressable>
+            )}
+            <Pressable onPress={() => setDecor(false)} style={styles.doneChip}>
+              <Text style={styles.doneChipText}>Done</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <Pressable onPress={() => setDecor(true)} style={styles.decorBtn} hitSlop={6}>
+            <Ionicons name="sparkles-outline" size={16} color={INK} />
+            <Text style={styles.decorText}>Decor</Text>
+          </Pressable>
+        )}
       </View>
 
-      <View style={styles.canvasWrap}>
-        <View style={[styles.stage, { width: STAGE_W, height: STAGE_H }]}>
-          <EditableCard
-            key={movie.id}
-            layout={cardLayout}
-            stageW={STAGE_W}
-            stageH={STAGE_H}
-            title={movie.title}
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+      >
+        <View style={[styles.posterArea, { width: POSTER_W, height: POSTER_H }]}>
+          <PosterImage
             posterPath={movie.posterPath}
-            year={movie.year}
-            cardColor={palette.card}
-            textColor={palette.text}
-            onChange={(patch) => setCard((c) => ({ ...c, ...patch }))}
+            title={movie.title}
+            size={POSTER_SIZE}
+            style={styles.poster}
           />
           {stickers.map((o) => (
             <EditableOverlay
               key={o.id}
               overlay={o}
-              canvasW={STAGE_W}
-              canvasH={STAGE_H}
+              canvasW={POSTER_W}
+              canvasH={POSTER_H}
               selected={selectedId === o.id}
               onSelect={setSelectedId}
               onEditText={(id) => {
@@ -180,43 +209,79 @@ export function PostComposer({
             />
           ))}
         </View>
-      </View>
 
-      {selectedText && !editing && (
-        <View style={styles.quickBar}>
-          {STORY_FONTS.map((f) => (
-            <Pressable
-              key={f.key}
-              onPress={() => update(selectedText.id, { font: f.key })}
-              style={[styles.chipLight, selectedText.font === f.key && styles.chipLightOn]}
-            >
-              <Text style={{ fontFamily: f.family, color: INK, fontSize: 14 }}>
-                {f.label}
-              </Text>
-            </Pressable>
-          ))}
+        <Text style={styles.movieTitle} numberOfLines={2}>
+          {movie.title}
+          {movie.year != null ? `  ·  ${movie.year}` : ''}
+        </Text>
+
+        {!decor && (
+          <>
+            <View style={styles.styleRow}>
+              {CAPTION_STYLES.map((s) => (
+                <Pressable
+                  key={s.key}
+                  onPress={() => setCaptionStyle(s.key)}
+                  style={[styles.styleChip, captionStyle === s.key && styles.styleChipOn]}
+                >
+                  <Text
+                    style={[styles.styleChipText, captionStyle === s.key && styles.styleChipTextOn]}
+                  >
+                    {s.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+            <TextInput
+              style={[styles.input, captionTextStyle(captionStyle, INK, 16)]}
+              value={caption}
+              onChangeText={setCaption}
+              placeholder="Was denkst du über den Film? (optional)"
+              placeholderTextColor="rgba(42,32,24,0.45)"
+              multiline
+              maxLength={280}
+            />
+          </>
+        )}
+      </ScrollView>
+
+      {!decor && (
+        <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
+          <Pressable
+            style={[styles.postBtn, create.isPending && styles.postBtnOff]}
+            onPress={post}
+            disabled={create.isPending}
+          >
+            {create.isPending ? (
+              <ActivityIndicator color={chrome.onAccent} size="small" />
+            ) : (
+              <>
+                <Ionicons name="paper-plane" size={16} color={chrome.onAccent} />
+                <Text style={styles.postText}>Share to friends</Text>
+              </>
+            )}
+          </Pressable>
+          <Text style={styles.hint}>
+            Only your accepted friends can see this. Disappears after 24h.
+          </Text>
         </View>
       )}
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
-        <Pressable
-          style={[styles.postBtn, create.isPending && styles.postBtnOff]}
-          onPress={post}
-          disabled={create.isPending}
-        >
-          {create.isPending ? (
-            <ActivityIndicator color={chrome.onAccent} size="small" />
-          ) : (
-            <>
-              <Ionicons name="paper-plane" size={16} color={chrome.onAccent} />
-              <Text style={styles.postText}>Share to friends</Text>
-            </>
-          )}
-        </Pressable>
-        <Text style={styles.hint}>
-          Only your accepted friends can see this. Disappears after 24h.
-        </Text>
-      </View>
+      {emojiOpen && (
+        <View style={styles.paletteRoot}>
+          <Pressable style={styles.paletteBackdrop} onPress={() => setEmojiOpen(false)} />
+          <View style={[styles.palette, { paddingBottom: insets.bottom + spacing.md }]}>
+            <View style={styles.paletteHandle} />
+            <ScrollView contentContainerStyle={styles.emojiGrid}>
+              {STORY_EMOJIS.map((e) => (
+                <Pressable key={e} onPress={() => addEmoji(e)} style={styles.emojiCell}>
+                  <Text style={styles.emojiTxt}>{e}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      )}
 
       {editing && (
         <KeyboardAvoidingView
@@ -232,7 +297,7 @@ export function PostComposer({
               onChangeText={(t) => update(editing.id, { text: t })}
               placeholder="Type…"
               placeholderTextColor="rgba(255,255,255,0.6)"
-              maxLength={160}
+              maxLength={120}
               style={[
                 styles.editInput,
                 { fontFamily: fontFamilyFor(editing.font), color: editing.color },
@@ -280,7 +345,6 @@ const makeStyles = (c: ThemeChrome) =>
   StyleSheet.create({
     root: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(8, 5, 3, 0.98)',
       zIndex: 200,
       elevation: 200,
     },
@@ -291,42 +355,94 @@ const makeStyles = (c: ThemeChrome) =>
       paddingHorizontal: spacing.lg,
       paddingBottom: spacing.sm,
     },
-    tools: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+    tools: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
     tool: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
+      width: 38,
+      height: 38,
+      borderRadius: 19,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(0,0,0,0.06)',
+      backgroundColor: 'rgba(0,0,0,0.07)',
     },
-    toolAa: { color: INK, fontFamily: fonts.display, fontSize: 18 },
-    canvasWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-    stage: { position: 'relative' },
-    quickBar: {
+    toolAa: { color: INK, fontFamily: fonts.display, fontSize: 17 },
+    decorBtn: {
       flexDirection: 'row',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      gap: spacing.sm,
-      paddingHorizontal: spacing.lg,
-      paddingBottom: spacing.sm,
-    },
-    fontChip: {
-      paddingHorizontal: spacing.md,
-      paddingVertical: spacing.xs,
-      borderRadius: radius.xl,
-      borderWidth: 1,
-      borderColor: 'rgba(255,255,255,0.3)',
-    },
-    fontChipOn: { backgroundColor: 'rgba(255,255,255,0.22)', borderColor: '#fff' },
-    chipLight: {
+      alignItems: 'center',
+      gap: 6,
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.xs,
       borderRadius: radius.xl,
       borderWidth: 1,
       borderColor: 'rgba(0,0,0,0.25)',
     },
-    chipLightOn: { backgroundColor: 'rgba(0,0,0,0.12)', borderColor: INK },
+    decorText: {
+      color: INK,
+      fontFamily: fonts.label,
+      fontSize: 13,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    doneChip: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      backgroundColor: c.accent,
+    },
+    doneChipText: {
+      color: c.onAccent,
+      fontFamily: fonts.label,
+      fontSize: 13,
+      textTransform: 'uppercase',
+    },
+    scroll: { alignItems: 'center', paddingBottom: spacing.lg },
+    posterArea: {
+      borderRadius: radius.lg,
+      overflow: 'hidden',
+      backgroundColor: '#000',
+    },
+    poster: { width: '100%', height: '100%' },
+    movieTitle: {
+      color: INK,
+      fontFamily: fonts.display,
+      fontSize: 20,
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginTop: spacing.md,
+      marginBottom: spacing.sm,
+      paddingHorizontal: spacing.lg,
+    },
+    styleRow: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+      marginBottom: spacing.sm,
+    },
+    styleChip: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.22)',
+    },
+    styleChipOn: { backgroundColor: INK, borderColor: INK },
+    styleChipText: {
+      color: INK,
+      fontFamily: fonts.label,
+      fontSize: 12,
+      textTransform: 'uppercase',
+    },
+    styleChipTextOn: { color: '#f3ece0' },
+    input: {
+      width: SCREEN_W - spacing.lg * 2,
+      minHeight: 56,
+      maxHeight: 140,
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.18)',
+      borderRadius: radius.md,
+      backgroundColor: 'rgba(255,255,255,0.5)',
+      padding: spacing.md,
+      textAlignVertical: 'top',
+    },
     footer: { paddingHorizontal: spacing.lg, gap: spacing.sm },
     postBtn: {
       flexDirection: 'row',
@@ -346,7 +462,7 @@ const makeStyles = (c: ThemeChrome) =>
       letterSpacing: 0.5,
     },
     hint: {
-      color: 'rgba(43,29,13,0.55)',
+      color: 'rgba(42,32,24,0.55)',
       fontFamily: fonts.body,
       fontSize: 12,
       textAlign: 'center',
@@ -398,11 +514,7 @@ const makeStyles = (c: ThemeChrome) =>
       justifyContent: 'center',
       padding: spacing.xl,
     },
-    editInput: {
-      minWidth: 80,
-      fontSize: 30,
-      textAlign: 'center',
-    },
+    editInput: { minWidth: 80, fontSize: 30, textAlign: 'center' },
     editBar: { paddingHorizontal: spacing.lg, gap: spacing.md },
     colorRow: {
       flexDirection: 'row',
@@ -425,6 +537,14 @@ const makeStyles = (c: ThemeChrome) =>
       flexWrap: 'wrap',
       gap: spacing.sm,
     },
+    fontChip: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: 'rgba(255,255,255,0.3)',
+    },
+    fontChipOn: { backgroundColor: 'rgba(255,255,255,0.22)', borderColor: '#fff' },
     doneBtn: {
       paddingHorizontal: spacing.lg,
       paddingVertical: spacing.xs,
