@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useQueryClient } from '@tanstack/react-query';
 import { TmdbError, hasTmdbToken } from '@/api/tmdb';
 import { SCREENSHOT_MODE, screenshotFeed } from '@/api/screenshotData';
 import { MUST_SEE_ID } from '@/api/movies';
@@ -27,6 +28,7 @@ import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieFeed } from '@/hooks/useMovieFeed';
 import { useProviderOptions } from '@/hooks/useProviderOptions';
 import { getSetting, setSetting } from '@/db/settings';
+import { InteractionType } from '@/repositories';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 
 // --- Swipe onboarding hint --------------------------------------------------
@@ -172,6 +174,7 @@ export default function DiscoverScreen() {
   const { markWatched, skip, toggleWatchlist, toggleFavorite, wishlistSwipe, watchedFavoriteSwipe, undo } =
     useInteractions();
   const states = useInteractionStates();
+  const qc = useQueryClient();
 
   const [topIndex, setTopIndex] = useState(0);
 
@@ -225,18 +228,34 @@ export default function DiscoverScreen() {
           ? 'game-controller-outline'
           : 'film-outline';
 
+  // Identifies the current deck (media + filters); the SwipeDeck is keyed by it
+  // and it drives the "already swiped" snapshot below.
+  const deckKey = `${mediaType}:${genres.join(',') || 'all'}:${era ?? 'all'}:${countries.join(',') || 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibes.join(',') || 'all'}:${actor?.id ?? 'all'}:${platforms.join(',') || 'all'}:${providers.join(',') || 'all'}`;
+
+  // Titles already swiped, captured ONCE per deck session (not on every swipe),
+  // so the active deck's order stays stable while a media/filter switch still
+  // drops titles handled in a previous session (cached feed pages aren't
+  // re-filtered). Read synchronously from the interaction-states cache.
+  const seenSnapshot = useMemo(() => {
+    const map = qc.getQueryData<Map<string, Set<InteractionType>>>([
+      'interaction-states',
+      mediaType,
+    ]);
+    return new Set<string>(map ? [...map.keys()] : []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deckKey, mediaType, qc]);
+
   const movies = useMemo(() => {
     if (SCREENSHOT_MODE) return screenshotFeed(mediaType);
     const all = data?.pages.flatMap((page) => page.movies) ?? [];
-    // De-duplicate by id: TMDB pages (and Open Library subjects) can repeat a
-    // title, which would otherwise collide as duplicate keys in the deck.
+    // De-duplicate by id AND drop anything already swiped this session.
     const seen = new Set<string>();
     return all.filter((m) => {
-      if (seen.has(m.id)) return false;
+      if (seen.has(m.id) || seenSnapshot.has(m.id)) return false;
       seen.add(m.id);
       return true;
     });
-  }, [data, mediaType]);
+  }, [data, mediaType, seenSnapshot]);
 
   // Prefetch the next page as the user nears the bottom of the current deck.
   useEffect(() => {
@@ -302,7 +321,7 @@ export default function DiscoverScreen() {
         ) : (
           <>
             <SwipeDeck
-              key={`${mediaType}:${genres.join(',') || 'all'}:${era ?? 'all'}:${countries.join(',') || 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibes.join(',') || 'all'}:${actor?.id ?? 'all'}:${platforms.join(',') || 'all'}:${providers.join(',') || 'all'}`}
+              key={deckKey}
               cards={movies}
               onSwipeRight={(movie) => markWatched(movie)}
               onSwipeLeft={(movie) => skip(movie)}
