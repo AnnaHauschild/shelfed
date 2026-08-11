@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -13,20 +14,24 @@ import {
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
+import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '@/api/types';
 import {
   CaptionMeta,
   CaptionStyle,
   EmojiOverlay,
+  GifOverlay,
   Overlay,
   Sticker,
   TextOverlay,
   TextVariant,
 } from '@/api/posts';
 import { useCreatePost } from '@/hooks/useStories';
+import { GifResult, hasGiphyKey, searchGifs } from '@/api/giphy';
 import { POSTER_SIZE } from '@/constants/config';
-import { fonts, radius, spacing } from '@/theme';
+import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { PosterImage } from './PosterImage';
 import {
@@ -75,6 +80,14 @@ export function PostComposer({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [presetsOpen, setPresetsOpen] = useState(false);
+  const [gifsOpen, setGifsOpen] = useState(false);
+  const [gifQuery, setGifQuery] = useState('');
+  const gifs = useQuery({
+    queryKey: ['giphy', gifQuery],
+    queryFn: () => searchGifs(gifQuery),
+    enabled: gifsOpen && hasGiphyKey(),
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
     if (movie) {
@@ -85,6 +98,8 @@ export function PostComposer({
       setSelectedId(null);
       setEditingId(null);
       setPresetsOpen(false);
+      setGifsOpen(false);
+      setGifQuery('');
     }
   }, [movie]);
 
@@ -130,6 +145,21 @@ export function PostComposer({
     setStickers((v) => [...v, o]);
     setSelectedId(o.id);
     setPresetsOpen(false);
+  };
+  const addGif = (g: GifResult) => {
+    const o: GifOverlay = {
+      id: uid(),
+      kind: 'gif',
+      url: g.url,
+      aspect: g.aspect,
+      tx: 0,
+      ty: 0,
+      scale: 1,
+    };
+    setStickers((v) => [...v, o]);
+    setSelectedId(o.id);
+    setGifsOpen(false);
+    Keyboard.dismiss();
   };
   const finishEdit = () => {
     setStickers((v) =>
@@ -177,6 +207,9 @@ export function PostComposer({
             </Pressable>
             <Pressable onPress={() => setPresetsOpen(true)} style={styles.tool} hitSlop={6}>
               <Ionicons name="pricetag-outline" size={20} color={INK} />
+            </Pressable>
+            <Pressable onPress={() => setGifsOpen(true)} style={styles.tool} hitSlop={6}>
+              <Text style={styles.toolGif}>GIF</Text>
             </Pressable>
             {selected && (
               <Pressable onPress={() => remove(selected.id)} style={styles.tool} hitSlop={6}>
@@ -310,6 +343,59 @@ export function PostComposer({
             </ScrollView>
           </View>
         </View>
+      )}
+
+      {gifsOpen && (
+        <KeyboardAvoidingView
+          style={styles.paletteRoot}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <Pressable
+            style={styles.paletteBackdrop}
+            onPress={() => {
+              setGifsOpen(false);
+              Keyboard.dismiss();
+            }}
+          />
+          <View style={[styles.gifSheet, { paddingBottom: insets.bottom + spacing.md }]}>
+            <View style={styles.paletteHandle} />
+            {hasGiphyKey() ? (
+              <>
+                <TextInput
+                  style={styles.gifSearch}
+                  value={gifQuery}
+                  onChangeText={setGifQuery}
+                  placeholder="Search GIFs…"
+                  placeholderTextColor={chrome.muted}
+                  autoFocus
+                  returnKeyType="search"
+                />
+                {gifs.isLoading ? (
+                  <ActivityIndicator color={chrome.accent} style={styles.gifLoading} />
+                ) : (
+                  <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={styles.gifGrid}
+                  >
+                    {(gifs.data ?? []).map((g) => (
+                      <Pressable key={g.id} onPress={() => addGif(g)} style={styles.gifCell}>
+                        <Image
+                          source={{ uri: g.previewUrl }}
+                          style={styles.gifImg}
+                          contentFit="cover"
+                        />
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+                )}
+              </>
+            ) : (
+              <Text style={styles.gifHint}>
+                Add EXPO_PUBLIC_GIPHY_API_KEY to your .env to enable GIF stickers.
+              </Text>
+            )}
+          </View>
+        </KeyboardAvoidingView>
       )}
 
       {editing && (
@@ -572,6 +658,53 @@ const makeStyles = (c: ThemeChrome) =>
       fontFamily: fonts.label,
       fontSize: 12,
       textTransform: 'uppercase',
+    },
+    toolGif: { color: INK, fontFamily: fonts.label, fontSize: 12, letterSpacing: 0.5 },
+    gifSheet: {
+      maxHeight: '70%',
+      backgroundColor: c.background,
+      borderTopLeftRadius: radius.xl,
+      borderTopRightRadius: radius.xl,
+      borderTopWidth: 2,
+      borderColor: c.border,
+      paddingTop: spacing.sm,
+      paddingHorizontal: spacing.md,
+    },
+    gifSearch: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: radius.md,
+      backgroundColor: c.surfaceRaised,
+      color: colors.textOnDark,
+      fontFamily: fonts.body,
+      fontSize: 15,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      marginBottom: spacing.sm,
+    },
+    gifLoading: { marginVertical: spacing.xl },
+    gifGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      gap: spacing.sm,
+      paddingBottom: spacing.sm,
+    },
+    gifCell: {
+      width: '31.5%',
+      aspectRatio: 1,
+      borderRadius: radius.sm,
+      overflow: 'hidden',
+      backgroundColor: c.surfaceRaised,
+    },
+    gifImg: { width: '100%', height: '100%' },
+    gifHint: {
+      color: c.muted,
+      fontFamily: fonts.body,
+      fontSize: 14,
+      textAlign: 'center',
+      paddingVertical: spacing.xl,
+      paddingHorizontal: spacing.lg,
     },
     editRoot: {
       ...StyleSheet.absoluteFillObject,

@@ -24,6 +24,10 @@ export const TMDB_ACCESS_TOKEN = process.env.EXPO_PUBLIC_TMDB_ACCESS_TOKEN ?? ''
 export const RAWG_BASE_URL = 'https://api.rawg.io/api';
 export const RAWG_API_KEY = process.env.EXPO_PUBLIC_RAWG_API_KEY ?? '';
 
+// Giphy (animated GIF stickers for stories). Free key from developers.giphy.com.
+export const GIPHY_BASE_URL = 'https://api.giphy.com/v1/gifs';
+export const GIPHY_API_KEY = process.env.EXPO_PUBLIC_GIPHY_API_KEY ?? '';
+
 // Streaming-availability region (ISO 3166-1) for TMDB watch/providers. Detected
 // from the device locale once and cached; falls back to a neutral default when
 // the OS doesn't expose a region.

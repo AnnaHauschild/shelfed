@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TextStyle, View } from 'react-native';
+import { Image } from 'expo-image';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -120,6 +121,7 @@ export const STORY_EMOJIS = [
 // per-sticker `scale`), so a sticker looks the same on any screen size.
 const TEXT_FRAC = 0.09;
 const EMOJI_FRAC = 0.14;
+const GIF_FRAC = 0.42;
 
 /** Ready-made label stickers (warm, filmic). Tap to drop one on the poster. */
 export const LABEL_PRESETS: {
@@ -152,6 +154,16 @@ export function OverlayContent({
   if (overlay.kind === 'emoji') {
     return (
       <Text style={{ fontSize: EMOJI_FRAC * canvasW }}>{overlay.emoji}</Text>
+    );
+  }
+  if (overlay.kind === 'gif') {
+    const w = GIF_FRAC * canvasW;
+    return (
+      <Image
+        source={{ uri: overlay.url }}
+        style={{ width: w, height: w / overlay.aspect, borderRadius: 8 }}
+        contentFit="contain"
+      />
     );
   }
   const fontSize = TEXT_FRAC * canvasW;

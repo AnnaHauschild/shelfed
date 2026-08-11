@@ -31,6 +31,18 @@ export interface EmojiOverlay {
   rotation?: number; // radians
 }
 
+/** A draggable animated GIF sticker placed on the story poster. */
+export interface GifOverlay {
+  id: string;
+  kind: 'gif';
+  url: string; // animated GIF url
+  aspect: number; // width / height
+  tx: number;
+  ty: number;
+  scale: number;
+  rotation?: number; // radians
+}
+
 /** How the caption (comment) under the poster is styled. */
 export type CaptionStyle = 'normal' | 'quote' | 'loud';
 
@@ -41,7 +53,7 @@ export interface CaptionMeta {
   style: CaptionStyle;
 }
 
-export type Sticker = TextOverlay | EmojiOverlay;
+export type Sticker = TextOverlay | EmojiOverlay | GifOverlay;
 export type Overlay = Sticker | CaptionMeta;
 
 export interface StoryPost {
