@@ -22,6 +22,7 @@ import {
   Overlay,
   Sticker,
   TextOverlay,
+  TextVariant,
 } from '@/api/posts';
 import { useCreatePost } from '@/hooks/useStories';
 import { POSTER_SIZE } from '@/constants/config';
@@ -30,6 +31,8 @@ import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { PosterImage } from './PosterImage';
 import {
   EditableOverlay,
+  LABEL_PRESETS,
+  OverlayContent,
   POSTER_RATIO,
   captionTextStyle,
   fontFamilyFor,
@@ -71,6 +74,7 @@ export function PostComposer({
   const [decor, setDecor] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [presetsOpen, setPresetsOpen] = useState(false);
 
   useEffect(() => {
     if (movie) {
@@ -80,6 +84,7 @@ export function PostComposer({
       setDecor(false);
       setSelectedId(null);
       setEditingId(null);
+      setPresetsOpen(false);
     }
   }, [movie]);
 
@@ -107,6 +112,24 @@ export function PostComposer({
     setStickers((v) => [...v, o]);
     setSelectedId(o.id);
     setEditingId(o.id);
+  };
+  const addPreset = (p: (typeof LABEL_PRESETS)[number]) => {
+    const o: TextOverlay = {
+      id: uid(),
+      kind: 'text',
+      text: p.text,
+      font: p.font,
+      color: p.color,
+      variant: p.variant,
+      bg: p.bg,
+      tx: 0,
+      ty: -0.18,
+      scale: 1,
+      rotation: p.rotation,
+    };
+    setStickers((v) => [...v, o]);
+    setSelectedId(o.id);
+    setPresetsOpen(false);
   };
   const finishEdit = () => {
     setStickers((v) =>
@@ -151,6 +174,9 @@ export function PostComposer({
           <View style={styles.tools}>
             <Pressable onPress={addText} style={styles.tool} hitSlop={6}>
               <Text style={styles.toolAa}>Aa</Text>
+            </Pressable>
+            <Pressable onPress={() => setPresetsOpen(true)} style={styles.tool} hitSlop={6}>
+              <Ionicons name="pricetag-outline" size={20} color={INK} />
             </Pressable>
             {selected && (
               <Pressable onPress={() => remove(selected.id)} style={styles.tool} hitSlop={6}>
@@ -255,6 +281,37 @@ export function PostComposer({
         )}
       </KeyboardAvoidingView>
 
+      {presetsOpen && (
+        <View style={styles.paletteRoot}>
+          <Pressable style={styles.paletteBackdrop} onPress={() => setPresetsOpen(false)} />
+          <View style={[styles.presetSheet, { paddingBottom: insets.bottom + spacing.md }]}>
+            <View style={styles.paletteHandle} />
+            <Text style={styles.presetTitle}>Tap a label to add it</Text>
+            <ScrollView contentContainerStyle={styles.presetGrid}>
+              {LABEL_PRESETS.map((p) => (
+                <Pressable key={p.text} onPress={() => addPreset(p)} style={styles.presetCell}>
+                  <OverlayContent
+                    overlay={{
+                      id: 'preview',
+                      kind: 'text',
+                      text: p.text,
+                      font: p.font,
+                      color: p.color,
+                      variant: p.variant,
+                      bg: p.bg,
+                      tx: 0,
+                      ty: 0,
+                      scale: 1,
+                    }}
+                    canvasW={150}
+                  />
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      )}
+
       {editing && (
         <KeyboardAvoidingView
           style={styles.editRoot}
@@ -277,6 +334,27 @@ export function PostComposer({
             />
           </View>
           <View style={[styles.editBar, { paddingBottom: insets.bottom + spacing.sm }]}>
+            <View style={styles.variantRow}>
+              {(['plain', 'pill', 'stamp'] as TextVariant[]).map((vr) => (
+                <Pressable
+                  key={vr}
+                  onPress={() =>
+                    update(editing.id, {
+                      variant: vr,
+                      ...(vr === 'pill' && !editing.bg ? { bg: '#c1443b' } : {}),
+                    })
+                  }
+                  style={[
+                    styles.vChip,
+                    (editing.variant ?? 'plain') === vr && styles.vChipOn,
+                  ]}
+                >
+                  <Text style={styles.vChipText}>
+                    {vr === 'plain' ? 'Plain' : vr === 'pill' ? 'Pill' : 'Stamp'}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
             <View style={styles.colorRow}>
               {STORY_COLORS.map((col) => (
                 <Pressable
@@ -429,6 +507,71 @@ const makeStyles = (c: ThemeChrome) =>
       fontFamily: fonts.body,
       fontSize: 12,
       textAlign: 'center',
+    },
+    paletteRoot: { ...StyleSheet.absoluteFillObject, justifyContent: 'flex-end' },
+    paletteBackdrop: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    paletteHandle: {
+      width: 44,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: c.border,
+      alignSelf: 'center',
+      marginBottom: spacing.sm,
+    },
+    presetSheet: {
+      maxHeight: '60%',
+      backgroundColor: c.background,
+      borderTopLeftRadius: radius.xl,
+      borderTopRightRadius: radius.xl,
+      borderTopWidth: 2,
+      borderColor: c.border,
+      paddingTop: spacing.sm,
+      paddingHorizontal: spacing.md,
+    },
+    presetTitle: {
+      color: c.muted,
+      fontFamily: fonts.label,
+      fontSize: 12,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      textAlign: 'center',
+      marginBottom: spacing.sm,
+    },
+    presetGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: spacing.md,
+      paddingVertical: spacing.sm,
+    },
+    presetCell: {
+      minHeight: 44,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: spacing.xs,
+    },
+    variantRow: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: spacing.sm,
+    },
+    vChip: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: 'rgba(255,255,255,0.3)',
+    },
+    vChipOn: { backgroundColor: 'rgba(255,255,255,0.22)', borderColor: '#fff' },
+    vChipText: {
+      color: '#fff',
+      fontFamily: fonts.label,
+      fontSize: 12,
+      textTransform: 'uppercase',
     },
     editRoot: {
       ...StyleSheet.absoluteFillObject,

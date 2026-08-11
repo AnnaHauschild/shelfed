@@ -2,6 +2,9 @@ import { supabase } from './supabase';
 import { getFollowingIds, getProfiles, UserSummary } from './follows';
 import { MediaType } from './types';
 
+/** Visual style of a text sticker: plain text, a filled pill, or a stamp box. */
+export type TextVariant = 'plain' | 'pill' | 'stamp';
+
 /** A draggable text sticker placed on the story poster. */
 export interface TextOverlay {
   id: string;
@@ -9,6 +12,8 @@ export interface TextOverlay {
   text: string;
   font: string; // STORY_FONTS key
   color: string; // hex
+  variant?: TextVariant; // undefined = 'plain'
+  bg?: string; // pill fill colour (hex)
   tx: number; // x offset from canvas centre, normalized to canvas width
   ty: number; // y offset from canvas centre, normalized to canvas height
   scale: number;

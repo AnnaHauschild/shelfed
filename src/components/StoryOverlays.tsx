@@ -5,7 +5,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import { CaptionStyle, Sticker } from '@/api/posts';
+import { CaptionStyle, Sticker, TextVariant } from '@/api/posts';
 import { fonts } from '@/theme';
 
 // Poster aspect (portrait 2:3): height / width.
@@ -121,6 +121,27 @@ export const STORY_EMOJIS = [
 const TEXT_FRAC = 0.09;
 const EMOJI_FRAC = 0.14;
 
+/** Ready-made label stickers (warm, filmic). Tap to drop one on the poster. */
+export const LABEL_PRESETS: {
+  text: string;
+  variant: TextVariant;
+  color: string;
+  bg?: string;
+  font: string;
+  rotation?: number;
+}[] = [
+  { text: 'MUST WATCH', variant: 'stamp', color: '#c1443b', font: 'display', rotation: -0.12 },
+  { text: 'MASTERPIECE', variant: 'pill', bg: '#d99a2b', color: '#2a2018', font: 'display' },
+  { text: '❤ FAVORITE', variant: 'pill', bg: '#c1443b', color: '#fff5ee', font: 'caps' },
+  { text: 'HIDDEN GEM', variant: 'stamp', color: '#3f6b4f', font: 'display', rotation: -0.1 },
+  { text: 'REWATCH', variant: 'stamp', color: '#2a2018', font: 'display', rotation: 0.08 },
+  { text: '10/10', variant: 'pill', bg: '#2a2018', color: '#f3ece0', font: 'display' },
+  { text: 'SO GOOD', variant: 'stamp', color: '#c1443b', font: 'display', rotation: -0.08 },
+  { text: 'CLASSIC', variant: 'stamp', color: '#2a2018', font: 'display', rotation: 0.1 },
+  { text: 'SPOILERS!', variant: 'pill', bg: '#c1443b', color: '#fff5ee', font: 'caps' },
+  { text: 'UNDERRATED', variant: 'stamp', color: '#8a5a2b', font: 'display', rotation: -0.1 },
+];
+
 export function OverlayContent({
   overlay,
   canvasW,
@@ -133,21 +154,49 @@ export function OverlayContent({
       <Text style={{ fontSize: EMOJI_FRAC * canvasW }}>{overlay.emoji}</Text>
     );
   }
-  return (
-    <Text
-      style={[
-        styles.text,
-        {
-          fontFamily: fontFamilyFor(overlay.font),
-          color: overlay.color,
-          fontSize: TEXT_FRAC * canvasW,
-          maxWidth: canvasW * 0.92,
-        },
-      ]}
-    >
-      {overlay.text}
-    </Text>
-  );
+  const fontSize = TEXT_FRAC * canvasW;
+  const variant = overlay.variant ?? 'plain';
+  const base: TextStyle = {
+    fontFamily: fontFamilyFor(overlay.font),
+    color: overlay.color,
+    fontSize,
+    textAlign: 'center',
+    maxWidth: canvasW * 0.92,
+  };
+  if (variant === 'pill') {
+    return (
+      <View
+        style={{
+          backgroundColor: overlay.bg ?? '#c1443b',
+          paddingHorizontal: fontSize * 0.72,
+          paddingVertical: fontSize * 0.32,
+          borderRadius: fontSize * 1.3,
+        }}
+      >
+        <Text style={[base, { textTransform: 'uppercase', letterSpacing: 1 }]}>
+          {overlay.text}
+        </Text>
+      </View>
+    );
+  }
+  if (variant === 'stamp') {
+    return (
+      <View
+        style={{
+          borderWidth: Math.max(2, fontSize * 0.09),
+          borderColor: overlay.color,
+          paddingHorizontal: fontSize * 0.5,
+          paddingVertical: fontSize * 0.22,
+          borderRadius: fontSize * 0.28,
+        }}
+      >
+        <Text style={[base, { textTransform: 'uppercase', letterSpacing: 2 }]}>
+          {overlay.text}
+        </Text>
+      </View>
+    );
+  }
+  return <Text style={[styles.text, base]}>{overlay.text}</Text>;
 }
 
 /** Non-interactive stickers, positioned on the poster (used in the viewer). */
