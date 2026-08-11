@@ -25,10 +25,28 @@ const BG_TINTS = [
   '#d9ece4', '#ece3cf', '#efdde2', '#dce9f0', '#f6e4cf', '#e6e2da',
 ];
 
+// How much to push the tints away from grey (chroma boost). Tweak to taste.
+const SAT_BOOST = 0.13;
+
+/** Increase a hex colour's saturation by `amount` (keeps luminance ~constant). */
+function saturate(hex: string, amount: number): string {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  const f = 1 + amount;
+  const cl = (v: number) => Math.max(0, Math.min(255, Math.round(v)));
+  const nr = cl(luma + (r - luma) * f);
+  const ng = cl(luma + (g - luma) * f);
+  const nb = cl(luma + (b - luma) * f);
+  return `#${((1 << 24) | (nr << 16) | (ng << 8) | nb).toString(16).slice(1)}`;
+}
+
 /** Per-film palette: a light background tint + a dark ink for text. */
 export function storyPalette(seed: string): { bg: string; ink: string } {
   return {
-    bg: BG_TINTS[hashInt(seed || 'shelfed') % BG_TINTS.length],
+    bg: saturate(BG_TINTS[hashInt(seed || 'shelfed') % BG_TINTS.length], SAT_BOOST),
     ink: '#2a2018',
   };
 }
