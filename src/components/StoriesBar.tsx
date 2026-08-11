@@ -161,6 +161,8 @@ export function StoryViewer({
   const markSeen = useMarkStorySeen();
   const [gi, setGi] = useState(0);
   const [pi, setPi] = useState(0);
+  // Posts removed this session — hidden instantly (the snapshot can't refetch).
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const progress = useSharedValue(0);
   const paused = useRef(false);
 
@@ -169,31 +171,58 @@ export function StoryViewer({
     if (story) {
       setGi(story.index);
       setPi(0);
+      setDeletedIds(new Set());
     }
   }, [story]);
 
   const groups = story?.groups ?? [];
   const group = groups[gi] ?? null;
   // getStories returns newest-first; play each person's posts oldest-first.
-  const posts = useMemo(() => (group ? [...group.posts].reverse() : []), [group]);
+  const posts = useMemo(
+    () =>
+      group
+        ? [...group.posts].reverse().filter((p) => !deletedIds.has(p.id))
+        : [],
+    [group, deletedIds],
+  );
   const item = posts.length ? posts[Math.min(pi, posts.length - 1)] : null;
   const isMine = !!group && group.user.id === userId;
 
+  // How many posts a group still shows (after local deletions).
+  const visibleCount = useCallback(
+    (g: StoryGroup | null) =>
+      g ? g.posts.filter((p) => !deletedIds.has(p.id)).length : 0,
+    [deletedIds],
+  );
+
   const goNext = useCallback(() => {
-    if (pi < posts.length - 1) setPi(pi + 1);
-    else if (gi < groups.length - 1) {
-      setGi(gi + 1);
-      setPi(0);
-    } else onClose();
-  }, [pi, posts.length, gi, groups.length, onClose]);
+    if (pi < posts.length - 1) {
+      setPi(pi + 1);
+      return;
+    }
+    for (let g = gi + 1; g < groups.length; g++) {
+      if (visibleCount(groups[g])) {
+        setGi(g);
+        setPi(0);
+        return;
+      }
+    }
+    onClose();
+  }, [pi, posts.length, gi, groups, visibleCount, onClose]);
 
   const goPrev = useCallback(() => {
-    if (pi > 0) setPi(pi - 1);
-    else if (gi > 0) {
-      setGi(gi - 1);
-      setPi(0);
+    if (pi > 0) {
+      setPi(pi - 1);
+      return;
     }
-  }, [pi, gi]);
+    for (let g = gi - 1; g >= 0; g--) {
+      if (visibleCount(groups[g])) {
+        setGi(g);
+        setPi(0);
+        return;
+      }
+    }
+  }, [pi, gi, groups, visibleCount]);
 
   // Fill the active segment, then auto-advance.
   useEffect(() => {
@@ -234,10 +263,29 @@ export function StoryViewer({
       {
         text: 'Delete',
         style: 'destructive',
-        onPress: () => del.mutate(item.id, { onSuccess: goNext }),
+        onPress: () => {
+          const id = item.id;
+          del.mutate(id);
+          // Hide it locally and move on in the same moment.
+          setDeletedIds((s) => new Set(s).add(id));
+          if (pi < posts.length - 1) {
+            // The next post shifts into this index once it's filtered out.
+          } else {
+            let moved = false;
+            for (let g = gi + 1; g < groups.length; g++) {
+              if (visibleCount(groups[g])) {
+                setGi(g);
+                setPi(0);
+                moved = true;
+                break;
+              }
+            }
+            if (!moved) onClose();
+          }
+        },
       },
     ]);
-  }, [item, pause, resume, del, goNext]);
+  }, [item, pause, resume, del, pi, posts.length, gi, groups, visibleCount, onClose]);
 
   // Open the full details card ON TOP of the story (paused), so closing it
   // returns to the story rather than the home page.
