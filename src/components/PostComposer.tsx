@@ -57,10 +57,22 @@ export function PostComposer({
 
   useEffect(() => {
     if (movie) {
-      setStickers([]);
+      // Open with a focused text field so you can write straight away (an empty
+      // one is discarded on Done). Stickers/card edits still work afterwards.
+      const first: TextOverlay = {
+        id: uid(),
+        kind: 'text',
+        text: '',
+        font: 'display',
+        color: '#ffffff',
+        tx: 0,
+        ty: 0,
+        scale: 1,
+      };
+      setStickers([first]);
       setCard({ tx: 0, ty: 0, scale: 1 });
-      setSelectedId(null);
-      setEditingId(null);
+      setSelectedId(first.id);
+      setEditingId(first.id);
     }
   }, [movie]);
 
