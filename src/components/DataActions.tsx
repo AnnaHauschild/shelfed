@@ -12,10 +12,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/context/AuthProvider';
 import {
   deleteAllShelfItems,
-  deleteShelfItemsByType,
+  deleteShelfItemsScoped,
   isShelfType,
 } from '@/api/shelfSync';
 import type { ShelfType } from '@/api/shelfSync';
+import type { MediaType } from '@/api/types';
 import {
   collectionRepository,
   episodeRepository,
@@ -46,6 +47,14 @@ const SHELVES: { type: InteractionType; label: string }[] = [
   { type: 'favorite', label: 'Favorites' },
 ];
 
+// The media categories that can be scoped when clearing.
+const MEDIA: { type: MediaType; label: string }[] = [
+  { type: 'movie', label: 'Movies' },
+  { type: 'tv', label: 'Series' },
+  { type: 'book', label: 'Books' },
+  { type: 'game', label: 'Games' },
+];
+
 /** "Reset" options in Settings: clear selected shelves, or wipe everything. */
 export function DataActions() {
   const chrome = useThemeChrome();
@@ -56,6 +65,9 @@ export function DataActions() {
   const [shelvesOpen, setShelvesOpen] = useState(false);
   const [selected, setSelected] = useState<Set<InteractionType>>(
     new Set(['watched', 'watchlist', 'favorite']),
+  );
+  const [selectedMedia, setSelectedMedia] = useState<Set<MediaType>>(
+    new Set(['movie', 'tv', 'book', 'game']),
   );
 
   const invalidate = () =>
@@ -73,13 +85,24 @@ export function DataActions() {
       return next;
     });
 
+  const toggleMedia = (t: MediaType) =>
+    setSelectedMedia((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t);
+      else next.add(t);
+      return next;
+    });
+
   const clearSelected = async () => {
     const types = SHELVES.map((s) => s.type).filter((t) => selected.has(t));
-    if (types.length === 0) return;
+    const media = MEDIA.map((m) => m.type).filter((t) => selectedMedia.has(t));
+    if (types.length === 0 || media.length === 0) return;
     setBusy('shelves');
     try {
-      await interactionRepository.clearTypes(types);
-      if (userId) await deleteShelfItemsByType(userId, types.filter(isShelfType));
+      await interactionRepository.clearScoped(types, media);
+      if (userId) {
+        await deleteShelfItemsScoped(userId, types.filter(isShelfType), media);
+      }
     } finally {
       invalidate();
       setBusy(null);
@@ -103,14 +126,21 @@ export function DataActions() {
 
   const confirmClearSelected = () => {
     const chosen = SHELVES.filter((s) => selected.has(s.type));
-    if (chosen.length === 0) return;
-    const names = chosen.map((s) => s.label).join(', ');
-    const title =
-      chosen.length === SHELVES.length ? 'Clear all shelves?' : `Clear ${names}?`;
-    Alert.alert(title, `This empties ${names}${cloudNote}.`, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Clear', style: 'destructive', onPress: clearSelected },
-    ]);
+    const chosenMedia = MEDIA.filter((m) => selectedMedia.has(m.type));
+    if (chosen.length === 0 || chosenMedia.length === 0) return;
+    const shelfNames = chosen.map((s) => s.label).join(', ');
+    const mediaNames =
+      chosenMedia.length === MEDIA.length
+        ? 'all categories'
+        : chosenMedia.map((m) => m.label).join(', ');
+    Alert.alert(
+      'Clear shelves?',
+      `This empties ${shelfNames} for ${mediaNames}${cloudNote}.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Clear', style: 'destructive', onPress: clearSelected },
+      ],
+    );
   };
 
   const confirmResetAll = () =>
@@ -144,7 +174,10 @@ export function DataActions() {
 
       {shelvesOpen && (
         <View style={styles.panel}>
-          <Text style={styles.hint}>Choose which shelves to empty.</Text>
+          <Text style={styles.hint}>
+            Choose which shelves and categories to empty.
+          </Text>
+          <Text style={styles.subLabel}>Shelves</Text>
           <View style={styles.chips}>
             {SHELVES.map((s) => {
               const on = selected.has(s.type);
@@ -164,13 +197,38 @@ export function DataActions() {
               );
             })}
           </View>
+          <Text style={styles.subLabel}>Categories</Text>
+          <View style={styles.chips}>
+            {MEDIA.map((m) => {
+              const on = selectedMedia.has(m.type);
+              return (
+                <Pressable
+                  key={m.type}
+                  onPress={() => toggleMedia(m.type)}
+                  style={[styles.chip, on && styles.chipOn]}
+                >
+                  {on && (
+                    <Ionicons name="checkmark" size={13} color={chrome.onAccent} />
+                  )}
+                  <Text style={[styles.chipText, on && styles.chipTextOn]}>
+                    {m.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
           <Pressable
             style={[
               styles.clearBtn,
-              (selected.size === 0 || busy !== null) && styles.clearBtnOff,
+              (selected.size === 0 ||
+                selectedMedia.size === 0 ||
+                busy !== null) &&
+                styles.clearBtnOff,
             ]}
             onPress={confirmClearSelected}
-            disabled={selected.size === 0 || busy !== null}
+            disabled={
+              selected.size === 0 || selectedMedia.size === 0 || busy !== null
+            }
           >
             {busy === 'shelves' ? (
               <ActivityIndicator color={chrome.onAccent} size="small" />
@@ -236,6 +294,14 @@ const makeStyles = (c: ThemeChrome) =>
       color: c.muted,
       fontFamily: fonts.body,
       fontSize: 12,
+    },
+    subLabel: {
+      color: colors.textOnDark,
+      fontFamily: fonts.label,
+      fontSize: 11,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginTop: spacing.xs,
     },
     chips: {
       flexDirection: 'row',

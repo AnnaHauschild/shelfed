@@ -87,17 +87,19 @@ export async function deleteAllShelfItems(userId: string): Promise<void> {
   await supabase.from('shelf_items').delete().eq('user_id', userId);
 }
 
-/** Deletes a user's cloud shelf items of the given types (per-shelf clear). */
-export async function deleteShelfItemsByType(
+/** Deletes a user's cloud shelf items of the given types + media types. */
+export async function deleteShelfItemsScoped(
   userId: string,
   types: ShelfType[],
+  mediaTypes: MediaType[],
 ): Promise<void> {
-  if (types.length === 0) return;
+  if (types.length === 0 || mediaTypes.length === 0) return;
   await supabase
     .from('shelf_items')
     .delete()
     .eq('user_id', userId)
-    .in('type', types);
+    .in('type', types)
+    .in('media_type', mediaTypes);
 }
 
 /** Downloads the user's entire cloud shelf. */

@@ -48,13 +48,17 @@ export const interactionRepository: InteractionRepository = {
     await db.runAsync('DELETE FROM interactions;');
   },
 
-  async clearTypes(types: InteractionType[]): Promise<void> {
-    if (types.length === 0) return;
+  async clearScoped(
+    types: InteractionType[],
+    mediaTypes: MediaType[],
+  ): Promise<void> {
+    if (types.length === 0 || mediaTypes.length === 0) return;
     const db = await getDatabase();
-    const placeholders = types.map(() => '?').join(', ');
+    const t = types.map(() => '?').join(', ');
+    const m = mediaTypes.map(() => '?').join(', ');
     await db.runAsync(
-      `DELETE FROM interactions WHERE type IN (${placeholders});`,
-      types,
+      `DELETE FROM interactions WHERE type IN (${t}) AND media_type IN (${m});`,
+      [...types, ...mediaTypes],
     );
   },
 
