@@ -42,7 +42,7 @@ const CACHE_KEYS = [
 
 // The three shelves the user can individually clear.
 const SHELVES: { type: InteractionType; label: string }[] = [
-  { type: 'watched', label: 'Watched' },
+  { type: 'watched', label: 'Shelf' },
   { type: 'watchlist', label: 'Wishlist' },
   { type: 'favorite', label: 'Favorites' },
 ];
@@ -177,7 +177,7 @@ export function DataActions() {
           <Text style={styles.hint}>
             Choose which shelves and categories to empty.
           </Text>
-          <Text style={styles.subLabel}>Shelves</Text>
+          <Text style={styles.subLabel}>Lists</Text>
           <View style={styles.chips}>
             {SHELVES.map((s) => {
               const on = selected.has(s.type);
