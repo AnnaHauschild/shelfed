@@ -6,6 +6,12 @@ import { getDatabase } from '@/db/database';
  * row per (media_type, movie_id); an empty note deletes the row.
  */
 export const noteRepository = {
+  /** Deletes every note (a full reset). */
+  async clearAll(): Promise<void> {
+    const db = await getDatabase();
+    await db.runAsync('DELETE FROM notes;');
+  },
+
   /** The note text for a title, or '' if none. */
   async get(movieId: string, mediaType: MediaType): Promise<string> {
     const db = await getDatabase();

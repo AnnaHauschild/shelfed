@@ -35,6 +35,7 @@ import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useStats } from '@/hooks/useStats';
 import { AccountSection } from './AccountSection';
 import { AccountActions } from './AccountActions';
+import { DataActions } from './DataActions';
 
 const SCREEN_H = Dimensions.get('window').height;
 
@@ -475,6 +476,7 @@ export function SettingsSheet({
               </View>
             )}
 
+            <DataActions />
             <AccountActions />
           </ScrollView>
         </Animated.View>

@@ -24,6 +24,13 @@ interface MoodRow {
  * mood renders fully offline.
  */
 export const collectionRepository = {
+  /** Deletes all moods and their items (a full reset). */
+  async clearAll(): Promise<void> {
+    const db = await getDatabase();
+    await db.runAsync('DELETE FROM collection_items;');
+    await db.runAsync('DELETE FROM collections;');
+  },
+
   /** All moods, newest first, with how many titles each holds. */
   async list(): Promise<MoodSummary[]> {
     const db = await getDatabase();

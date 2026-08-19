@@ -82,6 +82,11 @@ export async function pushMany(
   await supabase.from('shelf_items').upsert(items.map((i) => toRow(userId, i)));
 }
 
+/** Deletes ALL of a user's cloud shelf items (used by a shelf reset). */
+export async function deleteAllShelfItems(userId: string): Promise<void> {
+  await supabase.from('shelf_items').delete().eq('user_id', userId);
+}
+
 /** Downloads the user's entire cloud shelf. */
 export async function pullShelf(userId: string): Promise<ShelfItem[]> {
   const { data } = await supabase

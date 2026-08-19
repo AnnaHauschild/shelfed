@@ -43,6 +43,11 @@ export const interactionRepository: InteractionRepository = {
     );
   },
 
+  async clearAll(): Promise<void> {
+    const db = await getDatabase();
+    await db.runAsync('DELETE FROM interactions;');
+  },
+
   async getMoviesByType(
     type: InteractionType,
     mediaType: MediaType,

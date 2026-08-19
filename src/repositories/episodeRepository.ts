@@ -8,6 +8,12 @@ const key = (season: number, episode: number) => `${season}-${episode}`;
  * tracked, whether or not it's on a shelf.
  */
 export const episodeRepository = {
+  /** Deletes all episode-watched marks (a full reset). */
+  async clearAll(): Promise<void> {
+    const db = await getDatabase();
+    await db.runAsync('DELETE FROM episode_watches;');
+  },
+
   /** Set of "season-episode" keys the user marked watched for a series. */
   async getWatched(tvId: string): Promise<Set<string>> {
     const db = await getDatabase();
