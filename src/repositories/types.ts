@@ -71,6 +71,8 @@ export interface InteractionRepository {
   ): Promise<void>;
   /** Deletes every interaction (a full shelf reset). */
   clearAll(): Promise<void>;
+  /** Deletes every interaction of the given types (per-shelf clear). */
+  clearTypes(types: InteractionType[]): Promise<void>;
   getMoviesByType(
     type: InteractionType,
     mediaType: MediaType,

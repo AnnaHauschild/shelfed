@@ -10,14 +10,20 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/context/AuthProvider';
-import { deleteAllShelfItems } from '@/api/shelfSync';
+import {
+  deleteAllShelfItems,
+  deleteShelfItemsByType,
+  isShelfType,
+} from '@/api/shelfSync';
+import type { ShelfType } from '@/api/shelfSync';
 import {
   collectionRepository,
   episodeRepository,
   interactionRepository,
   noteRepository,
 } from '@/repositories';
-import { colors, fonts, spacing } from '@/theme';
+import type { InteractionType } from '@/repositories';
+import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 
 // Every cache that reflects shelf / mood / stats / note content.
@@ -33,25 +39,51 @@ const CACHE_KEYS = [
   'user-shelf',
 ];
 
-/** "Reset" options in Settings: empty the shelves, or wipe everything local. */
+// The three shelves the user can individually clear.
+const SHELVES: { type: InteractionType; label: string }[] = [
+  { type: 'watched', label: 'Watched' },
+  { type: 'watchlist', label: 'Wishlist' },
+  { type: 'favorite', label: 'Favorites' },
+];
+
+/** "Reset" options in Settings: clear selected shelves, or wipe everything. */
 export function DataActions() {
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { userId } = useAuth();
   const qc = useQueryClient();
   const [busy, setBusy] = useState<null | 'shelves' | 'all'>(null);
+  const [shelvesOpen, setShelvesOpen] = useState(false);
+  const [selected, setSelected] = useState<Set<InteractionType>>(
+    new Set(['watched', 'watchlist', 'favorite']),
+  );
 
   const invalidate = () =>
     CACHE_KEYS.forEach((key) => qc.invalidateQueries({ queryKey: [key] }));
 
-  const clearShelves = async () => {
+  const cloudNote = userId
+    ? ' on this device and in the cloud'
+    : ' on this device';
+
+  const toggle = (t: InteractionType) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t);
+      else next.add(t);
+      return next;
+    });
+
+  const clearSelected = async () => {
+    const types = SHELVES.map((s) => s.type).filter((t) => selected.has(t));
+    if (types.length === 0) return;
     setBusy('shelves');
     try {
-      await interactionRepository.clearAll();
-      if (userId) await deleteAllShelfItems(userId);
+      await interactionRepository.clearTypes(types);
+      if (userId) await deleteShelfItemsByType(userId, types.filter(isShelfType));
     } finally {
       invalidate();
       setBusy(null);
+      setShelvesOpen(false);
     }
   };
 
@@ -69,19 +101,17 @@ export function DataActions() {
     }
   };
 
-  const cloudNote = userId
-    ? ' on this device and in the cloud'
-    : ' on this device';
-
-  const confirmClearShelves = () =>
-    Alert.alert(
-      'Clear shelves?',
-      `This empties your Watched, Wishlist and Favorites${cloudNote}. Moods, notes and episode progress are kept.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Clear', style: 'destructive', onPress: clearShelves },
-      ],
-    );
+  const confirmClearSelected = () => {
+    const chosen = SHELVES.filter((s) => selected.has(s.type));
+    if (chosen.length === 0) return;
+    const names = chosen.map((s) => s.label).join(', ');
+    const title =
+      chosen.length === SHELVES.length ? 'Clear all shelves?' : `Clear ${names}?`;
+    Alert.alert(title, `This empties ${names}${cloudNote}.`, [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Clear', style: 'destructive', onPress: clearSelected },
+    ]);
+  };
 
   const confirmResetAll = () =>
     Alert.alert(
@@ -96,17 +126,61 @@ export function DataActions() {
   return (
     <View style={styles.wrap}>
       <Text style={styles.section}>Data</Text>
+
       <Pressable
         style={styles.row}
-        onPress={confirmClearShelves}
+        onPress={() => setShelvesOpen((v) => !v)}
         disabled={busy !== null}
       >
         <Ionicons name="refresh-outline" size={18} color={chrome.muted} />
-        <Text style={styles.rowText}>Clear shelves</Text>
-        {busy === 'shelves' && (
-          <ActivityIndicator color={chrome.muted} size="small" />
-        )}
+        <Text style={styles.rowText}>Clear shelves…</Text>
+        <Ionicons
+          name={shelvesOpen ? 'chevron-up' : 'chevron-down'}
+          size={16}
+          color={chrome.muted}
+          style={styles.chevron}
+        />
       </Pressable>
+
+      {shelvesOpen && (
+        <View style={styles.panel}>
+          <Text style={styles.hint}>Choose which shelves to empty.</Text>
+          <View style={styles.chips}>
+            {SHELVES.map((s) => {
+              const on = selected.has(s.type);
+              return (
+                <Pressable
+                  key={s.type}
+                  onPress={() => toggle(s.type)}
+                  style={[styles.chip, on && styles.chipOn]}
+                >
+                  {on && (
+                    <Ionicons name="checkmark" size={13} color={chrome.onAccent} />
+                  )}
+                  <Text style={[styles.chipText, on && styles.chipTextOn]}>
+                    {s.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <Pressable
+            style={[
+              styles.clearBtn,
+              (selected.size === 0 || busy !== null) && styles.clearBtnOff,
+            ]}
+            onPress={confirmClearSelected}
+            disabled={selected.size === 0 || busy !== null}
+          >
+            {busy === 'shelves' ? (
+              <ActivityIndicator color={chrome.onAccent} size="small" />
+            ) : (
+              <Text style={styles.clearBtnText}>Clear selected</Text>
+            )}
+          </Pressable>
+        </View>
+      )}
+
       <Pressable
         style={styles.row}
         onPress={confirmResetAll}
@@ -151,5 +225,51 @@ const makeStyles = (c: ThemeChrome) =>
       color: colors.textOnDark,
       fontFamily: fonts.body,
       fontSize: 15,
+    },
+    chevron: { marginLeft: 'auto' },
+    panel: {
+      paddingLeft: 26,
+      paddingBottom: spacing.sm,
+      gap: spacing.sm,
+    },
+    hint: {
+      color: c.muted,
+      fontFamily: fonts.body,
+      fontSize: 12,
+    },
+    chips: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.sm,
+    },
+    chip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    chipOn: { backgroundColor: c.accent, borderColor: c.accent },
+    chipText: { color: colors.textOnDark, fontFamily: fonts.body, fontSize: 13 },
+    chipTextOn: { color: c.onAccent, fontFamily: fonts.label },
+    clearBtn: {
+      alignSelf: 'flex-start',
+      backgroundColor: c.accent,
+      borderRadius: radius.xl,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.xs + 2,
+      minWidth: 130,
+      alignItems: 'center',
+    },
+    clearBtnOff: { opacity: 0.5 },
+    clearBtnText: {
+      color: c.onAccent,
+      fontFamily: fonts.label,
+      fontSize: 13,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
     },
   });

@@ -48,6 +48,16 @@ export const interactionRepository: InteractionRepository = {
     await db.runAsync('DELETE FROM interactions;');
   },
 
+  async clearTypes(types: InteractionType[]): Promise<void> {
+    if (types.length === 0) return;
+    const db = await getDatabase();
+    const placeholders = types.map(() => '?').join(', ');
+    await db.runAsync(
+      `DELETE FROM interactions WHERE type IN (${placeholders});`,
+      types,
+    );
+  },
+
   async getMoviesByType(
     type: InteractionType,
     mediaType: MediaType,
