@@ -39,6 +39,10 @@ const { width, height } = Dimensions.get('window');
 const SWIPE_THRESHOLD = width * 0.28;
 // Vertical drag distance past which an up/down swipe commits.
 const VERTICAL_THRESHOLD = height * 0.16;
+// Bias axis detection toward horizontal: a swipe only counts as up/down when it
+// is clearly steeper than this ratio, so a diagonal down-swipe stays skip/watched
+// instead of slipping into wishlist/favorite. Higher = harder to trigger up/down.
+const AXIS_BIAS = 1.6;
 // Where the card flies off to when dismissed.
 const OUT_DISTANCE = width * 1.5;
 const OUT_DISTANCE_Y = height * 1.1;
@@ -178,8 +182,8 @@ function TopCard({
       .onEnd((event) => {
         const dx = translateX.value;
         const dy = translateY.value;
-        // Whichever axis the finger travelled furthest along wins.
-        if (Math.abs(dx) >= Math.abs(dy)) {
+        // Horizontal wins unless the drag is clearly steeper than AXIS_BIAS.
+        if (Math.abs(dy) <= Math.abs(dx) * AXIS_BIAS) {
           const dismiss =
             Math.abs(dx) > SWIPE_THRESHOLD ||
             Math.abs(event.velocityX) > VELOCITY_THRESHOLD;
@@ -277,7 +281,7 @@ function TopCard({
 
   const watchedStampStyle = useAnimatedStyle(() => {
     const x = translateX.value + demoX.value;
-    const horizontal = Math.abs(x) >= Math.abs(translateY.value);
+    const horizontal = Math.abs(translateY.value) <= Math.abs(x) * AXIS_BIAS;
     const p = horizontal
       ? interpolate(x, [0, SWIPE_THRESHOLD], [0, 1], Extrapolation.CLAMP)
       : 0;
@@ -286,7 +290,7 @@ function TopCard({
 
   const skipStampStyle = useAnimatedStyle(() => {
     const x = translateX.value + demoX.value;
-    const horizontal = Math.abs(x) >= Math.abs(translateY.value);
+    const horizontal = Math.abs(translateY.value) <= Math.abs(x) * AXIS_BIAS;
     const p = horizontal
       ? interpolate(x, [-SWIPE_THRESHOLD, 0], [1, 0], Extrapolation.CLAMP)
       : 0;
@@ -294,7 +298,8 @@ function TopCard({
   });
 
   const wishlistStampStyle = useAnimatedStyle(() => {
-    const vertical = Math.abs(translateY.value) > Math.abs(translateX.value);
+    const vertical =
+      Math.abs(translateY.value) > Math.abs(translateX.value) * AXIS_BIAS;
     const p = vertical
       ? interpolate(
           translateY.value,
@@ -307,7 +312,8 @@ function TopCard({
   });
 
   const favoriteStampStyle = useAnimatedStyle(() => {
-    const vertical = Math.abs(translateY.value) > Math.abs(translateX.value);
+    const vertical =
+      Math.abs(translateY.value) > Math.abs(translateX.value) * AXIS_BIAS;
     const p = vertical
       ? interpolate(
           translateY.value,
