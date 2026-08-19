@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchMediaById } from '@/api/movies';
 import { contentLanguage } from '@/api/tmdb';
 import { tmdbTag } from '@/constants/languages';
@@ -59,6 +59,29 @@ export function useShelf(type: InteractionType) {
     queryFn: async () => {
       const movies = await interactionRepository.getMoviesByType(type, mediaType);
       return localizeShelf(movies);
+    },
+  });
+}
+
+/**
+ * Persists a manual drag order for one shelf and patches the query cache in
+ * place (no network refetch) so the new order sticks immediately.
+ */
+export function useReorderShelf(type: InteractionType) {
+  const mediaType = useMediaType();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (orderedIds: string[]) =>
+      interactionRepository.setSortOrder(type, mediaType, orderedIds),
+    onSuccess: (_res, orderedIds) => {
+      const rank = new Map(orderedIds.map((id, i) => [id, i]));
+      qc.setQueriesData<StoredMovie[]>(
+        { queryKey: ['shelf', mediaType, type] },
+        (old) =>
+          old
+            ? old.map((m) => ({ ...m, sortOrder: rank.get(m.id) ?? m.sortOrder }))
+            : old,
+      );
     },
   });
 }

@@ -48,15 +48,35 @@ export const interactionRepository: InteractionRepository = {
     mediaType: MediaType,
   ): Promise<StoredMovie[]> {
     const db = await getDatabase();
-    const rows = await db.getAllAsync<MovieRow>(
-      `SELECT m.* FROM movies m
+    const rows = await db.getAllAsync<MovieRow & { sort_order: number | null }>(
+      `SELECT m.*, i.sort_order AS sort_order FROM movies m
          INNER JOIN interactions i
            ON i.movie_id = m.id AND i.media_type = m.media_type
        WHERE i.type = ? AND i.media_type = ?
        ORDER BY i.created_at DESC;`,
       [type, mediaType],
     );
-    return rows.map(rowToStoredMovie);
+    return rows.map((r) => ({
+      ...rowToStoredMovie(r),
+      sortOrder: r.sort_order,
+    }));
+  },
+
+  async setSortOrder(
+    type: InteractionType,
+    mediaType: MediaType,
+    orderedIds: string[],
+  ): Promise<void> {
+    const db = await getDatabase();
+    await db.withTransactionAsync(async () => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await db.runAsync(
+          `UPDATE interactions SET sort_order = ?
+             WHERE media_type = ? AND movie_id = ? AND type = ?`,
+          [i, mediaType, orderedIds[i], type],
+        );
+      }
+    });
   },
 
   async getSyncItems(): Promise<SyncShelfItem[]> {

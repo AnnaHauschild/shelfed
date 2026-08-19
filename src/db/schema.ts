@@ -42,6 +42,7 @@ export const SCHEMA_STATEMENTS: string[] = [
      type       TEXT    NOT NULL CHECK (type IN ('watched','skipped','watchlist','favorite')),
      created_at INTEGER NOT NULL,
      source     TEXT    NOT NULL DEFAULT 'swipe',
+     sort_order INTEGER,
      UNIQUE (media_type, movie_id, type),
      FOREIGN KEY (media_type, movie_id) REFERENCES movies(media_type, id) ON DELETE CASCADE
    );`,
@@ -97,4 +98,4 @@ export const SCHEMA_STATEMENTS: string[] = [
    );`,
 ];
 
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;

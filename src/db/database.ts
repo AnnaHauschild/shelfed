@@ -26,6 +26,12 @@ async function migrate(db: SQLite.SQLiteDatabase): Promise<void> {
     await migrateAddLangColumn(db);
   }
 
+  // v7 -> v8: add a manual sort position to interactions so the user can drag
+  // shelf items into a custom order.
+  if (version < 8) {
+    await migrateAddSortOrderColumn(db);
+  }
+
   // Create tables on a fresh install (no-op once they already exist).
   for (const statement of SCHEMA_STATEMENTS) {
     await db.execAsync(statement);
@@ -109,6 +115,22 @@ async function migrateAddLangColumn(db: SQLite.SQLiteDatabase): Promise<void> {
   if (cols.length === 0) return; // fresh install; CREATE includes the column
   if (cols.some((c) => c.name === 'lang')) return; // already migrated
   await db.execAsync('ALTER TABLE movies ADD COLUMN lang TEXT;');
+}
+
+/**
+ * Adds the `sort_order` column to interactions (v8) for the manual drag-to-order
+ * shelf. Existing rows get NULL (treated as "no custom position yet"). No-op on a
+ * fresh install (CREATE includes it) or if already added.
+ */
+async function migrateAddSortOrderColumn(
+  db: SQLite.SQLiteDatabase,
+): Promise<void> {
+  const cols = await db.getAllAsync<{ name: string }>(
+    'PRAGMA table_info(interactions);',
+  );
+  if (cols.length === 0) return; // fresh install; CREATE includes the column
+  if (cols.some((c) => c.name === 'sort_order')) return; // already migrated
+  await db.execAsync('ALTER TABLE interactions ADD COLUMN sort_order INTEGER;');
 }
 
 /**

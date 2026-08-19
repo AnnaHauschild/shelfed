@@ -23,7 +23,7 @@ import { useMediaType, useMediaTypeControls } from '@/context/MediaTypeProvider'
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useSettings } from '@/context/SettingsProvider';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
-import { useShelf } from '@/hooks/useShelf';
+import { useShelf, useReorderShelf } from '@/hooks/useShelf';
 import { InteractionType, StoredMovie } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { EmptyState } from './EmptyState';
@@ -33,13 +33,14 @@ const { width } = Dimensions.get('window');
 const CONTAINER_WIDTH = width - H_PADDING * 2;
 
 /** Ways the user can order a shelf. */
-type SortKey = 'recent' | 'rating' | 'title' | 'year';
+type SortKey = 'recent' | 'rating' | 'title' | 'year' | 'custom';
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'recent', label: 'Recent' },
   { key: 'rating', label: 'Rating' },
   { key: 'title', label: 'A–Z' },
   { key: 'year', label: 'Year' },
+  { key: 'custom', label: 'Custom' },
 ];
 
 interface Props {
@@ -77,6 +78,7 @@ export function ShelfGrid({
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
   const { data, isLoading } = useShelf(type);
+  const reorder = useReorderShelf(type);
   const { open } = useMovieDetails();
   const states = useInteractionStates();
   const [genre, setGenre] = useState<string | null>(null);
@@ -229,6 +231,11 @@ export function ShelfGrid({
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
         >
+          {sort === 'custom' && (
+            <Text style={styles.reorderHint}>
+              Long-press a poster and drag it to reorder
+            </Text>
+          )}
           <ShelfRack
             movies={sortedMovies}
             onOpen={(m) => open(m, sortedMovies)}
@@ -237,6 +244,8 @@ export function ShelfGrid({
             containerWidth={CONTAINER_WIDTH}
             showStar={type !== 'watchlist'}
             showHeart={type !== 'favorite'}
+            reorderable={sort === 'custom'}
+            onReorder={(ids) => reorder.mutate(ids)}
           />
         </ScrollView>
       )}
@@ -318,6 +327,17 @@ function applySort(movies: StoredMovie[], sort: SortKey): StoredMovie[] {
       break;
     case 'year':
       copy.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+      break;
+    case 'custom':
+      // Manual drag order; items without a position yet fall to the end.
+      copy.sort((a, b) => {
+        const ao = a.sortOrder;
+        const bo = b.sortOrder;
+        if (ao == null && bo == null) return 0;
+        if (ao == null) return 1;
+        if (bo == null) return -1;
+        return ao - bo;
+      });
       break;
   }
   return copy;
@@ -403,5 +423,12 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: spacing.xxl,
+  },
+  reorderHint: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: spacing.md,
   },
 });

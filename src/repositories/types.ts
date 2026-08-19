@@ -15,6 +15,8 @@ export interface StoredMovie extends Movie {
   cachedAt: number;
   /** TMDB language tag (e.g. 'de-DE') the cached title/overview are in. */
   lang?: string | null;
+  /** Manual drag order within its shelf (null = no custom position yet). */
+  sortOrder?: number | null;
 }
 
 /** Aggregated signals for the future recommendation engine. */
@@ -71,6 +73,12 @@ export interface InteractionRepository {
     type: InteractionType,
     mediaType: MediaType,
   ): Promise<StoredMovie[]>;
+  /** Persist a manual drag order (index per id) for one shelf. */
+  setSortOrder(
+    type: InteractionType,
+    mediaType: MediaType,
+    orderedIds: string[],
+  ): Promise<void>;
   /** All ids in this category the user has interacted with (to filter the feed). */
   getSeenIds(mediaType: MediaType): Promise<Set<string>>;
   /** Whether a specific (movie, type) signal currently exists. */
