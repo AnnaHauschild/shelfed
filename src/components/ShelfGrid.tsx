@@ -226,16 +226,23 @@ export function ShelfGrid({
           title="Nothing in this category"
           message={`No ${genre} titles on this shelf yet.`}
         />
+      ) : sort === 'custom' ? (
+        <ShelfRack
+          movies={sortedMovies}
+          onOpen={(m) => open(m, sortedMovies)}
+          isWatchlisted={(id) => states.isWatchlisted(id)}
+          isFavorite={(id) => states.isFavorite(id)}
+          containerWidth={CONTAINER_WIDTH}
+          showStar={type !== 'watchlist'}
+          showHeart={type !== 'favorite'}
+          reorderable
+          onReorder={(ids) => reorder.mutate(ids)}
+        />
       ) : (
         <ScrollView
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
         >
-          {sort === 'custom' && (
-            <Text style={styles.reorderHint}>
-              Long-press a poster and drag it to reorder
-            </Text>
-          )}
           <ShelfRack
             movies={sortedMovies}
             onOpen={(m) => open(m, sortedMovies)}
@@ -244,8 +251,6 @@ export function ShelfGrid({
             containerWidth={CONTAINER_WIDTH}
             showStar={type !== 'watchlist'}
             showHeart={type !== 'favorite'}
-            reorderable={sort === 'custom'}
-            onReorder={(ids) => reorder.mutate(ids)}
           />
         </ScrollView>
       )}
@@ -423,12 +428,5 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: spacing.xxl,
-  },
-  reorderHint: {
-    color: colors.textOnDarkMuted,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    textAlign: 'center',
-    marginBottom: spacing.md,
   },
 });

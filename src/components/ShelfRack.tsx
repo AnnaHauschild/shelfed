@@ -1,12 +1,18 @@
 import { useEffect, useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  measure,
   runOnJS,
+  scrollTo,
   useAnimatedReaction,
+  useAnimatedRef,
   useAnimatedStyle,
+  useFrameCallback,
+  useScrollViewOffset,
   useSharedValue,
   withSequence,
   withTiming,
@@ -15,7 +21,7 @@ import type { SharedValue } from 'react-native-reanimated';
 import { PosterImage } from '@/components/PosterImage';
 import { useThemeChrome } from '@/context/ThemeProvider';
 import { StoredMovie } from '@/repositories';
-import { colors, spacing } from '@/theme';
+import { colors, fonts, spacing } from '@/theme';
 
 const SPINE_PALETTE = [
   '#7a3527', // brick
@@ -341,7 +347,11 @@ function objectMove(
   return next;
 }
 
-/** Absolute-positioned, long-press-drag reorderable version of the rack. */
+// Auto-scroll: how close (px) to the viewport edge triggers it, and how fast.
+const EDGE_ZONE = 74;
+const AUTO_SCROLL_SPEED = 9;
+
+/** Absolute-positioned, long-press-drag reorderable rack with edge auto-scroll. */
 function SortableRack({
   movies,
   onOpen,
@@ -367,54 +377,114 @@ function SortableRack({
   const ids = useMemo(() => movies.map((m) => m.id), [movies]);
   const n = ids.length;
   const rowCount = Math.max(1, Math.ceil(n / cols));
+  const step = spineWidth + SPINE_GAP;
 
   const positions = useSharedValue<Record<string, number>>(listToObject(ids));
   const activeId = useSharedValue<string | null>(null);
+  const dragX = useSharedValue(0);
+  const dragY = useSharedValue(0);
+  const edgeDir = useSharedValue(0);
+  const scrollAccum = useSharedValue(0);
+  const svTop = useSharedValue(0);
+  const svBottom = useSharedValue(0);
+
+  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const scrollOffset = useScrollViewOffset(scrollRef);
 
   // Reseed slots when the shelf contents change (add/remove/reorder result).
   useEffect(() => {
     positions.value = listToObject(ids);
   }, [ids, positions]);
 
+  // While a spine is held near the top/bottom edge, scroll and keep it pinned
+  // to the finger, reordering as new slots pass under it.
+  useFrameCallback(() => {
+    if (activeId.value == null || edgeDir.value === 0) return;
+    const count = Object.keys(positions.value).length;
+    const rc = Math.max(1, Math.ceil(count / cols));
+    const viewport = svBottom.value - svTop.value;
+    const maxScroll = Math.max(0, rc * ROW_H - viewport);
+    const cur = scrollOffset.value;
+    const next = Math.min(
+      maxScroll,
+      Math.max(0, cur + edgeDir.value * AUTO_SCROLL_SPEED),
+    );
+    if (next === cur) return;
+    scrollTo(scrollRef, 0, next, false);
+    const delta = next - cur;
+    scrollAccum.value += delta;
+    dragY.value += delta;
+    const id = activeId.value;
+    const col = clampW(Math.round(dragX.value / step), 0, cols - 1);
+    const row = clampW(Math.round(dragY.value / ROW_H), 0, rc - 1);
+    const newIndex = clampW(row * cols + col, 0, count - 1);
+    const oldIndex = positions.value[id];
+    if (newIndex !== oldIndex) {
+      positions.value = objectMove(positions.value, oldIndex, newIndex);
+    }
+  });
+
+  const pickup = () =>
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+
   return (
-    <View style={{ height: rowCount * ROW_H }}>
-      {Array.from({ length: rowCount }).map((_, r) => (
-        <View key={r} pointerEvents="none">
-          <LinearGradient
-            colors={chrome.plank}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={[styles.plank, styles.sortPlank, { top: r * ROW_H + SHELF_HEIGHT }]}
+    <Animated.ScrollView
+      ref={scrollRef}
+      style={styles.sortScroll}
+      contentContainerStyle={styles.sortContent}
+      showsVerticalScrollIndicator={false}
+    >
+      <Text style={styles.reorderHint}>
+        Long-press a poster and drag it to reorder
+      </Text>
+      <View style={{ height: rowCount * ROW_H }}>
+        {Array.from({ length: rowCount }).map((_, r) => (
+          <View key={r} pointerEvents="none">
+            <LinearGradient
+              colors={chrome.plank}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={[styles.plank, styles.sortPlank, { top: r * ROW_H + SHELF_HEIGHT }]}
+            />
+            <View
+              style={[
+                styles.plankShadow,
+                styles.sortPlankShadow,
+                { top: r * ROW_H + SHELF_HEIGHT + SHELF_PLANK },
+              ]}
+            />
+          </View>
+        ))}
+        {movies.map((m, i) => (
+          <SortableSpine
+            key={m.id}
+            movie={m}
+            initialIndex={i}
+            width={spineWidth}
+            cols={cols}
+            count={n}
+            rowCount={rowCount}
+            step={step}
+            positions={positions}
+            activeId={activeId}
+            dragX={dragX}
+            dragY={dragY}
+            edgeDir={edgeDir}
+            scrollAccum={scrollAccum}
+            svTop={svTop}
+            svBottom={svBottom}
+            scrollRef={scrollRef}
+            onOpen={onOpen}
+            onCommit={onReorder}
+            onPickup={pickup}
+            watchlisted={isWatchlisted?.(m.id) ?? false}
+            favorite={isFavorite?.(m.id) ?? false}
+            showStar={showStar}
+            showHeart={showHeart}
           />
-          <View
-            style={[
-              styles.plankShadow,
-              styles.sortPlankShadow,
-              { top: r * ROW_H + SHELF_HEIGHT + SHELF_PLANK },
-            ]}
-          />
-        </View>
-      ))}
-      {movies.map((m, i) => (
-        <SortableSpine
-          key={m.id}
-          movie={m}
-          initialIndex={i}
-          width={spineWidth}
-          cols={cols}
-          count={n}
-          rowCount={rowCount}
-          positions={positions}
-          activeId={activeId}
-          onOpen={onOpen}
-          onCommit={onReorder}
-          watchlisted={isWatchlisted?.(m.id) ?? false}
-          favorite={isFavorite?.(m.id) ?? false}
-          showStar={showStar}
-          showHeart={showHeart}
-        />
-      ))}
-    </View>
+        ))}
+      </View>
+    </Animated.ScrollView>
   );
 }
 
@@ -425,10 +495,19 @@ function SortableSpine({
   cols,
   count,
   rowCount,
+  step,
   positions,
   activeId,
+  dragX,
+  dragY,
+  edgeDir,
+  scrollAccum,
+  svTop,
+  svBottom,
+  scrollRef,
   onOpen,
   onCommit,
+  onPickup,
   watchlisted,
   favorite,
   showStar,
@@ -440,20 +519,29 @@ function SortableSpine({
   cols: number;
   count: number;
   rowCount: number;
+  step: number;
   positions: SharedValue<Record<string, number>>;
   activeId: SharedValue<string | null>;
+  dragX: SharedValue<number>;
+  dragY: SharedValue<number>;
+  edgeDir: SharedValue<number>;
+  scrollAccum: SharedValue<number>;
+  svTop: SharedValue<number>;
+  svBottom: SharedValue<number>;
+  scrollRef: ReturnType<typeof useAnimatedRef<Animated.ScrollView>>;
   onOpen: (movie: StoredMovie) => void;
   onCommit: (orderedIds: string[]) => void;
+  onPickup: () => void;
   watchlisted: boolean;
   favorite: boolean;
   showStar: boolean;
   showHeart: boolean;
 }) {
   const id = movie.id;
-  const step = width + SPINE_GAP;
   const tx = useSharedValue(slotX(initialIndex, cols, width));
   const ty = useSharedValue(slotY(initialIndex, cols));
-  const start = useSharedValue({ x: 0, y: 0 });
+  const startX = useSharedValue(0);
+  const startY = useSharedValue(0);
 
   // Non-dragged spines glide to their slot whenever the order changes.
   useAnimatedReaction(
@@ -470,13 +558,27 @@ function SortableSpine({
     .activateAfterLongPress(220)
     .onStart(() => {
       activeId.value = id;
-      start.value = { x: tx.value, y: ty.value };
+      dragX.value = tx.value;
+      dragY.value = ty.value;
+      startX.value = tx.value;
+      startY.value = ty.value;
+      scrollAccum.value = 0;
+      edgeDir.value = 0;
+      const m = measure(scrollRef);
+      if (m != null) {
+        svTop.value = m.pageY;
+        svBottom.value = m.pageY + m.height;
+      }
+      runOnJS(onPickup)();
     })
     .onUpdate((e) => {
-      tx.value = start.value.x + e.translationX;
-      ty.value = start.value.y + e.translationY;
-      const col = clampW(Math.round(tx.value / step), 0, cols - 1);
-      const row = clampW(Math.round(ty.value / ROW_H), 0, rowCount - 1);
+      dragX.value = startX.value + e.translationX;
+      dragY.value = startY.value + e.translationY + scrollAccum.value;
+      if (e.absoluteY < svTop.value + EDGE_ZONE) edgeDir.value = -1;
+      else if (e.absoluteY > svBottom.value - EDGE_ZONE) edgeDir.value = 1;
+      else edgeDir.value = 0;
+      const col = clampW(Math.round(dragX.value / step), 0, cols - 1);
+      const row = clampW(Math.round(dragY.value / ROW_H), 0, rowCount - 1);
       const newIndex = clampW(row * cols + col, 0, count - 1);
       const oldIndex = positions.value[id];
       if (newIndex !== oldIndex) {
@@ -484,10 +586,16 @@ function SortableSpine({
       }
     })
     .onEnd(() => {
+      edgeDir.value = 0;
       const finalIndex = positions.value[id];
-      tx.value = withTiming(slotX(finalIndex, cols, width), { duration: 200 });
-      ty.value = withTiming(slotY(finalIndex, cols), { duration: 200 });
-      activeId.value = null;
+      const fx = slotX(finalIndex, cols, width);
+      const fy = slotY(finalIndex, cols);
+      tx.value = fx;
+      ty.value = fy;
+      dragX.value = withTiming(fx, { duration: 180 });
+      dragY.value = withTiming(fy, { duration: 180 }, (fin) => {
+        if (fin) activeId.value = null;
+      });
       const ordered = Object.keys(positions.value);
       ordered.sort((a, b) => positions.value[a] - positions.value[b]);
       runOnJS(onCommit)(ordered);
@@ -503,6 +611,8 @@ function SortableSpine({
 
   const animatedStyle = useAnimatedStyle(() => {
     const active = activeId.value === id;
+    const x = active ? dragX.value : tx.value;
+    const y = active ? dragY.value : ty.value;
     return {
       position: 'absolute',
       top: 0,
@@ -513,8 +623,8 @@ function SortableSpine({
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: withTiming(active ? 0.35 : 0, { duration: 150 }),
       transform: [
-        { translateX: tx.value },
-        { translateY: ty.value },
+        { translateX: x },
+        { translateY: y },
         { scale: withTiming(active ? 1.1 : 1, { duration: 150 }) },
       ],
     };
@@ -575,6 +685,19 @@ const styles = StyleSheet.create({
     left: 4,
     right: 4,
     marginHorizontal: 0,
+  },
+  sortScroll: {
+    flex: 1,
+  },
+  sortContent: {
+    paddingBottom: spacing.xxl,
+  },
+  reorderHint: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: spacing.md,
   },
   spine: {
     borderTopLeftRadius: 3,
