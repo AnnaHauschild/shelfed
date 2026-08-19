@@ -187,12 +187,6 @@ export function DataActions() {
                   onPress={() => toggle(s.type)}
                   style={[styles.chip, on && styles.chipOn]}
                 >
-                  <Ionicons
-                    name="checkmark"
-                    size={13}
-                    color={chrome.onAccent}
-                    style={{ opacity: on ? 1 : 0 }}
-                  />
                   <Text style={[styles.chipText, on && styles.chipTextOn]}>
                     {s.label}
                   </Text>
@@ -210,12 +204,6 @@ export function DataActions() {
                   onPress={() => toggleMedia(m.type)}
                   style={[styles.chip, on && styles.chipOn]}
                 >
-                  <Ionicons
-                    name="checkmark"
-                    size={13}
-                    color={chrome.onAccent}
-                    style={{ opacity: on ? 1 : 0 }}
-                  />
                   <Text style={[styles.chipText, on && styles.chipTextOn]}>
                     {m.label}
                   </Text>
