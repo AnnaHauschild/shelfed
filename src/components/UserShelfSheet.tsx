@@ -45,7 +45,7 @@ const POSTER_W = Math.floor(
 );
 
 const SHELF_TYPES: { type: ShelfItem['type']; label: string }[] = [
-  { type: 'watched', label: 'Watched' },
+  { type: 'watched', label: 'Shelf' },
   { type: 'favorite', label: 'Liked' },
   { type: 'watchlist', label: 'Wishlist' },
 ];
@@ -479,7 +479,7 @@ const ACTIONS: {
   label: string;
   color: string;
 }[] = [
-  { type: 'watched', icon: 'albums-outline', activeIcon: 'albums', label: 'Watched', color: colors.watched },
+  { type: 'watched', icon: 'albums-outline', activeIcon: 'albums', label: 'Shelf', color: colors.watched },
   { type: 'watchlist', icon: 'star-outline', activeIcon: 'star', label: 'Wishlist', color: colors.star },
   { type: 'favorite', icon: 'heart-outline', activeIcon: 'heart', label: 'Favorite', color: colors.favorite },
 ];
