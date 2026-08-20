@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { ActorFilter, SelectedActor } from './ActorFilter';
+import { AuthorFilter, SelectedAuthor } from './AuthorFilter';
 import { MUST_SEE_LABEL } from '@/api/movies';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { useThemeChrome } from '@/context/ThemeProvider';
@@ -53,6 +54,11 @@ interface Props {
   onActorChange: (actor: SelectedActor | null) => void;
   /** When true (series/books), the actor filter is hidden (movies only). */
   hideActor?: boolean;
+  /** Author filter (books only, Open Library). */
+  author?: SelectedAuthor | null;
+  onAuthorChange?: (author: SelectedAuthor | null) => void;
+  /** When true (non-books), the author filter is hidden. */
+  hideAuthor?: boolean;
   eraOptions: Option[];
   era: string | null;
   onEraChange: (id: string | null) => void;
@@ -103,6 +109,9 @@ export function FilterSheet({
   actor,
   onActorChange,
   hideActor = false,
+  author = null,
+  onAuthorChange,
+  hideAuthor = false,
   hideCountry = false,
   platformOptions = [],
   platformSelected = [],
@@ -263,6 +272,13 @@ export function FilterSheet({
             <View style={styles.section}>
               <Text style={styles.label}>Actor</Text>
               <ActorFilter selected={actor} onSelect={onActorChange} />
+            </View>
+          )}
+
+          {!hideAuthor && onAuthorChange && (
+            <View style={styles.section}>
+              <Text style={styles.label}>Author</Text>
+              <AuthorFilter selected={author} onSelect={onAuthorChange} />
             </View>
           )}
 

@@ -348,6 +348,7 @@ export async function fetchFeedPage(
   platforms?: string[],
   vibeIds?: string[],
   providers?: string[],
+  authorKey?: string,
 ): Promise<FeedPage> {
   // The bundled Must-See list bypasses TMDB entirely (instant + offline).
   if (mediaType === 'movie' && collectionId === MUST_SEE_ID) {
@@ -374,7 +375,7 @@ export async function fetchFeedPage(
           to: Number(eraWindow.lte.slice(0, 4)),
         }
       : undefined;
-    return fetchBookFeedPage(page, genres?.[0], years);
+    return fetchBookFeedPage(page, genres?.[0], years, authorKey);
   }
 
   // Games come from RAWG (needs its own key). Genre = RAWG slug, era = date range,

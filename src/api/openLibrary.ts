@@ -188,24 +188,29 @@ export async function fetchBookFeedPage(
   page: number,
   subject?: string,
   years?: { from: number; to: number },
+  authorKey?: string,
 ): Promise<FeedPage> {
   // The /search.json endpoint reliably returns large cover ids (cover_i) and
-  // accepts both subject + year filters, so we route the book feed through it
-  // for noticeably better covers than /subjects/{subject}.json.
+  // accepts subject + year + author filters, so we route the book feed through
+  // it for noticeably better covers than /subjects/{subject}.json.
   const parts: string[] = [];
+  if (authorKey) parts.push(`author_key:${authorKey}`);
   if (subject) parts.push(`subject:${subject}`);
-  const effectiveYears =
-    years ??
-    BOOK_DEFAULT_YEAR_WINDOWS[
-      Math.floor(Math.random() * BOOK_DEFAULT_YEAR_WINDOWS.length)
-    ];
-  parts.push(
-    `first_publish_year:[${effectiveYears.from} TO ${effectiveYears.to}]`,
-  );
-  const noUserSubject = !subject;
-  if (noUserSubject) {
-    // OL search rejects bare `q=*`; we pick a random subject for breadth and
-    // sort by readinglog so each subject still surfaces its popular books.
+  // Clamp the year window when the user picked one, or when browsing broadly.
+  // For an author we want their whole bibliography, so skip the default window.
+  if (years || !authorKey) {
+    const effectiveYears =
+      years ??
+      BOOK_DEFAULT_YEAR_WINDOWS[
+        Math.floor(Math.random() * BOOK_DEFAULT_YEAR_WINDOWS.length)
+      ];
+    parts.push(
+      `first_publish_year:[${effectiveYears.from} TO ${effectiveYears.to}]`,
+    );
+  }
+  // With neither a subject nor an author, pick a random subject for breadth.
+  const broadenSubject = !subject && !authorKey;
+  if (broadenSubject) {
     const rotating =
       BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
     parts.push(`subject:${rotating}`);
@@ -215,11 +220,9 @@ export async function fetchBookFeedPage(
     parts.push(`NOT subject:"${bad}"`);
   }
   const query = parts.join(' AND ');
-  const result = await searchBooks(
-    query,
-    page,
-    noUserSubject ? 'readinglog' : undefined,
-  );
+  // Sort popular-first when browsing broadly or by author (else relevance).
+  const sort = broadenSubject || authorKey ? 'readinglog' : undefined;
+  const result = await searchBooks(query, page, sort);
   return { ...result, movies: shuffle(result.movies) };
 }
 
@@ -243,6 +246,36 @@ export async function searchBooks(
     .map(docToMovie);
   const hasMore = offset + PAGE_SIZE < data.numFound;
   return { movies, nextPage: hasMore ? page + 1 : null };
+}
+
+interface OlAuthorDoc {
+  key: string; // 'OL23919A'
+  name: string;
+  top_work?: string;
+  work_count?: number;
+}
+
+interface OlAuthorSearchResponse {
+  docs: OlAuthorDoc[];
+}
+
+/** A matched author, enough to show a picker row and filter the feed by. */
+export interface AuthorHit {
+  key: string; // Open Library author id (OL...A)
+  name: string;
+  topWork?: string;
+}
+
+/** Live author search for the Discover books filter (Open Library authors). */
+export async function searchAuthors(query: string): Promise<AuthorHit[]> {
+  const q = query.trim();
+  if (!q) return [];
+  const data = await olGet<OlAuthorSearchResponse>(
+    `/search/authors.json?q=${encodeURIComponent(q)}&limit=10`,
+  );
+  return (data.docs ?? [])
+    .filter((d) => d.key && d.name)
+    .map((d) => ({ key: d.key, name: d.name, topWork: d.top_work }));
 }
 
 /** Fetches a book's description (lazy, for the details view). */

@@ -12,6 +12,7 @@ import { TmdbError, hasTmdbToken } from '@/api/tmdb';
 import { SCREENSHOT_MODE, screenshotFeed } from '@/api/screenshotData';
 import { MUST_SEE_ID } from '@/api/movies';
 import { type SelectedActor } from '@/components/ActorFilter';
+import { type SelectedAuthor } from '@/components/AuthorFilter';
 import { collectionsFor } from '@/constants/collections';
 import { COUNTRY_OPTIONS, ERA_OPTIONS, PLATFORM_OPTIONS, PROVIDER_OPTIONS } from '@/constants/config';
 import { FilterSheet } from '@/components/FilterSheet';
@@ -48,6 +49,7 @@ export default function DiscoverScreen() {
   const [collection, setCollection] = useState<string | null>(null);
   const [vibes, setVibes] = useState<string[]>([]);
   const [actor, setActor] = useState<SelectedActor | null>(null);
+  const [author, setAuthor] = useState<SelectedAuthor | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [providers, setProviders] = useState<string[]>([]);
   const [mustSee, setMustSee] = useState(false);
@@ -61,6 +63,7 @@ export default function DiscoverScreen() {
     setCollection(null);
     setVibes([]);
     setActor(null);
+    setAuthor(null);
     setPlatforms([]);
     setProviders([]);
     setMustSee(false);
@@ -149,6 +152,7 @@ export default function DiscoverScreen() {
     (collection ? 1 : 0) +
     vibes.length +
     (actor ? 1 : 0) +
+    (author ? 1 : 0) +
     platforms.length +
     providers.length +
     (mustSee ? 1 : 0);
@@ -170,6 +174,7 @@ export default function DiscoverScreen() {
     platforms,
     vibes,
     providers,
+    author?.key ?? undefined,
   );
   const { markWatched, skip, toggleWatchlist, toggleFavorite, wishlistSwipe, watchedFavoriteSwipe, undo } =
     useInteractions();
@@ -230,7 +235,7 @@ export default function DiscoverScreen() {
 
   // Identifies the current deck (media + filters); the SwipeDeck is keyed by it
   // and it drives the "already swiped" snapshot below.
-  const deckKey = `${mediaType}:${genres.join(',') || 'all'}:${era ?? 'all'}:${countries.join(',') || 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibes.join(',') || 'all'}:${actor?.id ?? 'all'}:${platforms.join(',') || 'all'}:${providers.join(',') || 'all'}`;
+  const deckKey = `${mediaType}:${genres.join(',') || 'all'}:${era ?? 'all'}:${countries.join(',') || 'all'}:${mustSee ? 'mustsee' : collection ?? 'all'}:${vibes.join(',') || 'all'}:${actor?.id ?? 'all'}:${platforms.join(',') || 'all'}:${providers.join(',') || 'all'}:${author?.key ?? 'all'}`;
 
   // Titles already swiped, captured ONCE per deck session (not on every swipe),
   // so the active deck's order stays stable while a media/filter switch still
@@ -379,6 +384,9 @@ export default function DiscoverScreen() {
           if (a) setMustSee(false);
         }}
         hideActor={mediaType !== 'movie'}
+        author={author}
+        onAuthorChange={setAuthor}
+        hideAuthor={mediaType !== 'book'}
         eraOptions={eraOptions}
         era={era}
         onEraChange={(id) => {
@@ -405,6 +413,7 @@ export default function DiscoverScreen() {
           setCollection(null);
           setVibes([]);
           setActor(null);
+          setAuthor(null);
           setPlatforms([]);
           setProviders([]);
           setMustSee(false);
