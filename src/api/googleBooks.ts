@@ -43,6 +43,22 @@ export const BOOK_GENRE_OPTIONS: { id: string; name: string }[] = [
   { id: 'juvenile fiction', name: "Children's" },
 ];
 
+/** Book language options for the Discover filter (Google Books langRestrict). */
+export const BOOK_LANGUAGE_OPTIONS: { id: string; name: string }[] = [
+  { id: 'any', name: 'Any language' },
+  { id: 'de', name: 'Deutsch' },
+  { id: 'en', name: 'English' },
+  { id: 'fr', name: 'Français' },
+  { id: 'es', name: 'Español' },
+  { id: 'it', name: 'Italiano' },
+  { id: 'pt', name: 'Português' },
+];
+
+/** Availability options (Google Books `filter`). */
+export const BOOK_AVAILABILITY_OPTIONS: { id: string; name: string }[] = [
+  { id: 'free', name: 'Free eBooks' },
+];
+
 interface GbImageLinks {
   smallThumbnail?: string;
   thumbnail?: string;
@@ -171,6 +187,8 @@ export async function fetchBookFeedPage(
   _years?: { from: number; to: number },
   authorKey?: string,
   vibeQuery?: string,
+  langOverride?: string,
+  freeOnly?: boolean,
 ): Promise<FeedPage> {
   const qParts: string[] = [];
   if (authorKey) qParts.push(`inauthor:"${authorKey}"`);
@@ -181,6 +199,9 @@ export async function fetchBookFeedPage(
       BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
     qParts.push(`subject:"${rotating}"`);
   }
+  // 'any' disables the restriction; otherwise the picked language or app default.
+  const lang =
+    langOverride === 'any' ? undefined : langOverride || booksLang();
   const startIndex = (page - 1) * PAGE_SIZE;
   const data = await gbGet<GbListResponse>('/volumes', {
     q: qParts.join(' '),
@@ -188,7 +209,8 @@ export async function fetchBookFeedPage(
     maxResults: PAGE_SIZE,
     printType: 'books',
     orderBy: 'relevance',
-    langRestrict: booksLang(),
+    langRestrict: lang,
+    filter: freeOnly ? 'free-ebooks' : undefined,
   });
   const items = data.items ?? [];
   const movies = items

@@ -21,6 +21,8 @@ export function useMovieFeed(
   vibes: string[] = [],
   providers: string[] = [],
   author?: string,
+  bookLang?: string,
+  bookFree?: boolean,
 ) {
   const mediaType = useMediaType();
   const { language } = useLanguage();
@@ -38,6 +40,8 @@ export function useMovieFeed(
       vibes.join(','),
       providers.join(','),
       author ?? null,
+      bookLang ?? null,
+      bookFree ?? false,
     ],
     queryFn: async ({ pageParam }) => {
       const [page, seen] = await Promise.all([
@@ -53,6 +57,8 @@ export function useMovieFeed(
           vibes,
           providers,
           author,
+          bookLang,
+          bookFree,
         ),
         interactionRepository.getSeenIds(mediaType),
       ]);

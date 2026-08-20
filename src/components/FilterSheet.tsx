@@ -59,6 +59,14 @@ interface Props {
   onAuthorChange?: (author: SelectedAuthor | null) => void;
   /** When true (non-books), the author filter is hidden. */
   hideAuthor?: boolean;
+  /** Book language filter (books only). */
+  bookLangOptions?: Option[];
+  bookLang?: string | null;
+  onBookLangChange?: (id: string | null) => void;
+  /** Book availability filter (books only, e.g. free eBooks). */
+  bookAvailOptions?: Option[];
+  bookFree?: boolean;
+  onBookFreeToggle?: () => void;
   eraOptions: Option[];
   era: string | null;
   onEraChange: (id: string | null) => void;
@@ -115,6 +123,12 @@ export function FilterSheet({
   author = null,
   onAuthorChange,
   hideAuthor = false,
+  bookLangOptions = [],
+  bookLang = null,
+  onBookLangChange,
+  bookAvailOptions = [],
+  bookFree = false,
+  onBookFreeToggle,
   hideCountry = false,
   platformOptions = [],
   platformSelected = [],
@@ -185,6 +199,24 @@ export function FilterSheet({
       selected: vibeSelected,
       multi: true,
       onToggle: (id: string) => onVibeToggle?.(id),
+      accent: chrome.accent,
+    },
+    bookLangOptions.length > 0 && {
+      key: 'booklang',
+      label: 'Language',
+      options: bookLangOptions,
+      selected: bookLang ? [bookLang] : [],
+      multi: false,
+      onToggle: (id: string) => onBookLangChange?.(bookLang === id ? null : id),
+      accent: chrome.accent,
+    },
+    bookAvailOptions.length > 0 && {
+      key: 'bookavail',
+      label: 'Availability',
+      options: bookAvailOptions,
+      selected: bookFree ? ['free'] : [],
+      multi: false,
+      onToggle: () => onBookFreeToggle?.(),
       accent: chrome.accent,
     },
     !hideEra && {
