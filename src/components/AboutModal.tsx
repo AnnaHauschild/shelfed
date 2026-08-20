@@ -41,10 +41,10 @@ export function AboutModal({ visible, onClose }: Props) {
 
           <Section label="Books">
             <Text style={styles.body}>
-              Book data and covers provided by Open Library, a project of the Internet Archive.
+              Book data and covers provided by Google Books.
             </Text>
-            <Pressable onPress={() => Linking.openURL('https://openlibrary.org/').catch(() => {})}>
-              <Text style={[styles.link, { color: chrome.accent }]}>openlibrary.org</Text>
+            <Pressable onPress={() => Linking.openURL('https://books.google.com/').catch(() => {})}>
+              <Text style={[styles.link, { color: chrome.accent }]}>books.google.com</Text>
             </Pressable>
           </Section>
 

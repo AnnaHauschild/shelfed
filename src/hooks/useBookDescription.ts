@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchBookDescription } from '@/api/openLibrary';
+import { fetchBookDescription } from '@/api/googleBooks';
 
 /**
  * Lazily loads a book's description from Open Library (only when the details

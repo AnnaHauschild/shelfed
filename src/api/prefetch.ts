@@ -7,7 +7,7 @@ import {
   fetchMovieTrailer,
   fetchWatchProviders,
 } from './movies';
-import { fetchBookDescription } from './openLibrary';
+import { fetchBookDescription } from './googleBooks';
 import { fetchGameDescription } from './rawg';
 import { hasTmdbToken, posterUrl } from './tmdb';
 import { POSTER_SIZE_SMALL } from '@/constants/config';

@@ -6,7 +6,7 @@ import {
   fetchBookById,
   fetchBookFeedPage,
   searchBooks,
-} from './openLibrary';
+} from './googleBooks';
 import {
   fetchGameById,
   fetchGameFeedPage,

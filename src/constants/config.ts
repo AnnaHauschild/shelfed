@@ -28,6 +28,12 @@ export const RAWG_API_KEY = process.env.EXPO_PUBLIC_RAWG_API_KEY ?? '';
 export const GIPHY_BASE_URL = 'https://api.giphy.com/v1/gifs';
 export const GIPHY_API_KEY = process.env.EXPO_PUBLIC_GIPHY_API_KEY ?? '';
 
+// Google Books (book covers / metadata / search). Free key from Google Cloud
+// console (Books API); works without a key too, just with a lower IP rate limit.
+export const GOOGLE_BOOKS_BASE_URL = 'https://www.googleapis.com/books/v1';
+export const GOOGLE_BOOKS_API_KEY =
+  process.env.EXPO_PUBLIC_GOOGLE_BOOKS_API_KEY ?? '';
+
 // Streaming-availability region (ISO 3166-1) for TMDB watch/providers. Detected
 // from the device locale once and cached; falls back to a neutral default when
 // the OS doesn't expose a region.

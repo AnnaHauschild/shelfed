@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AuthorHit, searchAuthors } from '@/api/openLibrary';
+import { AuthorHit, searchAuthors } from '@/api/googleBooks';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 

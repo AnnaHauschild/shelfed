@@ -33,7 +33,7 @@ function displayCharacter(raw: string): string {
 /** Public web URL for a movie/series/book, used in share messages. */
 function shareUrl(movie: Movie): string {
   if (movie.mediaType === 'game') return '';
-  if (movie.mediaType === 'book') return `https://openlibrary.org/works/${movie.id}`;
+  if (movie.mediaType === 'book') return `https://books.google.com/books?id=${movie.id}`;
   if (movie.mediaType === 'tv') return `https://www.themoviedb.org/tv/${movie.id}`;
   return `https://www.themoviedb.org/movie/${movie.id}`;
 }
