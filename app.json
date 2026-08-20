@@ -3,6 +3,12 @@
     "name": "Shelfed",
     "slug": "shelfed",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6337b7f5-b755-4de5-8bad-0dadb1ae9e12"
+    },
     "orientation": "portrait",
     "scheme": "shelfed",
     "userInterfaceStyle": "dark",
