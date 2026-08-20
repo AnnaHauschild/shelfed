@@ -432,6 +432,10 @@ export async function fetchFeedPage(
     collection?.country ??
     vibes.find((v) => v.country)?.country ??
     (countries?.length ? countries.join('|') : undefined);
+  const withRuntimeGte =
+    collection?.runtimeGte ?? vibes.find((v) => v.runtimeGte != null)?.runtimeGte;
+  const withRuntimeLte =
+    collection?.runtimeLte ?? vibes.find((v) => v.runtimeLte != null)?.runtimeLte;
   // A collection/vibe, a country or an actor filter is niche, so when one is
   // active (and the user hasn't pinned a specific era) we search the FULL
   // catalogue instead of a single random decade, and drop the US-certification
@@ -499,6 +503,8 @@ export async function fetchFeedPage(
     with_keywords: withKeywords,
     with_original_language: originalLanguage,
     with_cast: actorId,
+    'with_runtime.gte': withRuntimeGte,
+    'with_runtime.lte': withRuntimeLte,
     certification_country: broaden ? undefined : 'US',
     'certification.lte': broaden ? undefined : 'R',
     with_origin_country: originCountry,

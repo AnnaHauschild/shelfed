@@ -25,10 +25,22 @@ export interface Collection {
   genres?: string[];
   language?: string;
   country?: string;
+  /** Runtime bounds in minutes (with_runtime.gte/.lte), e.g. short films <= 40. */
+  runtimeGte?: number;
+  runtimeLte?: number;
 }
 
 export const COLLECTIONS: Collection[] = [
   // --- Genre (what it is) ----------------------------------------------------
+  {
+    id: 'short-film',
+    name: 'Short Films',
+    kind: 'genre',
+    media: ['movie'],
+    // TMDB has no "short" genre; a short film is defined by its <= 40 min runtime.
+    runtimeGte: 1,
+    runtimeLte: 40,
+  },
   {
     id: 'kdrama',
     name: 'K-Dramas',
