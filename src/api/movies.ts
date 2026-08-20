@@ -598,6 +598,54 @@ export async function fetchMovieCast(
   );
 }
 
+export interface TitleMeta {
+  director?: string;
+  countries?: string[];
+}
+
+/** Director/creator + production countries for the details card (movies/TV). */
+export async function fetchTitleMeta(
+  movieId: string,
+  mediaType: MediaType,
+): Promise<TitleMeta> {
+  if (mediaType !== 'movie' && mediaType !== 'tv') return {};
+  if (!hasTmdbToken()) return {};
+  try {
+    if (mediaType === 'tv') {
+      const raw = await tmdbGet<{
+        created_by?: { name: string }[];
+        origin_country?: string[];
+        production_countries?: { name: string }[];
+      }>(`/tv/${movieId}`, { language: 'en-US' });
+      const creators = (raw.created_by ?? []).map((c) => c.name).filter(Boolean);
+      const countries = raw.production_countries?.length
+        ? raw.production_countries.map((c) => c.name)
+        : raw.origin_country ?? [];
+      return {
+        director: creators.length ? creators.join(', ') : undefined,
+        countries: countries.length ? countries : undefined,
+      };
+    }
+    const raw = await tmdbGet<{
+      production_countries?: { name: string }[];
+      credits?: { crew?: { job: string; name: string }[] };
+    }>(`/movie/${movieId}`, {
+      language: 'en-US',
+      append_to_response: 'credits',
+    });
+    const directors = (raw.credits?.crew ?? [])
+      .filter((c) => c.job === 'Director')
+      .map((c) => c.name);
+    const countries = (raw.production_countries ?? []).map((c) => c.name);
+    return {
+      director: directors.length ? directors.join(', ') : undefined,
+      countries: countries.length ? countries : undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
 /**
  * Returns the best YouTube trailer URL for a movie, or null when none exists
  * (or in demo mode). Prefers an official trailer, then any trailer/teaser.

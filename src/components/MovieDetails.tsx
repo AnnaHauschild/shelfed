@@ -8,6 +8,7 @@ import { posterUrl } from '@/api/tmdb';
 import { POSTER_SIZE, POSTER_SIZE_SMALL } from '@/constants/config';
 import { useProfile } from '@/context/ProfileProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
+import { useTitleMeta } from '@/hooks/useTitleMeta';
 import { useMovieTrailer } from '@/hooks/useMovieTrailer';
 import { useBookDescription } from '@/hooks/useBookDescription';
 import { useGameDescription } from '@/hooks/useGameDescription';
@@ -84,6 +85,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
   const isGame = movie.mediaType === 'game';
   const { name } = useProfile();
   const { data: cast } = useMovieCast(movie.id, movie.mediaType);
+  const { data: meta } = useTitleMeta(movie.id, movie.mediaType);
   const { data: trailerUrl } = useMovieTrailer(movie.id, movie.mediaType);
   const { data: bookDesc } = useBookDescription(movie.id, isBook);
   const { data: gameDesc } = useGameDescription(movie.id, isGame);
@@ -139,6 +141,20 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
                 </View>
               ))}
             </View>
+          )}
+          {meta?.director && (
+            <Text style={styles.metaLine} numberOfLines={2}>
+              <Text style={styles.metaLabel}>
+                {movie.mediaType === 'tv' ? 'Creator: ' : 'Director: '}
+              </Text>
+              {meta.director}
+            </Text>
+          )}
+          {meta?.countries && meta.countries.length > 0 && (
+            <Text style={styles.metaLine} numberOfLines={1}>
+              <Text style={styles.metaLabel}>Country: </Text>
+              {meta.countries.slice(0, 3).join(', ')}
+            </Text>
           )}
           {movie.authors && movie.authors.length > 0 && (
             <Text style={[styles.author, accentText]} numberOfLines={2}>
@@ -361,6 +377,16 @@ const makeStyles = (c: ThemeChrome) =>
     fontFamily: fonts.body,
     fontSize: 13,
     marginTop: 2,
+  },
+  metaLine: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    marginTop: 3,
+  },
+  metaLabel: {
+    color: colors.textOnDark,
+    fontFamily: fonts.label,
   },
   genreRow: {
     flexDirection: 'row',
