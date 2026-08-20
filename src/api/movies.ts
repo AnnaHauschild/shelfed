@@ -369,13 +369,11 @@ export async function fetchFeedPage(
   // Books come from Open Library (no TMDB token needed). Collections are a
   // TMDB-keyword concept, so they don't apply to the book feed.
   if (mediaType === 'book') {
-    const years = eraWindow
-      ? {
-          from: Number(eraWindow.gte.slice(0, 4)),
-          to: Number(eraWindow.lte.slice(0, 4)),
-        }
+    // Google Books has no year filter; a selected book "vibe" adds a query.
+    const bookVibe = vibeIds?.length
+      ? COLLECTIONS.find((c) => c.id === vibeIds[0])?.bookQuery
       : undefined;
-    return fetchBookFeedPage(page, genres?.[0], years, authorKey);
+    return fetchBookFeedPage(page, genres?.[0], undefined, authorKey, bookVibe);
   }
 
   // Games come from RAWG (needs its own key). Genre = RAWG slug, era = date range,

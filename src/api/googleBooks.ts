@@ -5,7 +5,7 @@ import { GOOGLE_BOOKS_API_KEY, GOOGLE_BOOKS_BASE_URL } from '@/constants/config'
 
 const PAGE_SIZE = 20;
 
-// Subjects the browse feed walks (Google Books `subject:` terms).
+// Subjects the browse feed rotates through when nothing is picked (fiction core).
 const BOOK_SUBJECTS = [
   'fiction',
   'fantasy',
@@ -14,16 +14,34 @@ const BOOK_SUBJECTS = [
   'thriller',
   'romance',
   'historical fiction',
-  'classics',
   'horror',
-  'biography',
+  'young adult fiction',
+  'crime',
+  'adventure',
+  'classics',
 ];
 
-/** Book "genres" for the Discover filter (the subjects we browse). */
-export const BOOK_GENRE_OPTIONS = BOOK_SUBJECTS.map((s) => ({
-  id: s,
-  name: s.replace(/\b\w/g, (c) => c.toUpperCase()),
-}));
+/** Book "genres" for the Discover filter (the id is used as `subject:"id"`). */
+export const BOOK_GENRE_OPTIONS: { id: string; name: string }[] = [
+  { id: 'fiction', name: 'Fiction' },
+  { id: 'fantasy', name: 'Fantasy' },
+  { id: 'science fiction', name: 'Science Fiction' },
+  { id: 'mystery', name: 'Mystery' },
+  { id: 'thriller', name: 'Thriller' },
+  { id: 'romance', name: 'Romance' },
+  { id: 'historical fiction', name: 'Historical' },
+  { id: 'horror', name: 'Horror' },
+  { id: 'young adult fiction', name: 'Young Adult' },
+  { id: 'crime', name: 'Crime' },
+  { id: 'adventure', name: 'Adventure' },
+  { id: 'classics', name: 'Classics' },
+  { id: 'poetry', name: 'Poetry' },
+  { id: 'comics & graphic novels', name: 'Comics' },
+  { id: 'biography & autobiography', name: 'Biography' },
+  { id: 'self-help', name: 'Self-Help' },
+  { id: 'humor', name: 'Humor' },
+  { id: 'juvenile fiction', name: "Children's" },
+];
 
 interface GbImageLinks {
   smallThumbnail?: string;
@@ -152,10 +170,12 @@ export async function fetchBookFeedPage(
   subject?: string,
   _years?: { from: number; to: number },
   authorKey?: string,
+  vibeQuery?: string,
 ): Promise<FeedPage> {
   const qParts: string[] = [];
   if (authorKey) qParts.push(`inauthor:"${authorKey}"`);
   if (subject) qParts.push(`subject:"${subject}"`);
+  if (vibeQuery) qParts.push(vibeQuery);
   if (qParts.length === 0) {
     const rotating =
       BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
