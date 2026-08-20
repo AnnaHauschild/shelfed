@@ -62,6 +62,8 @@ interface Props {
   eraOptions: Option[];
   era: string | null;
   onEraChange: (id: string | null) => void;
+  /** When true (books; Google Books has no year filter), the Year filter hides. */
+  hideEra?: boolean;
   countryOptions?: Option[];
   countrySelected?: string[];
   onCountryToggle?: (id: string) => void;
@@ -103,6 +105,7 @@ export function FilterSheet({
   eraOptions,
   era,
   onEraChange,
+  hideEra = false,
   countryOptions = [],
   countrySelected = [],
   onCountryToggle,
@@ -184,7 +187,7 @@ export function FilterSheet({
       onToggle: (id: string) => onVibeToggle?.(id),
       accent: chrome.accent,
     },
-    {
+    !hideEra && {
       key: 'year',
       label: 'Year',
       options: eraOptions,

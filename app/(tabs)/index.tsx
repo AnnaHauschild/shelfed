@@ -393,6 +393,7 @@ export default function DiscoverScreen() {
           setEra(id);
           if (id) setMustSee(false);
         }}
+        hideEra={mediaType === 'book'}
         countryOptions={COUNTRY_OPTIONS}
         countrySelected={countries}
         onCountryToggle={onCountryToggle}
