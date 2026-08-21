@@ -100,8 +100,3 @@ export function getFunFact(
   const text = lang === 'de' && entry.de ? entry.de : entry.en;
   return { text, source: entry.source };
 }
-
-/** Whether this title has a fun fact (drives the pulsing poster indicator). */
-export function hasFunFact(mediaType: MediaType, id: string | number): boolean {
-  return `${mediaType}:${id}` in FACTS;
-}
