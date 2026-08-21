@@ -53,7 +53,8 @@
         {
           "photosPermission": "Shelfed uses your photos so you can set a profile picture."
         }
-      ]
+      ],
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

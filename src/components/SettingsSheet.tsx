@@ -5,6 +5,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
@@ -33,6 +34,7 @@ import { MediaType } from '@/api/types';
 import { useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useStats } from '@/hooks/useStats';
+import { useSeasonAlerts } from '@/hooks/useSeasonAlerts';
 import { AccountSection } from './AccountSection';
 import { AccountActions } from './AccountActions';
 import { DataActions } from './DataActions';
@@ -109,6 +111,8 @@ export function SettingsSheet({
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { data: stats } = useStats(visible);
+  const { enabled: seasonAlerts, busy: seasonBusy, toggle: toggleSeasonAlerts } =
+    useSeasonAlerts();
   const [statType, setStatType] = useState<MediaType | null>(null);
   const topType = useMemo<MediaType>(() => {
     if (!stats) return 'movie';
@@ -304,6 +308,26 @@ export function SettingsSheet({
                 })}
               </View>
             )}
+
+            {/* ---------------- Notifications ---------------- */}
+            <Text style={[styles.section, styles.sectionSpaced]}>
+              Notifications
+            </Text>
+            <View style={styles.notifyRow}>
+              <View style={styles.notifyText}>
+                <Text style={styles.notifyLabel}>New-season alerts</Text>
+                <Text style={styles.hint}>
+                  Get reminded when a new season of a series on your Watchlist or
+                  Favorites airs.
+                </Text>
+              </View>
+              <Switch
+                value={seasonAlerts}
+                onValueChange={(v) => toggleSeasonAlerts(v)}
+                disabled={seasonBusy}
+                trackColor={{ true: chrome.accent, false: chrome.border }}
+              />
+            </View>
 
             {/* ---------------- Statistics ---------------- */}
             <View
@@ -554,6 +578,20 @@ const makeStyles = (c: ThemeChrome) =>
     fontFamily: fonts.body,
     fontSize: 12,
     marginBottom: spacing.sm,
+  },
+  notifyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  notifyText: {
+    flex: 1,
+  },
+  notifyLabel: {
+    color: colors.textOnDark,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    marginBottom: 2,
   },
   inputWrap: {
     flexDirection: 'row',

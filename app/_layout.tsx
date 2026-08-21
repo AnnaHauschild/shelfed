@@ -12,6 +12,7 @@ import { MediaType } from '@/api/types';
 import { getDatabase } from '@/db/database';
 import { LandingScreen } from '@/components/LandingScreen';
 import { ShelfSyncGate } from '@/components/ShelfSyncGate';
+import { SeasonAlertGate } from '@/components/SeasonAlertGate';
 import {
   MovieDetailsProvider,
   useMovieDetails,
@@ -89,6 +90,7 @@ export default function RootLayout() {
               </MovieDetailsProvider>
               </PostComposerProvider>
               <ShelfSyncGate />
+              <SeasonAlertGate />
             </SettingsProvider>
             </MediaTypeProvider>
             </ShelfFilterProvider>
