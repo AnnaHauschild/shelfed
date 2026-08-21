@@ -98,11 +98,17 @@ async function gbGet<T>(
     .filter(([, v]) => v !== undefined && v !== '')
     .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
     .join('&');
-  const res = await fetch(`${GOOGLE_BOOKS_BASE_URL}${path}?${qs}`, {
-    headers: { accept: 'application/json' },
-  });
-  if (!res.ok) throw new Error(`Google Books request failed (${res.status})`);
-  return (await res.json()) as T;
+  const url = `${GOOGLE_BOOKS_BASE_URL}${path}?${qs}`;
+  // Google Books intermittently returns 5xx; retry transient failures before giving up.
+  let lastStatus = 0;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(url, { headers: { accept: 'application/json' } });
+    if (res.ok) return (await res.json()) as T;
+    lastStatus = res.status;
+    if (res.status < 500) break; // 4xx won't succeed on retry
+    await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+  }
+  throw new Error(`Google Books request failed (${lastStatus})`);
 }
 
 /** Bias the browse feed to the user's language (search stays unrestricted). */
