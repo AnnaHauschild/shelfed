@@ -54,7 +54,7 @@ export default function DiscoverScreen() {
   const [vibes, setVibes] = useState<string[]>([]);
   const [actor, setActor] = useState<SelectedActor | null>(null);
   const [author, setAuthor] = useState<SelectedAuthor | null>(null);
-  const [bookLang, setBookLang] = useState<string | null>(null);
+  const [bookLang, setBookLang] = useState<string | null>('any');
   const [bookFree, setBookFree] = useState(false);
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [providers, setProviders] = useState<string[]>([]);
@@ -70,7 +70,7 @@ export default function DiscoverScreen() {
     setVibes([]);
     setActor(null);
     setAuthor(null);
-    setBookLang(null);
+    setBookLang('any');
     setBookFree(false);
     setPlatforms([]);
     setProviders([]);
@@ -161,7 +161,7 @@ export default function DiscoverScreen() {
     vibes.length +
     (actor ? 1 : 0) +
     (author ? 1 : 0) +
-    (bookLang ? 1 : 0) +
+    (bookLang && bookLang !== 'any' ? 1 : 0) +
     (bookFree ? 1 : 0) +
     platforms.length +
     providers.length +
@@ -442,7 +442,7 @@ export default function DiscoverScreen() {
           setVibes([]);
           setActor(null);
           setAuthor(null);
-          setBookLang(null);
+          setBookLang('any');
           setBookFree(false);
           setPlatforms([]);
           setProviders([]);

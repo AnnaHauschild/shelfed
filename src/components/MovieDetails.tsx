@@ -9,6 +9,7 @@ import { POSTER_SIZE, POSTER_SIZE_SMALL } from '@/constants/config';
 import { useProfile } from '@/context/ProfileProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
 import { useTitleMeta } from '@/hooks/useTitleMeta';
+import { useOriginalYear } from '@/hooks/useOriginalYear';
 import { useMovieTrailer } from '@/hooks/useMovieTrailer';
 import { useBookDescription } from '@/hooks/useBookDescription';
 import { useGameDescription } from '@/hooks/useGameDescription';
@@ -86,6 +87,11 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
   const { name } = useProfile();
   const { data: cast } = useMovieCast(movie.id, movie.mediaType);
   const { data: meta } = useTitleMeta(movie.id, movie.mediaType);
+  const { data: origYear } = useOriginalYear(
+    movie.title,
+    movie.authors?.[0],
+    isBook,
+  );
   const { data: trailerUrl } = useMovieTrailer(movie.id, movie.mediaType);
   const { data: bookDesc } = useBookDescription(movie.id, isBook);
   const { data: gameDesc } = useGameDescription(movie.id, isGame);
@@ -100,6 +106,9 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
     description && description.length > 0
       ? description
       : 'No description available for this title.';
+
+  // Books: prefer Open Library's original publication year over the edition year.
+  const displayYear = isBook ? origYear ?? movie.year : movie.year;
 
   const header = (
       <View style={styles.headerRow}>
@@ -125,7 +134,9 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
             {movie.title}
           </Text>
           <View style={styles.metaRow}>
-            {movie.year != null && <Text style={styles.meta}>{movie.year}</Text>}
+            {displayYear != null && (
+              <Text style={styles.meta}>{displayYear}</Text>
+            )}
             {movie.voteAverage > 0 && (
               <View style={styles.rating}>
                 <Ionicons name="star" size={13} color={chrome.accent} />

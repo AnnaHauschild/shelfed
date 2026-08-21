@@ -52,6 +52,10 @@ export const BOOK_LANGUAGE_OPTIONS: { id: string; name: string }[] = [
   { id: 'es', name: 'Español' },
   { id: 'it', name: 'Italiano' },
   { id: 'pt', name: 'Português' },
+  { id: 'ar', name: 'العربية' },
+  { id: 'zh', name: '中文' },
+  { id: 'ja', name: '日本語' },
+  { id: 'ko', name: '한국어' },
 ];
 
 /** Availability options (Google Books `filter`). */
