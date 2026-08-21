@@ -265,10 +265,19 @@ export default function DiscoverScreen() {
   const movies = useMemo(() => {
     if (SCREENSHOT_MODE) return screenshotFeed(mediaType);
     const all = data?.pages.flatMap((page) => page.movies) ?? [];
-    // De-duplicate by id AND drop anything already swiped this session.
+    // De-duplicate by id AND drop anything already swiped this session. For books
+    // also collapse duplicate editions (same title+author, different volume id).
     const seen = new Set<string>();
+    const seenBooks = new Set<string>();
     return all.filter((m) => {
       if (seen.has(m.id) || seenSnapshot.has(m.id)) return false;
+      if (mediaType === 'book') {
+        const sig = `${m.title.trim().toLowerCase()}|${(
+          m.authors?.[0] ?? ''
+        ).toLowerCase()}`;
+        if (seenBooks.has(sig)) return false;
+        seenBooks.add(sig);
+      }
       seen.add(m.id);
       return true;
     });

@@ -126,7 +126,7 @@ function coverUrl(links: GbImageLinks | undefined): string | null {
   if (!raw) return null;
   return `${raw
     .replace(/^http:\/\//, 'https://')
-    .replace(/&edge=curl/gi, '')}&fife=w480`;
+    .replace(/&edge=curl/gi, '')}&fife=w640`;
 }
 
 /** Strips HTML tags/entities from Google's descriptions into clean text. */
@@ -181,6 +181,32 @@ function shuffle<T>(arr: T[]): T[] {
   return arr;
 }
 
+// Academic/reference categories a leisure reader browsing fiction doesn't want
+// (Principles of Physics etc.). Sci-fi is kept via the `fiction` check first.
+const NONFICTION_BLOCK = [
+  'science',
+  'mathematics',
+  'study aids',
+  'education',
+  'reference',
+  'technology',
+  'engineering',
+  'medical',
+  'computers',
+  'law',
+];
+
+/** True for textbook/reference volumes that carry no fiction category. */
+function isReferenceVolume(categories: string[] | undefined): boolean {
+  if (!categories?.length) return false;
+  const joined = categories
+    .join(' | ')
+    .toLowerCase()
+    .replace(/non-?fiction/g, 'nonfic');
+  if (joined.includes('fiction')) return false; // any fiction genre => keep
+  return NONFICTION_BLOCK.some((k) => joined.includes(k));
+}
+
 /**
  * One page of the book swipe feed. With a subject it browses that genre; with an
  * author it lists their books; with neither it rotates a random subject so the
@@ -208,7 +234,10 @@ export async function fetchBookFeedPage(
   // 'any' disables the restriction; otherwise the picked language or app default.
   const lang =
     langOverride === 'any' ? undefined : langOverride || booksLang();
-  const startIndex = (page - 1) * PAGE_SIZE;
+  // Spread browse pages across the result set so popular titles don't repeat on
+  // every page. Author lists stay exact (they're short), so no jitter there.
+  const jitter = authorKey ? 0 : Math.floor(Math.random() * 80);
+  const startIndex = (page - 1) * PAGE_SIZE + jitter;
   const data = await gbGet<GbListResponse>('/volumes', {
     q: qParts.join(' '),
     startIndex,
@@ -220,6 +249,7 @@ export async function fetchBookFeedPage(
   });
   const items = data.items ?? [];
   const movies = items
+    .filter((v) => !isReferenceVolume(v.volumeInfo?.categories))
     .map(volumeToMovie)
     .filter((m) => m.posterPath && m.title);
   const total = data.totalItems ?? 0;
