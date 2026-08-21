@@ -20,6 +20,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Movie } from '@/api/types';
+import { hasFunFact } from '@/api/funFacts';
 import { watchedLabel } from '@/constants/labels';
 import { InteractionType } from '@/repositories';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
@@ -126,6 +127,16 @@ function TopCard({
   const flip = useSharedValue(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const isFlippedRef = useRef(false);
+  const hasFact = hasFunFact(movie.mediaType, movie.id);
+  const factPulse = useSharedValue(0);
+  useEffect(() => {
+    if (!hasFact) return;
+    factPulse.value = withRepeat(withTiming(1, { duration: 900 }), -1, true);
+  }, [hasFact, factPulse]);
+  const factPulseStyle = useAnimatedStyle(() => ({
+    opacity: 0.55 + factPulse.value * 0.45,
+    transform: [{ scale: 0.9 + factPulse.value * 0.18 }],
+  }));
   // The details side (with the trailer button) only accepts touches once the
   // flip has fully settled, so the flipping tap can't leak into a button.
   const [detailsReady, setDetailsReady] = useState(false);
@@ -393,6 +404,14 @@ function TopCard({
               />
               <Text style={styles.flipHintText}>Tap for details</Text>
             </View>
+            {hasFact && (
+              <Animated.View
+                style={[styles.factBadge, factPulseStyle]}
+                pointerEvents="none"
+              >
+                <Ionicons name="bulb" size={16} color={colors.star} />
+              </Animated.View>
+            )}
           </Animated.View>
 
           <Animated.View
@@ -741,6 +760,17 @@ const styles = StyleSheet.create({
     ...absoluteFill,
     backgroundColor: colors.scrim,
     borderRadius: radius.xl,
+  },
+  factBadge: {
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.sm,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.scrim,
   },
   flipHint: {
     position: 'absolute',

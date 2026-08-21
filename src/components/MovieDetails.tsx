@@ -10,6 +10,7 @@ import { useProfile } from '@/context/ProfileProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
 import { useTitleMeta } from '@/hooks/useTitleMeta';
 import { useOriginalYear } from '@/hooks/useOriginalYear';
+import { getFunFact } from '@/api/funFacts';
 import { useMovieTrailer } from '@/hooks/useMovieTrailer';
 import { useBookDescription } from '@/hooks/useBookDescription';
 import { useGameDescription } from '@/hooks/useGameDescription';
@@ -109,6 +110,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
 
   // Books: prefer Open Library's original publication year over the edition year.
   const displayYear = isBook ? origYear ?? movie.year : movie.year;
+  const fact = getFunFact(movie.mediaType, movie.id);
 
   const header = (
       <View style={styles.headerRow}>
@@ -253,6 +255,16 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
 
         <Text style={[styles.sectionLabel, accentText]}>Synopsis</Text>
         <Text style={styles.overview}>{overview}</Text>
+
+        {fact && (
+          <View style={styles.factBox}>
+            <View style={styles.factHeader}>
+              <Ionicons name="bulb" size={15} color={chrome.accent} />
+              <Text style={[styles.factLabel, accentText]}>Did you know?</Text>
+            </View>
+            <Text style={styles.factText}>{fact}</Text>
+          </View>
+        )}
 
         {movie.mediaType === 'tv' && dragGesture && (
           <TvSeasons tvId={movie.id} />
@@ -464,6 +476,33 @@ const makeStyles = (c: ThemeChrome) =>
     marginBottom: spacing.xs,
   },
   overview: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 21,
+  },
+  factBox: {
+    marginTop: spacing.lg,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: c.border,
+    backgroundColor: c.surface,
+  },
+  factHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: spacing.xs,
+  },
+  factLabel: {
+    color: colors.amber,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  factText: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
     fontSize: 14,
