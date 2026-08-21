@@ -25,11 +25,11 @@ const FACTS: Record<string, Localized> = {
     de: 'Die Hand, die Rose zeichnet, gehört Regisseur James Cameron selbst, nicht Leonardo DiCaprio.',
     source: 'https://en.wikipedia.org/wiki/Titanic_(1997_film)',
   },
-  'movie:120': {
+  'movie:121': {
     en: 'Viggo Mortensen broke two toes kicking an orc helmet, and his real cry of pain stayed in the film.',
     de: 'Viggo Mortensen brach sich beim Tritt gegen einen Orc-Helm zwei Zehen, und sein echter Schmerzensschrei blieb im Film.',
     source:
-      'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Fellowship_of_the_Ring',
+      'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Two_Towers',
   },
   'movie:578': {
     en: 'The mechanical shark kept breaking down, so Spielberg barely showed it, which made the film scarier.',
@@ -62,8 +62,8 @@ const FACTS: Record<string, Localized> = {
     source: 'https://en.wikipedia.org/wiki/Forrest_Gump',
   },
   'movie:680': {
-    en: 'The adrenaline-shot scene was filmed in reverse: Travolta pulled the needle out, and played backward it looks like the stab.',
-    de: 'Die Adrenalinspritzen-Szene wurde rückwärts gefilmt: Travolta zog die Nadel heraus, umgedreht wirkt es wie das Zustechen.',
+    en: 'The adrenaline-shot scene was inspired by a true story from a Scorsese documentary, in which a man really revived an overdose victim with a shot to the heart.',
+    de: 'Die Adrenalinspritzen-Szene beruht auf einer wahren Geschichte aus einer Scorsese-Doku, in der ein Mann ein Überdosis-Opfer wirklich mit einem Stich ins Herz wiederbelebte.',
     source: 'https://en.wikipedia.org/wiki/Pulp_Fiction',
   },
   'movie:863': {
@@ -72,8 +72,8 @@ const FACTS: Record<string, Localized> = {
     source: 'https://en.wikipedia.org/wiki/Toy_Story_2',
   },
   'movie:694': {
-    en: 'For "Here\'s Johnny!" the door was rebuilt several times because Jack Nicholson smashed through it too fast.',
-    de: 'Für „Here\'s Johnny!" baute man die Tür mehrfach nach, weil Jack Nicholson sie zu schnell zertrümmerte.',
+    en: 'For "Here\'s Johnny!" the prop door was swapped for a real one because Jack Nicholson, a trained firefighter, smashed through it too fast.',
+    de: 'Für „Here\'s Johnny!" ersetzte man die Requisiten-Tür durch eine echte, weil Jack Nicholson, ausgebildeter Feuerwehrmann, sie zu schnell zertrümmerte.',
     source: 'https://en.wikipedia.org/wiki/The_Shining_(film)',
   },
 };
