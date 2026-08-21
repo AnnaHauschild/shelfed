@@ -18,63 +18,74 @@ const FACTS: Record<string, Localized> = {
   'movie:155': {
     en: 'Heath Ledger shut himself in a hotel room for weeks and kept a Joker diary to build the character.',
     de: 'Heath Ledger verzog sich wochenlang allein in ein Hotelzimmer und führte ein Joker-Tagebuch, um die Rolle zu finden.',
-    source: 'https://en.wikipedia.org/wiki/The_Dark_Knight',
+    source:
+      'https://en.wikipedia.org/wiki/The_Dark_Knight#:~:text=Joker%20diary',
   },
   'movie:597': {
     en: 'The hand that sketches Rose belongs to director James Cameron himself, not Leonardo DiCaprio.',
     de: 'Die Hand, die Rose zeichnet, gehört Regisseur James Cameron selbst, nicht Leonardo DiCaprio.',
-    source: 'https://en.wikipedia.org/wiki/Titanic_(1997_film)',
+    source:
+      'https://en.wikipedia.org/wiki/Titanic_(1997_film)#:~:text=Winslet%20posed%20in%20a%20bathing%20suit',
   },
   'movie:121': {
-    en: 'Viggo Mortensen broke two toes kicking an orc helmet, and his real cry of pain stayed in the film.',
-    de: 'Viggo Mortensen brach sich beim Tritt gegen einen Orc-Helm zwei Zehen, und sein echter Schmerzensschrei blieb im Film.',
+    en: 'Viggo Mortensen really broke two toes kicking an orc helmet, and that exact take is the one used in the film.',
+    de: 'Viggo Mortensen brach sich beim Tritt gegen einen Orc-Helm tatsächlich zwei Zehen, und genau diese Aufnahme kam in den Film.',
     source:
-      'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Two_Towers',
+      'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Two_Towers#:~:text=broke%20two%20toes%20when%20he%20kicked%20an%20Orc%20helmet',
   },
   'movie:578': {
     en: 'The mechanical shark kept breaking down, so Spielberg barely showed it, which made the film scarier.',
     de: 'Der mechanische Hai streikte ständig, also zeigte Spielberg ihn kaum, was den Film gerade dadurch spannender machte.',
-    source: 'https://en.wikipedia.org/wiki/Jaws_(film)',
+    source:
+      'https://en.wikipedia.org/wiki/Jaws_(film)#:~:text=unreliable%20mechanical%20sharks',
   },
   'movie:603': {
     en: 'The green Matrix code is made of mirrored characters taken from Japanese sushi recipes.',
     de: 'Der grüne Matrix-Code besteht aus gespiegelten Zeichen japanischer Sushi-Rezepte.',
-    source: 'https://en.wikipedia.org/wiki/The_Matrix',
+    source:
+      'https://en.wikipedia.org/wiki/The_Matrix#:~:text=sushi%20recipes',
   },
   'movie:105': {
     en: 'Marty McFly was filmed for weeks with Eric Stoltz before he was recast with Michael J. Fox.',
     de: 'Marty McFly wurde zuerst wochenlang mit Eric Stoltz gedreht, bevor man ihn durch Michael J. Fox ersetzte.',
-    source: 'https://en.wikipedia.org/wiki/Back_to_the_Future',
+    source:
+      'https://en.wikipedia.org/wiki/Back_to_the_Future#:~:text=Eric%20Stoltz%20was%20cast%20as%20Marty',
   },
   'movie:348': {
     en: 'For the chestburster scene the cast was not told how bloody it would get, so their shock is real.',
     de: 'Bei der Chestburster-Szene wusste die Crew nicht, wie blutig es wird, daher ist das Entsetzen der Schauspieler echt.',
-    source: 'https://en.wikipedia.org/wiki/Alien_(film)',
+    source:
+      'https://en.wikipedia.org/wiki/Alien_(film)#:~:text=not%20been%20told%20that%20fake%20blood',
   },
   'movie:27205': {
     en: 'The rotating hallway fight was shot in a real, physically spinning set, not with CGI.',
     de: 'Der rotierende Hotelflur war ein echtes, sich drehendes Set, kein CGI.',
-    source: 'https://en.wikipedia.org/wiki/Inception',
+    source:
+      'https://en.wikipedia.org/wiki/Inception#:~:text=giant%20hamster%20wheel',
   },
   'movie:13': {
     en: 'Tom Hanks took no salary and chose profit participation instead, earning far more in the end.',
     de: 'Tom Hanks verzichtete auf Gage und nahm stattdessen Gewinnbeteiligung, und verdiente damit am Ende ein Vielfaches.',
-    source: 'https://en.wikipedia.org/wiki/Forrest_Gump',
+    source:
+      'https://en.wikipedia.org/wiki/Forrest_Gump#:~:text=gross%20receipts%20instead%20of%20a%20salary',
   },
   'movie:680': {
     en: 'The adrenaline-shot scene was inspired by a true story from a Scorsese documentary, in which a man really revived an overdose victim with a shot to the heart.',
     de: 'Die Adrenalinspritzen-Szene beruht auf einer wahren Geschichte aus einer Scorsese-Doku, in der ein Mann ein Überdosis-Opfer wirklich mit einem Stich ins Herz wiederbelebte.',
-    source: 'https://en.wikipedia.org/wiki/Pulp_Fiction',
+    source:
+      'https://en.wikipedia.org/wiki/Pulp_Fiction#:~:text=adrenaline%20scene%20was%20inspired',
   },
   'movie:863': {
     en: "A stray command nearly wiped Toy Story 2 from Pixar's servers; a staffer's home backup saved it.",
     de: 'Ein Befehl löschte fast den ganzen Toy Story 2 von Pixars Servern; gerettet hat ihn die Heim-Backup-Kopie einer Mitarbeiterin.',
-    source: 'https://en.wikipedia.org/wiki/Toy_Story_2',
+    source:
+      'https://en.wikipedia.org/wiki/Toy_Story_2#:~:text=backup%20copy%20of%20the%20film%20on%20her%20home%20computer',
   },
   'movie:694': {
     en: 'For "Here\'s Johnny!" the prop door was swapped for a real one because Jack Nicholson, a trained firefighter, smashed through it too fast.',
     de: 'Für „Here\'s Johnny!" ersetzte man die Requisiten-Tür durch eine echte, weil Jack Nicholson, ausgebildeter Feuerwehrmann, sie zu schnell zertrümmerte.',
-    source: 'https://en.wikipedia.org/wiki/The_Shining_(film)',
+    source:
+      'https://en.wikipedia.org/wiki/The_Shining_(film)#:~:text=tore%20through%20it%20too%20quickly',
   },
 };
 
