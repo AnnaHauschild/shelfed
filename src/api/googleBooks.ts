@@ -234,10 +234,13 @@ export async function fetchBookFeedPage(
   // 'any' disables the restriction; otherwise the picked language or app default.
   const lang =
     langOverride === 'any' ? undefined : langOverride || booksLang();
-  // Spread browse pages across the result set so popular titles don't repeat on
-  // every page. Author lists stay exact (they're short), so no jitter there.
-  const jitter = authorKey ? 0 : Math.floor(Math.random() * 80);
-  const startIndex = (page - 1) * PAGE_SIZE + jitter;
+  // Unfiltered browse already picks a random subject per call, so pull a random
+  // slice too -> endless fresh mix. Filtered lists paginate (small jitter mixes
+  // popular titles; author lists stay exact so they can actually end).
+  const isBrowse = !subject && !authorKey && !vibeQuery && !freeOnly;
+  const startIndex = isBrowse
+    ? Math.floor(Math.random() * 120)
+    : (page - 1) * PAGE_SIZE + (authorKey ? 0 : Math.floor(Math.random() * 40));
   const data = await gbGet<GbListResponse>('/volumes', {
     q: qParts.join(' '),
     startIndex,
@@ -254,7 +257,10 @@ export async function fetchBookFeedPage(
     .filter((m) => m.posterPath && m.title);
   const total = data.totalItems ?? 0;
   const hasMore = startIndex + PAGE_SIZE < total && items.length > 0;
-  return { movies: shuffle(movies), nextPage: hasMore ? page + 1 : null };
+  // Browse never ends (there's always another random subject); a specific
+  // subject/author/vibe/free list reports its real end instead.
+  const nextPage = isBrowse ? page + 1 : hasMore ? page + 1 : null;
+  return { movies: shuffle(movies), nextPage };
 }
 
 /** Free-text book search. No language restriction, so foreign titles show up. */
