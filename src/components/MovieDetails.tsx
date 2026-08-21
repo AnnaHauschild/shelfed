@@ -262,7 +262,22 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
               <Ionicons name="bulb" size={15} color={chrome.accent} />
               <Text style={[styles.factLabel, accentText]}>Did you know?</Text>
             </View>
-            <Text style={styles.factText}>{fact}</Text>
+            <Text style={styles.factText}>{fact.text}</Text>
+            {fact.source && (
+              <Pressable
+                style={styles.factSource}
+                onPress={() => Linking.openURL(fact.source!).catch(() => {})}
+              >
+                <Ionicons
+                  name="open-outline"
+                  size={13}
+                  color={chrome.accent}
+                />
+                <Text style={[styles.factSourceText, accentText]}>
+                  Read more
+                </Text>
+              </Pressable>
+            )}
           </View>
         )}
 
@@ -507,6 +522,19 @@ const makeStyles = (c: ThemeChrome) =>
     fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 21,
+  },
+  factSource: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: spacing.sm,
+  },
+  factSourceText: {
+    color: colors.amber,
+    fontFamily: fonts.label,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   watchSection: {
     marginBottom: spacing.lg,
