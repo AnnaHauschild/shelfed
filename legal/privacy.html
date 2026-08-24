@@ -66,31 +66,71 @@
 <body>
   <main>
     <h1>Shelfed</h1>
-    <p class="muted">Privacy Policy &middot; Effective date: June 30, 2026</p>
+    <p class="muted">Privacy Policy &middot; Effective date: August 24, 2026</p>
 
     <h2>Summary</h2>
     <p>
-      Shelfed is a personal media journal for movies, series and books. It runs
-      entirely on your device. We do not have a server, we do not have a user
-      account system, and we do not collect, transmit or sell any personal data
-      about you.
+      Shelfed is a personal media journal for movies, series, books and games.
+      The core of the app runs on your device and needs no account. Creating an
+      optional account unlocks social features (following friends, sharing your
+      shelves and posting Stories); only then is some data stored on our backend.
+      We do not show ads, and we never sell your data.
     </p>
 
-    <h2>Data we collect</h2>
+    <h2>Data stored on your device</h2>
     <p>
-      <strong>None on our side.</strong> Everything you do in Shelfed &mdash; the
-      titles you mark as watched, skipped, favourite or watchlist, the optional
-      first name you can enter to personalise share messages, and your filter
-      preferences &mdash; is stored locally on your device in an on-device
-      SQLite database. This data never leaves your phone unless you choose to
-      share it (see <em>Sharing</em> below).
+      Everything in your personal journal &mdash; the titles you mark as watched,
+      skipped, favourite or on your wishlist, the moods you create, the optional
+      first name you can enter, your filter preferences and your notification
+      settings &mdash; is stored locally on your device in an on-device SQLite
+      database. Without an account, this data never leaves your phone unless you
+      choose to share it (see <em>Sharing</em> below).
+    </p>
+
+    <h2>Optional account &amp; social features</h2>
+    <p>
+      If you create an account, we use <strong>Supabase</strong> (our hosted
+      backend provider) to store the data needed for the social features. This
+      is entirely optional and the app is fully usable without it. When you sign
+      up or use social features we store:
+    </p>
+    <ul>
+      <li><strong>Your email address</strong> &mdash; used only to sign you in
+        with a one-time code. Shelfed does not use passwords.</li>
+      <li><strong>Your profile</strong> &mdash; a username, an optional display
+        name and an optional profile photo you choose from your device.</li>
+      <li><strong>A copy of your shareable shelves</strong> (watched, wishlist
+        and favourites) so they sync across your devices and can be seen by
+        followers you approve. Skipped titles are never uploaded.</li>
+      <li><strong>Your follow list and follow requests.</strong> Accounts are
+        private by default, so another person can only see your shelves after
+        you accept their follow request.</li>
+      <li><strong>Stories you post</strong> (a title, poster and optional
+        caption). The app shows Stories only for about 24 hours.</li>
+      <li><strong>Film "matches"</strong> &mdash; titles you and someone you
+        follow both like.</li>
+    </ul>
+    <p>
+      Supabase processes this data on our behalf; see
+      <a href="https://supabase.com/privacy">supabase.com/privacy</a>. You can
+      delete your account and all of this data at any time from inside the app
+      (see <em>Your data, your control</em> below).
+    </p>
+
+    <h2>Notifications</h2>
+    <p>
+      Shelfed can optionally remind you when a new season of a show on your
+      wishlist or favourites is coming. These reminders are scheduled locally on
+      your device; we do not operate a push-notification server and no
+      notification data leaves your phone. You can turn them off any time in
+      Settings or in your system settings.
     </p>
 
     <h2>Third-party content providers</h2>
     <p>
-      Shelfed displays metadata, posters and covers from two public catalogues.
-      When you open or scroll the app, requests are made directly from your
-      device to these services:
+      Shelfed displays metadata, posters and covers from several public
+      catalogues. When you open, scroll or search the app, requests are made
+      directly from your device to these services:
     </p>
     <ul>
       <li>
@@ -104,9 +144,19 @@
         </span>
       </li>
       <li>
-        <strong>Open Library</strong> (Internet Archive) &mdash; for book
-        information. Open Library's privacy policy applies:
-        <a href="https://archive.org/about/terms.php">archive.org/about/terms.php</a>.
+        <strong>Open Library</strong> (Internet Archive) and
+        <strong>Google Books</strong> &mdash; for book information.
+        <a href="https://archive.org/about/terms.php">archive.org/about/terms.php</a>,
+        <a href="https://policies.google.com/privacy">policies.google.com/privacy</a>.
+      </li>
+      <li>
+        <strong>RAWG</strong> &mdash; for video-game information.
+        <a href="https://rawg.io/privacy_policy">rawg.io/privacy_policy</a>.
+      </li>
+      <li>
+        <strong>Giphy</strong> &mdash; only if you add an animated GIF sticker to
+        a Story; your search terms are sent to Giphy to return results.
+        <a href="https://support.giphy.com/hc/en-us/articles/360020287091-GIPHY-Privacy-Policy">GIPHY privacy policy</a>.
       </li>
     </ul>
     <p>
@@ -118,12 +168,17 @@
 
     <h2>Sharing</h2>
     <p>
-      Shelfed offers a "Share" button that opens your operating system's native
-      share sheet with a short text and a public link to the title on TMDB or
-      Open Library. If you have entered a first name in the app, that name is
-      included in the share text so the recipient knows who is recommending
-      the title. Nothing is shared unless you press Share and confirm sending
-      in the chosen messenger/email app.
+      Shelfed's "Share" button opens your operating system's native share sheet
+      with a short text and a public link to the title. If you have entered a
+      first name, it is included so the recipient knows who is recommending the
+      title. Nothing is shared unless you press Share and confirm in the chosen
+      app.
+    </p>
+    <p>
+      With an account, you can also share inside Shelfed: posting a Story or
+      making a shelf visible shares that content with the followers you have
+      approved. You choose what to post, and you can delete it or remove
+      followers at any time.
     </p>
 
     <h2>Analytics, advertising, tracking</h2>
@@ -135,29 +190,39 @@
 
     <h2>Children</h2>
     <p>
-      Shelfed is intended for general audiences. It does not knowingly collect
-      personal information from children. As no information leaves the device,
-      no such collection is technically possible.
+      Shelfed is intended for general audiences and is not directed at children.
+      The social features require an account and are meant for teens and adults
+      in line with the app stores' minimum age requirements. We do not knowingly
+      collect personal information from children.
     </p>
 
     <h2>Permissions</h2>
     <p>
-      Shelfed requests the minimum permissions needed to function (internet
-      access to fetch titles, local storage to remember your shelf). It does
-      not access your contacts, photos, location, microphone or camera.
+      Shelfed requests only the permissions it needs:
+    </p>
+    <ul>
+      <li><strong>Internet</strong> &mdash; to fetch titles and, if you have an
+        account, to sync your social data.</li>
+      <li><strong>Photos</strong> &mdash; only when you choose a profile photo;
+        Shelfed opens the picker so you can select one image.</li>
+      <li><strong>Notifications</strong> &mdash; optional, for the local
+        new-season reminders described above.</li>
+    </ul>
+    <p>
+      Shelfed does not access your contacts, location or microphone, and does not
+      use your camera beyond the photo you deliberately pick.
     </p>
 
     <h2>Your data, your control</h2>
-    <p>
-      Because everything is stored on your device, you control your data
-      directly:
-    </p>
     <ul>
-      <li>Uninstalling Shelfed removes all stored data.</li>
-      <li>
-        Clearing the app's storage in your device settings resets the shelf
-        without removing the app.
-      </li>
+      <li>Uninstalling Shelfed removes all data stored on your device.</li>
+      <li>Clearing the app's storage in your device settings resets your local
+        shelf without removing the app.</li>
+      <li>If you created an account, you can <strong>delete it and all associated
+        backend data</strong> at any time from Settings inside the app; this
+        permanently removes your profile, synced shelves, follows and posts.</li>
+      <li>You can also remove individual followers, delete Stories, or unfollow
+        others whenever you like.</li>
     </ul>
 
     <h2>Changes to this policy</h2>
