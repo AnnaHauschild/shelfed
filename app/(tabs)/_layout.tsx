@@ -1,4 +1,6 @@
 import { Tabs } from 'expo-router';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { MediaType } from '@/api/types';
 import { useMediaType } from '@/context/MediaTypeProvider';
@@ -37,6 +39,11 @@ function DiscoverTabIcon({
 /** Bottom tab navigation across the four main screens. */
 export default function TabsLayout() {
   const chrome = useThemeChrome();
+  const insets = useSafeAreaInsets();
+  // Under edge-to-edge Android draws behind the system nav bar, and some devices
+  // under-report the bottom inset, so lift the tab bar clear of it (Android only).
+  const isAndroid = Platform.OS === 'android';
+  const androidBottom = isAndroid ? Math.max(insets.bottom, 12) : 0;
   return (
     <Tabs
       screenOptions={{
@@ -47,6 +54,13 @@ export default function TabsLayout() {
           backgroundColor: chrome.surface,
           borderTopColor: chrome.border,
           borderTopWidth: 1,
+          ...(isAndroid
+            ? {
+                height: 60 + androidBottom,
+                paddingBottom: androidBottom + 6,
+                paddingTop: 8,
+              }
+            : null),
         },
         tabBarLabelStyle: {
           fontFamily: fonts.label,
