@@ -25,6 +25,7 @@
     "android": {
       "package": "com.shelfed.app",
       "versionCode": 1,
+      "blockedPermissions": ["android.permission.ACTIVITY_RECOGNITION"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1d140c"
