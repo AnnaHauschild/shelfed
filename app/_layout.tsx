@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -10,7 +10,10 @@ import * as SplashScreen from 'expo-splash-screen';
 import { fetchMediaById } from '@/api/movies';
 import { MediaType } from '@/api/types';
 import { getDatabase } from '@/db/database';
+import { getSetting } from '@/db/settings';
+import { DEV_REPLAY_ONBOARDING, INTRO_SEEN_KEY } from '@/constants/intro';
 import { LandingScreen } from '@/components/LandingScreen';
+import { IntroWalkthrough } from '@/components/IntroWalkthrough';
 import { ShelfSyncGate } from '@/components/ShelfSyncGate';
 import { SeasonAlertGate } from '@/components/SeasonAlertGate';
 import {
@@ -87,6 +90,7 @@ export default function RootLayout() {
                 </Stack>
                 <DeeplinkHandler />
                 <LandingGate />
+                <IntroGate />
               </MovieDetailsProvider>
               </PostComposerProvider>
               <ShelfSyncGate />
@@ -110,6 +114,24 @@ function LandingGate() {
   const { chosen } = useMediaTypeControls();
   if (chosen) return null;
   return <LandingScreen />;
+}
+
+/** Plays the first-launch walkthrough once, then never again. */
+function IntroGate() {
+  const [done, setDone] = useState(false);
+  const [storedSeen, setStoredSeen] = useState<boolean | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getSetting(INTRO_SEEN_KEY).then((v) => {
+      if (alive) setStoredSeen(v === '1');
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const shouldShow = DEV_REPLAY_ONBOARDING ? !done : storedSeen === false;
+  if (!shouldShow) return null;
+  return <IntroWalkthrough onDone={() => setDone(true)} />;
 }
 
 /**

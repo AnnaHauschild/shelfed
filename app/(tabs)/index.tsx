@@ -33,6 +33,7 @@ import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieFeed } from '@/hooks/useMovieFeed';
 import { useProviderOptions } from '@/hooks/useProviderOptions';
 import { getSetting, setSetting } from '@/db/settings';
+import { DEV_REPLAY_ONBOARDING } from '@/constants/intro';
 import { InteractionType } from '@/repositories';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 
@@ -201,7 +202,7 @@ export default function DiscoverScreen() {
   useEffect(() => {
     let alive = true;
     getSetting(SWIPE_HINT_KEY).then((v) => {
-      if (alive) setHintSeen(v === '1');
+      if (alive) setHintSeen(DEV_REPLAY_ONBOARDING ? false : v === '1');
     });
     return () => {
       alive = false;
