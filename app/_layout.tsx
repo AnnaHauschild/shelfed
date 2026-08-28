@@ -118,7 +118,7 @@ function LandingGate() {
 
 /** Plays the first-launch walkthrough once, then never again. */
 function IntroGate() {
-  const [done, setDone] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const [storedSeen, setStoredSeen] = useState<boolean | null>(null);
   useEffect(() => {
     let alive = true;
@@ -129,9 +129,10 @@ function IntroGate() {
       alive = false;
     };
   }, []);
-  const shouldShow = DEV_REPLAY_ONBOARDING ? !done : storedSeen === false;
+  if (dismissed) return null;
+  const shouldShow = DEV_REPLAY_ONBOARDING || storedSeen === false;
   if (!shouldShow) return null;
-  return <IntroWalkthrough onDone={() => setDone(true)} />;
+  return <IntroWalkthrough onDone={() => setDismissed(true)} />;
 }
 
 /**
