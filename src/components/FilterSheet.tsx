@@ -528,9 +528,9 @@ const styles = StyleSheet.create({
   gridValue: {
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     marginTop: 1,
-    minHeight: 17,
+    minHeight: 19,
   },
   dropdownList: {
     marginTop: spacing.xs,
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   dropdownItemText: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 17,
     flexShrink: 1,
   },
   itemPressed: {

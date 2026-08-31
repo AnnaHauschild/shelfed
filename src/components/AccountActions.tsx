@@ -66,11 +66,11 @@ const makeStyles = (c: ThemeChrome) =>
     rowText: {
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 15,
+      fontSize: 17,
     },
     error: {
       color: colors.favorite,
       fontFamily: fonts.body,
-      fontSize: 13,
+      fontSize: 15,
     },
   });

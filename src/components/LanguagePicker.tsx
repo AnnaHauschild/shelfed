@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   hint: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
     marginBottom: spacing.sm,
   },
   row: {

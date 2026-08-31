@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
   tagline: {
     color: 'rgba(243, 231, 210, 0.78)',
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 15,
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
   },
   deckArea: {
     flex: 1,
@@ -583,9 +583,9 @@ const styles = StyleSheet.create({
   muted: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 23,
   },
   errorTitle: {
     color: colors.textOnDark,

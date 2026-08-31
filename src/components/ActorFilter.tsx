@@ -176,7 +176,7 @@ const makeStyles = (c: ThemeChrome) =>
       flex: 1,
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 15,
+      fontSize: 17,
       paddingVertical: 2,
     },
     results: {
@@ -210,7 +210,7 @@ const makeStyles = (c: ThemeChrome) =>
     resultHint: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
       marginTop: 1,
     },
     selectedChip: {

@@ -113,7 +113,7 @@ const makeStyles = (c: ThemeChrome) =>
       flex: 1,
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 13,
+      fontSize: 15,
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
@@ -148,7 +148,7 @@ const makeStyles = (c: ThemeChrome) =>
     friend: {
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 15,
+      fontSize: 17,
       paddingVertical: 2,
     },
   });

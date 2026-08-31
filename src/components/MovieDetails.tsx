@@ -408,18 +408,18 @@ const makeStyles = (c: ThemeChrome) =>
   meta: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 15,
   },
   author: {
     color: colors.amber,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 14,
     marginTop: 2,
   },
   metaLine: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 14,
     marginTop: 3,
   },
   metaLabel: {
@@ -493,8 +493,8 @@ const makeStyles = (c: ThemeChrome) =>
   overview: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 16,
+    lineHeight: 23,
   },
   factBox: {
     marginTop: spacing.lg,
@@ -520,8 +520,8 @@ const makeStyles = (c: ThemeChrome) =>
   factText: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 16,
+    lineHeight: 23,
   },
   factSource: {
     flexDirection: 'row',
@@ -594,7 +594,7 @@ const makeStyles = (c: ThemeChrome) =>
   castAge: {
     color: c.accent,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
   },
   castCharacter: {
     flexShrink: 1,

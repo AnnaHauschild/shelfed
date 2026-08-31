@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 17,
     paddingVertical: 0,
   },
   loader: {
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
   rowMetaText: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 15,
   },
   rowGenres: {
     color: colors.amber,
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   matchBadgeText: {
     color: colors.favorite,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
   },
   rowActions: {
     flexDirection: 'row',
@@ -368,8 +368,8 @@ const styles = StyleSheet.create({
   mutedText: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 23,
   },
 });

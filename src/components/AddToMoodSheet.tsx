@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   empty: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 15,
     textAlign: 'center',
     paddingVertical: spacing.lg,
   },

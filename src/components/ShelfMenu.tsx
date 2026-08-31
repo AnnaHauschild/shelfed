@@ -434,8 +434,8 @@ const makeStyles = (c: ThemeChrome) =>
   moodDesc: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 15,
+    lineHeight: 21,
     marginTop: -spacing.xs,
   },
   moodRow: {
@@ -460,19 +460,19 @@ const makeStyles = (c: ThemeChrome) =>
   moodCount: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
     marginTop: 1,
   },
   empty: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 15,
     paddingVertical: spacing.sm,
   },
   input: {
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 16,
+    fontSize: 17,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.lg,
@@ -483,7 +483,7 @@ const makeStyles = (c: ThemeChrome) =>
   hint: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
   },
   createButton: {
     flexDirection: 'row',

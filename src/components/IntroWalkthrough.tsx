@@ -366,8 +366,8 @@ const styles = StyleSheet.create({
   },
   body: {
     fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 23,
+    fontSize: 17,
+    lineHeight: 25,
     color: colors.textOnDarkMuted,
     textAlign: 'center',
     maxWidth: 320,

@@ -313,7 +313,7 @@ const makeStyles = (c: ThemeChrome) =>
     hint: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 13,
+      fontSize: 15,
     },
     loader: {
       alignSelf: 'flex-start',
@@ -321,7 +321,7 @@ const makeStyles = (c: ThemeChrome) =>
     input: {
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 15,
+      fontSize: 17,
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.sm,
       borderRadius: radius.md,
@@ -356,22 +356,22 @@ const makeStyles = (c: ThemeChrome) =>
     error: {
       color: colors.favorite,
       fontFamily: fonts.body,
-      fontSize: 13,
+      fontSize: 15,
     },
     checkOk: {
       color: colors.watched,
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
     },
     checkBad: {
       color: colors.favorite,
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
     },
     checkMuted: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
     },
     profileRow: {
       flexDirection: 'row',
@@ -416,7 +416,7 @@ const makeStyles = (c: ThemeChrome) =>
     subtle: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
     },
     row: {
       flexDirection: 'row',

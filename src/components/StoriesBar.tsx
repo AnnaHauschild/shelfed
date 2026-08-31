@@ -526,7 +526,7 @@ const makeStyles = (c: ThemeChrome) =>
     name: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 11,
+      fontSize: 13,
       maxWidth: 64,
     },
   });
@@ -592,7 +592,7 @@ const makeViewerStyles = (c: ThemeChrome) =>
       fontFamily: fonts.heading,
       fontSize: 15,
     },
-    time: { color: 'rgba(43,29,13,0.6)', fontFamily: fonts.body, fontSize: 12 },
+    time: { color: 'rgba(43,29,13,0.6)', fontFamily: fonts.body, fontSize: 14 },
     trash: { marginLeft: spacing.sm },
     headerClose: { marginLeft: spacing.xs },
     posterWrap: {

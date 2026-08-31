@@ -576,7 +576,7 @@ const makeStyles = (c: ThemeChrome) =>
   hint: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
     marginBottom: spacing.sm,
   },
   notifyRow: {
@@ -590,7 +590,7 @@ const makeStyles = (c: ThemeChrome) =>
   notifyLabel: {
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 2,
   },
   inputWrap: {
@@ -608,7 +608,7 @@ const makeStyles = (c: ThemeChrome) =>
     flex: 1,
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 17,
   },
   // Language dropdown.
   dropdown: {
@@ -625,7 +625,7 @@ const makeStyles = (c: ThemeChrome) =>
   dropdownValue: {
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 17,
   },
   dropdownValueRow: {
     flexDirection: 'row',
@@ -655,7 +655,7 @@ const makeStyles = (c: ThemeChrome) =>
   dropdownItemText: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 17,
   },
   dropdownItemTextActive: {
     color: colors.textOnDark,

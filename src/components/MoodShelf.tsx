@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   headerHint: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 11,
+    fontSize: 13,
     marginTop: 1,
   },
   list: {
@@ -456,13 +456,13 @@ const styles = StyleSheet.create({
   pickerYear: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
     marginTop: 1,
   },
   pickerEmpty: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 15,
     textAlign: 'center',
     paddingVertical: spacing.lg,
   },
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   renameInput: {
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 16,
+    fontSize: 17,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.lg,

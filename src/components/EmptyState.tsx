@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
   message: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 23,
   },
 });

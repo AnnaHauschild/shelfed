@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   sub: {
     color: colors.textOnDark,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 17,
     textAlign: 'center',
     marginTop: spacing.sm,
   },

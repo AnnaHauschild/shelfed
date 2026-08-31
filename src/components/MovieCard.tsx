@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
   },
   genres: {
     color: colors.amber,

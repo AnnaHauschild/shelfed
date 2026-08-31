@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   },
   tagline: {
     color: colors.textOnDarkMuted,
-    fontFamily: fonts.body,
+    fontFamily: fonts.typewriter,
     fontSize: 11,
     letterSpacing: 0.2,
     marginTop: -2,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   },
   compactTagline: {
     color: colors.textOnDarkMuted,
-    fontFamily: fonts.body,
+    fontFamily: fonts.typewriter,
     fontSize: 11,
     letterSpacing: 0.2,
     marginTop: 1,

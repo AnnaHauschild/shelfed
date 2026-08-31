@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     minHeight: 160,
     color: NOTE_INK,
     fontFamily: fonts.body,
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 18,
+    lineHeight: 26,
   },
 });

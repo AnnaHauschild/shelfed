@@ -695,7 +695,7 @@ const styles = StyleSheet.create({
   reorderHint: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 14,
     textAlign: 'center',
     marginBottom: spacing.md,
   },

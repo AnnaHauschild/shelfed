@@ -599,7 +599,7 @@ const makeStyles = (c: ThemeChrome) =>
       flex: 1,
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 14,
+      fontSize: 16,
       padding: 0,
     },
     headerRow: {
@@ -628,7 +628,7 @@ const makeStyles = (c: ThemeChrome) =>
     hint: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 13,
+      fontSize: 15,
       paddingVertical: spacing.sm,
     },
     chipRow: {
@@ -690,7 +690,7 @@ const makeStyles = (c: ThemeChrome) =>
     posterTitle: {
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 11,
+      fontSize: 13,
       marginTop: 4,
     },
     detailOverlay: {

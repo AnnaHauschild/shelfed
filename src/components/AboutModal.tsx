@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   tagline: {
     color: colors.amber,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 17,
     fontStyle: 'italic',
   },
   section: {
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
   body: {
     color: colors.textOnDarkMuted,
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 16,
+    lineHeight: 23,
   },
   link: {
     color: colors.amberBright,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     textDecorationLine: 'underline',
   },
   version: {

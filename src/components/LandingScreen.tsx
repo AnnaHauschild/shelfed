@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   },
   tagline: {
     color: colors.textOnDarkMuted,
-    fontFamily: fonts.body,
+    fontFamily: fonts.typewriter,
     fontSize: 11,
     letterSpacing: 0.2,
     marginTop: spacing.xs,
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
   cardBlurb: {
     color: colors.textOnPaper,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     opacity: 0.75,
   },
   topRow: {

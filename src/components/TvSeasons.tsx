@@ -203,7 +203,7 @@ const makeStyles = (c: ThemeChrome) =>
     seasonMeta: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
       marginTop: 1,
     },
     episodeList: {
@@ -230,12 +230,12 @@ const makeStyles = (c: ThemeChrome) =>
     episodeName: {
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 13,
+      fontSize: 15,
     },
     episodeMeta: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 11,
+      fontSize: 13,
       marginTop: 1,
     },
     episodeNameDone: {

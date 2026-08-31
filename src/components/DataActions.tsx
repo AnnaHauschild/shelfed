@@ -276,7 +276,7 @@ const makeStyles = (c: ThemeChrome) =>
     rowText: {
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 15,
+      fontSize: 17,
     },
     chevron: { marginLeft: 'auto' },
     panel: {
@@ -287,7 +287,7 @@ const makeStyles = (c: ThemeChrome) =>
     hint: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
     },
     subLabel: {
       color: colors.textOnDark,
@@ -313,7 +313,7 @@ const makeStyles = (c: ThemeChrome) =>
       borderColor: c.border,
     },
     chipOn: { backgroundColor: c.accent, borderColor: c.accent },
-    chipText: { color: colors.textOnDark, fontFamily: fonts.body, fontSize: 13 },
+    chipText: { color: colors.textOnDark, fontFamily: fonts.body, fontSize: 15 },
     chipTextOn: { color: c.onAccent },
     clearBtn: {
       alignSelf: 'flex-start',

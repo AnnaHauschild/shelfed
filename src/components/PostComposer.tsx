@@ -591,7 +591,7 @@ const makeStyles = (c: ThemeChrome) =>
     hint: {
       color: 'rgba(42,32,24,0.55)',
       fontFamily: fonts.body,
-      fontSize: 12,
+      fontSize: 14,
       textAlign: 'center',
     },
     paletteRoot: { ...StyleSheet.absoluteFillObject, justifyContent: 'flex-end' },
@@ -677,7 +677,7 @@ const makeStyles = (c: ThemeChrome) =>
       backgroundColor: c.surfaceRaised,
       color: colors.textOnDark,
       fontFamily: fonts.body,
-      fontSize: 15,
+      fontSize: 17,
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.sm,
       marginBottom: spacing.sm,
@@ -701,7 +701,7 @@ const makeStyles = (c: ThemeChrome) =>
     gifHint: {
       color: c.muted,
       fontFamily: fonts.body,
-      fontSize: 14,
+      fontSize: 16,
       textAlign: 'center',
       paddingVertical: spacing.xl,
       paddingHorizontal: spacing.lg,
