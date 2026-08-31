@@ -2,8 +2,18 @@ import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Movie } from '@/api/types';
 import { ShelfItem, isShelfType, pullShelf, pushMany } from '@/api/shelfSync';
-import { interactionRepository, movieRepository } from '@/repositories';
+import {
+  collectionRepository,
+  episodeRepository,
+  interactionRepository,
+  movieRepository,
+  noteRepository,
+} from '@/repositories';
+import { getSetting, setSetting } from '@/db/settings';
 import { useAuth } from '@/context/AuthProvider';
+
+/** Which account the shelves currently stored on this device belong to. */
+const LAST_SYNCED_USER_KEY = 'lastSyncedUserId';
 
 /** A cloud shelf item lacks full metadata; fill the rest with neutral defaults. */
 function minimalMovie(item: ShelfItem): Movie {
@@ -27,6 +37,9 @@ function minimalMovie(item: ShelfItem): Movie {
  * Two-way shelf sync, run once per sign-in: upload the local shelves, then
  * restore any cloud items missing locally (cross-device). Best-effort and
  * offline-safe — failures never block the app. Mounted once at the app root.
+ *
+ * When a DIFFERENT account signs in, the local shelves belong to the previous
+ * user, so they are cleared first and never uploaded to the new account.
  */
 export function ShelfSyncGate() {
   const { userId } = useAuth();
@@ -40,18 +53,28 @@ export function ShelfSyncGate() {
 
     (async () => {
       try {
-        const local = await interactionRepository.getSyncItems();
-        const toUpload: ShelfItem[] = local
-          .filter((i) => isShelfType(i.type))
-          .map((i) => ({
-            mediaType: i.mediaType,
-            movieId: i.movieId,
-            type: i.type as ShelfItem['type'],
-            title: i.title,
-            posterPath: i.posterPath,
-            year: i.year,
-          }));
-        await pushMany(userId, toUpload);
+        const previousUserId = await getSetting(LAST_SYNCED_USER_KEY);
+        const switchedAccount = !!previousUserId && previousUserId !== userId;
+
+        if (switchedAccount) {
+          await interactionRepository.clearAll();
+          await collectionRepository.clearAll();
+          await noteRepository.clearAll();
+          await episodeRepository.clearAll();
+        } else {
+          const local = await interactionRepository.getSyncItems();
+          const toUpload: ShelfItem[] = local
+            .filter((i) => isShelfType(i.type))
+            .map((i) => ({
+              mediaType: i.mediaType,
+              movieId: i.movieId,
+              type: i.type as ShelfItem['type'],
+              title: i.title,
+              posterPath: i.posterPath,
+              year: i.year,
+            }));
+          await pushMany(userId, toUpload);
+        }
 
         const cloud = await pullShelf(userId);
         let restored = 0;
@@ -72,7 +95,12 @@ export function ShelfSyncGate() {
           );
           restored++;
         }
-        if (restored > 0 && !cancelled) {
+        if (cancelled) return;
+        await setSetting(LAST_SYNCED_USER_KEY, userId);
+        if (switchedAccount) {
+          // Shelves, moods, notes and stats all changed: refresh everything.
+          queryClient.invalidateQueries();
+        } else if (restored > 0) {
           queryClient.invalidateQueries({ queryKey: ['shelf'] });
           queryClient.invalidateQueries({ queryKey: ['interaction-states'] });
         }
