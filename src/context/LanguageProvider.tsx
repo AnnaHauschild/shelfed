@@ -9,10 +9,10 @@ import {
 import { setContentLanguage } from '@/api/tmdb';
 import {
   AppLanguage,
-  DEFAULT_LANGUAGE,
   LANGUAGE_SETTING_KEY,
   UI_TEXT,
   UiText,
+  deviceLanguage,
   isAppLanguage,
   tmdbTag,
 } from '@/constants/languages';
@@ -33,7 +33,8 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
  * the choice survives restarts.
  */
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<AppLanguage>(DEFAULT_LANGUAGE);
+  // Start in the device's language; a stored choice (loaded below) wins.
+  const [language, setLanguageState] = useState<AppLanguage>(deviceLanguage);
 
   // Keep the API layer in sync with the selected language BEFORE children run
   // their queries, so the feed fetches in the right language immediately. This

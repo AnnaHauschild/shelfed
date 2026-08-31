@@ -1,4 +1,6 @@
 /** UI language options — drives TMDB content language + a few localized hints. */
+import { getLocales } from 'expo-localization';
+
 export type AppLanguage = 'en' | 'de' | 'pt' | 'fr' | 'es' | 'it';
 
 export interface LanguageOption {
@@ -32,6 +34,13 @@ export function tmdbTag(code: AppLanguage): string {
 /** True for a valid app-language code (guards persisted/legacy values). */
 export function isAppLanguage(value: string | null): value is AppLanguage {
   return !!value && LANGUAGES.some((l) => l.code === value);
+}
+
+/** The device's language if the app speaks it, else English. Used until the
+ *  user picks one explicitly, so a fresh install starts localized. */
+export function deviceLanguage(): AppLanguage {
+  const code = getLocales()[0]?.languageCode?.toLowerCase() ?? null;
+  return isAppLanguage(code) ? code : DEFAULT_LANGUAGE;
 }
 
 /**

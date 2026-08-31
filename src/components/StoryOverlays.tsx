@@ -88,7 +88,7 @@ export function captionText(style: CaptionStyle, text: string): string {
 /** Selectable fonts for a text sticker (key persisted, family resolved here). */
 export const STORY_FONTS: { key: string; family?: string; label: string }[] = [
   { key: 'display', family: fonts.display, label: 'Poster' },
-  { key: 'type', family: fonts.body, label: 'Type' },
+  { key: 'type', family: fonts.typewriter, label: 'Type' },
   { key: 'clean', family: undefined, label: 'Clean' },
   { key: 'caps', family: fonts.label, label: 'Caps' },
 ];
