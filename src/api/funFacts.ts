@@ -249,6 +249,48 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://de.wikipedia.org/wiki/Good_Bye,_Lenin!#:~:text=Rotte%20Wildschweine',
   },
+  'movie:120467': {
+    en: 'The hotel lobby is an empty department store in Görlitz in eastern Germany. Wes Anderson even considered buying the building to save it from demolition.',
+    de: 'Die Hotelhalle ist ein leerstehendes Kaufhaus in Görlitz. Wes Anderson überlegte sogar, das Gebäude zu kaufen, um es vor dem Abriss zu retten.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Grand_Budapest_Hotel#:~:text=considered%20buying%20the%20Warenhaus%20to%20save%20it',
+  },
+  'movie:62': {
+    en: 'The weightlessness was made by hanging the actors on wires from the top of the set and filming from directly below. Their own bodies hid the wires.',
+    de: 'Die Schwerelosigkeit entstand, indem die Darsteller an Seilen von der Decke hingen und von unten gefilmt wurden. Ihre eigenen Körper verdeckten die Seile.',
+    source:
+      'https://en.wikipedia.org/wiki/2001:_A_Space_Odyssey#:~:text=suspending%20the%20actors%20from%20wires',
+  },
+  'movie:807': {
+    en: 'For deeper blacks the film was put through a costly chemical process. Only a few hundred of the 2,500 cinema prints got it, so most audiences saw a different looking film.',
+    de: 'Für tiefere Schwarztöne wurde das Filmmaterial aufwendig chemisch behandelt. Nur ein paar Hundert der 2.500 Kinokopien bekamen das, die meisten Zuschauer sahen also einen anders aussehenden Film.',
+    source:
+      'https://en.wikipedia.org/wiki/Seven_(1995_film)#:~:text=only%20a%20few%20hundred%20used%20the%20process',
+  },
+  'movie:12': {
+    en: 'The shark is named Bruce after the mechanical shark in Jaws, which that crew had nicknamed after Spielberg\u2019s lawyer.',
+    de: 'Der Hai heißt Bruce, nach dem mechanischen Hai aus Der weiße Hai. Den hatte die Crew damals nach Spielbergs Anwalt benannt.',
+    source:
+      'https://en.wikipedia.org/wiki/Finding_Nemo#:~:text=after%20Bruce%20Ramer',
+  },
+  'movie:620': {
+    en: 'The shoot blocked New York streets at rush hour. When angry locals asked who was responsible, a producer told them it was Francis Ford Coppola shooting another film.',
+    de: 'Der Dreh blockierte New Yorker Straßen im Berufsverkehr. Als wütende Anwohner fragten, wer daran schuld sei, erzählte ein Produzent ihnen, das sei Francis Ford Coppola mit einem anderen Film.',
+    source:
+      'https://en.wikipedia.org/wiki/Ghostbusters#:~:text=he%20blamed%20Francis%20Ford%20Coppola',
+  },
+  'movie:244786': {
+    en: 'Many of the band were real music students, and the director set out to capture their genuine fear of the raging conductor. Between takes the actor was reportedly very gentle.',
+    de: 'Viele in der Filmband waren echte Musikstudenten, und der Regisseur fing gezielt ihre echte Angst vor dem tobenden Dirigenten ein. Zwischen den Aufnahmen war der Darsteller angeblich ausgesprochen freundlich.',
+    source:
+      'https://en.wikipedia.org/wiki/Whiplash_(2014_film)#:~:text=expressions%20of%20fear%20and%20anxiety',
+  },
+  'movie:745': {
+    en: 'Bruce Willis took the part as compensation for a production that had collapsed with him a year earlier.',
+    de: 'Bruce Willis übernahm die Rolle als Ausgleich für eine Produktion, die ein Jahr zuvor mit ihm geplatzt war.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Sixth_Sense#:~:text=compensate%20the%20studio%20for',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
