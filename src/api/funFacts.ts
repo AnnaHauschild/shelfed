@@ -40,10 +40,10 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Jaws_(film)#:~:text=unreliable%20mechanical%20sharks',
   },
   'movie:603': {
-    en: 'The green Matrix code is made of mirrored characters taken from Japanese sushi recipes.',
-    de: 'Der grüne Matrix-Code besteht aus gespiegelten Zeichen japanischer Sushi-Rezepte.',
+    en: 'The green code is made of mirrored Japanese characters, letters and digits. Its designer likes to say it consists of Japanese sushi recipes.',
+    de: 'Der grüne Code besteht aus gespiegelten japanischen Schriftzeichen, Buchstaben und Ziffern. Sein Gestalter sagt gern, er bestehe aus japanischen Sushi-Rezepten.',
     source:
-      'https://en.wikipedia.org/wiki/The_Matrix#:~:text=sushi%20recipes',
+      'https://en.wikipedia.org/wiki/The_Matrix#:~:text=made%20out%20of%20Japanese%20sushi%20recipes',
   },
   'movie:105': {
     en: 'Marty McFly was filmed for weeks with Eric Stoltz before he was recast with Michael J. Fox.',
@@ -172,8 +172,8 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/The_Lion_King#:~:text=with%20an%20assortment%20of%20lions',
   },
   'movie:280': {
-    en: 'The liquid metal T-1000 adds up to about five minutes of screen time. Rendering 15 seconds of it could take ten days.',
-    de: 'Der flüssige T-1000 ist insgesamt etwa fünf Minuten zu sehen. Für 15 Sekunden davon rechneten die Computer bis zu zehn Tage.',
+    en: 'The shape-shifting liquid metal villain is on screen for only about five minutes in total. Rendering 15 seconds of him could take ten days.',
+    de: 'Der flüssige Metallgegner, der jede Gestalt annehmen kann, ist zusammengerechnet nur etwa fünf Minuten zu sehen. Für 15 Sekunden davon rechneten die Computer bis zu zehn Tage.',
     source:
       'https://en.wikipedia.org/wiki/Terminator_2:_Judgment_Day#:~:text=rendering%2015%20seconds%20of%20footage%20took%20up%20to%20ten%20days',
   },
