@@ -159,6 +159,54 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Parasite_(2019_film)#:~:text=necessity%20for%20the%20flooding%20scenes',
   },
+  'movie:85': {
+    en: 'Indy simply shoots the swordsman because Harrison Ford had dysentery and could not get through the long sword fight rehearsed for weeks.',
+    de: 'Indy erschießt den Schwertkämpfer einfach, weil Harrison Ford an Amöbenruhr erkrankt war und den wochenlang einstudierten Schwertkampf nicht durchstand.',
+    source:
+      'https://en.wikipedia.org/wiki/Raiders_of_the_Lost_Ark#:~:text=shorten%20the%20fight%20scene%20significantly',
+  },
+  'movie:8587': {
+    en: 'A wildlife expert brought live lions into the studio so the animators could see how the real animals move.',
+    de: 'Ein Tierexperte brachte lebende Löwen ins Studio, damit die Zeichner sehen konnten, wie sich die echten Tiere bewegen.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Lion_King#:~:text=with%20an%20assortment%20of%20lions',
+  },
+  'movie:280': {
+    en: 'The liquid metal T-1000 adds up to about five minutes of screen time. Rendering 15 seconds of it could take ten days.',
+    de: 'Der flüssige T-1000 ist insgesamt etwa fünf Minuten zu sehen. Für 15 Sekunden davon rechneten die Computer bis zu zehn Tage.',
+    source:
+      'https://en.wikipedia.org/wiki/Terminator_2:_Judgment_Day#:~:text=rendering%2015%20seconds%20of%20footage%20took%20up%20to%20ten%20days',
+  },
+  'movie:771': {
+    en: 'Joe Pesci deliberately kept his distance from Macaulay Culkin off camera so the hostility between them would stay believable.',
+    de: 'Joe Pesci ging Macaulay Culkin abseits der Kamera bewusst aus dem Weg, damit die Feindschaft zwischen beiden glaubwürdig blieb.',
+    source:
+      'https://en.wikipedia.org/wiki/Home_Alone#:~:text=intentionally%20limited%20my%20interactions%20with%20him',
+  },
+  'movie:387': {
+    en: 'One morning the U-boat mock-up was simply gone. Nobody had told the crew that Steven Spielberg had rented it for Raiders of the Lost Ark.',
+    de: 'Eines Morgens war die U-Boot-Attrappe einfach weg. Niemand hatte der Crew gesagt, dass Steven Spielberg sie für Jäger des verlorenen Schatzes gemietet hatte.',
+    source:
+      'https://en.wikipedia.org/wiki/Das_Boot#:~:text=had%20rented%20the%20mock-up%20for%20his%20own%20film',
+  },
+  'movie:129': {
+    en: 'The bathhouse goes back to a real one from Miyazaki\u2019s childhood, where a small door beside a tub always made him wonder what was behind it.',
+    de: 'Das Badehaus geht auf ein echtes aus Miyazakis Kindheit zurück. Neben einer Wanne war eine kleine Tür, hinter der er als Kind immer etwas vermutete.',
+    source:
+      'https://en.wikipedia.org/wiki/Spirited_Away#:~:text=small%20door%20next%20to%20one%20of%20the%20bathtubs',
+  },
+  'movie:194': {
+    en: 'The part was written for English actress Emily Watson. Her French was not strong enough and she was booked elsewhere, so the role became French.',
+    de: 'Die Rolle war für die englische Schauspielerin Emily Watson geschrieben. Ihr Französisch reichte nicht und sie war anderweitig gebunden, also wurde Amélie Französin.',
+    source:
+      'https://en.wikipedia.org/wiki/Am%C3%A9lie#:~:text=for%20the%20English%20actress%20Emily%20Watson',
+  },
+  'movie:104': {
+    en: 'The closing credits run from top to bottom instead of the usual bottom to top.',
+    de: 'Der Abspann läuft von oben nach unten statt wie üblich von unten nach oben.',
+    source:
+      'https://de.wikipedia.org/wiki/Lola_rennt#:~:text=l%C3%A4uft%20von%20oben%20nach%20unten',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
