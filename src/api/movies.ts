@@ -356,16 +356,68 @@ function spliceUpcoming(movies: Movie[], upcoming: Movie[]): Movie[] {
   return merged;
 }
 
+// One decade per page meant 20 cards in a row from the same era. Instead we
+// pull several decades per page and round-robin them together.
+const FEED_WINDOWS_PER_PAGE = 3;
+const FEED_PAGE_SIZE = 21;
+
+function pickWindows<T>(all: T[], n: number): T[] {
+  return shuffle([...all]).slice(0, Math.min(n, all.length));
+}
+
+const TITLE_NOISE = new Set([
+  'the', 'a', 'an', 'of', 'and',
+  'der', 'die', 'das', 'le', 'la', 'les', 'el', 'il',
+]);
+
+/**
+ * Rough franchise key: "Spider-Man 2" and "Spider-Man: No Way Home" both yield
+ * "spiderman". TMDB's discover response carries no collection id, so a title
+ * heuristic is the cheap way to notice sequels.
+ */
+function titleRoot(title: string): string {
+  const words = title
+    .toLowerCase()
+    .split(':')[0]
+    .replace(/[^a-z0-9\s]/g, '')
+    .split(/\s+/)
+    .filter((word) => word && !TITLE_NOISE.has(word));
+  return words.slice(0, 2).join('').replace(/\d+$/, '');
+}
+
+/**
+ * Round-robins the per-decade result sets so consecutive cards jump between
+ * eras, then pushes apart neighbours from the same franchise.
+ */
+function interleave(groups: Movie[][]): Movie[] {
+  const out: Movie[] = [];
+  const longest = Math.max(0, ...groups.map((group) => group.length));
+  for (let i = 0; i < longest; i++) {
+    for (const group of groups) {
+      if (group[i]) out.push(group[i]);
+    }
+  }
+  for (let i = 1; i < out.length; i++) {
+    const previous = titleRoot(out[i - 1].title);
+    if (titleRoot(out[i].title) !== previous) continue;
+    const swap = out.findIndex(
+      (movie, k) => k > i && titleRoot(movie.title) !== previous,
+    );
+    if (swap > i) [out[i], out[swap]] = [out[swap], out[i]];
+  }
+  return out;
+}
+
 /**
  * Fetches one page of the discovery feed for the swipe deck.
  *
  * Strategy:
- *  - When the user picks no era, rotate through decades in random order so the
- *    feed jumps across eras instead of marching from oldest to newest.
+ *  - When the user picks no era, pull several decades in parallel and
+ *    round-robin them, so consecutive cards jump between eras.
  *  - Enter the popularity ranking at a random page so a session doesn't always
  *    open with the same blockbusters.
- *  - Sort by popularity within the decade, then shuffle the page so the user
- *    doesn't always see the same blockbuster at the top.
+ *  - Push apart neighbours from the same franchise, which popularity sorting
+ *    otherwise lands right next to each other.
  *  - Only constrain by era/genre/country when the user explicitly picks one.
  *  - Drop movies without a poster, since the poster is central to the UX.
  */
@@ -486,91 +538,114 @@ export async function fetchFeedPage(
   const broaden = !!collection || vibes.length > 0 || !!originCountry || !!actorId || !!withProviders;
 
   if (mediaType === 'tv') {
-    // No explicit era → weighted-random recent decade (skips 70s/80s by
-    // default); a niche filter widens this to the whole catalogue.
-    const tvWindow =
-      eraWindow ??
-      (broaden
-        ? undefined
-        : TV_DEFAULT_WINDOWS[
-            Math.floor(Math.random() * TV_DEFAULT_WINDOWS.length)
-          ]);
-    // Only the broad feed gets varied: niche filters have a small pool, so
-    // skipping pages or raising the vote floor would empty them.
+    // No explicit era → blend several recent decades into ONE page so
+    // consecutive cards jump between eras; a niche filter widens this to the
+    // whole catalogue.
     const varied = !eraWindow && !broaden;
-    const apiPage = varied ? page + feedPageOffset('tv', page) : page;
-    const data = await tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
-      include_adult: false,
-      language: contentLanguage(),
-      sort_by: 'popularity.desc',
-      with_genres: withGenres,
-      without_genres: TV_EXCLUDED_GENRES,
-      without_keywords: EXCLUDED_KEYWORDS,
-      with_keywords: withKeywords,
-      with_original_language: originalLanguage,
-      with_origin_country: originCountry,
-      with_watch_providers: withProviders,
-      watch_region: withProviders ? watchRegion() : undefined,
-      with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
-      'first_air_date.gte': tvWindow?.gte,
-      'first_air_date.lte': tvWindow?.lte,
-      'vote_count.gte': varied ? MIN_VOTES_TV : undefined,
-      page: apiPage,
-    });
-
-    const movies = shuffle(
-      data.results
-        .filter((m) => m.poster_path)
-        .filter((m) => !isLikelyErotic(m.name) && !isLikelyErotic(m.original_name))
-        .map((m) => toTv(m, genreMap)),
+    const windows = varied
+      ? pickWindows(TV_DEFAULT_WINDOWS, FEED_WINDOWS_PER_PAGE)
+      : [eraWindow];
+    const apiPages = windows.map((_, i) =>
+      varied ? page + feedPageOffset(`tv:${i}`, page) : page,
+    );
+    const responses = await Promise.all(
+      windows.map((era, i) =>
+        tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
+          include_adult: false,
+          language: contentLanguage(),
+          sort_by: 'popularity.desc',
+          with_genres: withGenres,
+          without_genres: TV_EXCLUDED_GENRES,
+          without_keywords: EXCLUDED_KEYWORDS,
+          with_keywords: withKeywords,
+          with_original_language: originalLanguage,
+          with_origin_country: originCountry,
+          with_watch_providers: withProviders,
+          watch_region: withProviders ? watchRegion() : undefined,
+          with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
+          'first_air_date.gte': era?.gte,
+          'first_air_date.lte': era?.lte,
+          'vote_count.gte': varied ? MIN_VOTES_TV : undefined,
+          page: apiPages[i],
+        }),
+      ),
     );
 
-    const nextPage = apiPage < data.total_pages ? page + 1 : null;
+    const perWindow = Math.ceil(FEED_PAGE_SIZE / windows.length);
+    const movies = interleave(
+      responses.map((res) =>
+        shuffle(
+          res.results
+            .filter((m) => m.poster_path)
+            .filter(
+              (m) => !isLikelyErotic(m.name) && !isLikelyErotic(m.original_name),
+            )
+            .map((m) => toTv(m, genreMap)),
+        ).slice(0, perWindow),
+      ),
+    );
+
+    const nextPage = responses.some((res, i) => apiPages[i] < res.total_pages)
+      ? page + 1
+      : null;
     return { movies, nextPage };
   }
 
   // No explicit era → random decade per page so the feed jumps across eras; a
   // niche filter (collection / country / actor) widens this to the whole
   // catalogue (those are sparse when clamped to a single decade).
-  const movieWindow =
-    eraWindow ??
-    (broaden
-      ? undefined
-      : ERA_WINDOWS[Math.floor(Math.random() * ERA_WINDOWS.length)]);
   const varied = !eraWindow && !broaden;
-  const apiPage = varied ? page + feedPageOffset('movie', page) : page;
-  const data = await tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
-    include_adult: false,
-    include_video: false,
-    language: contentLanguage(),
-    sort_by: 'popularity.desc',
-    'primary_release_date.gte': movieWindow?.gte,
-    'primary_release_date.lte': movieWindow?.lte,
-    with_genres: withGenres,
-    without_keywords: EXCLUDED_KEYWORDS,
-    with_keywords: withKeywords,
-    with_original_language: originalLanguage,
-    with_cast: actorId,
-    'with_runtime.gte': withRuntimeGte,
-    'with_runtime.lte': withRuntimeLte,
-    'vote_count.gte': varied ? MIN_VOTES_MOVIE : undefined,
-    certification_country: broaden ? undefined : 'US',
-    'certification.lte': broaden ? undefined : 'R',
-    with_origin_country: originCountry,
-    with_watch_providers: withProviders,
-    watch_region: withProviders ? watchRegion() : undefined,
-    with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
-    page: apiPage,
-  });
-
-  const movies = shuffle(
-    data.results
-      .filter((m) => m.poster_path)
-      .filter((m) => !isLikelyErotic(m.title) && !isLikelyErotic(m.original_title))
-      .map((m) => toMovie(m, genreMap)),
+  const windows = varied
+    ? pickWindows(ERA_WINDOWS, FEED_WINDOWS_PER_PAGE)
+    : [eraWindow];
+  const apiPages = windows.map((_, i) =>
+    varied ? page + feedPageOffset(`movie:${i}`, page) : page,
+  );
+  const responses = await Promise.all(
+    windows.map((era, i) =>
+      tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
+        include_adult: false,
+        include_video: false,
+        language: contentLanguage(),
+        sort_by: 'popularity.desc',
+        'primary_release_date.gte': era?.gte,
+        'primary_release_date.lte': era?.lte,
+        with_genres: withGenres,
+        without_keywords: EXCLUDED_KEYWORDS,
+        with_keywords: withKeywords,
+        with_original_language: originalLanguage,
+        with_cast: actorId,
+        'with_runtime.gte': withRuntimeGte,
+        'with_runtime.lte': withRuntimeLte,
+        'vote_count.gte': varied ? MIN_VOTES_MOVIE : undefined,
+        certification_country: broaden ? undefined : 'US',
+        'certification.lte': broaden ? undefined : 'R',
+        with_origin_country: originCountry,
+        with_watch_providers: withProviders,
+        watch_region: withProviders ? watchRegion() : undefined,
+        with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
+        page: apiPages[i],
+      }),
+    ),
   );
 
-  const nextPage = apiPage < data.total_pages ? page + 1 : null;
+  const perWindow = Math.ceil(FEED_PAGE_SIZE / windows.length);
+  const movies = interleave(
+    responses.map((res) =>
+      shuffle(
+        res.results
+          .filter((m) => m.poster_path)
+          .filter(
+            (m) => !isLikelyErotic(m.title) && !isLikelyErotic(m.original_title),
+          )
+          .map((m) => toMovie(m, genreMap)),
+      ).slice(0, perWindow),
+    ),
+  );
+
+  const nextPage = responses.some((res, i) => apiPages[i] < res.total_pages)
+    ? page + 1
+    : null;
 
   // On the first page of the plain (unfiltered) feed, mix a couple of genuinely
   // upcoming cinema releases into the deck so the "Coming Soon" badge is seen
