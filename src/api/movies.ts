@@ -342,6 +342,22 @@ function feedPageOffset(key: string, page: number): number {
 /** Drops near-unrated titles that would otherwise slip in on a nice poster. */
 const MIN_VOTES_MOVIE = 100;
 const MIN_VOTES_TV = 50;
+// Non-English titles collect far fewer TMDB votes, so the world slot needs a
+// lower bar or it would filter out exactly what it is meant to surface.
+const MIN_VOTES_WORLD = 25;
+
+// TMDB's popularity ranking is dominated by US releases, so one slot per page is
+// reserved for cinema in another language: the user's own when that isn't
+// English, otherwise a rotating pick.
+const WORLD_LANGUAGES = ['de', 'fr', 'it', 'es', 'ja', 'ko', 'pt', 'sv', 'da', 'pl'];
+
+function worldLanguage(): string {
+  const own = contentLanguage().slice(0, 2).toLowerCase();
+  // Favour the user's own language without making it the only one they ever see.
+  if (own !== 'en' && Math.random() < 0.4) return own;
+  const pool = WORLD_LANGUAGES.filter((lang) => lang !== own);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
 /**
  * Places upcoming titles inside the page instead of in front of it, so a fresh
@@ -414,12 +430,19 @@ function interleave(groups: Movie[][]): Movie[] {
  * Strategy:
  *  - When the user picks no era, pull several decades in parallel and
  *    round-robin them, so consecutive cards jump between eras.
+ *  - Reserve one of those slots for non-English cinema, since TMDB's popularity
+ *    ranking is otherwise almost entirely US releases.
  *  - Enter the popularity ranking at a random page so a session doesn't always
  *    open with the same blockbusters.
  *  - Push apart neighbours from the same franchise, which popularity sorting
  *    otherwise lands right next to each other.
  *  - Only constrain by era/genre/country when the user explicitly picks one.
  *  - Drop movies without a poster, since the poster is central to the UX.
+ *
+ * Adult content is kept out by include_adult, the excluded-keyword list and the
+ * title guard. The US rating cap additionally applies to the mainstream slots,
+ * but not to the world slot or to niche filters, where it would drop every film
+ * that simply never got a US rating.
  */
 export async function fetchFeedPage(
   page: number,
@@ -531,10 +554,7 @@ export async function fetchFeedPage(
     collection?.runtimeLte ?? vibes.find((v) => v.runtimeLte != null)?.runtimeLte;
   // A collection/vibe, a country or an actor filter is niche, so when one is
   // active (and the user hasn't pinned a specific era) we search the FULL
-  // catalogue instead of a single random decade, and drop the US-certification
-  // requirement — that filter only returns titles with a US rating, which
-  // excludes most foreign / niche films (K-dramas, Brazilian cinema, etc.).
-  // The erotic keyword + title guards still apply.
+  // catalogue instead of a single random decade.
   const broaden = !!collection || vibes.length > 0 || !!originCountry || !!actorId || !!withProviders;
 
   if (mediaType === 'tv') {
@@ -548,6 +568,8 @@ export async function fetchFeedPage(
     const apiPages = windows.map((_, i) =>
       varied ? page + feedPageOffset(`tv:${i}`, page) : page,
     );
+    const worldSlot = varied ? Math.floor(Math.random() * windows.length) : -1;
+    const worldLang = worldLanguage();
     const responses = await Promise.all(
       windows.map((era, i) =>
         tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
@@ -558,14 +580,19 @@ export async function fetchFeedPage(
           without_genres: TV_EXCLUDED_GENRES,
           without_keywords: EXCLUDED_KEYWORDS,
           with_keywords: withKeywords,
-          with_original_language: originalLanguage,
+          with_original_language:
+            i === worldSlot ? worldLang : originalLanguage,
           with_origin_country: originCountry,
           with_watch_providers: withProviders,
           watch_region: withProviders ? watchRegion() : undefined,
           with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
           'first_air_date.gte': era?.gte,
           'first_air_date.lte': era?.lte,
-          'vote_count.gte': varied ? MIN_VOTES_TV : undefined,
+          'vote_count.gte': varied
+            ? i === worldSlot
+              ? MIN_VOTES_WORLD
+              : MIN_VOTES_TV
+            : undefined,
           page: apiPages[i],
         }),
       ),
@@ -601,6 +628,8 @@ export async function fetchFeedPage(
   const apiPages = windows.map((_, i) =>
     varied ? page + feedPageOffset(`movie:${i}`, page) : page,
   );
+  const worldSlot = varied ? Math.floor(Math.random() * windows.length) : -1;
+  const worldLang = worldLanguage();
   const responses = await Promise.all(
     windows.map((era, i) =>
       tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
@@ -613,13 +642,20 @@ export async function fetchFeedPage(
         with_genres: withGenres,
         without_keywords: EXCLUDED_KEYWORDS,
         with_keywords: withKeywords,
-        with_original_language: originalLanguage,
+        with_original_language: i === worldSlot ? worldLang : originalLanguage,
         with_cast: actorId,
         'with_runtime.gte': withRuntimeGte,
         'with_runtime.lte': withRuntimeLte,
-        'vote_count.gte': varied ? MIN_VOTES_MOVIE : undefined,
-        certification_country: broaden ? undefined : 'US',
-        'certification.lte': broaden ? undefined : 'R',
+        'vote_count.gte': varied
+          ? i === worldSlot
+            ? MIN_VOTES_WORLD
+            : MIN_VOTES_MOVIE
+          : undefined,
+        // Kept off the world slot and off niche filters: most non-US films
+        // never got a US rating, so requiring one would empty exactly the
+        // searches meant to widen the feed.
+        certification_country: broaden || i === worldSlot ? undefined : 'US',
+        'certification.lte': broaden || i === worldSlot ? undefined : 'R',
         with_origin_country: originCountry,
         with_watch_providers: withProviders,
         watch_region: withProviders ? watchRegion() : undefined,
