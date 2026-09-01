@@ -347,16 +347,12 @@ const MIN_VOTES_TV = 50;
 const MIN_VOTES_WORLD = 25;
 
 // TMDB's popularity ranking is dominated by US releases, so one slot per page is
-// reserved for cinema in another language: the user's own when that isn't
-// English, otherwise a rotating pick.
+// reserved for cinema in another language. Rotated evenly on purpose: the app is
+// international, so it must not lean towards the user's own country.
 const WORLD_LANGUAGES = ['de', 'fr', 'it', 'es', 'ja', 'ko', 'pt', 'sv', 'da', 'pl'];
 
 function worldLanguage(): string {
-  const own = contentLanguage().slice(0, 2).toLowerCase();
-  // Favour the user's own language without making it the only one they ever see.
-  if (own !== 'en' && Math.random() < 0.4) return own;
-  const pool = WORLD_LANGUAGES.filter((lang) => lang !== own);
-  return pool[Math.floor(Math.random() * pool.length)];
+  return WORLD_LANGUAGES[Math.floor(Math.random() * WORLD_LANGUAGES.length)];
 }
 
 /**
@@ -377,8 +373,23 @@ function spliceUpcoming(movies: Movie[], upcoming: Movie[]): Movie[] {
 const FEED_WINDOWS_PER_PAGE = 3;
 const FEED_PAGE_SIZE = 21;
 
-function pickWindows<T>(all: T[], n: number): T[] {
-  return shuffle([...all]).slice(0, Math.min(n, all.length));
+// Picks n DISTINCT windows. The TV list repeats recent decades to weight them,
+// so drawing by index alone could hand the same decade to two slots and run the
+// identical query twice.
+function pickWindows(
+  all: { gte: string; lte: string }[],
+  n: number,
+): { gte: string; lte: string }[] {
+  const seen = new Set<string>();
+  const picked: { gte: string; lte: string }[] = [];
+  for (const window of shuffle([...all])) {
+    const key = `${window.gte}:${window.lte}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    picked.push(window);
+    if (picked.length === n) break;
+  }
+  return picked;
 }
 
 const TITLE_NOISE = new Set([
@@ -407,10 +418,14 @@ function titleRoot(title: string): string {
  */
 function interleave(groups: Movie[][]): Movie[] {
   const out: Movie[] = [];
+  const taken = new Set<string>();
   const longest = Math.max(0, ...groups.map((group) => group.length));
   for (let i = 0; i < longest; i++) {
     for (const group of groups) {
-      if (group[i]) out.push(group[i]);
+      const movie = group[i];
+      if (!movie || taken.has(movie.id)) continue;
+      taken.add(movie.id);
+      out.push(movie);
     }
   }
   for (let i = 1; i < out.length; i++) {
