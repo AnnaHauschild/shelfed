@@ -10,8 +10,8 @@ export interface FunFact {
 }
 
 // Our own paraphrasing of well-documented trivia (facts themselves aren't
-// copyrightable), keyed by `${mediaType}:${tmdbId}`. A missing title simply shows
-// no bulb. English is the fallback for any app language without its own line.
+// copyrightable), keyed by `${mediaType}:${tmdbId}`. A title without an entry simply
+// shows no fact. English is the fallback for any app language without its own line.
 // `source` links a public page to read more / verify. Grow this map anytime; new
 // entries ship via OTA without a store build.
 const FACTS: Record<string, Localized> = {
@@ -22,14 +22,14 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/The_Dark_Knight#:~:text=Joker%20diary',
   },
   'movie:597': {
-    en: 'The hand that sketches Rose belongs to director James Cameron himself, not Leonardo DiCaprio.',
-    de: 'Die Hand, die Rose zeichnet, gehört Regisseur James Cameron selbst, nicht Leonardo DiCaprio.',
+    en: 'The nude drawing of Rose was made by director James Cameron himself, not by Leonardo DiCaprio.',
+    de: 'Die Aktzeichnung von Rose stammt von Regisseur James Cameron selbst, nicht von Leonardo DiCaprio.',
     source:
-      'https://en.wikipedia.org/wiki/Titanic_(1997_film)#:~:text=Winslet%20posed%20in%20a%20bathing%20suit',
+      'https://en.wikipedia.org/wiki/Titanic_(1997_film)#:~:text=Cameron%20sketched%20Jack',
   },
   'movie:121': {
     en: 'Viggo Mortensen really broke two toes kicking an orc helmet, and that exact take is the one used in the film.',
-    de: 'Viggo Mortensen brach sich beim Tritt gegen einen Orc-Helm tatsächlich zwei Zehen, und genau diese Aufnahme kam in den Film.',
+    de: 'Viggo Mortensen brach sich beim Tritt gegen einen Ork-Helm tatsächlich zwei Zehen, und genau diese Aufnahme kam in den Film.',
     source:
       'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Two_Towers#:~:text=broke%20two%20toes%20when%20he%20kicked%20an%20Orc%20helmet',
   },
@@ -53,7 +53,7 @@ const FACTS: Record<string, Localized> = {
   },
   'movie:348': {
     en: 'For the chestburster scene the cast was not told how bloody it would get, so their shock is real.',
-    de: 'Bei der Chestburster-Szene wusste die Crew nicht, wie blutig es wird, daher ist das Entsetzen der Schauspieler echt.',
+    de: 'Bei der Chestburster-Szene wussten die Darsteller nicht, wie blutig es wird, daher ist ihr Entsetzen echt.',
     source:
       'https://en.wikipedia.org/wiki/Alien_(film)#:~:text=not%20been%20told%20that%20fake%20blood',
   },
@@ -83,7 +83,7 @@ const FACTS: Record<string, Localized> = {
   },
   'movie:694': {
     en: 'For "Here\'s Johnny!" the prop door was swapped for a real one because Jack Nicholson, a trained firefighter, smashed through it too fast.',
-    de: 'Für „Here\'s Johnny!" ersetzte man die Requisiten-Tür durch eine echte, weil Jack Nicholson, ausgebildeter Feuerwehrmann, sie zu schnell zertrümmerte.',
+    de: 'Für „Here’s Johnny!“ ersetzte man die Requisiten-Tür durch eine echte, weil Jack Nicholson, ausgebildeter Feuerwehrmann, sie zu schnell zertrümmerte.',
     source:
       'https://en.wikipedia.org/wiki/The_Shining_(film)#:~:text=tore%20through%20it%20too%20quickly',
   },
@@ -160,8 +160,8 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Parasite_(2019_film)#:~:text=necessity%20for%20the%20flooding%20scenes',
   },
   'movie:85': {
-    en: 'Indy simply shoots the swordsman because Harrison Ford had dysentery and could not get through the long sword fight rehearsed for weeks.',
-    de: 'Indy erschießt den Schwertkämpfer einfach, weil Harrison Ford an Amöbenruhr erkrankt war und den wochenlang einstudierten Schwertkampf nicht durchstand.',
+    en: 'In the bazaar a swordsman shows off his blade work and Indy just pulls his gun. The long fight was rehearsed for weeks, but Harrison Ford was ill with dysentery.',
+    de: 'Auf dem Basar führt ein Schwertkämpfer seine Säbelkünste vor, Indy zieht einfach die Pistole. Der lange Kampf war wochenlang einstudiert, aber Harrison Ford war an Ruhr erkrankt.',
     source:
       'https://en.wikipedia.org/wiki/Raiders_of_the_Lost_Ark#:~:text=shorten%20the%20fight%20scene%20significantly',
   },
@@ -184,8 +184,8 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Home_Alone#:~:text=intentionally%20limited%20my%20interactions%20with%20him',
   },
   'movie:387': {
-    en: 'One morning the U-boat mock-up was simply gone. Nobody had told the crew that Steven Spielberg had rented it for Raiders of the Lost Ark.',
-    de: 'Eines Morgens war die U-Boot-Attrappe einfach weg. Niemand hatte der Crew gesagt, dass Steven Spielberg sie für Jäger des verlorenen Schatzes gemietet hatte.',
+    en: 'One morning the U-boat mock-up was no longer in the harbour. It had been rented out to Steven Spielberg, filming Raiders of the Lost Ark nearby, and nobody had told the crew.',
+    de: 'Eines Morgens lag die U-Boot-Attrappe nicht mehr im Hafen. Sie war an Steven Spielberg vermietet worden, der nebenan Jäger des verlorenen Schatzes drehte. Nur hatte das niemand der Crew gesagt.',
     source:
       'https://en.wikipedia.org/wiki/Das_Boot#:~:text=had%20rented%20the%20mock-up%20for%20his%20own%20film',
   },
@@ -202,8 +202,8 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Am%C3%A9lie#:~:text=for%20the%20English%20actress%20Emily%20Watson',
   },
   'movie:104': {
-    en: 'The closing credits run from top to bottom instead of the usual bottom to top.',
-    de: 'Der Abspann läuft von oben nach unten statt wie üblich von unten nach oben.',
+    en: 'The names in the closing credits scroll downwards. Normally credits travel up the screen.',
+    de: 'Die Namen im Abspann wandern nach unten. Normalerweise laufen sie nach oben aus dem Bild.',
     source:
       'https://de.wikipedia.org/wiki/Lola_rennt#:~:text=l%C3%A4uft%20von%20oben%20nach%20unten',
   },
