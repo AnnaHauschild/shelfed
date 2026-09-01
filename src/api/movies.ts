@@ -297,9 +297,9 @@ function fetchMustSeePage(page: number): FeedPage {
 
 /**
  * A handful of genuinely upcoming films (primary release still in the future),
- * most-anticipated first. Used to surface "Coming Soon" cinema releases at the
- * top of the default feed — the normal feed's US-certification filter hides
- * unreleased titles (they have no rating yet), so they'd otherwise never show.
+ * most-anticipated first. Used to surface "Coming Soon" cinema releases in the
+ * default feed — the normal feed's US-certification filter hides unreleased
+ * titles (they have no rating yet), so they'd otherwise never show.
  */
 async function fetchUpcomingMovies(
   genreMap: Record<number, string>,
@@ -326,12 +326,44 @@ async function fetchUpcomingMovies(
   }
 }
 
+// Where the plain feed enters TMDB's popularity ranking. Re-rolled whenever
+// page 1 is fetched (mount / pull-to-refresh), then kept so paging stays
+// contiguous and doesn't repeat titles the user is still holding in the deck.
+const feedPageOffsets: Record<string, number> = {};
+const MAX_PAGE_OFFSET = 5;
+
+function feedPageOffset(key: string, page: number): number {
+  if (page === 1) {
+    feedPageOffsets[key] = Math.floor(Math.random() * MAX_PAGE_OFFSET);
+  }
+  return feedPageOffsets[key] ?? 0;
+}
+
+/** Drops near-unrated titles that would otherwise slip in on a nice poster. */
+const MIN_VOTES_MOVIE = 100;
+const MIN_VOTES_TV = 50;
+
+/**
+ * Places upcoming titles inside the page instead of in front of it, so a fresh
+ * install doesn't open with a wall of "Coming Soon" cards.
+ */
+function spliceUpcoming(movies: Movie[], upcoming: Movie[]): Movie[] {
+  const merged = [...movies];
+  upcoming.forEach((movie, i) => {
+    const at = Math.min(merged.length, 3 + i * 6 + Math.floor(Math.random() * 4));
+    merged.splice(at, 0, movie);
+  });
+  return merged;
+}
+
 /**
  * Fetches one page of the discovery feed for the swipe deck.
  *
  * Strategy:
  *  - When the user picks no era, rotate through decades in random order so the
  *    feed jumps across eras instead of marching from oldest to newest.
+ *  - Enter the popularity ranking at a random page so a session doesn't always
+ *    open with the same blockbusters.
  *  - Sort by popularity within the decade, then shuffle the page so the user
  *    doesn't always see the same blockbuster at the top.
  *  - Only constrain by era/genre/country when the user explicitly picks one.
@@ -463,6 +495,10 @@ export async function fetchFeedPage(
         : TV_DEFAULT_WINDOWS[
             Math.floor(Math.random() * TV_DEFAULT_WINDOWS.length)
           ]);
+    // Only the broad feed gets varied: niche filters have a small pool, so
+    // skipping pages or raising the vote floor would empty them.
+    const varied = !eraWindow && !broaden;
+    const apiPage = varied ? page + feedPageOffset('tv', page) : page;
     const data = await tmdbGet<TmdbPagedResponse<TmdbTv>>('/discover/tv', {
       include_adult: false,
       language: contentLanguage(),
@@ -478,7 +514,8 @@ export async function fetchFeedPage(
       with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
       'first_air_date.gte': tvWindow?.gte,
       'first_air_date.lte': tvWindow?.lte,
-      page,
+      'vote_count.gte': varied ? MIN_VOTES_TV : undefined,
+      page: apiPage,
     });
 
     const movies = shuffle(
@@ -488,7 +525,7 @@ export async function fetchFeedPage(
         .map((m) => toTv(m, genreMap)),
     );
 
-    const nextPage = page < data.total_pages ? page + 1 : null;
+    const nextPage = apiPage < data.total_pages ? page + 1 : null;
     return { movies, nextPage };
   }
 
@@ -500,6 +537,8 @@ export async function fetchFeedPage(
     (broaden
       ? undefined
       : ERA_WINDOWS[Math.floor(Math.random() * ERA_WINDOWS.length)]);
+  const varied = !eraWindow && !broaden;
+  const apiPage = varied ? page + feedPageOffset('movie', page) : page;
   const data = await tmdbGet<TmdbPagedResponse<TmdbMovie>>('/discover/movie', {
     include_adult: false,
     include_video: false,
@@ -514,13 +553,14 @@ export async function fetchFeedPage(
     with_cast: actorId,
     'with_runtime.gte': withRuntimeGte,
     'with_runtime.lte': withRuntimeLte,
+    'vote_count.gte': varied ? MIN_VOTES_MOVIE : undefined,
     certification_country: broaden ? undefined : 'US',
     'certification.lte': broaden ? undefined : 'R',
     with_origin_country: originCountry,
     with_watch_providers: withProviders,
     watch_region: withProviders ? watchRegion() : undefined,
     with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
-    page,
+    page: apiPage,
   });
 
   const movies = shuffle(
@@ -530,11 +570,11 @@ export async function fetchFeedPage(
       .map((m) => toMovie(m, genreMap)),
   );
 
-  const nextPage = page < data.total_pages ? page + 1 : null;
+  const nextPage = apiPage < data.total_pages ? page + 1 : null;
 
-  // On the first page of the plain (unfiltered) feed, surface a few genuinely
-  // upcoming cinema releases up top so the "Coming Soon" badge is actually seen
-  // — the US-certification filter above otherwise hides unreleased films.
+  // On the first page of the plain (unfiltered) feed, mix a couple of genuinely
+  // upcoming cinema releases into the deck so the "Coming Soon" badge is seen
+  // without the feed opening on a block of unreleased films.
   const isPlainFeed =
     !genres?.length &&
     !collection &&
@@ -545,8 +585,8 @@ export async function fetchFeedPage(
   if (page === 1 && isPlainFeed) {
     const upcoming = await fetchUpcomingMovies(genreMap);
     const ids = new Set(movies.map((m) => m.id));
-    const injected = upcoming.filter((m) => !ids.has(m.id));
-    return { movies: [...injected, ...movies], nextPage };
+    const injected = shuffle(upcoming.filter((m) => !ids.has(m.id))).slice(0, 2);
+    return { movies: spliceUpcoming(movies, injected), nextPage };
   }
 
   return { movies, nextPage };
