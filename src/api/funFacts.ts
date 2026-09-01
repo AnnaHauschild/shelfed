@@ -131,7 +131,7 @@ const FACTS: Record<string, Localized> = {
   },
   'movie:601': {
     en: 'The film was shot under the fake title "A Boy\u2019s Life". Actors read the script behind closed doors and everyone on set needed an ID card.',
-    de: 'Gedreht wurde unter dem Tarntitel „A Boy\u2019s Life". Die Schauspieler lasen das Drehbuch hinter verschlossenen Türen, alle am Set brauchten einen Ausweis.',
+    de: 'Gedreht wurde unter dem Tarntitel „A Boy\u2019s Life\u201c. Die Schauspieler lasen das Drehbuch hinter verschlossenen Türen, alle am Set brauchten einen Ausweis.',
     source:
       'https://en.wikipedia.org/wiki/E.T._the_Extra-Terrestrial#:~:text=filmed%20under%20the%20cover%20name',
   },
