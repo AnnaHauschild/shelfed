@@ -291,6 +291,48 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Sixth_Sense#:~:text=compensate%20the%20studio%20for',
   },
+  'movie:862': {
+    en: 'Disney halted production because Woody had turned into an unpleasant tyrant. Pixar spent three months rewriting him into a leader, paid for out of Steve Jobs\u2019 own pocket.',
+    de: 'Disney stoppte die Produktion, weil Woody zu einem unangenehmen Tyrannen geworden war. Pixar schrieb ihn in drei Monaten zum Anführer um, bezahlt aus Steve Jobs eigener Tasche.',
+    source:
+      'https://en.wikipedia.org/wiki/Toy_Story#:~:text=Woody%20transformed%20from%20a%20tyrant%20to%20a%20wise%20leader',
+  },
+  'movie:769': {
+    en: 'One of the investigators is played by the real prosecutor who handled the case. He got the part after a casual remark, and his scene was improvised.',
+    de: 'Einer der Ermittler wird vom echten Staatsanwalt gespielt, der den Fall damals führte. Er kam durch eine beiläufige Bemerkung zur Rolle, seine Szene war improvisiert.',
+    source:
+      'https://en.wikipedia.org/wiki/Goodfellas#:~:text=cast%20on%20a%20whim',
+  },
+  'movie:19': {
+    en: 'The vast city was built as models. Angled mirrors made the actors look as if they stood inside the tiny sets, a trick Hitchcock borrowed two years later.',
+    de: 'Die riesige Stadt bestand aus Modellen. Schräg gestellte Spiegel ließen die Darsteller wirken, als stünden sie in den winzigen Kulissen. Hitchcock übernahm den Trick zwei Jahre später.',
+    source:
+      'https://en.wikipedia.org/wiki/Metropolis_(1927_film)#:~:text=mirrors%20are%20used%20to%20create%20the%20illusion',
+  },
+  'movie:872': {
+    en: 'It is often said that milk was mixed into the rain so it would show on camera. That is a myth. The effect came from backlighting.',
+    de: 'Oft heißt es, dem Regen sei Milch beigemischt worden, damit man ihn besser sieht. Das ist ein Mythos, der Effekt entstand durch Gegenlicht.',
+    source:
+      'https://en.wikipedia.org/wiki/Singin%27_in_the_Rain#:~:text=the%20rain%20was%20mixed%20with%20milk',
+  },
+  'movie:808': {
+    en: 'Mike Myers had already recorded the whole part when he asked to do it again in a Scottish accent. The studio agreed and scrapped finished animation for it.',
+    de: 'Mike Myers hatte die Rolle schon komplett eingesprochen, als er darum bat, sie noch einmal mit schottischem Akzent zu machen. Das Studio stimmte zu und verwarf dafür fertige Animation.',
+    source:
+      'https://en.wikipedia.org/wiki/Shrek#:~:text=re-record%20all%20of%20his%20lines%20with%20a',
+  },
+  'movie:120': {
+    en: 'The costume department deliberately wore the clothing out so it would look old and used. Around 19,000 costumes were made.',
+    de: 'Die Kostümabteilung trug die Kleidung gezielt ab, damit sie alt und benutzt aussieht. Rund 19.000 Kostüme entstanden so.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Fellowship_of_the_Ring#:~:text=wearing%20them%20out%20for%20an%20impression%20of%20age',
+  },
+  'movie:28': {
+    en: 'Coppola offered the direction to George Lucas first. Lucas was busy with another project: he had just been given the go-ahead for Star Wars.',
+    de: 'Coppola bot George Lucas die Regie an. Der war mit einem anderen Projekt beschäftigt: Er hatte gerade grünes Licht für Star Wars bekommen.',
+    source:
+      'https://en.wikipedia.org/wiki/Apocalypse_Now#:~:text=had%20gotten%20the%20go-ahead%20to%20make',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
