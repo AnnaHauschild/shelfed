@@ -28,6 +28,7 @@ import { useRouter } from 'expo-router';
 import { LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/context/LanguageProvider';
 import { useProfile } from '@/context/ProfileProvider';
+import { useAuth } from '@/context/AuthProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ShelfTheme, ThemeChrome, useTheme, useThemeChrome } from '@/context/ThemeProvider';
 import { MediaType } from '@/api/types';
@@ -106,6 +107,9 @@ export function SettingsSheet({
 }) {
   const insets = useSafeAreaInsets();
   const { name, setName } = useProfile();
+  // With an account the username is the name, so the free-text field is hidden.
+  const { enabled: authEnabled, session } = useAuth();
+  const signedIn = authEnabled && !!session;
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const chrome = useThemeChrome();
@@ -235,27 +239,31 @@ export function SettingsSheet({
             <AccountSection />
 
             {/* ---------------- Profile ---------------- */}
-            <Text style={styles.section}>Profile</Text>
-            <Text style={styles.hint}>Your name, shown when you share a title.</Text>
-            <View style={styles.inputWrap}>
-              <Ionicons
-                name="person-circle-outline"
-                size={18}
-                color={colors.textOnDarkMuted}
-              />
-              <TextInput
-                style={styles.input}
-                value={draft}
-                onChangeText={setDraft}
-                onBlur={commitName}
-                placeholder="Add your name"
-                placeholderTextColor={colors.textOnDarkMuted}
-                autoCapitalize="words"
-                maxLength={40}
-                returnKeyType="done"
-                onSubmitEditing={commitName}
-              />
-            </View>
+            {!signedIn && (
+              <>
+                <Text style={styles.section}>Profile</Text>
+                <Text style={styles.hint}>Your name, shown when you share a title.</Text>
+                <View style={styles.inputWrap}>
+                  <Ionicons
+                    name="person-circle-outline"
+                    size={18}
+                    color={colors.textOnDarkMuted}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    value={draft}
+                    onChangeText={setDraft}
+                    onBlur={commitName}
+                    placeholder="Add your name"
+                    placeholderTextColor={colors.textOnDarkMuted}
+                    autoCapitalize="words"
+                    maxLength={40}
+                    returnKeyType="done"
+                    onSubmitEditing={commitName}
+                  />
+                </View>
+              </>
+            )}
 
             {/* ---------------- Language (dropdown) ---------------- */}
             <Text style={[styles.section, styles.sectionSpaced]}>Language</Text>

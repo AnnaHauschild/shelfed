@@ -76,7 +76,7 @@ const CATEGORIES: Category[] = [
 export function LandingScreen() {
   const insets = useSafeAreaInsets();
   const { choose } = useMediaTypeControls();
-  const { name } = useProfile();
+  const { displayName } = useProfile();
   const { enabled, session, profile } = useAuth();
   const { requests } = useFollows();
   const { open: openSettings } = useSettings();
@@ -119,7 +119,7 @@ export function LandingScreen() {
               <Ionicons name="person-circle-outline" size={18} color={colors.textOnPaper} />
             )}
             <Text style={styles.profileText}>
-              {name ? `Hi, ${name}` : 'Tap to set your name'}
+              {displayName ? `Hi, ${displayName}` : 'Tap to set your name'}
             </Text>
             <Ionicons name="pencil" size={12} color={colors.textOnPaperMuted} />
           </Pressable>

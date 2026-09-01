@@ -85,7 +85,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
   const zoomable = !!dragGesture;
   const isBook = movie.mediaType === 'book';
   const isGame = movie.mediaType === 'game';
-  const { name } = useProfile();
+  const { displayName } = useProfile();
   const { data: cast } = useMovieCast(movie.id, movie.mediaType);
   const { data: meta } = useTitleMeta(movie.id, movie.mediaType);
   const { data: origYear } = useOriginalYear(
@@ -219,7 +219,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
             style={[styles.trailerButton, trailerUrl ? styles.shareCompact : styles.actionFill]}
             onPress={() => {
               if (onShare) onShare();
-              else shareMovie(movie, name);
+              else shareMovie(movie, displayName);
             }}
           >
             <Ionicons name="share-outline" size={18} color={chrome.accent} />

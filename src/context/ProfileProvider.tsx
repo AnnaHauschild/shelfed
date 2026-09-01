@@ -7,12 +7,15 @@ import {
   useState,
 } from 'react';
 import { getSetting, setSetting } from '@/db/settings';
+import { useAuth } from './AuthProvider';
 
 const KEY = 'profile.name';
 
 interface ProfileContextValue {
-  /** The user's display name (used in share messages), or null if unset. */
+  /** The locally stored name, editable while signed out. */
   name: string | null;
+  /** The name to show everywhere: the account username, else the local name. */
+  displayName: string | null;
   /** Whether the initial load from SQLite has finished. */
   ready: boolean;
   /** Persists a new name (trimmed). Empty string clears it. */
@@ -25,6 +28,7 @@ const ProfileContext = createContext<ProfileContextValue | null>(null);
 export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [name, setNameState] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const { profile } = useAuth();
 
   useEffect(() => {
     let cancelled = false;
@@ -49,7 +53,11 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     setNameState(trimmed.length > 0 ? trimmed : null);
   }, []);
 
-  const value = useMemo(() => ({ name, ready, setName }), [name, ready, setName]);
+  const displayName = profile?.username ?? name;
+  const value = useMemo(
+    () => ({ name, displayName, ready, setName }),
+    [name, displayName, ready, setName],
+  );
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 }
 

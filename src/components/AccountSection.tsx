@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '@/context/AuthProvider';
+import { useProfile } from '@/context/ProfileProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { Avatar } from './Avatar';
@@ -25,6 +26,7 @@ export function AccountSection() {
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable, uploadAvatar, setPrivate } =
     useAuth();
+  const { name: localName } = useProfile();
 
   const [step, setStep] = useState<'email' | 'code'>('email');
   const [emailInput, setEmailInput] = useState('');
@@ -45,10 +47,16 @@ export function AccountSection() {
   }, [session]);
 
   useEffect(() => {
-    if (profile) {
-      setUsername(profile.username ?? '');
+    if (!profile) return;
+    if (profile.username) {
+      setUsername(profile.username);
+    } else if (localName) {
+      // Continue the name the user already picked instead of asking twice.
+      setUsername(
+        localName.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20),
+      );
     }
-  }, [profile]);
+  }, [profile, localName]);
 
   // Debounced live username availability check during profile setup.
   useEffect(() => {
