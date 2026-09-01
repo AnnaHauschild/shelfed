@@ -164,13 +164,15 @@ export const COLLECTIONS: Collection[] = [
 
   // --- BookTok vibes (books only) — Google Books query fragments -------------
   { id: 'dark-romance-book', name: 'Dark Romance', kind: 'vibe', media: ['book'], bookQuery: '"dark romance"' },
-  { id: 'cozy-mystery', name: 'Cozy Mystery', kind: 'vibe', media: ['book'], bookQuery: '"cozy mystery"' },
+  { id: 'cozy-mystery', name: 'Cozy Mystery', kind: 'vibe', media: ['book'], bookQuery: 'subject:"Cozy Mystery"' },
   { id: 'enemies-to-lovers', name: 'Enemies to Lovers', kind: 'vibe', media: ['book'], bookQuery: '"enemies to lovers"' },
   { id: 'slow-burn', name: 'Slow Burn', kind: 'vibe', media: ['book'], bookQuery: '"slow burn" romance' },
   { id: 'coming-of-age-book', name: 'Coming of Age', kind: 'vibe', media: ['book'], bookQuery: 'subject:"coming of age"' },
   { id: 'dystopia-book', name: 'Dystopian', kind: 'vibe', media: ['book'], bookQuery: 'subject:"dystopian"' },
   { id: 'grimdark', name: 'Grimdark', kind: 'vibe', media: ['book'], bookQuery: '"grimdark"' },
-  { id: 'feel-good-book', name: 'Feel-Good', kind: 'vibe', media: ['book'], bookQuery: '"heartwarming"' },
+  // Category, not a phrase search: '"heartwarming"' matched the Mills & Boon
+  // imprint of that name and little else.
+  { id: 'feel-good-book', name: 'Feel-Good', kind: 'vibe', media: ['book'], bookQuery: 'subject:"Humorous Fiction"' },
 ];
 
 /**

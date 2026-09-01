@@ -185,6 +185,33 @@ function shuffle<T>(arr: T[]): T[] {
   return arr;
 }
 
+// Wording that only distinguishes editions, never works.
+const EDITION_NOISE =
+  /\b(roman|a novel|the novel|novel|illustrated|annotated|unabridged|abridged|reissue|classics?|klassiker|edition|ausgabe|band|vol|volume)\b/g;
+
+/**
+ * Collapses editions of one work. Google Books lists "Dracula", "Dracula:
+ * Roman" and "Dracula (Illustrated)" as separate volumes with separate ids, so
+ * comparing raw titles lets the same book through several times. The author is
+ * reduced to a surname because editions disagree on initials and translators.
+ */
+export function bookSignature(title: string, author?: string): string {
+  const work = title
+    .toLowerCase()
+    .split(/[:(\[]/)[0]
+    .replace(EDITION_NOISE, ' ')
+    .replace(/[^a-z0-9äöüßàáâãçèéêíñóôõúü\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const surname = (author ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9äöüßàáâãçèéêíñóôõúü\s]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .pop();
+  return `${work}|${surname ?? ''}`;
+}
+
 // Academic/reference categories a leisure reader browsing fiction doesn't want
 // (Principles of Physics etc.). Sci-fi is kept via the `fiction` check first.
 const NONFICTION_BLOCK = [

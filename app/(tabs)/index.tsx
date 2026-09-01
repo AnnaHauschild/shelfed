@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { TmdbError, hasTmdbToken } from '@/api/tmdb';
 import { SCREENSHOT_MODE, screenshotFeed } from '@/api/screenshotData';
 import { MUST_SEE_ID } from '@/api/movies';
+import { bookSignature } from '@/api/googleBooks';
 import { type SelectedActor } from '@/components/ActorFilter';
 import { type SelectedAuthor } from '@/components/AuthorFilter';
 import { collectionsFor } from '@/constants/collections';
@@ -273,9 +274,7 @@ export default function DiscoverScreen() {
     return all.filter((m) => {
       if (seen.has(m.id) || seenSnapshot.has(m.id)) return false;
       if (mediaType === 'book') {
-        const sig = `${m.title.trim().toLowerCase()}|${(
-          m.authors?.[0] ?? ''
-        ).toLowerCase()}`;
+        const sig = bookSignature(m.title, m.authors?.[0]);
         if (seenBooks.has(sig)) return false;
         seenBooks.add(sig);
       }
