@@ -118,10 +118,10 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/The_Silence_of_the_Lambs_(film)#:~:text=only%20the%20third%20film%20in%20history',
   },
   'movie:539': {
-    en: 'As a running prank, Hitchcock kept hiding different versions of the mother corpse prop in Janet Leigh\u2019s dressing room closet.',
-    de: 'Als laufenden Scherz versteckte Hitchcock immer wieder andere Versionen der Mutterleiche im Schrank von Janet Leighs Garderobe.',
+    en: 'It showed the first flushing toilet in mainstream American film and television. The censors objected to it.',
+    de: 'Er zeigte die erste Toilettenspülung im amerikanischen Kino und Fernsehen. Die Zensur nahm daran Anstoß.',
     source:
-      'https://en.wikipedia.org/wiki/Psycho_(1960_film)#:~:text=hid%20various%20versions%20of%20the',
+      'https://en.wikipedia.org/wiki/Psycho_(1960_film)#:~:text=No%20flushing%20toilet%20had%20appeared%20in%20mainstream',
   },
   'movie:11': {
     en: 'Tatooine was originally meant to be a jungle planet. Lucas made it a desert because he did not fancy months of shooting in the jungle.',
@@ -142,10 +142,10 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Gladiator_(2000_film)#:~:text=obtained%20permission%20to%20burn%20it%20down',
   },
   'movie:550': {
-    en: 'David Fincher shot more than 1,500 rolls of film, roughly three times the average for a Hollywood production.',
-    de: 'David Fincher verdrehte über 1.500 Filmrollen, ungefähr dreimal so viel wie bei einer üblichen Hollywood-Produktion.',
+    en: 'Long before the narrator meets Tyler, he already flickers through the film in single frames, blurred in the background.',
+    de: 'Lange bevor der Erzähler Tyler trifft, blitzt der schon in einzelnen Bildern auf, unscharf im Hintergrund.',
     source:
-      'https://en.wikipedia.org/wiki/Fight_Club#:~:text=1%2C500%20rolls%20of%20film',
+      'https://en.wikipedia.org/wiki/Fight_Club#:~:text=single%20frames%20for%20subliminal%20effect',
   },
   'movie:157336': {
     en: 'The robots TARS and CASE were real props, physically operated on set by actor Bill Irwin, who was then digitally erased.',
