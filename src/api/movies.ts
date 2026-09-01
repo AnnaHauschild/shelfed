@@ -331,10 +331,20 @@ async function fetchUpcomingMovies(
 // contiguous and doesn't repeat titles the user is still holding in the deck.
 const feedPageOffsets: Record<string, number> = {};
 const MAX_PAGE_OFFSET = 5;
+// The non-US English slot starts deeper: the top of that ranking is taken by
+// Hollywood co-productions (Inception, Harry Potter) that carry a UK credit but
+// are exactly the films this slot is meant to get away from.
+const DEEP_OFFSET_BASE = 2;
+const DEEP_OFFSET_SPAN = 8;
 
-function feedPageOffset(key: string, page: number): number {
+function feedPageOffset(
+  key: string,
+  page: number,
+  span = MAX_PAGE_OFFSET,
+  base = 0,
+): number {
   if (page === 1) {
-    feedPageOffsets[key] = Math.floor(Math.random() * MAX_PAGE_OFFSET);
+    feedPageOffsets[key] = base + Math.floor(Math.random() * span);
   }
   return feedPageOffsets[key] ?? 0;
 }
@@ -345,10 +355,18 @@ const MIN_VOTES_TV = 50;
 // Non-English titles collect far fewer TMDB votes, so the world slot needs a
 // lower bar or it would filter out exactly what it is meant to surface.
 const MIN_VOTES_WORLD = 25;
+const MIN_VOTES_LOCAL = 50;
 
-// TMDB's popularity ranking is dominated by US releases, so one slot per page is
-// reserved for cinema in another language. Rotated evenly on purpose: the app is
-// international, so it must not lean towards the user's own country.
+// Each of the three parallel slots plays a different role, because "too
+// American" is not the same complaint as "too English": Britain, Ireland,
+// Australia, Canada and New Zealand all make English-language films that vanish
+// under TMDB's US-driven popularity ranking.
+type FeedRole = 'mainstream' | 'world' | 'local';
+const FEED_ROLES: FeedRole[] = ['mainstream', 'world', 'local'];
+const NON_US_ENGLISH = 'GB|IE|AU|CA|NZ';
+
+// Rotated evenly on purpose: the app is international, so it must not lean
+// towards the user's own country.
 const WORLD_LANGUAGES = ['de', 'fr', 'it', 'es', 'ja', 'ko', 'pt', 'sv', 'da', 'pl'];
 
 function worldLanguage(): string {
@@ -580,10 +598,16 @@ export async function fetchFeedPage(
     const windows = varied
       ? pickWindows(TV_DEFAULT_WINDOWS, FEED_WINDOWS_PER_PAGE)
       : [eraWindow];
-    const apiPages = windows.map((_, i) =>
-      varied ? page + feedPageOffset(`tv:${i}`, page) : page,
+    const roles = windows.map((_, i) =>
+      varied ? FEED_ROLES[i] ?? 'mainstream' : null,
     );
-    const worldSlot = varied ? Math.floor(Math.random() * windows.length) : -1;
+    const apiPages = windows.map((_, i) =>
+      roles[i] === 'local'
+        ? page + feedPageOffset(`tv:${i}`, page, DEEP_OFFSET_SPAN, DEEP_OFFSET_BASE)
+        : varied
+          ? page + feedPageOffset(`tv:${i}`, page)
+          : page,
+    );
     const worldLang = worldLanguage();
     const responses = await Promise.all(
       windows.map((era, i) =>
@@ -596,18 +620,24 @@ export async function fetchFeedPage(
           without_keywords: EXCLUDED_KEYWORDS,
           with_keywords: withKeywords,
           with_original_language:
-            i === worldSlot ? worldLang : originalLanguage,
-          with_origin_country: originCountry,
+            roles[i] === 'world'
+              ? worldLang
+              : roles[i] === 'local'
+                ? 'en'
+                : originalLanguage,
+          with_origin_country:
+            roles[i] === 'local' ? NON_US_ENGLISH : originCountry,
           with_watch_providers: withProviders,
           watch_region: withProviders ? watchRegion() : undefined,
           with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
           'first_air_date.gte': era?.gte,
           'first_air_date.lte': era?.lte,
-          'vote_count.gte': varied
-            ? i === worldSlot
+          'vote_count.gte':
+            roles[i] === 'world'
               ? MIN_VOTES_WORLD
-              : MIN_VOTES_TV
-            : undefined,
+              : roles[i]
+                ? MIN_VOTES_TV
+                : undefined,
           page: apiPages[i],
         }),
       ),
@@ -640,10 +670,16 @@ export async function fetchFeedPage(
   const windows = varied
     ? pickWindows(ERA_WINDOWS, FEED_WINDOWS_PER_PAGE)
     : [eraWindow];
-  const apiPages = windows.map((_, i) =>
-    varied ? page + feedPageOffset(`movie:${i}`, page) : page,
+  const roles = windows.map((_, i) =>
+    varied ? FEED_ROLES[i] ?? 'mainstream' : null,
   );
-  const worldSlot = varied ? Math.floor(Math.random() * windows.length) : -1;
+  const apiPages = windows.map((_, i) =>
+    roles[i] === 'local'
+      ? page + feedPageOffset(`movie:${i}`, page, DEEP_OFFSET_SPAN, DEEP_OFFSET_BASE)
+      : varied
+        ? page + feedPageOffset(`movie:${i}`, page)
+        : page,
+  );
   const worldLang = worldLanguage();
   const responses = await Promise.all(
     windows.map((era, i) =>
@@ -657,21 +693,31 @@ export async function fetchFeedPage(
         with_genres: withGenres,
         without_keywords: EXCLUDED_KEYWORDS,
         with_keywords: withKeywords,
-        with_original_language: i === worldSlot ? worldLang : originalLanguage,
+        with_original_language:
+          roles[i] === 'world'
+            ? worldLang
+            : roles[i] === 'local'
+              ? 'en'
+              : originalLanguage,
         with_cast: actorId,
         'with_runtime.gte': withRuntimeGte,
         'with_runtime.lte': withRuntimeLte,
-        'vote_count.gte': varied
-          ? i === worldSlot
+        'vote_count.gte':
+          roles[i] === 'world'
             ? MIN_VOTES_WORLD
-            : MIN_VOTES_MOVIE
-          : undefined,
+            : roles[i] === 'local'
+              ? MIN_VOTES_LOCAL
+              : roles[i] === 'mainstream'
+                ? MIN_VOTES_MOVIE
+                : undefined,
         // Kept off the world slot and off niche filters: most non-US films
         // never got a US rating, so requiring one would empty exactly the
         // searches meant to widen the feed.
-        certification_country: broaden || i === worldSlot ? undefined : 'US',
-        'certification.lte': broaden || i === worldSlot ? undefined : 'R',
-        with_origin_country: originCountry,
+        certification_country:
+          broaden || roles[i] === 'world' ? undefined : 'US',
+        'certification.lte': broaden || roles[i] === 'world' ? undefined : 'R',
+        with_origin_country:
+          roles[i] === 'local' ? NON_US_ENGLISH : originCountry,
         with_watch_providers: withProviders,
         watch_region: withProviders ? watchRegion() : undefined,
         with_watch_monetization_types: withProviders ? 'flatrate' : undefined,
