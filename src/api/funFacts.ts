@@ -207,6 +207,48 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://de.wikipedia.org/wiki/Lola_rennt#:~:text=l%C3%A4uft%20von%20oben%20nach%20unten',
   },
+  'movie:613': {
+    en: 'The ruined Berlin is mostly Saint Petersburg. A run-down industrial district by a canal stood in for the bombed capital.',
+    de: 'Das zerstörte Berlin ist zum großen Teil Sankt Petersburg. Ein heruntergekommenes Industrieviertel am Kanal spielte die zerbombte Hauptstadt.',
+    source:
+      'https://en.wikipedia.org/wiki/Downfall_(2004_film)#:~:text=used%20to%20portray%20the%20historical%20setting%20in%20Berlin',
+  },
+  'movie:76341': {
+    en: 'The guitarist strapped to the front of the war rig plays a real instrument that really shoots flames. None of his scenes are computer generated.',
+    de: 'Der Gitarrist, der vorn am Kriegstruck hängt, spielt ein echtes Instrument, das wirklich Feuer speit. Keine seiner Szenen entstand am Computer.',
+    source:
+      'https://en.wikipedia.org/wiki/Mad_Max:_Fury_Road#:~:text=guitar%20shoots%20fire',
+  },
+  'movie:289': {
+    en: 'The plane in the farewell scene is a cardboard model, made to look bigger by small extras standing around it. The famous fog hides that it is fake.',
+    de: 'Das Flugzeug in der Abschiedsszene ist ein Pappmodell. Kleinwüchsige Statisten daneben ließen es größer wirken, der berühmte Nebel verdeckte den Rest.',
+    source:
+      'https://en.wikipedia.org/wiki/Casablanca_(film)#:~:text=proportionate%20cardboard%20plane',
+  },
+  'movie:78': {
+    en: 'The sunny landscape shots in the original ending are leftover aerial footage Stanley Kubrick had filmed for The Shining.',
+    de: 'Die sonnigen Landschaftsaufnahmen im ursprünglichen Ende sind übrig gebliebene Luftaufnahmen, die Stanley Kubrick für Shining gedreht hatte.',
+    source:
+      'https://en.wikipedia.org/wiki/Blade_Runner#:~:text=surplus%20helicopter%20aerial%20photography',
+  },
+  'movie:37165': {
+    en: 'The first version of the script was called The Malcolm Show. It was a science fiction thriller set in New York, not a comedy.',
+    de: 'Die erste Fassung des Drehbuchs hieß The Malcolm Show. Sie war ein Science-Fiction-Thriller, der in New York spielte, keine Komödie.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Truman_Show#:~:text=with%20the%20story%20set%20in%20New%20York%20City',
+  },
+  'movie:671': {
+    en: 'An American boy was seen as the favourite to play Harry. Rowling insisted on British actors and rang the director to make sure he was not cast.',
+    de: 'Als Favorit für die Harry-Rolle galt ein amerikanischer Junge. Rowling bestand auf britischen Darstellern und rief den Regisseur an, damit er ihn nicht besetzt.',
+    source:
+      'https://en.wikipedia.org/wiki/Harry_Potter_and_the_Philosopher%27s_Stone_(film)#:~:text=even%20called%20Columbus%20to%20confirm',
+  },
+  'movie:338': {
+    en: 'Filming at the dacha was called off once because of rain and another time because a pack of wild boar had wrecked the garden.',
+    de: 'Der Dreh an der Datsche fiel einmal wegen Regen aus und ein anderes Mal, weil eine Rotte Wildschweine den Garten verwüstet hatte.',
+    source:
+      'https://de.wikipedia.org/wiki/Good_Bye,_Lenin!#:~:text=Rotte%20Wildschweine',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
