@@ -128,14 +128,16 @@ function booksLang(): string | undefined {
 
 /**
  * Turns Google's tiny thumbnail into a crisp, flat cover: force https, drop the
- * fake page-curl overlay, and request a larger width.
+ * fake page-curl overlay, and request a larger width. Well-produced editions
+ * carry a ~1750px source, and a swipe card is around 1000 physical pixels wide,
+ * so anything below that is visibly soft on the fine type of a book cover.
  */
 function coverUrl(links: GbImageLinks | undefined): string | null {
   const raw = links?.thumbnail ?? links?.smallThumbnail;
   if (!raw) return null;
   return `${raw
     .replace(/^http:\/\//, 'https://')
-    .replace(/&edge=curl/gi, '')}&fife=w640`;
+    .replace(/&edge=curl/gi, '')}&fife=w1000`;
 }
 
 /** Strips HTML tags/entities from Google's descriptions into clean text. */
