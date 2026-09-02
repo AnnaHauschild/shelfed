@@ -362,6 +362,7 @@ const MIN_VOTES_LOCAL = 50;
 // under TMDB's US-driven popularity ranking.
 type FeedRole = 'mainstream' | 'world' | 'local';
 const FEED_ROLES: FeedRole[] = ['mainstream', 'world', 'local'];
+const WORLD_SLOT = FEED_ROLES.indexOf('world');
 const NON_US_ENGLISH = 'GB|IE|AU|CA|NZ';
 
 // Rotated evenly on purpose: the app is international, so it must not lean
@@ -390,15 +391,19 @@ function spliceUpcoming(movies: Movie[], upcoming: Movie[]): Movie[] {
 const FEED_WINDOWS_PER_PAGE = 3;
 const FEED_PAGE_SIZE = 21;
 
-// Picks n DISTINCT windows, weighted. Sampling without replacement means two
+// Picks n DISTINCT indexes, weighted. Sampling without replacement means two
 // slots can never draw the same decade and run the identical query twice.
-function pickWindows(
-  all: { gte: string; lte: string }[],
+// `from` narrows the draw to a subset, used to keep one slot in recent decades.
+function pickEraIndexes(
   weights: number[],
   n: number,
-): { gte: string; lte: string }[] {
-  const pool = all.map((window, i) => ({ window, weight: weights[i] ?? 1 }));
-  const picked: { gte: string; lte: string }[] = [];
+  from?: number[],
+): number[] {
+  const pool = (from ?? weights.map((_, i) => i)).map((i) => ({
+    index: i,
+    weight: weights[i] ?? 1,
+  }));
+  const picked: number[] = [];
   while (picked.length < n && pool.length) {
     let roll = Math.random() * pool.reduce((sum, p) => sum + p.weight, 0);
     let i = 0;
@@ -406,15 +411,46 @@ function pickWindows(
       roll -= pool[i].weight;
       i++;
     }
-    picked.push(pool[i].window);
+    picked.push(pool[i].index);
     pool.splice(i, 1);
   }
   return picked;
 }
 
-// Aligned with ERA_WINDOWS (1970s to 2020s). An even split put half the deck
-// before 2000, which tested as too old-heavy; these weights land at ~36%.
-const MOVIE_ERA_WEIGHTS = [2, 3, 4, 5, 7, 7];
+/**
+ * Assigns one decade per slot, keeping them distinct. The world-cinema slot is
+ * held to recent decades on purpose: a foreign language is already the
+ * unfamiliar part, and a 1970s film on top of that stops being discovery. The
+ * old decades are carried by the English-language slots, where the titles are
+ * recognisable.
+ */
+function pickEraWindows(
+  all: { gte: string; lte: string }[],
+  weights: number[],
+  recent: number[],
+  worldSlot: number,
+): { gte: string; lte: string }[] {
+  const worldIndex = pickEraIndexes(weights, 1, recent)[0];
+  const others = pickEraIndexes(
+    weights,
+    FEED_WINDOWS_PER_PAGE - 1,
+    all.map((_, i) => i).filter((i) => i !== worldIndex),
+  );
+  const windows: { gte: string; lte: string }[] = [];
+  let next = 0;
+  for (let slot = 0; slot < FEED_WINDOWS_PER_PAGE; slot++) {
+    windows.push(all[slot === worldSlot ? worldIndex : others[next++]]);
+  }
+  return windows;
+}
+
+// Aligned with ERA_WINDOWS (1970s to 2020s). Tuned by simulation to ~35% of
+// cards before 2000: an even split felt too old-heavy, and the old decades now
+// have to come from two slots instead of three since world cinema stays recent.
+const MOVIE_ERA_WEIGHTS = [3, 4, 5, 5, 6, 6];
+// Indexes of the 2000s and later, the only decades the world slot draws from.
+const MOVIE_RECENT_ERAS = [3, 4, 5];
+const TV_RECENT_ERAS = [1, 2, 3];
 
 const TITLE_NOISE = new Set([
   'the', 'a', 'an', 'of', 'and',
@@ -602,7 +638,12 @@ export async function fetchFeedPage(
     // whole catalogue.
     const varied = !eraWindow && !broaden;
     const windows = varied
-      ? pickWindows(TV_DEFAULT_WINDOWS, TV_ERA_WEIGHTS, FEED_WINDOWS_PER_PAGE)
+      ? pickEraWindows(
+          TV_DEFAULT_WINDOWS,
+          TV_ERA_WEIGHTS,
+          TV_RECENT_ERAS,
+          WORLD_SLOT,
+        )
       : [eraWindow];
     const roles = windows.map((_, i) =>
       varied ? FEED_ROLES[i] ?? 'mainstream' : null,
@@ -674,7 +715,12 @@ export async function fetchFeedPage(
   // catalogue (those are sparse when clamped to a single decade).
   const varied = !eraWindow && !broaden;
   const windows = varied
-    ? pickWindows(ERA_WINDOWS, MOVIE_ERA_WEIGHTS, FEED_WINDOWS_PER_PAGE)
+    ? pickEraWindows(
+        ERA_WINDOWS,
+        MOVIE_ERA_WEIGHTS,
+        MOVIE_RECENT_ERAS,
+        WORLD_SLOT,
+      )
     : [eraWindow];
   const roles = windows.map((_, i) =>
     varied ? FEED_ROLES[i] ?? 'mainstream' : null,
