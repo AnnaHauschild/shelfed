@@ -67,17 +67,16 @@ const TV_EXCLUDED_GENRE_IDS = ['10763', '10767'];
 const TV_EXCLUDED_GENRES = TV_EXCLUDED_GENRE_IDS.join(',');
 
 // Default decade rotation for the TV feed when the user hasn't picked an era.
-// Pre-2000 series catalogues are sparse on TMDB and the post-Netflix golden
-// age is what most users want to swipe through, so we skip the 70s/80s
-// entirely and weight the recent decades twice as heavily.
+// Pre-2000 series catalogues are sparse on TMDB and the post-Netflix golden age
+// is what most users want to swipe through, so the 70s/80s are skipped entirely
+// and the recent decades carry twice the weight.
 const TV_DEFAULT_WINDOWS: { gte: string; lte: string }[] = [
   { gte: '1990-01-01', lte: '1999-12-31' },
   { gte: '2000-01-01', lte: '2009-12-31' },
   { gte: '2010-01-01', lte: '2019-12-31' },
-  { gte: '2010-01-01', lte: '2019-12-31' },
-  { gte: '2020-01-01', lte: '2029-12-31' },
   { gte: '2020-01-01', lte: '2029-12-31' },
 ];
+const TV_ERA_WEIGHTS = [1, 1, 2, 2];
 
 // TMDB keyword ids to block softcore/erotica that slips past `include_adult`.
 // 190370 erotic movie · 155477 softcore · 211603 erotica · 13059 pornography
@@ -391,24 +390,31 @@ function spliceUpcoming(movies: Movie[], upcoming: Movie[]): Movie[] {
 const FEED_WINDOWS_PER_PAGE = 3;
 const FEED_PAGE_SIZE = 21;
 
-// Picks n DISTINCT windows. The TV list repeats recent decades to weight them,
-// so drawing by index alone could hand the same decade to two slots and run the
-// identical query twice.
+// Picks n DISTINCT windows, weighted. Sampling without replacement means two
+// slots can never draw the same decade and run the identical query twice.
 function pickWindows(
   all: { gte: string; lte: string }[],
+  weights: number[],
   n: number,
 ): { gte: string; lte: string }[] {
-  const seen = new Set<string>();
+  const pool = all.map((window, i) => ({ window, weight: weights[i] ?? 1 }));
   const picked: { gte: string; lte: string }[] = [];
-  for (const window of shuffle([...all])) {
-    const key = `${window.gte}:${window.lte}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    picked.push(window);
-    if (picked.length === n) break;
+  while (picked.length < n && pool.length) {
+    let roll = Math.random() * pool.reduce((sum, p) => sum + p.weight, 0);
+    let i = 0;
+    while (i < pool.length - 1 && roll > pool[i].weight) {
+      roll -= pool[i].weight;
+      i++;
+    }
+    picked.push(pool[i].window);
+    pool.splice(i, 1);
   }
   return picked;
 }
+
+// Aligned with ERA_WINDOWS (1970s to 2020s). An even split put half the deck
+// before 2000, which tested as too old-heavy; these weights land at ~36%.
+const MOVIE_ERA_WEIGHTS = [2, 3, 4, 5, 7, 7];
 
 const TITLE_NOISE = new Set([
   'the', 'a', 'an', 'of', 'and',
@@ -596,7 +602,7 @@ export async function fetchFeedPage(
     // whole catalogue.
     const varied = !eraWindow && !broaden;
     const windows = varied
-      ? pickWindows(TV_DEFAULT_WINDOWS, FEED_WINDOWS_PER_PAGE)
+      ? pickWindows(TV_DEFAULT_WINDOWS, TV_ERA_WEIGHTS, FEED_WINDOWS_PER_PAGE)
       : [eraWindow];
     const roles = windows.map((_, i) =>
       varied ? FEED_ROLES[i] ?? 'mainstream' : null,
@@ -668,7 +674,7 @@ export async function fetchFeedPage(
   // catalogue (those are sparse when clamped to a single decade).
   const varied = !eraWindow && !broaden;
   const windows = varied
-    ? pickWindows(ERA_WINDOWS, FEED_WINDOWS_PER_PAGE)
+    ? pickWindows(ERA_WINDOWS, MOVIE_ERA_WEIGHTS, FEED_WINDOWS_PER_PAGE)
     : [eraWindow];
   const roles = windows.map((_, i) =>
     varied ? FEED_ROLES[i] ?? 'mainstream' : null,
