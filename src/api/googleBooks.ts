@@ -264,7 +264,13 @@ function isFiction(categories: string[] | undefined): boolean {
 // plain "recent edition" score backfired: they carry a current year, an ISBN
 // and a publisher, so they used to be ranked to the very top.
 const REPRINT_MARKERS =
-  /\b(annotated|illustrated|unabridged|abridged|complete works|classic edition|with an introduction|box set|omnibus|books \d|part \d)\b/i;
+  /\b(annotated|illustrated|unabridged|abridged|complete works|classic edition|with an introduction)\b/i;
+
+// Publishers bundle several novels into one listing ("Christmas Paradise
+// Collection", "Modern Romance May 2026 Books 1-4"). They are real products but
+// they are not a book you can put on a shelf, so they are dropped outright.
+const BUNDLE_MARKERS =
+  /\b(collection|box(ed)? set|omnibus|anthology|bundle|complete series|books? \d+\s*[-–]\s*\d+|\d+-book|part \d)\b/i;
 
 function editionScore(volume: GbVolume): number {
   const info = volume.volumeInfo ?? {};
@@ -298,7 +304,9 @@ function rankEditions(items: GbVolume[], requireFiction = false): Movie[] {
   const good: GbVolume[] = [];
   const rest: GbVolume[] = [];
   for (const volume of items) {
+    const title = volume.volumeInfo?.title ?? '';
     if (isReferenceVolume(volume.volumeInfo?.categories)) continue;
+    if (BUNDLE_MARKERS.test(title)) continue;
     if (requireFiction && !isFiction(volume.volumeInfo?.categories)) continue;
     (editionScore(volume) >= GOOD_EDITION ? good : rest).push(volume);
   }
