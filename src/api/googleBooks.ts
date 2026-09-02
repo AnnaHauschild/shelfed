@@ -204,7 +204,8 @@ export function bookSignature(title: string, author?: string): string {
 }
 
 // Academic/reference categories a leisure reader browsing fiction doesn't want
-// (Principles of Physics etc.). Sci-fi is kept via the `fiction` check first.
+// (Principles of Physics, A Companion to the English Novel). The `fiction`
+// check in isReferenceVolume runs first, so "Historical Fiction" stays safe.
 const NONFICTION_BLOCK = [
   'science',
   'mathematics',
@@ -216,6 +217,14 @@ const NONFICTION_BLOCK = [
   'medical',
   'computers',
   'law',
+  'literary criticism',
+  'literary collections',
+  'literature',
+  'library',
+  'language arts',
+  'foreign language',
+  'biography',
+  'history',
 ];
 
 /** True for textbook/reference volumes that carry no fiction category. */
