@@ -299,6 +299,12 @@ const ABOUT_BOOKS =
 const SERIES_OMNIBUS = /\bseries\b/i;
 const SINGLE_VOLUME = /\b(book|vol|volume|part|no)\.?\s*\d+/i;
 
+// Individual titles kept out of browsing after someone looked at the actual
+// cover art, which no metadata can describe. Search still finds them.
+const BLOCKED_IN_BROWSE = [
+  'prelude in prague', // cover is dominated by a swastika
+];
+
 function editionScore(volume: GbVolume): number {
   const info = volume.volumeInfo ?? {};
   const year = Number(String(info.publishedDate ?? '').slice(0, 4));
@@ -342,6 +348,12 @@ function rankEditions(
     // a second colon is a reliable giveaway that this is not one book.
     if ((title.match(/:/g)?.length ?? 0) >= 2) continue;
     if (opts.browsing && ABOUT_BOOKS.test(title)) continue;
+    if (
+      opts.browsing &&
+      BLOCKED_IN_BROWSE.some((blocked) => title.toLowerCase().includes(blocked))
+    ) {
+      continue;
+    }
     if (
       opts.browsing &&
       SERIES_OMNIBUS.test(title) &&
