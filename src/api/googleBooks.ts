@@ -272,6 +272,14 @@ const REPRINT_MARKERS =
 const BUNDLE_MARKERS =
   /\b(collection|box(ed)? set|omnibus|anthology|bundle|complete series|books? \d+\s*[-–]\s*\d+|\d+-book|part \d)\b/i;
 
+// Category romance lines publish several interchangeable titles a month, and
+// they crowd out everything else in the romance queries (58% of one page).
+// Dropped while browsing only: someone who searches for them still finds them.
+// The publisher field is no help, Harlequin now ships as "HarperCollins UK",
+// but the imprint is always in the title.
+const SERIES_IMPRINTS =
+  /\b(mills\s*(&|and)\s*boon|harlequin|kimani|love inspired|silhouette|american romance)\b/i;
+
 function editionScore(volume: GbVolume): number {
   const info = volume.volumeInfo ?? {};
   const year = Number(String(info.publishedDate ?? '').slice(0, 4));
@@ -300,14 +308,24 @@ const GOOD_EDITION = 5;
  * hard filter starved whole genres: of 20 fantasy results only 2 survived one,
  * which would leave the deck looking broken.
  */
-function rankEditions(items: GbVolume[], requireFiction = false): Movie[] {
+function rankEditions(
+  items: GbVolume[],
+  opts: { requireFiction?: boolean; browsing?: boolean } = {},
+): Movie[] {
   const good: GbVolume[] = [];
   const rest: GbVolume[] = [];
   for (const volume of items) {
     const title = volume.volumeInfo?.title ?? '';
     if (isReferenceVolume(volume.volumeInfo?.categories)) continue;
     if (BUNDLE_MARKERS.test(title)) continue;
-    if (requireFiction && !isFiction(volume.volumeInfo?.categories)) continue;
+    // Two-in-one and three-in-one volumes list every contained novel in the
+    // title ("Her Boss, Her Rancher: Sunrise On The Ranch: Cowboy Proud"), so
+    // a second colon is a reliable giveaway that this is not one book.
+    if ((title.match(/:/g)?.length ?? 0) >= 2) continue;
+    if (opts.browsing && SERIES_IMPRINTS.test(title)) continue;
+    if (opts.requireFiction && !isFiction(volume.volumeInfo?.categories)) {
+      continue;
+    }
     (editionScore(volume) >= GOOD_EDITION ? good : rest).push(volume);
   }
   return [...shuffle(good), ...shuffle(rest)]
@@ -368,7 +386,9 @@ export async function fetchBookFeedPage(
       ),
     );
     const movies = interleaveBooks(
-      responses.map((res) => rankEditions(res.items ?? [], true)),
+      responses.map((res) =>
+        rankEditions(res.items ?? [], { requireFiction: true, browsing: true }),
+      ),
     );
     // Browse never ends: there is always another random query.
     return { movies, nextPage: page + 1 };
@@ -402,7 +422,7 @@ export async function fetchBookFeedPage(
     filter: freeOnly ? 'free-ebooks' : plainGenre ? 'partial' : undefined,
   });
   const items = data.items ?? [];
-  const movies = rankEditions(items, plainGenre);
+  const movies = rankEditions(items, { requireFiction: plainGenre });
   const total = data.totalItems ?? 0;
   const hasMore = startIndex + PAGE_SIZE < total && items.length > 0;
   return { movies, nextPage: hasMore ? page + 1 : null };
