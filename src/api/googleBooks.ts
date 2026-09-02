@@ -78,6 +78,9 @@ interface GbVolumeInfo {
   ratingsCount?: number;
   imageLinks?: GbImageLinks;
   language?: string;
+  /** Both only set on real commercial editions, so they signal cover quality. */
+  publisher?: string;
+  industryIdentifiers?: { type?: string; identifier?: string }[];
 }
 
 interface GbVolume {
@@ -238,10 +241,64 @@ function isReferenceVolume(categories: string[] | undefined): boolean {
   return NONFICTION_BLOCK.some((k) => joined.includes(k));
 }
 
+// Google Books indexes every edition ever scanned, so a plain query mixes
+// designed covers with photographed title pages of public-domain reprints.
+// Measured on real feed pages: about two thirds of results are pre-2000
+// editions, which is where the bare black-on-white covers come from.
+function editionScore(volume: GbVolume): number {
+  const info = volume.volumeInfo ?? {};
+  const year = Number(String(info.publishedDate ?? '').slice(0, 4));
+  let points = 0;
+  if (Number.isFinite(year)) {
+    if (year >= 2010) points += 3;
+    else if (year >= 2000) points += 2;
+  }
+  if (info.publisher) points += 1;
+  if ((info.industryIdentifiers ?? []).some((i) => i.type === 'ISBN_13')) {
+    points += 1;
+  }
+  if (info.description) points += 1;
+  return points;
+}
+
+const GOOD_EDITION = 4;
+
 /**
- * One page of the book swipe feed. With a subject it browses that genre; with an
- * author it lists their books; with neither it rotates a random subject so the
- * deck mixes genres. Biased to the user's language.
+ * Sorts well-produced editions to the front instead of dropping the rest. A
+ * hard filter starved whole genres: of 20 fantasy results only 2 survived one,
+ * which would leave the deck looking broken.
+ */
+function rankEditions(items: GbVolume[]): Movie[] {
+  const good: GbVolume[] = [];
+  const rest: GbVolume[] = [];
+  for (const volume of items) {
+    if (isReferenceVolume(volume.volumeInfo?.categories)) continue;
+    (editionScore(volume) >= GOOD_EDITION ? good : rest).push(volume);
+  }
+  return [...shuffle(good), ...shuffle(rest)]
+    .map(volumeToMovie)
+    .filter((m) => m.posterPath && m.title);
+}
+
+/** Round-robins the per-subject results so genres alternate card by card. */
+function interleaveBooks(groups: Movie[][]): Movie[] {
+  const out: Movie[] = [];
+  const longest = Math.max(0, ...groups.map((group) => group.length));
+  for (let i = 0; i < longest; i++) {
+    for (const group of groups) {
+      if (group[i]) out.push(group[i]);
+    }
+  }
+  return out;
+}
+
+const BOOK_SUBJECTS_PER_PAGE = 3;
+
+/**
+ * One page of the book swipe feed. Unfiltered browsing pulls several subjects
+ * in parallel and round-robins them, so a page mixes genres instead of showing
+ * twenty of the same. With a subject, author or vibe it stays a single query,
+ * because those pools are narrow enough already.
  * NOTE: Google Books has no year-range filter, so `years` is ignored.
  */
 export async function fetchBookFeedPage(
@@ -253,6 +310,34 @@ export async function fetchBookFeedPage(
   langOverride?: string,
   freeOnly?: boolean,
 ): Promise<FeedPage> {
+  // 'any' disables the restriction; otherwise the picked language or app default.
+  const lang =
+    langOverride === 'any' ? undefined : langOverride || booksLang();
+  const isBrowse = !subject && !authorKey && !vibeQuery && !freeOnly;
+
+  if (isBrowse) {
+    const subjects = shuffle([...BOOK_SUBJECTS]).slice(0, BOOK_SUBJECTS_PER_PAGE);
+    const responses = await Promise.all(
+      subjects.map((name) =>
+        gbGet<GbListResponse>('/volumes', {
+          q: `subject:"${name}"`,
+          // A random slice keeps browsing endless instead of walking the same
+          // few hundred titles every session.
+          startIndex: Math.floor(Math.random() * 120),
+          maxResults: PAGE_SIZE,
+          printType: 'books',
+          orderBy: 'relevance',
+          langRestrict: lang,
+        }),
+      ),
+    );
+    const movies = interleaveBooks(
+      responses.map((res) => rankEditions(res.items ?? [])),
+    );
+    // Browse never ends: there is always another random subject.
+    return { movies, nextPage: page + 1 };
+  }
+
   const qParts: string[] = [];
   if (authorKey) qParts.push(`inauthor:"${authorKey}"`);
   if (subject) qParts.push(`subject:"${subject}"`);
@@ -262,16 +347,10 @@ export async function fetchBookFeedPage(
       BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
     qParts.push(`subject:"${rotating}"`);
   }
-  // 'any' disables the restriction; otherwise the picked language or app default.
-  const lang =
-    langOverride === 'any' ? undefined : langOverride || booksLang();
-  // Unfiltered browse already picks a random subject per call, so pull a random
-  // slice too -> endless fresh mix. Filtered lists paginate (small jitter mixes
-  // popular titles; author lists stay exact so they can actually end).
-  const isBrowse = !subject && !authorKey && !vibeQuery && !freeOnly;
-  const startIndex = isBrowse
-    ? Math.floor(Math.random() * 120)
-    : (page - 1) * PAGE_SIZE + (authorKey ? 0 : Math.floor(Math.random() * 40));
+  // Small jitter mixes popular titles in; author lists stay exact so they can
+  // actually reach an end.
+  const startIndex =
+    (page - 1) * PAGE_SIZE + (authorKey ? 0 : Math.floor(Math.random() * 40));
   const data = await gbGet<GbListResponse>('/volumes', {
     q: qParts.join(' '),
     startIndex,
@@ -282,16 +361,10 @@ export async function fetchBookFeedPage(
     filter: freeOnly ? 'free-ebooks' : undefined,
   });
   const items = data.items ?? [];
-  const movies = items
-    .filter((v) => !isReferenceVolume(v.volumeInfo?.categories))
-    .map(volumeToMovie)
-    .filter((m) => m.posterPath && m.title);
+  const movies = rankEditions(items);
   const total = data.totalItems ?? 0;
   const hasMore = startIndex + PAGE_SIZE < total && items.length > 0;
-  // Browse never ends (there's always another random subject); a specific
-  // subject/author/vibe/free list reports its real end instead.
-  const nextPage = isBrowse ? page + 1 : hasMore ? page + 1 : null;
-  return { movies: shuffle(movies), nextPage };
+  return { movies, nextPage: hasMore ? page + 1 : null };
 }
 
 /** Free-text book search. No language restriction, so foreign titles show up. */
