@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, {
   Easing,
@@ -36,6 +36,7 @@ export function MovieCard({
   isWatchlisted,
   isFavorite,
 }: Props) {
+  const [titleExpanded, setTitleExpanded] = useState(false);
   const subtitle =
     movie.mediaType === 'book' && movie.authors && movie.authors.length > 0
       ? movie.authors.slice(0, 2).join(', ')
@@ -69,9 +70,12 @@ export function MovieCard({
       )}
 
       <View style={styles.info}>
-        <Text style={styles.title} numberOfLines={2}>
-          {movie.title}
-        </Text>
+        {/* Book titles are often longer than two lines; a tap reveals the rest. */}
+        <Pressable onPress={() => setTitleExpanded((shown) => !shown)}>
+          <Text style={styles.title} numberOfLines={titleExpanded ? undefined : 2}>
+            {movie.title}
+          </Text>
+        </Pressable>
 
         <View style={styles.metaRow}>
           {movie.year != null && (

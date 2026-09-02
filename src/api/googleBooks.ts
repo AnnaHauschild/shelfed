@@ -280,6 +280,16 @@ const BUNDLE_MARKERS =
 const SERIES_IMPRINTS =
   /\b(mills\s*(&|and)\s*boon|harlequin|kimani|love inspired|silhouette|american romance)\b/i;
 
+// Books ABOUT books. They carry a Fiction category often enough to slip past
+// the category check, so they are matched on the title instead.
+const ABOUT_BOOKS =
+  /\b(a guide to|descriptive list|bibliograph|index to|catalogue of|catalog of|companion to|reader'?s guide|encyclopedia of|dictionary of)\b/i;
+
+// "The Martin Beck series" is every novel in one listing, while "(Lindsay Gordon
+// Crime Series, Book 4)" is a single volume, so the book number decides.
+const SERIES_OMNIBUS = /\bseries\b/i;
+const SINGLE_VOLUME = /\b(book|vol|volume|part|no)\.?\s*\d+/i;
+
 function editionScore(volume: GbVolume): number {
   const info = volume.volumeInfo ?? {};
   const year = Number(String(info.publishedDate ?? '').slice(0, 4));
@@ -322,6 +332,14 @@ function rankEditions(
     // title ("Her Boss, Her Rancher: Sunrise On The Ranch: Cowboy Proud"), so
     // a second colon is a reliable giveaway that this is not one book.
     if ((title.match(/:/g)?.length ?? 0) >= 2) continue;
+    if (opts.browsing && ABOUT_BOOKS.test(title)) continue;
+    if (
+      opts.browsing &&
+      SERIES_OMNIBUS.test(title) &&
+      !SINGLE_VOLUME.test(title)
+    ) {
+      continue;
+    }
     if (opts.browsing && SERIES_IMPRINTS.test(title)) continue;
     if (opts.requireFiction && !isFiction(volume.volumeInfo?.categories)) {
       continue;
