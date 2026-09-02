@@ -36,7 +36,12 @@ export function MovieCard({
   isWatchlisted,
   isFavorite,
 }: Props) {
-  const [titleExpanded, setTitleExpanded] = useState(false);
+  const [titleHeld, setTitleHeld] = useState(false);
+  // Publishers pack the series or imprint into the title in brackets ("The
+  // Leavenworth Case (Detective Club Crime Classics)"), which pushes the actual
+  // title out of the two lines the card has. Holding it shows the raw title.
+  const shortTitle =
+    movie.title.replace(/\s*\([^)]*\)\s*$/, '').trim() || movie.title;
   const subtitle =
     movie.mediaType === 'book' && movie.authors && movie.authors.length > 0
       ? movie.authors.slice(0, 2).join(', ')
@@ -70,10 +75,14 @@ export function MovieCard({
       )}
 
       <View style={styles.info}>
-        {/* Book titles are often longer than two lines; a tap reveals the rest. */}
-        <Pressable onPress={() => setTitleExpanded((shown) => !shown)}>
-          <Text style={styles.title} numberOfLines={titleExpanded ? undefined : 2}>
-            {movie.title}
+        {/* Hold to read a long title; a plain tap still belongs to the card. */}
+        <Pressable
+          onLongPress={() => setTitleHeld(true)}
+          onPressOut={() => setTitleHeld(false)}
+          delayLongPress={250}
+        >
+          <Text style={styles.title} numberOfLines={titleHeld ? undefined : 2}>
+            {titleHeld ? movie.title : shortTitle}
           </Text>
         </Pressable>
 
