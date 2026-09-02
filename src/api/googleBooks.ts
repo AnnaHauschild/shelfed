@@ -5,22 +5,6 @@ import { GOOGLE_BOOKS_API_KEY, GOOGLE_BOOKS_BASE_URL } from '@/constants/config'
 
 const PAGE_SIZE = 20;
 
-// Subjects the browse feed rotates through when nothing is picked (fiction core).
-const BOOK_SUBJECTS = [
-  'fiction',
-  'fantasy',
-  'science fiction',
-  'mystery',
-  'thriller',
-  'romance',
-  'historical fiction',
-  'horror',
-  'young adult fiction',
-  'crime',
-  'adventure',
-  'classics',
-];
-
 /** Book "genres" for the Discover filter (the id is used as `subject:"id"`). */
 export const BOOK_GENRE_OPTIONS: { id: string; name: string }[] = [
   { id: 'fiction', name: 'Fiction' },
@@ -245,13 +229,42 @@ function isReferenceVolume(categories: string[] | undefined): boolean {
   return NONFICTION_BLOCK.some((k) => joined.includes(k));
 }
 
+// Google's `filter=partial` only works with plain keyword queries, never with
+// `subject:`, and it is the whole ballgame for cover quality: volumes Google is
+// allowed to preview come from a publisher deal and carry real artwork, while
+// the rest get a generated black-on-white title page. Measured on real pages:
+// subject: queries were 12% real covers, these are close to 100%.
+// The wording matters too, plain "romance" matches library catalogues of
+// medieval romances, so each entry below was checked against the API.
+const BROWSE_QUERIES = [
+  'thriller',
+  'contemporary romance',
+  'fantasy novel',
+  'science fiction novel',
+  'crime novel',
+  'horror novel',
+  'historical fiction',
+  'young adult fiction',
+  'mystery novel',
+  'adventure novel',
+];
+
+/** Keyword queries also match library catalogues, annual reports and academia. */
+function isFiction(categories: string[] | undefined): boolean {
+  const joined = (categories ?? [])
+    .join(' | ')
+    .toLowerCase()
+    .replace(/non-?fiction/g, '');
+  return joined.includes('fiction');
+}
+
 // Google Books indexes every edition ever scanned, so a plain query mixes
 // designed covers with generated black-on-white title pages. Print-on-demand
 // reprints of public-domain works are the worst offenders and the reason a
 // plain "recent edition" score backfired: they carry a current year, an ISBN
 // and a publisher, so they used to be ranked to the very top.
 const REPRINT_MARKERS =
-  /\b(annotated|illustrated|unabridged|abridged|complete works|classic edition|with an introduction)\b/i;
+  /\b(annotated|illustrated|unabridged|abridged|complete works|classic edition|with an introduction|box set|omnibus|books \d|part \d)\b/i;
 
 function editionScore(volume: GbVolume): number {
   const info = volume.volumeInfo ?? {};
@@ -281,11 +294,12 @@ const GOOD_EDITION = 5;
  * hard filter starved whole genres: of 20 fantasy results only 2 survived one,
  * which would leave the deck looking broken.
  */
-function rankEditions(items: GbVolume[]): Movie[] {
+function rankEditions(items: GbVolume[], requireFiction = false): Movie[] {
   const good: GbVolume[] = [];
   const rest: GbVolume[] = [];
   for (const volume of items) {
     if (isReferenceVolume(volume.volumeInfo?.categories)) continue;
+    if (requireFiction && !isFiction(volume.volumeInfo?.categories)) continue;
     (editionScore(volume) >= GOOD_EDITION ? good : rest).push(volume);
   }
   return [...shuffle(good), ...shuffle(rest)]
@@ -305,7 +319,7 @@ function interleaveBooks(groups: Movie[][]): Movie[] {
   return out;
 }
 
-const BOOK_SUBJECTS_PER_PAGE = 3;
+const BROWSE_QUERIES_PER_PAGE = 3;
 
 /**
  * One page of the book swipe feed. Unfiltered browsing pulls several subjects
@@ -329,37 +343,43 @@ export async function fetchBookFeedPage(
   const isBrowse = !subject && !authorKey && !vibeQuery && !freeOnly;
 
   if (isBrowse) {
-    const subjects = shuffle([...BOOK_SUBJECTS]).slice(0, BOOK_SUBJECTS_PER_PAGE);
+    const queries = shuffle([...BROWSE_QUERIES]).slice(0, BROWSE_QUERIES_PER_PAGE);
     const responses = await Promise.all(
-      subjects.map((name) =>
+      queries.map((query) =>
         gbGet<GbListResponse>('/volumes', {
-          q: `subject:"${name}"`,
+          q: query,
           // A random slice keeps browsing endless instead of walking the same
           // few hundred titles every session.
-          startIndex: Math.floor(Math.random() * 120),
+          startIndex: Math.floor(Math.random() * 40),
           maxResults: PAGE_SIZE,
           printType: 'books',
           orderBy: 'relevance',
+          filter: 'partial',
           langRestrict: lang,
         }),
       ),
     );
     const movies = interleaveBooks(
-      responses.map((res) => rankEditions(res.items ?? [])),
+      responses.map((res) => rankEditions(res.items ?? [], true)),
     );
-    // Browse never ends: there is always another random subject.
+    // Browse never ends: there is always another random query.
     return { movies, nextPage: page + 1 };
   }
 
   const qParts: string[] = [];
   if (authorKey) qParts.push(`inauthor:"${authorKey}"`);
-  if (subject) qParts.push(`subject:"${subject}"`);
   if (vibeQuery) qParts.push(vibeQuery);
+  // A picked genre goes in as a plain keyword, because `filter=partial` (which
+  // is what keeps the covers real) is incompatible with `subject:`.
+  if (subject && !authorKey && !vibeQuery) qParts.push(subject);
+  else if (subject) qParts.push(`subject:"${subject}"`);
   if (qParts.length === 0) {
-    const rotating =
-      BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)];
-    qParts.push(`subject:"${rotating}"`);
+    qParts.push(
+      BROWSE_QUERIES[Math.floor(Math.random() * BROWSE_QUERIES.length)],
+    );
   }
+  // Free ebooks need their own filter value, so those keep the old behaviour.
+  const plainGenre = !!subject && !authorKey && !vibeQuery && !freeOnly;
   // Small jitter mixes popular titles in; author lists stay exact so they can
   // actually reach an end.
   const startIndex =
@@ -371,10 +391,10 @@ export async function fetchBookFeedPage(
     printType: 'books',
     orderBy: 'relevance',
     langRestrict: lang,
-    filter: freeOnly ? 'free-ebooks' : undefined,
+    filter: freeOnly ? 'free-ebooks' : plainGenre ? 'partial' : undefined,
   });
   const items = data.items ?? [];
-  const movies = rankEditions(items);
+  const movies = rankEditions(items, plainGenre);
   const total = data.totalItems ?? 0;
   const hasMore = startIndex + PAGE_SIZE < total && items.length > 0;
   return { movies, nextPage: hasMore ? page + 1 : null };
