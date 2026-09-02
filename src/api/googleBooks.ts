@@ -86,6 +86,8 @@ interface GbVolumeInfo {
 interface GbVolume {
   id: string;
   volumeInfo?: GbVolumeInfo;
+  /** `viewability` turned out to be the best available cover-quality signal. */
+  accessInfo?: { viewability?: string };
 }
 
 interface GbListResponse {
@@ -242,26 +244,35 @@ function isReferenceVolume(categories: string[] | undefined): boolean {
 }
 
 // Google Books indexes every edition ever scanned, so a plain query mixes
-// designed covers with photographed title pages of public-domain reprints.
-// Measured on real feed pages: about two thirds of results are pre-2000
-// editions, which is where the bare black-on-white covers come from.
+// designed covers with generated black-on-white title pages. Print-on-demand
+// reprints of public-domain works are the worst offenders and the reason a
+// plain "recent edition" score backfired: they carry a current year, an ISBN
+// and a publisher, so they used to be ranked to the very top.
+const REPRINT_MARKERS =
+  /\b(annotated|illustrated|unabridged|abridged|complete works|classic edition|with an introduction)\b/i;
+
 function editionScore(volume: GbVolume): number {
   const info = volume.volumeInfo ?? {};
   const year = Number(String(info.publishedDate ?? '').slice(0, 4));
   let points = 0;
+  // Measured on real feed pages: volumes Google may show a preview of come
+  // from a publisher deal and had a median cover of 102 kB, against 17 kB for
+  // the rest, with not a single generated cover among them.
+  if (volume.accessInfo?.viewability === 'PARTIAL') points += 4;
   if (Number.isFinite(year)) {
-    if (year >= 2010) points += 3;
-    else if (year >= 2000) points += 2;
+    if (year >= 2010) points += 2;
+    else if (year >= 2000) points += 1;
   }
   if (info.publisher) points += 1;
   if ((info.industryIdentifiers ?? []).some((i) => i.type === 'ISBN_13')) {
     points += 1;
   }
   if (info.description) points += 1;
+  if (REPRINT_MARKERS.test(info.title ?? '')) points -= 3;
   return points;
 }
 
-const GOOD_EDITION = 4;
+const GOOD_EDITION = 5;
 
 /**
  * Sorts well-produced editions to the front instead of dropping the rest. A
