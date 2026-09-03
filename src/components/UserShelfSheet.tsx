@@ -410,6 +410,10 @@ export function UserShelfSheet({
               </Pressable>
             );
           })}
+        </View>
+        {/* Its own row on purpose: as part of the media row it only looked
+            separate because the chips happened to wrap on narrow screens. */}
+        <View style={styles.chipRow}>
           <Pressable
             onPress={() => setMatchesOnly((v) => !v)}
             style={[styles.chip, styles.matchChip, matchesOnly && styles.matchChipActive]}

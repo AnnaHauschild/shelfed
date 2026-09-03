@@ -229,7 +229,7 @@ export function PostComposer({
 
       <KeyboardAvoidingView
         style={styles.kav}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
           style={styles.scrollFlex}
@@ -348,7 +348,7 @@ export function PostComposer({
       {gifsOpen && (
         <KeyboardAvoidingView
           style={styles.paletteRoot}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <Pressable
             style={styles.paletteBackdrop}
@@ -401,7 +401,7 @@ export function PostComposer({
       {editing && (
         <KeyboardAvoidingView
           style={styles.editRoot}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <Pressable style={styles.editBackdrop} onPress={finishEdit} />
           <View style={styles.editCenter} pointerEvents="box-none">

@@ -28,6 +28,7 @@ import { GenreChips } from '@/components/GenreChips';
 import { useLanguage } from '@/context/LanguageProvider';
 import { MOODS_LABEL, MOOD_LABEL, MOOD_TEMPLATES } from '@/constants/moods';
 import { useMoodMutations, useMoods } from '@/hooks/useMoods';
+import { useBottomInset } from '@/hooks/useBottomInset';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
@@ -75,6 +76,7 @@ export function ShelfMenu({
   const { createMood } = useMoodMutations();
   const { text } = useLanguage();
   const chrome = useThemeChrome();
+  const bottomInset = useBottomInset(spacing.md);
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
@@ -135,10 +137,12 @@ export function ShelfMenu({
       <GestureHandlerRootView style={styles.avoider}>
         <KeyboardAvoidingView
           style={styles.avoider}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <Pressable style={styles.backdrop} onPress={close} />
-          <Animated.View style={[styles.sheet, sheetStyle]}>
+          <Animated.View
+            style={[styles.sheet, sheetStyle, { paddingBottom: bottomInset }]}
+          >
             <GestureDetector gesture={dragGesture}>
               <View style={styles.grabZone}>
                 <View style={styles.handle} />
@@ -353,7 +357,6 @@ const makeStyles = (c: ThemeChrome) =>
     borderTopWidth: 2,
     borderColor: c.border,
     paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
     paddingTop: spacing.sm,
   },
   grabZone: {

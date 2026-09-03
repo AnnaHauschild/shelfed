@@ -16,6 +16,7 @@ import { useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useProfile } from '@/context/ProfileProvider';
 import { useAuth } from '@/context/AuthProvider';
 import { useFollows } from '@/hooks/useFollows';
+import { useBottomInset } from '@/hooks/useBottomInset';
 import { useSettings } from '@/context/SettingsProvider';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { AboutModal } from './AboutModal';
@@ -95,8 +96,7 @@ export function LandingScreen() {
 
   // Keep the About link above the Android system nav bar even if the bottom
   // inset is under-reported (some devices report 0 under edge-to-edge).
-  const aboutBottom =
-    Math.max(insets.bottom, Platform.OS === 'android' ? 48 : 0) + spacing.md;
+  const aboutBottom = useBottomInset(spacing.md);
 
   return (
     <View style={styles.root} onLayout={(e) => setScreenH(e.nativeEvent.layout.height)}>
@@ -110,7 +110,18 @@ export function LandingScreen() {
         scale={0.55}
       />
 
-      <View style={[styles.content, { paddingTop: headerHeight + spacing.lg }]}>
+      {/* The About link is absolutely positioned, so it takes part in no
+          layout: reserve its height here or the cards grow on top of it as
+          soon as the stories bar adds a row. */}
+      <View
+        style={[
+          styles.content,
+          {
+            paddingTop: headerHeight + spacing.lg,
+            paddingBottom: aboutBottom + spacing.xl,
+          },
+        ]}
+      >
         <View style={styles.topRow}>
           <Pressable style={styles.profilePill} onPress={() => openSettings()} hitSlop={8}>
             {profile?.avatarUrl ? (

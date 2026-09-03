@@ -49,7 +49,7 @@ export function NoteSheet({ movie, visible, onClose }: Props) {
   return (
     <KeyboardAvoidingView
       style={styles.root}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <Pressable style={styles.backdrop} onPress={close} />
       <View style={styles.note}>

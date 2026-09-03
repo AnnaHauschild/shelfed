@@ -198,7 +198,7 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
       {renameText != null && (
         <KeyboardAvoidingView
           style={styles.renameRoot}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <Pressable
             style={styles.pickerBackdrop}

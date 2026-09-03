@@ -96,7 +96,9 @@ export function FriendsSheet({
     >
       <KeyboardAvoidingView
         style={styles.root}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        // Android needs an explicit behavior inside a Modal; adjustResize alone
+        // does not reach modal content, so the keyboard covered the input.
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
       <Pressable style={styles.backdrop} onPress={onClose} />
       <View style={styles.sheet}>
