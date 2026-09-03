@@ -393,6 +393,12 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Wire#:~:text=had%20a%20recurring%20role%20as%20a%20deacon',
   },
+  'tv:2316': {
+    en: 'Phyllis was not an actress. She worked in casting and only read the lines opposite the people auditioning. The director of the pilot liked her so much that he gave her a part in the show.',
+    de: 'Phyllis war keine Schauspielerin. Sie arbeitete im Casting und las nur die Gegenparts für die Leute vor, die sich bewarben. Dem Regisseur der Pilotfolge gefiel sie so gut, dass er ihr selbst eine Rolle gab.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Office_(American_TV_series)#:~:text=read%20with%20other%20actors%20auditioning%20so%20much%20that%20he%20cast',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
