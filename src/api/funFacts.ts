@@ -333,6 +333,30 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Apocalypse_Now#:~:text=had%20gotten%20the%20go-ahead%20to%20make',
   },
+  'tv:1396': {
+    en: 'The network knew Bryan Cranston only as the goofy dad from Malcolm in the Middle and approached John Cusack and Matthew Broderick instead. Both turned the role down.',
+    de: 'Der Sender kannte Bryan Cranston nur als albernen Vater aus Malcolm mittendrin und fragte stattdessen John Cusack und Matthew Broderick. Beide lehnten ab.',
+    source:
+      'https://en.wikipedia.org/wiki/Breaking_Bad#:~:text=John%20Cusack%20and%20Matthew%20Broderick',
+  },
+  'tv:1398': {
+    en: 'Steven Van Zandt, the guitarist from Bruce Springsteen\u2019s E Street Band, had never acted before and auditioned for Tony. HBO wanted an experienced actor, so a new role was written for him instead.',
+    de: 'Steven Van Zandt, Gitarrist aus Bruce Springsteens E Street Band, hatte nie zuvor gespielt und sprach für Tony vor. HBO wollte einen erfahrenen Darsteller, also schrieb man ihm eine eigene Rolle.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Sopranos#:~:text=had%20never%20acted%20before',
+  },
+  'tv:66732': {
+    en: 'About 15 networks turned the show down. They all thought a story carried by children would not work and asked for the kids to be dropped.',
+    de: 'Rund 15 Sender lehnten die Serie ab. Alle hielten eine Geschichte mit Kindern als Hauptfiguren für unmöglich und wollten die Kinder herausstreichen.',
+    source:
+      'https://en.wikipedia.org/wiki/Stranger_Things#:~:text=about%2015%20cable%20networks',
+  },
+  'tv:87108': {
+    en: 'The score contains no ordinary instruments. The composer recorded sounds inside a real decommissioned nuclear plant and built the music entirely from them.',
+    de: 'Die Musik enthält keine gewöhnlichen Instrumente. Die Komponistin nahm Geräusche in einem stillgelegten Kernkraftwerk auf und baute die Musik allein daraus.',
+    source:
+      'https://en.wikipedia.org/wiki/Chernobyl_(miniseries)#:~:text=recordings%20from%20the%20power%20plant',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
