@@ -11,7 +11,8 @@ interface Group {
   users: UserSummary[];
   icon: keyof typeof Ionicons.glyphMap;
   color: string;
-  verb: string;
+  verbOne: string;
+  verbMany: string;
   heading: string;
 }
 
@@ -27,14 +28,16 @@ export function FilmMatch({ movie }: { movie: Movie }) {
       users: data?.favorite ?? [],
       icon: 'heart' as const,
       color: colors.favorite,
-      verb: 'love this',
+      verbOne: 'loves this',
+      verbMany: 'love this',
       heading: 'Love this',
     },
     {
       users: data?.watchlist ?? [],
       icon: 'star' as const,
       color: colors.star,
-      verb: 'want to see this',
+      verbOne: 'wants to see this',
+      verbMany: 'want to see this',
       heading: 'Want to see this',
     },
   ].filter((g) => g.users.length > 0);
@@ -43,6 +46,7 @@ export function FilmMatch({ movie }: { movie: Movie }) {
 
   return (
     <>
+      <View style={styles.list}>
       {groups.map((g) => {
         const names = g.users
           .slice(0, 3)
@@ -60,7 +64,7 @@ export function FilmMatch({ movie }: { movie: Movie }) {
             <Ionicons name={g.icon} size={14} color={g.color} />
             <Text style={styles.text} numberOfLines={1}>
               {names}
-              {extra} {g.verb}
+              {extra} {g.users.length === 1 ? g.verbOne : g.verbMany}
             </Text>
             {expandable && (
               <Ionicons name="chevron-forward" size={14} color={chrome.muted} />
@@ -68,6 +72,7 @@ export function FilmMatch({ movie }: { movie: Movie }) {
           </Pressable>
         );
       })}
+      </View>
 
       <Modal
         visible={!!popup}
@@ -97,6 +102,11 @@ export function FilmMatch({ movie }: { movie: Movie }) {
 
 const makeStyles = (c: ThemeChrome) =>
   StyleSheet.create({
+    list: {
+      // Same gap the other detail sections use, so Synopsis does not sit
+      // directly under the last row.
+      marginBottom: spacing.lg,
+    },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
