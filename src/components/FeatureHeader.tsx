@@ -60,7 +60,12 @@ export function FeatureHeader({
             {title}
           </Text>
           {tagline ? (
-            <Text style={styles.compactTagline} numberOfLines={1}>
+            <Text
+              style={styles.compactTagline}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.7}
+            >
               {tagline}
             </Text>
           ) : null}
@@ -89,7 +94,16 @@ export function FeatureHeader({
           >
             {title}
           </Text>
-          {tagline ? <Text style={styles.tagline}>{tagline}</Text> : null}
+          {tagline ? (
+            <Text
+              style={styles.tagline}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.7}
+            >
+              {tagline}
+            </Text>
+          ) : null}
         </View>
         <View style={[styles.plantWrap, { transform: [{ scale }], transformOrigin: 'center bottom' }]}>
           <View style={styles.plantLeaf1} />
