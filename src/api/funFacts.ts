@@ -381,6 +381,18 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Seinfeld#:~:text=hung%20it%20in%20a%20bathroom%20on%20the%20set',
   },
+  'tv:70523': {
+    en: 'The town of Winden does not exist, and neither does its nuclear plant. Everything was filmed in and around Berlin, and the reactor towers were added by computer.',
+    de: 'Den Ort Winden gibt es nicht, das Kernkraftwerk auch nicht. Gedreht wurde alles in und um Berlin, und die Reaktortürme wurden am Computer eingefügt.',
+    source:
+      'https://en.wikipedia.org/wiki/Dark_(TV_series)#:~:text=nuclear%20reactor%20towers%20were%20computer-animated',
+  },
+  'tv:1438': {
+    en: 'The gentle deacon was played by a real drug lord. Little Melvin Williams went to prison in the 1980s through an investigation one of the show\u2019s own writers had worked on. Years later the same show cast him as a man of the church.',
+    de: 'Der freundliche Diakon wurde von einem echten Drogenboss gespielt. Little Melvin Williams kam in den Achtzigern ins Gefängnis, durch Ermittlungen, an denen einer der Autoren der Serie selbst beteiligt war. Jahre später besetzte ihn dieselbe Serie als Mann der Kirche.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Wire#:~:text=had%20a%20recurring%20role%20as%20a%20deacon',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
