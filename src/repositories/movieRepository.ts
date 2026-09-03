@@ -57,27 +57,26 @@ export const movieRepository: MovieRepository = {
     return row ? rowToStoredMovie(row) : null;
   },
 
-  async findPlaceholders(
+  async findWithoutGenres(
     limit: number,
-  ): Promise<{ id: string; mediaType: MediaType }[]> {
+    mediaType?: MediaType,
+  ): Promise<string[]> {
     const db = await getDatabase();
-    // The signature of minimalMovie() in ShelfSyncGate: no genres, no text,
-    // no votes. Restricted to shelved titles so cached swipes stay untouched.
-    const rows = await db.getAllAsync<{ media_type: string; id: string | number }>(
-      `SELECT m.media_type AS media_type, m.id AS id
+    // Cloud sync restores shelf rows with empty metadata, so these are the
+    // titles whose category chips would be missing.
+    const rows = await db.getAllAsync<{ id: string | number }>(
+      `SELECT m.id AS id
          FROM movies m
          JOIN interactions i
            ON i.media_type = m.media_type AND i.movie_id = m.id
         WHERE m.genres = '[]'
-          AND (m.overview IS NULL OR m.overview = '')
           AND i.type IN ('watched','watchlist','favorite')
-        GROUP BY m.media_type, m.id
+          ${mediaType ? 'AND m.media_type = ?' : ''}
+        GROUP BY m.id
+        ORDER BY MAX(i.created_at) DESC
         LIMIT ?;`,
-      [limit],
+      mediaType ? [mediaType, limit] : [limit],
     );
-    return rows.map((r) => ({
-      id: String(r.id),
-      mediaType: r.media_type as MediaType,
-    }));
+    return rows.map((r) => String(r.id));
   },
 };

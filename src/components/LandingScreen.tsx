@@ -197,7 +197,7 @@ function CategoryCard({
     }).start();
 
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
+    <Animated.View style={[styles.cardWrap, { transform: [{ scale }] }]}>
       <Pressable
         disabled={category.disabled}
         onPressIn={() => animate(0.96)}
@@ -379,9 +379,17 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   cards: {
+    // Share whatever the header, the profile row and the stories row leave
+    // over. Fixed heights overflowed, and on Android the raised cards then
+    // painted over the stories row.
+    flex: 1,
     gap: spacing.md,
   },
+  cardWrap: {
+    flex: 1,
+  },
   card: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
@@ -389,7 +397,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.paperShade,
-    padding: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,

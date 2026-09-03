@@ -44,8 +44,8 @@ export interface WatchedStats {
 export interface MovieRepository {
   upsert(movie: Movie): Promise<void>;
   getById(id: string, mediaType: MediaType): Promise<StoredMovie | null>;
-  /** Shelf rows that were restored from the cloud without their metadata. */
-  findPlaceholders(limit: number): Promise<{ id: string; mediaType: MediaType }[]>;
+  /** Shelved titles whose genres are missing, newest first. */
+  findWithoutGenres(limit: number, mediaType?: MediaType): Promise<string[]>;
 }
 
 /** A local shareable shelf entry with the minimal metadata needed to sync. */

@@ -23,6 +23,7 @@ import { useMediaType, useMediaTypeControls } from '@/context/MediaTypeProvider'
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useSettings } from '@/context/SettingsProvider';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
+import { useGenreBackfill } from '@/hooks/useGenreBackfill';
 import { useShelf, useReorderShelf } from '@/hooks/useShelf';
 import { InteractionType, StoredMovie } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
@@ -140,11 +141,12 @@ export function ShelfGrid({
     return Array.from(set).sort();
   }, [movies]);
 
+  useGenreBackfill(mediaType, movies.length > 0 && genres.length === 0);
+
   const visibleMovies = useMemo(
     () => (genre ? movies.filter((m) => m.genres.includes(genre)) : movies),
     [movies, genre],
   );
-
   const sortedMovies = useMemo(
     () => applySort(visibleMovies, sort),
     [visibleMovies, sort],
