@@ -36,6 +36,9 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# working notes, deliberately local only
+TODO.md
+
 # unused draft data, kept locally only
 src/api/bookLists.json
 
