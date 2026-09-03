@@ -1,7 +1,13 @@
+import { AppLanguage } from '../constants/languages';
 import { contentLanguage } from './tmdb';
 import { MediaType } from './types';
 
-type Localized = { en: string; de?: string; source?: string };
+/** The fact in each app language plus the source link. `en` is required and
+ *  serves as the fallback for any language not filled in yet. */
+type Localized = Partial<Record<AppLanguage, string>> & {
+  en: string;
+  source?: string;
+};
 
 export interface FunFact {
   text: string;
@@ -408,7 +414,6 @@ export function getFunFact(
 ): FunFact | null {
   const entry = FACTS[`${mediaType}:${id}`];
   if (!entry) return null;
-  const lang = contentLanguage().slice(0, 2).toLowerCase();
-  const text = lang === 'de' && entry.de ? entry.de : entry.en;
-  return { text, source: entry.source };
+  const lang = contentLanguage().slice(0, 2).toLowerCase() as AppLanguage;
+  return { text: entry[lang] ?? entry.en, source: entry.source };
 }
