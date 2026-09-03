@@ -36,6 +36,9 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# unused draft data, kept locally only
+src/api/bookLists.json
+
 # local SQLite / build artifacts
 *.db
 
