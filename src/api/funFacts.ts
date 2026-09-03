@@ -339,6 +339,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Apocalypse_Now#:~:text=had%20gotten%20the%20go-ahead%20to%20make',
   },
+  'tv:1399': {
+    en: 'The original pilot was received so poorly at a private screening that HBO demanded about 90 percent of the episode be reshot, with changes to the cast and director.',
+    de: 'Die ursprüngliche Pilotfolge kam bei einer privaten Vorführung so schlecht an, dass HBO rund 90 Prozent der Folge neu drehen ließ und Besetzung sowie Regie änderte.',
+    pt: 'O piloto original foi tão mal recebido em uma exibição privada que a HBO exigiu refilmar cerca de 90 por cento do episódio, com mudanças no elenco e na direção.',
+    fr: 'Le pilote original fut si mal reçu lors d’une projection privée que HBO exigea de retourner environ 90 pour cent de l’épisode, avec des changements de distribution et de réalisateur.',
+    es: 'El piloto original tuvo tan mala acogida en una proyección privada que HBO exigió volver a rodar cerca del 90 por ciento del episodio, con cambios en el reparto y la dirección.',
+    it: 'Il pilot originale fu accolto così male durante una proiezione privata che HBO impose di rigirare circa il 90 per cento dell’episodio, cambiando parte del cast e il regista.',
+    source:
+      'https://en.wikipedia.org/wiki/Game_of_Thrones#:~:text=after%20its%20poor%20reception%20following%20a%20private%20viewing%2C%20HBO%20demanded%20an%20extensive%20re-shoot',
+  },
+  'tv:60059': {
+    en: 'At the start of every season, a writer rewatched all 62 episodes of Breaking Bad to make sure the new scripts created no continuity conflicts.',
+    de: 'Zu Beginn jeder Staffel sah sich ein Autor alle 62 Folgen von Breaking Bad erneut an, damit die neuen Drehbücher keine Widersprüche erzeugten.',
+    pt: 'No início de cada temporada, um roteirista reassistia aos 62 episódios de Breaking Bad para garantir que os novos roteiros não criassem conflitos de continuidade.',
+    fr: 'Au début de chaque saison, un scénariste revoyait les 62 épisodes de Breaking Bad afin de vérifier que les nouveaux scripts ne créaient aucune incohérence.',
+    es: 'Al comienzo de cada temporada, un guionista volvía a ver los 62 episodios de Breaking Bad para comprobar que los nuevos guiones no crearan contradicciones.',
+    it: 'All’inizio di ogni stagione, uno sceneggiatore riguardava tutti i 62 episodi di Breaking Bad per assicurarsi che i nuovi copioni non creassero incongruenze.',
+    source:
+      'https://en.wikipedia.org/wiki/Better_Call_Saul#:~:text=a%20writer%20would%20be%20tasked%20at%20the%20start%20of%20each%20season%20to%20rewatch%20all%2062%20episodes',
+  },
+  'tv:76331': {
+    en: 'Jesse Armstrong first conceived Succession as a feature film about the Murdoch family, but the script was never produced.',
+    de: 'Jesse Armstrong plante Succession zunächst als Kinofilm über die Familie Murdoch, doch das Drehbuch wurde nie verfilmt.',
+    pt: 'Jesse Armstrong concebeu Succession inicialmente como um longa-metragem sobre a família Murdoch, mas o roteiro nunca chegou a ser produzido.',
+    fr: 'Jesse Armstrong avait d’abord imaginé Succession comme un long métrage sur la famille Murdoch, mais le scénario ne fut jamais produit.',
+    es: 'Jesse Armstrong concibió Succession inicialmente como un largometraje sobre la familia Murdoch, pero el guion nunca llegó a producirse.',
+    it: 'Jesse Armstrong concepì inizialmente Succession come un film sulla famiglia Murdoch, ma la sceneggiatura non fu mai prodotta.',
+    source:
+      'https://en.wikipedia.org/wiki/Succession_(TV_series)#:~:text=initially%20conceived%20the%20series%20as%20a%20feature%20film%20about%20the%20Murdoch%20family',
+  },
+  'tv:67070': {
+    en: 'The character of Fleabag began with a challenge from a friend, who asked Phoebe Waller-Bridge to create a sketch for a ten-minute slot at a storytelling night.',
+    de: 'Die Figur Fleabag entstand durch die Herausforderung einer Freundin: Phoebe Waller-Bridge sollte einen Sketch für einen zehnminütigen Auftritt bei einem Erzählabend entwickeln.',
+    pt: 'A personagem Fleabag nasceu de um desafio feito por uma amiga, que pediu a Phoebe Waller-Bridge um esquete para uma participação de dez minutos em uma noite de histórias.',
+    fr: 'Le personnage de Fleabag est né du défi lancé par une amie à Phoebe Waller-Bridge, qui devait créer un sketch pour un créneau de dix minutes lors d’une soirée de récits.',
+    es: 'El personaje de Fleabag nació de un reto de una amiga, que pidió a Phoebe Waller-Bridge crear un número para un espacio de diez minutos en una noche de narración.',
+    it: 'Il personaggio di Fleabag nacque da una sfida lanciata da un’amica, che chiese a Phoebe Waller-Bridge di creare uno sketch per uno spazio di dieci minuti durante una serata di racconti.',
+    source:
+      'https://en.wikipedia.org/wiki/Fleabag#:~:text=The%20initial%20idea%20of%20the%20character%20of%20Fleabag%20came%20from%20a%20challenge%20by%20a%20friend',
+  },
   'tv:1396': {
     en: 'Bryan Cranston almost lost the part. The network knew him only as the goofy dad from Malcolm in the Middle and offered Walter White to John Cusack and Matthew Broderick first. Both said no, and only then was Cranston cast.',
     de: 'Bryan Cranston hätte die Rolle fast nicht bekommen. Der Sender kannte ihn nur als albernen Vater aus Malcolm mittendrin und bot Walter White zuerst John Cusack und Matthew Broderick an. Beide sagten ab, erst danach bekam Cranston die Rolle.',
