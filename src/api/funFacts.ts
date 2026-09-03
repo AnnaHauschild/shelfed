@@ -334,8 +334,8 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Apocalypse_Now#:~:text=had%20gotten%20the%20go-ahead%20to%20make',
   },
   'tv:1396': {
-    en: 'The network knew Bryan Cranston only as the goofy dad from Malcolm in the Middle and approached John Cusack and Matthew Broderick instead. Both turned the role down.',
-    de: 'Der Sender kannte Bryan Cranston nur als albernen Vater aus Malcolm mittendrin und fragte stattdessen John Cusack und Matthew Broderick. Beide lehnten ab.',
+    en: 'Bryan Cranston almost lost the part. The network knew him only as the goofy dad from Malcolm in the Middle and offered Walter White to John Cusack and Matthew Broderick first. Both said no, and only then was Cranston cast.',
+    de: 'Bryan Cranston hätte die Rolle fast nicht bekommen. Der Sender kannte ihn nur als albernen Vater aus Malcolm mittendrin und bot Walter White zuerst John Cusack und Matthew Broderick an. Beide sagten ab, erst danach bekam Cranston die Rolle.',
     source:
       'https://en.wikipedia.org/wiki/Breaking_Bad#:~:text=John%20Cusack%20and%20Matthew%20Broderick',
   },
@@ -356,6 +356,18 @@ const FACTS: Record<string, Localized> = {
     de: 'Die Musik enthält keine gewöhnlichen Instrumente. Die Komponistin nahm Geräusche in einem stillgelegten Kernkraftwerk auf und baute die Musik allein daraus.',
     source:
       'https://en.wikipedia.org/wiki/Chernobyl_(miniseries)#:~:text=recordings%20from%20the%20power%20plant',
+  },
+  'tv:1668': {
+    en: 'The fountain from the opening titles is not in New York. The show was never filmed there. That scene was shot on a studio lot in California at four in the morning, on an unusually cold night.',
+    de: 'Der Brunnen aus dem Vorspann steht nicht in New York. Dort wurde nie gedreht. Die Szene entstand auf einem Studiogelände in Kalifornien, morgens um vier und in ungewöhnlicher Kälte.',
+    source:
+      'https://en.wikipedia.org/wiki/Friends#:~:text=The%20opening%20title%20sequence%20was%20filmed%20in%20a%20fountain',
+  },
+  'tv:1920': {
+    en: 'The terrifying Bob was the set dresser. Lynch filmed him on a whim, then a camera operator reported a ruined shot because the man was accidentally caught in a mirror. Lynch kept it and built a character around him.',
+    de: 'Der furchteinflößende Bob war der Ausstatter der Serie. Lynch filmte ihn spontan, dann meldete ein Kameramann eine verdorbene Aufnahme, weil der Mann versehentlich in einem Spiegel zu sehen war. Lynch behielt sie und machte eine Figur aus ihm.',
+    source:
+      'https://en.wikipedia.org/wiki/Twin_Peaks#:~:text=reflected%20in%20the%20mirror',
   },
 };
 
