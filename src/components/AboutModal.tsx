@@ -1,5 +1,7 @@
 import { Linking, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
+import * as Updates from 'expo-updates';
 import { useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
@@ -14,6 +16,14 @@ interface Props {
  */
 export function AboutModal({ visible, onClose }: Props) {
   const chrome = useThemeChrome();
+  const version = Constants.expoConfig?.version ?? '';
+  // Was hardcoded, so it kept claiming 1.0.0 on devices that were fully
+  // up to date. The update line tells apart the store build from an OTA.
+  const build = Updates.isEmbeddedLaunch
+    ? 'Store build'
+    : Updates.createdAt
+      ? `Update ${Updates.createdAt.toISOString().slice(0, 10)}`
+      : 'Development';
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} />
@@ -64,7 +74,8 @@ export function AboutModal({ visible, onClose }: Props) {
             </Text>
           </Section>
 
-          <Text style={styles.version}>Version 1.0.0</Text>
+          <Text style={styles.version}>Version {version}</Text>
+          <Text style={styles.build}>{build}</Text>
         </ScrollView>
       </View>
     </Modal>
@@ -154,5 +165,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginTop: spacing.md,
+  },
+  build: {
+    color: colors.textOnDarkMuted,
+    fontFamily: fonts.label,
+    fontSize: 10,
+    textAlign: 'center',
+    letterSpacing: 1,
+    opacity: 0.7,
+    marginTop: 2,
   },
 });
