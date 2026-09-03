@@ -369,6 +369,18 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Twin_Peaks#:~:text=reflected%20in%20the%20mirror',
   },
+  'tv:456': {
+    en: 'Matt Groening invented the family in minutes, waiting in a producer\u2019s lobby before the pitch. He named the characters after his own relatives and changed only his own name: Bart is an anagram of brat.',
+    de: 'Matt Groening erfand die Familie in wenigen Minuten, während er vor dem Termin im Vorzimmer eines Produzenten wartete. Er benannte die Figuren nach seinen eigenen Verwandten und änderte nur seinen eigenen Namen: Bart ist ein Anagramm des englischen Wortes für Gör.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Simpsons#:~:text=named%20the%20characters%20after%20his%20own%20family%20members',
+  },
+  'tv:1400': {
+    en: 'The network\u2019s own test report called the pilot weak. One viewer wrote that you cannot get excited about two guys going to the laundromat. Years later the creators hung that report in a bathroom on the set.',
+    de: 'Der eigene Testbericht des Senders nannte die Pilotfolge schwach. Ein Zuschauer schrieb, für zwei Männer im Waschsalon könne man sich nicht begeistern. Jahre später hängten die Macher diesen Bericht im Bad des Studios auf.',
+    source:
+      'https://en.wikipedia.org/wiki/Seinfeld#:~:text=hung%20it%20in%20a%20bathroom%20on%20the%20set',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
