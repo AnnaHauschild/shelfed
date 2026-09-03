@@ -48,6 +48,33 @@ export const movieRepository: MovieRepository = {
     );
   },
 
+  async insertIfAbsent(movie: Movie): Promise<void> {
+    const db = await getDatabase();
+    await db.runAsync(
+      `INSERT INTO movies
+         (media_type, id, title, year, genre_ids, genres, poster_path,
+          backdrop_path, overview, vote_average, vote_count, popularity, cached_at, lang)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(media_type, id) DO NOTHING;`,
+      [
+        movie.mediaType,
+        movie.id,
+        movie.title,
+        movie.year,
+        JSON.stringify(movie.genreIds),
+        JSON.stringify(movie.genres),
+        movie.posterPath,
+        movie.backdropPath,
+        movie.overview,
+        movie.voteAverage,
+        movie.voteCount,
+        movie.popularity,
+        Date.now(),
+        contentLanguage(),
+      ],
+    );
+  },
+
   async getById(id: string, mediaType: MediaType): Promise<StoredMovie | null> {
     const db = await getDatabase();
     const row = await db.getFirstAsync<MovieRow>(

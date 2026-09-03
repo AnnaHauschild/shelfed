@@ -43,6 +43,8 @@ export interface WatchedStats {
  */
 export interface MovieRepository {
   upsert(movie: Movie): Promise<void>;
+  /** Writes only when the title is unknown, so real metadata is never lost. */
+  insertIfAbsent(movie: Movie): Promise<void>;
   getById(id: string, mediaType: MediaType): Promise<StoredMovie | null>;
   /** Shelved titles whose genres are missing, newest first. */
   findWithoutGenres(limit: number, mediaType?: MediaType): Promise<string[]>;

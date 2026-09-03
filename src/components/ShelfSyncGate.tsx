@@ -89,7 +89,10 @@ export function ShelfSyncGate() {
             item.mediaType,
           );
           if (exists) continue;
-          await movieRepository.upsert(minimalMovie(item));
+          // Never upsert here: clearAll() drops the interactions but keeps the
+          // movies table, so a plain upsert would replace real metadata with
+          // these placeholders.
+          await movieRepository.insertIfAbsent(minimalMovie(item));
           await interactionRepository.add(
             item.movieId,
             item.type,
