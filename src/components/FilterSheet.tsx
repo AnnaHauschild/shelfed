@@ -1,21 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Dimensions, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActorFilter, SelectedActor } from './ActorFilter';
 import { AuthorFilter, SelectedAuthor } from './AuthorFilter';
+import { SheetHandle, SheetView, useSheetDismiss } from './SheetHandle';
 import { MUST_SEE_LABEL } from '@/api/movies';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { useThemeChrome } from '@/context/ThemeProvider';
-
-const SCREEN_H = Dimensions.get('window').height;
 
 interface Option {
   id: string;
@@ -141,36 +133,13 @@ export function FilterSheet({
   hideMustSee = false,
   onClearAll,
 }: Props) {
-  // Drag-to-dismiss, same feel as the movie-details sheet: pull the sheet down
-  // past a threshold (or flick it) to close.
-  const translateY = useSharedValue(0);
+  const { sheetStyle, gesture } = useSheetDismiss(visible, onClose);
   const [openKey, setOpenKey] = useState<string | null>(null);
   const toggle = (key: string) =>
     setOpenKey((cur) => (cur === key ? null : key));
   useEffect(() => {
-    if (visible) {
-      translateY.value = 0;
-      setOpenKey(null);
-    }
-  }, [visible, translateY]);
-
-  const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
-
-  const dragGesture = Gesture.Pan()
-    .onUpdate((e) => {
-      translateY.value = Math.max(0, e.translationY);
-    })
-    .onEnd((e) => {
-      if (e.translationY > 120 || e.velocityY > 900) {
-        translateY.value = withTiming(SCREEN_H, { duration: 220 }, (finished) => {
-          if (finished) runOnJS(onClose)();
-        });
-      } else {
-        translateY.value = withSpring(0, { damping: 22, stiffness: 220 });
-      }
-    });
+    if (visible) setOpenKey(null);
+  }, [visible]);
 
   const chrome = useThemeChrome();
   const filterDefs: FilterDef[] = [
@@ -266,20 +235,15 @@ export function FilterSheet({
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <GestureHandlerRootView style={styles.modalRoot}>
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <Animated.View style={[styles.sheet, sheetStyle, { backgroundColor: chrome.background, borderColor: chrome.border }]}>
-          <GestureDetector gesture={dragGesture}>
-            <View style={styles.grabZone}>
-              <View style={styles.handleZone}>
-                <View style={[styles.handle, { backgroundColor: chrome.border }]} />
-              </View>
-              <View style={styles.headerRow}>
-                <Text style={styles.title}>Filters</Text>
-                <Pressable onPress={onClearAll} hitSlop={8}>
-                  <Text style={[styles.clear, { color: chrome.accent }]}>Clear all</Text>
-                </Pressable>
-              </View>
+        <SheetView style={[styles.sheet, sheetStyle, { backgroundColor: chrome.background, borderColor: chrome.border }]}>
+          <SheetHandle gesture={gesture}>
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>Filters</Text>
+              <Pressable onPress={onClearAll} hitSlop={8}>
+                <Text style={[styles.clear, { color: chrome.accent }]}>Clear all</Text>
+              </Pressable>
             </View>
-          </GestureDetector>
+          </SheetHandle>
 
         <ScrollView
           contentContainerStyle={styles.content}
@@ -391,7 +355,7 @@ export function FilterSheet({
           <Ionicons name="checkmark" size={18} color={chrome.onAccent} />
           <Text style={[styles.doneText, { color: chrome.onAccent }]}>Done</Text>
         </Pressable>
-        </Animated.View>
+        </SheetView>
       </GestureHandlerRootView>
     </Modal>
   );
@@ -419,21 +383,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.lg,
     paddingTop: spacing.sm,
-  },
-  grabZone: {
-    marginBottom: spacing.md,
-  },
-  handleZone: {
-    alignItems: 'center',
-    paddingTop: spacing.xs,
-    paddingBottom: spacing.sm,
-  },
-  handle: {
-    width: 44,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.border,
-    alignSelf: 'center',
   },
   headerRow: {
     flexDirection: 'row',

@@ -8,6 +8,7 @@ import {
   useMoods,
 } from '@/hooks/useMoods';
 import { colors, fonts, radius, spacing } from '@/theme';
+import { SheetHandle, SheetView, useSheetDismiss } from './SheetHandle';
 
 interface Props {
   movie: Movie | null;
@@ -27,6 +28,7 @@ export function AddToMoodSheet({ movie, visible, onClose }: Props) {
     movie?.mediaType ?? 'movie',
   );
   const { addMovieToMood, removeFromMood } = useMoodMutations();
+  const { sheetStyle, gesture } = useSheetDismiss(visible, onClose);
 
   if (!visible || !movie) return null;
 
@@ -35,8 +37,8 @@ export function AddToMoodSheet({ movie, visible, onClose }: Props) {
   return (
     <View style={styles.root}>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={styles.sheet}>
-        <View style={styles.handle} />
+      <SheetView style={[styles.sheet, sheetStyle]}>
+        <SheetHandle gesture={gesture} />
         <View style={styles.header}>
           <Text style={styles.title}>Add to {MOOD_LABEL.toLowerCase()}</Text>
           <Pressable onPress={onClose} hitSlop={8}>
@@ -83,7 +85,7 @@ export function AddToMoodSheet({ movie, visible, onClose }: Props) {
             on your shelf, then add titles here.
           </Text>
         )}
-      </View>
+      </SheetView>
     </View>
   );
 }
@@ -108,14 +110,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     paddingBottom: spacing.xl,
-  },
-  handle: {
-    width: 44,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.border,
-    alignSelf: 'center',
-    marginBottom: spacing.md,
   },
   header: {
     flexDirection: 'row',

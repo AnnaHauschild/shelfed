@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import {
-  Dimensions,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -12,17 +11,18 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFollows } from '@/hooks/useFollows';
 import { useUserSearch } from '@/hooks/useUserSearch';
+import { useBottomInset } from '@/hooks/useBottomInset';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { UserSummary } from '@/api/follows';
 import { StoryGroup } from '@/api/posts';
 import { Avatar } from './Avatar';
+import { SheetHandle, SheetView, useSheetDismiss } from './SheetHandle';
 import { StoriesBar, StoryViewer } from './StoriesBar';
 import { UserShelfSheet } from './UserShelfSheet';
-
-const SCREEN_H = Dimensions.get('window').height;
 
 /**
  * Find people by @username and follow / unfollow them. Opened from the Account
@@ -45,6 +45,8 @@ export function FriendsSheet({
   const { results, loading } = useUserSearch(query);
   const { following, requests, isFollowing, isRequested, follow, unfollow, accept, reject } =
     useFollows();
+  const { sheetStyle, gesture } = useSheetDismiss(visible, onClose);
+  const bottomInset = useBottomInset(spacing.md);
 
   const searching = query.trim().length >= 2;
 
@@ -94,6 +96,7 @@ export function FriendsSheet({
       animationType="slide"
       onRequestClose={onClose}
     >
+      <GestureHandlerRootView style={styles.root}>
       <KeyboardAvoidingView
         style={styles.root}
         // Android needs an explicit behavior inside a Modal; adjustResize alone
@@ -101,8 +104,8 @@ export function FriendsSheet({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={styles.sheet}>
-        <View style={styles.handle} />
+      <SheetView style={[styles.sheet, sheetStyle, { paddingBottom: bottomInset }]}>
+        <SheetHandle gesture={gesture} />
         <View style={styles.headerRow}>
           <Text style={styles.title}>Friends</Text>
           <Pressable onPress={onClose} hitSlop={8}>
@@ -159,9 +162,10 @@ export function FriendsSheet({
             </>
           )}
         </ScrollView>
-      </View>
+      </SheetView>
       <StoryViewer story={story} onClose={() => setStory(null)} />
       </KeyboardAvoidingView>
+      </GestureHandlerRootView>
       <UserShelfSheet user={viewUser} onClose={() => setViewUser(null)} />
     </Modal>
   );
@@ -185,16 +189,7 @@ const makeStyles = (c: ThemeChrome) =>
       borderTopWidth: 2,
       borderColor: c.border,
       paddingHorizontal: spacing.lg,
-      paddingBottom: spacing.xl,
       paddingTop: spacing.sm,
-    },
-    handle: {
-      width: 44,
-      height: 4,
-      borderRadius: 2,
-      backgroundColor: c.border,
-      alignSelf: 'center',
-      marginBottom: spacing.sm,
     },
     headerRow: {
       flexDirection: 'row',

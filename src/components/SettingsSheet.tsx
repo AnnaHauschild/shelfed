@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Dimensions,
   Modal,
   Pressable,
   ScrollView,
@@ -10,20 +9,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import { LANGUAGES } from '@/constants/languages';
 import { useLanguage } from '@/context/LanguageProvider';
@@ -34,13 +21,13 @@ import { ShelfTheme, ThemeChrome, useTheme, useThemeChrome } from '@/context/The
 import { MediaType } from '@/api/types';
 import { useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
+import { useBottomInset } from '@/hooks/useBottomInset';
 import { useStats } from '@/hooks/useStats';
 import { useSeasonAlerts } from '@/hooks/useSeasonAlerts';
 import { AccountSection } from './AccountSection';
 import { AccountActions } from './AccountActions';
 import { DataActions } from './DataActions';
-
-const SCREEN_H = Dimensions.get('window').height;
+import { SheetHandle, SheetView, useSheetDismiss } from './SheetHandle';
 
 interface ThemeOption {
   id: ShelfTheme;
@@ -105,7 +92,6 @@ export function SettingsSheet({
   /** When 'stats', open scrolled to the Statistics section. */
   scrollTo?: 'stats' | null;
 }) {
-  const insets = useSafeAreaInsets();
   const { name, setName } = useProfile();
   // With an account the username is the name, so the free-text field is hidden.
   const { enabled: authEnabled, session } = useAuth();
@@ -137,15 +123,13 @@ export function SettingsSheet({
     [theme],
   );
 
-  const translateY = useSharedValue(0);
   useEffect(() => {
     if (visible) {
-      translateY.value = 0;
       setDraft(name ?? '');
       setLangOpen(false);
       setBgOpen(false);
     }
-  }, [visible, name, translateY]);
+  }, [visible, name]);
 
   // Optionally open scrolled straight to the Statistics section.
   const scrollRef = useRef<ScrollView>(null);
@@ -178,23 +162,8 @@ export function SettingsSheet({
     router.push('/shelf');
   };
 
-  const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
-
-  const dragGesture = Gesture.Pan()
-    .onUpdate((e) => {
-      translateY.value = Math.max(0, e.translationY);
-    })
-    .onEnd((e) => {
-      if (e.translationY > 120 || e.velocityY > 900) {
-        translateY.value = withTiming(SCREEN_H, { duration: 220 }, (finished) => {
-          if (finished) runOnJS(handleClose)();
-        });
-      } else {
-        translateY.value = withSpring(0, { damping: 22, stiffness: 220 });
-      }
-    });
+  const { sheetStyle, gesture } = useSheetDismiss(visible, handleClose);
+  const bottomInset = useBottomInset(spacing.lg);
 
   const currentLang = LANGUAGES.find((l) => l.code === language) ?? LANGUAGES[0];
 
@@ -207,28 +176,19 @@ export function SettingsSheet({
     >
       <GestureHandlerRootView style={styles.modalRoot}>
         <Pressable style={styles.backdrop} onPress={handleClose} />
-        <Animated.View
-          style={[
-            styles.sheet,
-            sheetStyle,
-            { paddingBottom: insets.bottom + spacing.lg },
-          ]}
+        <SheetView
+          style={[styles.sheet, sheetStyle, { paddingBottom: bottomInset }]}
         >
-          <GestureDetector gesture={dragGesture}>
-            <View style={styles.grabZone}>
-              <View style={styles.handleZone}>
-                <View style={styles.handle} />
-              </View>
-              <View style={styles.headerRow}>
-                <Ionicons
-                  name="settings-outline"
-                  size={20}
-                  color={chrome.accent}
-                />
-                <Text style={styles.title}>Settings</Text>
-              </View>
+          <SheetHandle gesture={gesture}>
+            <View style={styles.headerRow}>
+              <Ionicons
+                name="settings-outline"
+                size={20}
+                color={chrome.accent}
+              />
+              <Text style={styles.title}>Settings</Text>
             </View>
-          </GestureDetector>
+          </SheetHandle>
 
           <ScrollView
             ref={scrollRef}
@@ -511,7 +471,7 @@ export function SettingsSheet({
             <DataActions />
             <AccountActions />
           </ScrollView>
-        </Animated.View>
+        </SheetView>
       </GestureHandlerRootView>
     </Modal>
   );
@@ -539,21 +499,6 @@ const makeStyles = (c: ThemeChrome) =>
     borderColor: c.border,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
-  },
-  grabZone: {
-    marginBottom: spacing.md,
-  },
-  handleZone: {
-    alignItems: 'center',
-    paddingTop: spacing.xs,
-    paddingBottom: spacing.sm,
-  },
-  handle: {
-    width: 44,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: c.border,
-    alignSelf: 'center',
   },
   headerRow: {
     flexDirection: 'row',

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Dimensions,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -11,18 +10,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { GenreChips } from '@/components/GenreChips';
 import { useLanguage } from '@/context/LanguageProvider';
@@ -31,8 +19,7 @@ import { useMoodMutations, useMoods } from '@/hooks/useMoods';
 import { useBottomInset } from '@/hooks/useBottomInset';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
-
-const SCREEN_H = Dimensions.get('window').height;
+import { SheetHandle, SheetView, useSheetDismiss } from './SheetHandle';
 
 export type ShelfMenuSection = 'sort' | 'genre' | 'moods';
 
@@ -80,15 +67,12 @@ export function ShelfMenu({
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
-  const translateY = useSharedValue(0);
 
-  // Reset the create form + drag offset whenever the sheet closes/opens.
+  // Reset the create form whenever the sheet closes.
   useEffect(() => {
     if (section == null) {
       setCreating(false);
       setName('');
-    } else {
-      translateY.value = 0;
     }
   }, [section]);
 
@@ -98,23 +82,8 @@ export function ShelfMenu({
     onClose();
   };
 
-  // Drag-to-dismiss, same as the Discover filter sheet.
-  const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
-  const dragGesture = Gesture.Pan()
-    .onUpdate((e) => {
-      translateY.value = Math.max(0, e.translationY);
-    })
-    .onEnd((e) => {
-      if (e.translationY > 120 || e.velocityY > 900) {
-        translateY.value = withTiming(SCREEN_H, { duration: 220 }, (done) => {
-          if (done) runOnJS(close)();
-        });
-      } else {
-        translateY.value = withSpring(0, { damping: 22, stiffness: 220 });
-      }
-    });
+  // Drag-to-dismiss, same as every other sheet.
+  const { sheetStyle, gesture } = useSheetDismiss(section != null, close);
 
   const create = async () => {
     const trimmed = name.trim();
@@ -140,14 +109,10 @@ export function ShelfMenu({
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <Pressable style={styles.backdrop} onPress={close} />
-          <Animated.View
+          <SheetView
             style={[styles.sheet, sheetStyle, { paddingBottom: bottomInset }]}
           >
-            <GestureDetector gesture={dragGesture}>
-              <View style={styles.grabZone}>
-                <View style={styles.handle} />
-              </View>
-            </GestureDetector>
+            <SheetHandle gesture={gesture} />
 
             {section === 'moods' && creating ? (
             <ScrollView
@@ -305,7 +270,7 @@ export function ShelfMenu({
               )}
             </ScrollView>
           )}
-          </Animated.View>
+          </SheetView>
         </KeyboardAvoidingView>
       </GestureHandlerRootView>
     </Modal>
@@ -358,18 +323,6 @@ const makeStyles = (c: ThemeChrome) =>
     borderColor: c.border,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
-  },
-  grabZone: {
-    alignItems: 'center',
-    paddingTop: spacing.xs,
-    paddingBottom: spacing.md,
-  },
-  handle: {
-    width: 44,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: c.border,
-    alignSelf: 'center',
   },
   content: {
     gap: spacing.md,

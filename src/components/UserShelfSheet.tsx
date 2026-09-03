@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -342,6 +342,9 @@ export function UserShelfSheet({
       animationType="slide"
       onRequestClose={onClose}
     >
+      {/* Without a gesture root the pan handlers never fire inside a Modal on
+          Android, so the sheet could not be pulled down. */}
+      <GestureHandlerRootView style={styles.modalRoot}>
       <Pressable style={styles.backdrop} onPress={onClose} />
       <Animated.View style={[styles.sheet, sheetStyle]}>
         <GestureDetector gesture={sheetDismiss}>
@@ -472,6 +475,7 @@ export function UserShelfSheet({
           onClose={() => setComposerMovie(null)}
         />
       </Animated.View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -556,6 +560,9 @@ const makeActionStyles = (c: ThemeChrome) =>
 
 const makeStyles = (c: ThemeChrome) =>
   StyleSheet.create({
+    modalRoot: {
+      flex: 1,
+    },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: 'rgba(10, 6, 2, 0.6)',

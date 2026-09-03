@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { EmptyState } from '@/components/EmptyState';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
@@ -23,6 +24,8 @@ import {
 import { PosterImage } from '@/components/PosterImage';
 import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
+import { SheetHandle, SheetView, useSheetDismiss } from '@/components/SheetHandle';
+import { useBottomInset } from '@/hooks/useBottomInset';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMood, useMoodMovies, useMoodMutations } from '@/hooks/useMoods';
 import { useShelf } from '@/hooks/useShelf';
@@ -49,9 +52,11 @@ interface Props {
 export function MoodShelf({ moodId, onClose, sourceType = 'watched' }: Props) {
   return (
     <Modal visible={moodId != null} animationType="slide" onRequestClose={onClose}>
-      <MovieDetailsProvider>
-        <MoodShelfBody moodId={moodId} onClose={onClose} sourceType={sourceType} />
-      </MovieDetailsProvider>
+      <GestureHandlerRootView style={styles.container}>
+        <MovieDetailsProvider>
+          <MoodShelfBody moodId={moodId} onClose={onClose} sourceType={sourceType} />
+        </MovieDetailsProvider>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -67,6 +72,9 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [renameText, setRenameText] = useState<string | null>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const bottomInset = useBottomInset(spacing.md);
+  const options = useSheetDismiss(optionsOpen, () => setOptionsOpen(false));
+  const rename = useSheetDismiss(renameText != null, () => setRenameText(null));
 
   const items = useMemo(() => movies ?? [], [movies]);
   // Set of "<mediaType>:<id>" already in this mood, for the picker checkmarks.
@@ -170,10 +178,10 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
             style={styles.pickerBackdrop}
             onPress={() => setOptionsOpen(false)}
           />
-          <View
-            style={[styles.optionsSheet, { paddingBottom: insets.bottom + spacing.md }]}
+          <SheetView
+            style={[styles.optionsSheet, options.sheetStyle, { paddingBottom: bottomInset }]}
           >
-            <View style={styles.handle} />
+            <SheetHandle gesture={options.gesture} />
             <Pressable
               style={({ pressed }) => [styles.optionRow, pressed && styles.pressed]}
               onPress={() => {
@@ -191,7 +199,7 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
               <Ionicons name="trash-outline" size={20} color={colors.skip} />
               <Text style={[styles.optionText, { color: colors.skip }]}>Delete</Text>
             </Pressable>
-          </View>
+          </SheetView>
         </View>
       )}
 
@@ -204,8 +212,10 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
             style={styles.pickerBackdrop}
             onPress={() => setRenameText(null)}
           />
-          <View style={[styles.renameSheet, { paddingBottom: insets.bottom + spacing.md }]}>
-            <View style={styles.handle} />
+          <SheetView
+            style={[styles.renameSheet, rename.sheetStyle, { paddingBottom: bottomInset }]}
+          >
+            <SheetHandle gesture={rename.gesture} />
             <Text style={styles.renameLabel}>Rename mood</Text>
             <TextInput
               style={styles.renameInput}
@@ -234,7 +244,7 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
                 <Text style={styles.renameSaveText}>Save</Text>
               </Pressable>
             </View>
-          </View>
+          </SheetView>
         </KeyboardAvoidingView>
       )}
     </View>
@@ -260,12 +270,14 @@ function AddPicker({
   const insets = useSafeAreaInsets();
   const { data: watched } = useShelf(sourceType);
   const rows = watched ?? [];
+  const bottomInset = useBottomInset(spacing.md);
+  const { sheetStyle, gesture } = useSheetDismiss(true, onClose);
 
   return (
     <View style={styles.pickerRoot}>
       <Pressable style={styles.pickerBackdrop} onPress={onClose} />
-      <View style={[styles.pickerSheet, { paddingBottom: insets.bottom + spacing.md }]}>
-        <View style={styles.handle} />
+      <SheetView style={[styles.pickerSheet, sheetStyle, { paddingBottom: bottomInset }]}>
+        <SheetHandle gesture={gesture} />
         <View style={styles.pickerHeader}>
           <Text style={styles.pickerTitle}>Add from your shelf</Text>
           <Pressable onPress={onClose} hitSlop={8}>
@@ -321,7 +333,7 @@ function AddPicker({
             })}
           </ScrollView>
         )}
-      </View>
+      </SheetView>
     </View>
   );
 }
@@ -396,14 +408,6 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
-  },
-  handle: {
-    width: 44,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.border,
-    alignSelf: 'center',
-    marginBottom: spacing.md,
   },
   pickerHeader: {
     flexDirection: 'row',
