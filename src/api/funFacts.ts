@@ -445,6 +445,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Office_(American_TV_series)#:~:text=read%20with%20other%20actors%20auditioning%20so%20much%20that%20he%20cast',
   },
+  'tv:1104': {
+    en: 'The actors smoked herbal cigarettes instead of tobacco. Creator Matthew Weiner said real cigarettes had made actors on other sets agitated, nervous and even sick.',
+    de: 'Die Darsteller rauchten Kräuterzigaretten statt Tabak. Serienschöpfer Matthew Weiner hatte an anderen Sets erlebt, dass echte Zigaretten Schauspieler unruhig, nervös und sogar krank machten.',
+    pt: 'Os atores fumavam cigarros de ervas em vez de tabaco. O criador Matthew Weiner disse que cigarros de verdade haviam deixado atores de outros sets agitados, nervosos e até doentes.',
+    fr: 'Les acteurs fumaient des cigarettes aux herbes plutôt que du tabac. Le créateur Matthew Weiner avait vu de vraies cigarettes rendre des acteurs agités, nerveux et même malades sur d’autres tournages.',
+    es: 'Los actores fumaban cigarrillos de hierbas en lugar de tabaco. El creador Matthew Weiner había visto cómo los cigarrillos reales ponían a actores de otros rodajes inquietos, nerviosos e incluso enfermos.',
+    it: 'Gli attori fumavano sigarette alle erbe invece del tabacco. Il creatore Matthew Weiner aveva visto sigarette vere rendere gli attori agitati, nervosi e persino malati su altri set.',
+    source:
+      'https://en.wikipedia.org/wiki/Mad_Men#:~:text=you%20don%27t%20want%20actors%20smoking%20real%20cigarettes',
+  },
+  'tv:100088': {
+    en: 'Ashley Johnson, who originally played Ellie in the video games, appears in the series as Ellie’s mother Anna.',
+    de: 'Ashley Johnson, die Ellie ursprünglich in den Videospielen spielte, tritt in der Serie als Ellies Mutter Anna auf.',
+    pt: 'Ashley Johnson, que interpretou Ellie originalmente nos videogames, aparece na série como Anna, a mãe de Ellie.',
+    fr: 'Ashley Johnson, qui incarnait Ellie à l’origine dans les jeux vidéo, joue Anna, la mère d’Ellie, dans la série.',
+    es: 'Ashley Johnson, quien interpretó originalmente a Ellie en los videojuegos, aparece en la serie como Anna, la madre de Ellie.',
+    it: 'Ashley Johnson, che interpretava Ellie nei videogiochi originali, appare nella serie nel ruolo di Anna, la madre di Ellie.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Last_of_Us_(TV_series)#:~:text=Johnson%20previously%20portrayed%20Ellie%20in%20the%20video%20games',
+  },
+  'tv:136315': {
+    en: 'The sandwich shop interior was copied from the real Mr. Beef in Chicago. Creator Christopher Storer was a regular customer and a friend of the owner’s son.',
+    de: 'Das Innere des Sandwichladens wurde dem echten Mr. Beef in Chicago nachempfunden. Serienschöpfer Christopher Storer war dort Stammgast und mit dem Sohn des Besitzers befreundet.',
+    pt: 'O interior da lanchonete foi copiado do verdadeiro Mr. Beef, em Chicago. O criador Christopher Storer era cliente frequente e amigo do filho do proprietário.',
+    fr: 'L’intérieur de la sandwicherie reproduit le véritable Mr. Beef de Chicago. Le créateur Christopher Storer en était un client régulier et un ami du fils du propriétaire.',
+    es: 'El interior de la tienda de sándwiches se copió del auténtico Mr. Beef de Chicago. El creador Christopher Storer era cliente habitual y amigo del hijo del propietario.',
+    it: 'L’interno della paninoteca è stato copiato dal vero Mr. Beef di Chicago. Il creatore Christopher Storer era un cliente abituale e amico del figlio del proprietario.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Bear_(TV_series)#:~:text=The%20sandwich%20shop%20interior%20is%20copied%20from%20the%20Chicago%20shop',
+  },
+  'tv:19885': {
+    en: 'Sherlock’s parents are played by Benedict Cumberbatch’s real parents, actors Wanda Ventham and Timothy Carlton.',
+    de: 'Sherlocks Eltern werden von Benedict Cumberbatchs echten Eltern gespielt, den Schauspielern Wanda Ventham und Timothy Carlton.',
+    pt: 'Os pais de Sherlock são interpretados pelos pais de verdade de Benedict Cumberbatch, os atores Wanda Ventham e Timothy Carlton.',
+    fr: 'Les parents de Sherlock sont joués par les véritables parents de Benedict Cumberbatch, les acteurs Wanda Ventham et Timothy Carlton.',
+    es: 'Los padres de Sherlock son interpretados por los padres reales de Benedict Cumberbatch, los actores Wanda Ventham y Timothy Carlton.',
+    it: 'I genitori di Sherlock sono interpretati dai veri genitori di Benedict Cumberbatch, gli attori Wanda Ventham e Timothy Carlton.',
+    source:
+      'https://en.wikipedia.org/wiki/Sherlock_(TV_series)#:~:text=Cumberbatch%27s%20actual%20parents%2C%20are%20introduced%20as%20Sherlock%20and%20Mycroft%27s%20parents',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
