@@ -125,7 +125,7 @@ export function AccountSection() {
       <View style={styles.section}>
         {label}
         <Text style={styles.hint}>
-          Optional — sign in to share lists and follow friends. Everything works
+          Optional. Sign in to share lists and follow friends. Everything works
           without an account too.
         </Text>
         {step === 'email' ? (

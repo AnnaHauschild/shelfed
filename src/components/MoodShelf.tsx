@@ -278,7 +278,7 @@ function AddPicker({
 
         {rows.length === 0 ? (
           <Text style={styles.pickerEmpty}>
-            Nothing on this shelf yet — add some titles first.
+            Nothing on this shelf yet. Add some titles first.
           </Text>
         ) : (
           <ScrollView

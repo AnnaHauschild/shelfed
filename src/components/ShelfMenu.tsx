@@ -248,7 +248,7 @@ export function ShelfMenu({
                   />
                 ) : (
                   <Text style={styles.empty}>
-                    No categories yet — add titles to this shelf first.
+                    No categories yet. Add titles to this shelf first.
                   </Text>
                 ))}
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Movie } from '@/api/types';
+import { fetchMediaById } from '@/api/movies';
 import { ShelfItem, isShelfType, pullShelf, pushMany } from '@/api/shelfSync';
 import {
   collectionRepository,
@@ -14,6 +15,9 @@ import { useAuth } from '@/context/AuthProvider';
 
 /** Which account the shelves currently stored on this device belong to. */
 const LAST_SYNCED_USER_KEY = 'lastSyncedUserId';
+
+/** How many placeholder rows to repair per app start. */
+const BACKFILL_LIMIT = 30;
 
 /** A cloud shelf item lacks full metadata; fill the rest with neutral defaults. */
 function minimalMovie(item: ShelfItem): Movie {
@@ -31,6 +35,25 @@ function minimalMovie(item: ShelfItem): Movie {
     popularity: 0,
     mediaType: item.mediaType,
   };
+}
+
+/**
+ * Replaces the neutral defaults of restored rows with the real metadata.
+ * Without this a synced shelf has no genres, no rating and no description, so
+ * the category chips and the rating sort silently come up empty on the second
+ * device. Returns how many rows were repaired.
+ */
+async function backfillPlaceholders(isCancelled: () => boolean): Promise<number> {
+  const pending = await movieRepository.findPlaceholders(BACKFILL_LIMIT);
+  let repaired = 0;
+  for (const row of pending) {
+    if (isCancelled()) break;
+    const full = await fetchMediaById(row.mediaType, row.id).catch(() => null);
+    if (!full) continue;
+    await movieRepository.upsert({ ...full, id: row.id, mediaType: row.mediaType });
+    repaired++;
+  }
+  return repaired;
 }
 
 /**
@@ -97,10 +120,12 @@ export function ShelfSyncGate() {
         }
         if (cancelled) return;
         await setSetting(LAST_SYNCED_USER_KEY, userId);
+        const repaired = await backfillPlaceholders(() => cancelled);
+        if (cancelled) return;
         if (switchedAccount) {
           // Shelves, moods, notes and stats all changed: refresh everything.
           queryClient.invalidateQueries();
-        } else if (restored > 0) {
+        } else if (restored > 0 || repaired > 0) {
           queryClient.invalidateQueries({ queryKey: ['shelf'] });
           queryClient.invalidateQueries({ queryKey: ['interaction-states'] });
         }

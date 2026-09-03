@@ -70,7 +70,7 @@ export function AboutModal({ visible, onClose }: Props) {
           <Section label="Privacy">
             <Text style={styles.body}>
               Shelfed stores all your shelves, watchlists and your name on your device only.
-              Nothing is sent to a Shelfed server — there isn't one.
+              Nothing is sent to a Shelfed server. There isn't one.
             </Text>
           </Section>
 

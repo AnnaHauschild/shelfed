@@ -411,7 +411,7 @@ export function SettingsSheet({
               </>
             ) : (
               <Text style={styles.hint}>
-                Nothing on your shelf yet — swipe right on a title to add it.
+                Nothing on your shelf yet. Swipe right on a title to add it.
               </Text>
             )}
             </View>
