@@ -141,7 +141,10 @@ export function ShelfGrid({
     return Array.from(set).sort();
   }, [movies]);
 
-  useGenreBackfill(mediaType, movies.length > 0 && genres.length === 0);
+  useGenreBackfill(
+    mediaType,
+    movies.some((m) => m.genres.length === 0),
+  );
 
   const visibleMovies = useMemo(
     () => (genre ? movies.filter((m) => m.genres.includes(genre)) : movies),
