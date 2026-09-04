@@ -22,6 +22,7 @@ import { Skeleton } from '@/components/Skeleton';
 import { useMediaType, useMediaTypeControls } from '@/context/MediaTypeProvider';
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useSettings } from '@/context/SettingsProvider';
+import { getSetting, setSetting } from '@/db/settings';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useGenreBackfill } from '@/hooks/useGenreBackfill';
 import { useShelf, useReorderShelf } from '@/hooks/useShelf';
@@ -43,6 +44,12 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'year', label: 'Year' },
   { key: 'custom', label: 'Custom' },
 ];
+
+const DEFAULT_SORT: SortKey = 'recent';
+
+function isSortKey(value: string | null): value is SortKey {
+  return !!value && SORT_OPTIONS.some((o) => o.key === value);
+}
 
 interface Props {
   type: InteractionType;
@@ -83,9 +90,32 @@ export function ShelfGrid({
   const { open } = useMovieDetails();
   const states = useInteractionStates();
   const [genre, setGenre] = useState<string | null>(null);
-  const [sort, setSort] = useState<SortKey>('recent');
+  const [sort, setSort] = useState<SortKey>(DEFAULT_SORT);
   const [menuSection, setMenuSection] = useState<ShelfMenuSection | null>(null);
   const [activeMoodId, setActiveMoodId] = useState<number | null>(null);
+
+  // Each shelf keeps its own arrangement, so a book wishlist can stay A–Z while
+  // the movie shelf is hand-arranged.
+  const sortSettingKey = `shelfSort:${type}:${mediaType}`;
+  useEffect(() => {
+    let active = true;
+    getSetting(sortSettingKey)
+      .then((stored) => {
+        if (active) setSort(isSortKey(stored) ? stored : DEFAULT_SORT);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [sortSettingKey]);
+
+  const changeSort = useCallback(
+    (key: SortKey) => {
+      setSort(key);
+      setSetting(sortSettingKey, key).catch(() => {});
+    },
+    [sortSettingKey],
+  );
 
   // Apply a genre preselected elsewhere (e.g. tapped in Statistics) to the
   // Watched shelf once it opens for the matching category.
@@ -266,7 +296,7 @@ export function ShelfGrid({
         accent={accent}
         sortOptions={SORT_OPTIONS}
         sort={sort}
-        onSortChange={(key) => setSort(key as SortKey)}
+        onSortChange={(key) => changeSort(key as SortKey)}
         genres={filterable ? genres : undefined}
         genre={genre}
         onGenreChange={setGenre}
