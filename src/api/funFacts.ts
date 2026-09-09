@@ -605,6 +605,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Euphoria_(American_TV_series)#:~:text=The%20two%20special%20episodes%20and%20second%20season%20were%20shot%20on%2035%20mm%20movie%20film%2C%20primarily%20cross%20processed%20Kodak%27s%20Ektachrome%20stock',
   },
+  'tv:97546': {
+    en: 'Before Ted Lasso became a series, Jason Sudeikis first played the character in 2013 television commercials promoting NBC Sports’ Premier League coverage.',
+    de: 'Bevor Ted Lasso zur Serie wurde, spielte Jason Sudeikis die Figur erstmals 2013 in Werbespots für die Premier-League-Übertragungen von NBC Sports.',
+    pt: 'Antes de Ted Lasso virar série, Jason Sudeikis interpretou o personagem pela primeira vez em 2013, em comerciais da cobertura da Premier League pela NBC Sports.',
+    fr: 'Avant que Ted Lasso ne devienne une série, Jason Sudeikis a incarné le personnage pour la première fois en 2013 dans des publicités pour la couverture de la Premier League par NBC Sports.',
+    es: 'Antes de que Ted Lasso se convirtiera en serie, Jason Sudeikis interpretó al personaje por primera vez en 2013 en anuncios de la cobertura de la Premier League de NBC Sports.',
+    it: 'Prima che Ted Lasso diventasse una serie, Jason Sudeikis interpretò il personaggio per la prima volta nel 2013 in spot per la copertura della Premier League di NBC Sports.',
+    source:
+      'https://en.wikipedia.org/wiki/Ted_Lasso#:~:text=in%202013%20as%20part%20of%20a%20series%20of%20television%20commercials',
+  },
+  'tv:91239': {
+    en: 'Bridgerton’s costume team involved more than 200 people and spent five months preparing 5,000 costumes for the series.',
+    de: 'An den Kostümen für Bridgerton arbeiteten mehr als 200 Menschen fünf Monate lang. Dabei entstanden 5.000 Kostüme für die Serie.',
+    pt: 'A equipe de figurino de Bridgerton reuniu mais de 200 pessoas e passou cinco meses preparando 5.000 trajes para a série.',
+    fr: 'Plus de 200 personnes ont travaillé pendant cinq mois à la préparation des costumes de Bridgerton, créant 5 000 tenues pour la série.',
+    es: 'Más de 200 personas trabajaron durante cinco meses en el vestuario de Bridgerton y crearon 5.000 trajes para la serie.',
+    it: 'Oltre 200 persone lavorarono per cinque mesi ai costumi di Bridgerton, creando 5.000 abiti per la serie.',
+    source:
+      'https://en.wikipedia.org/wiki/Bridgerton#:~:text=involved%20over%20two%20hundred%20people%20and%20five%20months%20of%20preparation',
+  },
+  'tv:94605': {
+    en: 'The first season of Arcane took six years to develop.',
+    de: 'Die Entwicklung der ersten Staffel von Arcane dauerte sechs Jahre.',
+    pt: 'A primeira temporada de Arcane levou seis anos para ser desenvolvida.',
+    fr: 'Le développement de la première saison d’Arcane a duré six ans.',
+    es: 'El desarrollo de la primera temporada de Arcane llevó seis años.',
+    it: 'Lo sviluppo della prima stagione di Arcane richiese sei anni.',
+    source:
+      'https://en.wikipedia.org/wiki/Arcane_(TV_series)#:~:text=it%20took%20six%20years%20to%20develop%20the%20first%20season',
+  },
+  'tv:87739': {
+    en: 'The chess consultants for The Queen’s Gambit devised several hundred different board positions for situations in the script.',
+    de: 'Die Schachberater von Das Damengambit entwickelten mehrere Hundert verschiedene Brettstellungen für die Situationen im Drehbuch.',
+    pt: 'Os consultores de xadrez de O Gambito da Rainha criaram várias centenas de posições diferentes para as situações do roteiro.',
+    fr: 'Les consultants en échecs du Jeu de la dame ont conçu plusieurs centaines de positions différentes pour les situations du scénario.',
+    es: 'Los asesores de ajedrez de Gambito de dama idearon varios cientos de posiciones diferentes para las situaciones del guion.',
+    it: 'I consulenti scacchistici de La regina degli scacchi idearono diverse centinaia di posizioni differenti per le situazioni della sceneggiatura.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Queen%27s_Gambit_(miniseries)#:~:text=devised%20several%20hundred%20chess%20positions%20to%20be%20used%20for%20various%20situations%20in%20the%20script',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
