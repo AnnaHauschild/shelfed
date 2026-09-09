@@ -685,6 +685,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Sh%C5%8Dgun_(2024_TV_series)#:~:text=Sanada%20did%20a%20single%20day%20of%20filming%20in%202019%20in%20order%20for%20FX%20to%20retain%20the%20rights%20to%20the%20property%20as%20the%20series%20was%20being%20retooled',
   },
+  'tv:62560': {
+    en: 'Rami Malek brought his own black hoodie to the Mr. Robot set. It became Elliot’s signature look, so the costume designer ordered 20 more despite the model having been discontinued years earlier.',
+    de: 'Rami Malek brachte seinen eigenen schwarzen Kapuzenpullover zum Set von Mr. Robot mit. Er wurde zu Elliots Markenzeichen, weshalb die Kostümbildnerin 20 weitere bestellte, obwohl das Modell seit Jahren nicht mehr hergestellt wurde.',
+    pt: 'Rami Malek levou seu próprio moletom preto com capuz ao set de Mr. Robot. A peça virou a marca registrada de Elliot, e a figurinista encomendou mais 20, embora o modelo já não fosse fabricado havia anos.',
+    fr: 'Rami Malek a apporté son propre sweat à capuche noir sur le tournage de Mr. Robot. Il est devenu la tenue emblématique d’Elliot, si bien que la costumière en a commandé 20 autres malgré l’arrêt du modèle depuis des années.',
+    es: 'Rami Malek llevó su propia sudadera negra con capucha al rodaje de Mr. Robot. Se convirtió en el atuendo característico de Elliot, así que la diseñadora de vestuario encargó 20 más aunque el modelo llevaba años descatalogado.',
+    it: 'Rami Malek portò sul set di Mr. Robot la propria felpa nera con cappuccio. Divenne il look distintivo di Elliot, così la costumista ne ordinò altre 20 nonostante il modello fosse fuori produzione da anni.',
+    source:
+      'https://en.wikipedia.org/wiki/Mr._Robot#:~:text=black%20hoodie%20to%20set',
+  },
+  'tv:63351': {
+    en: 'Some images of Pablo Escobar and his entourage in Narcos’ opening credits came directly from the drug lord’s personal photographer, known as El Chino.',
+    de: 'Einige Bilder von Pablo Escobar und seinem Umfeld im Vorspann von Narcos stammten direkt von seinem persönlichen Fotografen, der unter dem Namen El Chino bekannt war.',
+    pt: 'Algumas imagens de Pablo Escobar e seu grupo na abertura de Narcos vieram diretamente do fotógrafo pessoal do traficante, conhecido como El Chino.',
+    fr: 'Certaines images de Pablo Escobar et de son entourage dans le générique de Narcos provenaient directement du photographe personnel du baron de la drogue, connu sous le nom d’El Chino.',
+    es: 'Algunas imágenes de Pablo Escobar y su entorno en los créditos iniciales de Narcos procedían directamente del fotógrafo personal del narcotraficante, conocido como El Chino.',
+    it: 'Alcune immagini di Pablo Escobar e del suo entourage nei titoli di testa di Narcos provenivano direttamente dal fotografo personale del narcotrafficante, noto come El Chino.',
+    source:
+      'https://en.wikipedia.org/wiki/Narcos#:~:text=drug%20baron%27s%20personal%20photographer',
+  },
+  'tv:66573': {
+    en: 'The first casting announcement for Janet in The Good Place described her as a violin salesperson with a checkered past, but writer Megan Amram later admitted that description was a hoax.',
+    de: 'In der ersten Besetzungsankündigung für Janet in The Good Place wurde sie als Geigenverkäuferin mit zwielichtiger Vergangenheit beschrieben. Autorin Megan Amram gab später zu, dass diese Beschreibung erfunden war.',
+    pt: 'O primeiro anúncio de elenco de Janet em The Good Place a descrevia como uma vendedora de violinos com um passado duvidoso, mas a roteirista Megan Amram admitiu depois que a descrição era uma farsa.',
+    fr: 'La première annonce de casting de Janet dans The Good Place la présentait comme une vendeuse de violons au passé trouble, mais la scénariste Megan Amram a reconnu plus tard que cette description était un canular.',
+    es: 'El primer anuncio de reparto de Janet en The Good Place la describía como una vendedora de violines con un pasado turbio, pero la guionista Megan Amram admitió después que aquella descripción era un engaño.',
+    it: 'Il primo annuncio del casting di Janet in The Good Place la descriveva come una venditrice di violini dal passato discutibile, ma la sceneggiatrice Megan Amram ammise in seguito che la descrizione era una bufala.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Good_Place#:~:text=a%20violin%20salesperson%20with%20a%20checkered%20past',
+  },
+  'tv:72844': {
+    en: 'The exterior of Hill House was a real mansion in LaGrange, Georgia, but the house’s interiors were filmed on studio sets in Atlanta.',
+    de: 'Für die Außenansicht von Hill House diente ein echtes Herrenhaus in LaGrange im US-Bundesstaat Georgia. Die Innenräume des Hauses wurden dagegen in Studiokulissen in Atlanta gedreht.',
+    pt: 'O exterior de Hill House era uma mansão real em LaGrange, no estado da Geórgia, mas os interiores da casa foram filmados em cenários de estúdio em Atlanta.',
+    fr: 'L’extérieur de Hill House était un véritable manoir situé à LaGrange, en Géorgie, mais les intérieurs de la maison ont été tournés sur des décors de studio à Atlanta.',
+    es: 'El exterior de Hill House era una mansión real de LaGrange, Georgia, pero los interiores de la casa se rodaron en decorados de estudio en Atlanta.',
+    it: 'L’esterno di Hill House era una vera villa a LaGrange, in Georgia, ma gli interni della casa furono girati su set in studio ad Atlanta.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Haunting_of_Hill_House_(TV_series)#:~:text=interior%20settings%20were%20filmed',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
