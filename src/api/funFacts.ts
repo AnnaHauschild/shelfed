@@ -907,7 +907,7 @@ const FACTS: Record<string, Localized> = {
   },
   'tv:1407': {
     en: 'A Washington Post journalist connected the Homeland team with Edward Snowden for an hours-long video call before Snowden appeared in documentaries or gave interviews.',
-    de: 'Ein Journalist der Washington Post vermittelte dem Homeland-Team ein stundenlanges Videogespräch mit Edward Snowden – noch bevor Snowden in Dokumentationen auftrat oder Interviews gab.',
+    de: 'Ein Journalist der Washington Post vermittelte dem Homeland-Team ein stundenlanges Videogespräch mit Edward Snowden, noch bevor Snowden in Dokumentationen auftrat oder Interviews gab.',
     pt: 'Um jornalista do Washington Post conectou a equipe de Homeland a Edward Snowden para uma videochamada de várias horas, antes de Snowden aparecer em documentários ou conceder entrevistas.',
     fr: 'Un journaliste du Washington Post a mis l’équipe de Homeland en relation avec Edward Snowden pour un appel vidéo de plusieurs heures, avant que Snowden n’apparaisse dans des documentaires ou ne donne des interviews.',
     es: 'Un periodista del Washington Post puso al equipo de Homeland en contacto con Edward Snowden para una videollamada de varias horas, antes de que Snowden apareciera en documentales o concediera entrevistas.',
