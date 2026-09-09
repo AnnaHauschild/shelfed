@@ -725,6 +725,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Haunting_of_Hill_House_(TV_series)#:~:text=interior%20settings%20were%20filmed',
   },
+  'tv:69478': {
+    en: 'Margaret Atwood, author of The Handmaid’s Tale, served as a consulting producer on the series and made a small cameo in its first episode.',
+    de: 'Margaret Atwood, die Autorin von Der Report der Magd, war beratende Produzentin der Serie und hatte in der ersten Folge einen kleinen Gastauftritt.',
+    pt: 'Margaret Atwood, autora de O Conto da Aia, trabalhou como produtora consultora da série e fez uma pequena participação no primeiro episódio.',
+    fr: 'Margaret Atwood, autrice de La Servante écarlate, a été productrice consultante de la série et a fait une brève apparition dans le premier épisode.',
+    es: 'Margaret Atwood, autora de El cuento de la criada, fue productora consultora de la serie e hizo un pequeño cameo en el primer episodio.',
+    it: 'Margaret Atwood, autrice de Il racconto dell’ancella, è stata produttrice consulente della serie e ha fatto un piccolo cameo nel primo episodio.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Handmaid%27s_Tale_(TV_series)#:~:text=She%20also%20played%20a%20small%20cameo%20role%20in%20the%20first%20episode',
+  },
+  'tv:73586': {
+    en: 'Taylor Sheridan originally wrote Yellowstone as a film and pitched it as “The Godfather in Montana.”',
+    de: 'Taylor Sheridan schrieb Yellowstone ursprünglich als Film und beschrieb das Projekt als „Der Pate in Montana“.',
+    pt: 'Taylor Sheridan escreveu Yellowstone originalmente como um filme e apresentou o projeto como “O Poderoso Chefão em Montana”.',
+    fr: 'Taylor Sheridan avait initialement écrit Yellowstone comme un film et le présentait comme « Le Parrain dans le Montana ».',
+    es: 'Taylor Sheridan escribió Yellowstone originalmente como una película y presentó el proyecto como «El padrino en Montana».',
+    it: 'Taylor Sheridan scrisse Yellowstone inizialmente come film e presentò il progetto come «Il padrino nel Montana».',
+    source:
+      'https://en.wikipedia.org/wiki/Yellowstone_(TV_series)#:~:text=Taylor%20Sheridan%20originally%20wrote%20Yellowstone%20as%20a%20film',
+  },
+  'tv:63639': {
+    en: 'After Syfy canceled The Expanse, fans crowdfunded an airplane to fly a Save The Expanse banner around Amazon Studios. Amazon picked up the series that same month.',
+    de: 'Nachdem Syfy The Expanse abgesetzt hatte, finanzierten Fans per Crowdfunding ein Flugzeug, das ein Save The Expanse Banner um die Amazon Studios flog. Noch im selben Monat übernahm Amazon die Serie.',
+    pt: 'Depois que a Syfy cancelou The Expanse, fãs financiaram coletivamente um avião para sobrevoar a Amazon Studios com uma faixa Save The Expanse. A Amazon resgatou a série naquele mesmo mês.',
+    fr: 'Après l’annulation de The Expanse par Syfy, des fans ont financé un avion pour faire voler une bannière Save The Expanse autour d’Amazon Studios. Amazon a repris la série le même mois.',
+    es: 'Después de que Syfy cancelara The Expanse, los fans financiaron un avión para volar alrededor de Amazon Studios con una pancarta Save The Expanse. Amazon rescató la serie ese mismo mes.',
+    it: 'Dopo la cancellazione di The Expanse da parte di Syfy, i fan finanziarono un aereo che volò intorno agli Amazon Studios con uno striscione Save The Expanse. Amazon salvò la serie nello stesso mese.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Expanse_(TV_series)#:~:text=a%20crowdfunding%20campaign%20paid%20for%20an%20airplane%20to%20fly%20a',
+  },
+  'tv:67744': {
+    en: 'Mindhunter modeled its serial killers on the real convicted criminals, and their prison dialogue was taken from actual interviews.',
+    de: 'Mindhunter gestaltete seine Serienmörder nach den echten verurteilten Verbrechern. Ihre Gefängnisdialoge stammten aus tatsächlichen Interviews.',
+    pt: 'Mindhunter baseou seus assassinos em série nos criminosos realmente condenados, e os diálogos na prisão foram extraídos de entrevistas reais.',
+    fr: 'Mindhunter a modelé ses tueurs en série sur les véritables criminels condamnés, et leurs dialogues en prison provenaient d’entretiens réels.',
+    es: 'Mindhunter modeló a sus asesinos en serie a partir de los criminales reales condenados, y sus diálogos en prisión procedían de entrevistas auténticas.',
+    it: 'Mindhunter ha modellato i suoi serial killer sui veri criminali condannati, mentre i dialoghi in prigione sono stati tratti da interviste reali.',
+    source:
+      'https://en.wikipedia.org/wiki/Mindhunter_(TV_series)#:~:text=their%20prison%20scene%20dialogues%20were%20taken%20from%20real%20interviews',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
