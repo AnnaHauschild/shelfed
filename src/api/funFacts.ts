@@ -805,6 +805,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Ozark_(TV_series)#:~:text=brought%20an%20FBI%20agent%20who%20works%20on%20financial%20crimes%20into%20the%20writers%27%20room',
   },
+  'tv:46533': {
+    en: 'The Americans creator Joe Weisberg’s former job at the CIA helped him develop storylines for the series, including plots based on real-life stories.',
+    de: 'Seine frühere Arbeit bei der CIA half dem Schöpfer von The Americans, Joe Weisberg, Handlungsstränge für die Serie zu entwickeln, darunter Geschichten nach wahren Begebenheiten.',
+    pt: 'O antigo trabalho de Joe Weisberg, criador de The Americans, na CIA ajudou-o a desenvolver tramas para a série, incluindo histórias baseadas em casos reais.',
+    fr: 'L’ancien emploi de Joe Weisberg, créateur de The Americans, à la CIA l’a aidé à développer des intrigues pour la série, dont certaines inspirées d’histoires vraies.',
+    es: 'El antiguo trabajo de Joe Weisberg, creador de The Americans, en la CIA le ayudó a desarrollar tramas para la serie, incluidas historias basadas en casos reales.',
+    it: 'Il precedente lavoro di Joe Weisberg, creatore di The Americans, alla CIA lo aiutò a sviluppare trame per la serie, incluse storie basate su fatti reali.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Americans#:~:text=basing%20some%20plot%20lines%20on%20real-life%20stories',
+  },
+  'tv:1621': {
+    en: 'Boardwalk Empire built a 300-foot-long boardwalk on an empty lot in Brooklyn. The set alone cost $5 million.',
+    de: 'Für Boardwalk Empire wurde auf einem leeren Grundstück in Brooklyn eine 91 Meter lange Strandpromenade gebaut. Allein diese Kulisse kostete fünf Millionen Dollar.',
+    pt: 'Boardwalk Empire construiu um calçadão de 91 metros em um terreno vazio no Brooklyn. Só esse cenário custou cinco milhões de dólares.',
+    fr: 'Boardwalk Empire a construit une promenade de 91 mètres sur un terrain vide à Brooklyn. Ce décor a coûté à lui seul cinq millions de dollars.',
+    es: 'Boardwalk Empire construyó un paseo marítimo de 91 metros en un terreno vacío de Brooklyn. Solo ese decorado costó cinco millones de dólares.',
+    it: 'Per Boardwalk Empire fu costruita una passerella di 91 metri in un lotto vuoto a Brooklyn. Solo questo set costò cinque milioni di dollari.',
+    source:
+      'https://en.wikipedia.org/wiki/Boardwalk_Empire#:~:text=at%20the%20cost%20of%20%245%20million',
+  },
+  'tv:115004': {
+    en: 'Kate Winslet said learning Mare of Easttown’s local Delco accent was so difficult that it caused her to “throw things”.',
+    de: 'Kate Winslet sagte, der lokale Delco-Akzent für Mare of Easttown sei so schwer zu lernen gewesen, dass sie deswegen „Dinge warf“.',
+    pt: 'Kate Winslet disse que aprender o sotaque local de Delco para Mare of Easttown foi tão difícil que a fez “atirar coisas”.',
+    fr: 'Kate Winslet a déclaré que l’accent local du Delaware County pour Mare of Easttown était si difficile à apprendre qu’il lui arrivait de « jeter des objets ».',
+    es: 'Kate Winslet dijo que aprender el acento local de Delco para Mare of Easttown fue tan difícil que la llevó a «lanzar cosas».',
+    it: 'Kate Winslet disse che imparare l’accento locale del Delaware County per Mare of Easttown fu così difficile da portarla a «lanciare oggetti».',
+    source:
+      'https://en.wikipedia.org/wiki/Mare_of_Easttown#:~:text=learning%20the%20accent%20was%20so%20difficult%20that%20it%20caused%20her%20to',
+  },
+  'tv:95480': {
+    en: 'Slow Horses films two seasons back to back, so the next season is already finished by the time the current one is released.',
+    de: 'Slow Horses dreht jeweils zwei Staffeln direkt hintereinander. Wenn eine Staffel erscheint, ist die nächste deshalb bereits fertig gedreht.',
+    pt: 'Slow Horses filma duas temporadas consecutivamente. Por isso, quando uma temporada estreia, a seguinte já terminou de ser filmada.',
+    fr: 'Slow Horses tourne deux saisons à la suite. Ainsi, lorsque l’une sort, le tournage de la suivante est déjà terminé.',
+    es: 'Slow Horses rueda dos temporadas seguidas. Por eso, cuando se estrena una temporada, la siguiente ya ha terminado de rodarse.',
+    it: 'Slow Horses gira due stagioni una dopo l’altra. Così, quando una stagione esce, le riprese della successiva sono già terminate.',
+    source:
+      'https://en.wikipedia.org/wiki/Slow_Horses#:~:text=schedule%20of%20shooting%20two%20series%20back%20to%20back',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
