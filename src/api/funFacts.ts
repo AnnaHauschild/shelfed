@@ -885,6 +885,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Sharp_Objects_(miniseries)#:~:text=All%20music%20featured%20in%20the%20series%20is%20diegetic%2C%20coming%20from%20a%20source%20%28a%20stereo%2C%20headphones%2C%20etc.%29%20within%20the%20scene',
   },
+  'tv:63333': {
+    en: 'The Last Kingdom gave Bernard Cornwell, author of the novels behind the series, a cameo in series three as Beornheard.',
+    de: 'The Last Kingdom gab Bernard Cornwell, dem Autor der Romanvorlage, in der dritten Staffel einen Cameo-Auftritt als Beornheard.',
+    pt: 'The Last Kingdom deu a Bernard Cornwell, autor dos romances que inspiraram a série, uma participação especial na terceira temporada como Beornheard.',
+    fr: 'The Last Kingdom a offert à Bernard Cornwell, auteur des romans à l’origine de la série, un caméo dans la troisième saison dans le rôle de Beornheard.',
+    es: 'The Last Kingdom dio a Bernard Cornwell, autor de las novelas en las que se basa la serie, un cameo en la tercera temporada como Beornheard.',
+    it: 'The Last Kingdom ha affidato a Bernard Cornwell, autore dei romanzi da cui è tratta la serie, un cameo nella terza stagione nel ruolo di Beornheard.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Last_Kingdom_(TV_series)#:~:text=Bernard%20Cornwell%20as%20Beornheard',
+  },
+  'tv:69061': {
+    en: 'The creators of The OA found the story so difficult to summarize in writing that they developed it aloud, even acting out every character and the major moments when pitching it.',
+    de: 'Die Schöpfer von The OA fanden die Geschichte schriftlich so schwer zusammenzufassen, dass sie sie mündlich entwickelten und beim Pitch sogar alle Figuren und großen Momente selbst spielten.',
+    pt: 'Os criadores de The OA acharam a história tão difícil de resumir por escrito que a desenvolveram oralmente e, ao apresentá-la, chegaram a interpretar todos os personagens e os grandes momentos.',
+    fr: 'Les créateurs de The OA trouvaient l’histoire si difficile à résumer par écrit qu’ils l’ont développée oralement, allant jusqu’à jouer tous les personnages et les grands moments lors de leur présentation.',
+    es: 'A los creadores de The OA les resultaba tan difícil resumir la historia por escrito que la desarrollaron oralmente y, al presentarla, incluso interpretaron todos los personajes y los grandes momentos.',
+    it: 'I creatori di The OA trovavano la storia così difficile da riassumere per iscritto che la svilupparono oralmente, arrivando a interpretare tutti i personaggi e i momenti principali durante la presentazione.',
+    source:
+      'https://en.wikipedia.org/wiki/The_OA#:~:text=They%20found%20it%20difficult%20to%20summarize%20the%20series%20in%20a%20written%20story%2C%20so%20they%20developed%20it%20aurally&text=playing%20all%20the%20characters%20and%20acting%20out%20the%20big%20moments%20through%20many%20hours',
+  },
+  'tv:1407': {
+    en: 'A Washington Post journalist connected the Homeland team with Edward Snowden for an hours-long video call before Snowden appeared in documentaries or gave interviews.',
+    de: 'Ein Journalist der Washington Post vermittelte dem Homeland-Team ein stundenlanges Videogespräch mit Edward Snowden – noch bevor Snowden in Dokumentationen auftrat oder Interviews gab.',
+    pt: 'Um jornalista do Washington Post conectou a equipe de Homeland a Edward Snowden para uma videochamada de várias horas, antes de Snowden aparecer em documentários ou conceder entrevistas.',
+    fr: 'Un journaliste du Washington Post a mis l’équipe de Homeland en relation avec Edward Snowden pour un appel vidéo de plusieurs heures, avant que Snowden n’apparaisse dans des documentaires ou ne donne des interviews.',
+    es: 'Un periodista del Washington Post puso al equipo de Homeland en contacto con Edward Snowden para una videollamada de varias horas, antes de que Snowden apareciera en documentales o concediera entrevistas.',
+    it: 'Un giornalista del Washington Post mise il team di Homeland in contatto con Edward Snowden per una videochiamata durata ore, prima che Snowden apparisse in documentari o rilasciasse interviste.',
+    source:
+      'https://en.wikipedia.org/wiki/Homeland_(TV_series)#:~:text=Washington%20Post%20writer%20Barton%20Gellman%20connected%20the%20Homeland%20team%20on%20an%20hours%2Dlong%20video%20call%20with%20Edward%20Snowden%20before%20he%20appeared%20in%20documentaries%20or%20did%20interviews',
+  },
+  'tv:66276': {
+    en: 'The lead role in The Night Of was intended for James Gandolfini, then passed to Robert De Niro after Gandolfini’s death, and finally to John Turturro when scheduling conflicts ruled De Niro out.',
+    de: 'Die Hauptrolle in The Night Of war für James Gandolfini vorgesehen, ging nach seinem Tod zunächst an Robert De Niro und schließlich an John Turturro, als De Niro wegen Terminkonflikten absagen musste.',
+    pt: 'O papel principal de The Night Of seria de James Gandolfini, passou para Robert De Niro após a morte do ator e acabou com John Turturro quando conflitos de agenda impediram a participação de De Niro.',
+    fr: 'Le rôle principal de The Night Of était destiné à James Gandolfini, puis est revenu à Robert De Niro après sa mort, avant d’être finalement confié à John Turturro lorsque des conflits d’emploi du temps ont écarté De Niro.',
+    es: 'El papel protagonista de The Night Of estaba destinado a James Gandolfini, pasó a Robert De Niro tras su muerte y finalmente a John Turturro cuando los conflictos de agenda impidieron participar a De Niro.',
+    it: 'Il ruolo principale di The Night Of era destinato a James Gandolfini, passò a Robert De Niro dopo la sua morte e infine a John Turturro quando gli impegni impedirono a De Niro di partecipare.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Night_Of#:~:text=James%20Gandolfini%20was%20set%20to%20star&text=Robert%20De%20Niro%20was%20set%20to%20replace%20Gandolfini&text=John%20Turturro%20replaced%20De%20Niro%20because%20of%20scheduling%20conflicts',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
