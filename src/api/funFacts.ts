@@ -797,7 +797,7 @@ const FACTS: Record<string, Localized> = {
   },
   'tv:69740': {
     en: 'To make Ozark’s money laundering story realistic, the writers brought an FBI financial crimes agent and a hedge fund manager into the writers’ room.',
-    de: 'Damit die Geldwäsche in Ozark realistisch wirkte, holten die Autoren einen FBI Ermittler für Finanzkriminalität und einen Hedgefondsmanager in ihr Autorenzimmer.',
+    de: 'Damit die Geldwäsche in Ozark glaubwürdig dargestellt wurde, ließ sich das Autorenteam von einem Ermittler des FBI für Finanzkriminalität und einem Hedgefondsmanager beraten.',
     pt: 'Para tornar a lavagem de dinheiro de Ozark realista, os roteiristas levaram um agente do FBI especializado em crimes financeiros e um gestor de fundo de hedge à sala de roteiro.',
     fr: 'Pour rendre le blanchiment d’argent d’Ozark réaliste, les scénaristes ont fait venir dans leur salle un agent du FBI spécialisé dans la criminalité financière et un gestionnaire de fonds spéculatif.',
     es: 'Para que el blanqueo de dinero de Ozark resultara realista, los guionistas llevaron a su sala a un agente del FBI especializado en delitos financieros y a un gestor de fondos de cobertura.',
