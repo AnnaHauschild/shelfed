@@ -845,6 +845,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Slow_Horses#:~:text=schedule%20of%20shooting%20two%20series%20back%20to%20back',
   },
+  'tv:72750': {
+    en: 'More than 100 actresses were considered for the role of Villanelle in Killing Eve before Jodie Comer was cast.',
+    de: 'Für die Rolle der Villanelle in Killing Eve wurden mehr als 100 Schauspielerinnen in Betracht gezogen, bevor Jodie Comer besetzt wurde.',
+    pt: 'Mais de 100 atrizes foram consideradas para o papel de Villanelle em Killing Eve antes de Jodie Comer ser escolhida.',
+    fr: 'Plus de 100 actrices ont été envisagées pour le rôle de Villanelle dans Killing Eve avant que Jodie Comer ne soit choisie.',
+    es: 'Más de 100 actrices fueron consideradas para el papel de Villanelle en Killing Eve antes de que eligieran a Jodie Comer.',
+    it: 'Più di 100 attrici furono prese in considerazione per il ruolo di Villanelle in Killing Eve prima che venisse scelta Jodie Comer.',
+    source:
+      'https://en.wikipedia.org/wiki/Killing_Eve#:~:text=the%20production%20considered%20over%20100%20actresses',
+  },
+  'tv:61859': {
+    en: 'The Night Manager author John le Carré made a cameo in episode four as a restaurant diner who is insulted.',
+    de: 'Der Autor von The Night Manager, John le Carré, hatte in Folge vier einen Gastauftritt als Restaurantgast, der beleidigt wird.',
+    pt: 'John le Carré, autor de The Night Manager, fez uma participação no quarto episódio como um cliente de restaurante que é insultado.',
+    fr: 'John le Carré, l’auteur de The Night Manager, apparaît dans le quatrième épisode en client de restaurant qui se fait insulter.',
+    es: 'John le Carré, autor de The Night Manager, hizo un cameo en el cuarto episodio como un comensal al que insultan.',
+    it: 'John le Carré, autore di The Night Manager, fece un cameo nel quarto episodio nei panni di un cliente di ristorante che viene insultato.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Night_Manager_(British_TV_series)#:~:text=Le%20Carr%C3%A9%20makes%20a%20cameo%20appearance%20as%20an%20insulted%20restaurant%20diner%20in%20episode%20four',
+  },
+  'tv:66292': {
+    en: 'Nicole Kidman and Reese Witherspoon secured the screen rights to Big Little Lies less than a month after the novel was published, initially planning to turn it into a film.',
+    de: 'Nicole Kidman und Reese Witherspoon sicherten sich die Filmrechte an Big Little Lies weniger als einen Monat nach Erscheinen des Romans. Ursprünglich wollten sie daraus einen Film machen.',
+    pt: 'Nicole Kidman e Reese Witherspoon adquiriram os direitos de adaptação de Big Little Lies menos de um mês após a publicação do romance e planejavam inicialmente transformá-lo em filme.',
+    fr: 'Nicole Kidman et Reese Witherspoon ont acquis les droits d’adaptation de Big Little Lies moins d’un mois après la publication du roman, avec l’intention initiale d’en faire un film.',
+    es: 'Nicole Kidman y Reese Witherspoon adquirieron los derechos de adaptación de Big Little Lies menos de un mes después de publicarse la novela, con la intención inicial de convertirla en película.',
+    it: 'Nicole Kidman e Reese Witherspoon acquisirono i diritti di adattamento di Big Little Lies meno di un mese dopo la pubblicazione del romanzo, progettando inizialmente di farne un film.',
+    source:
+      'https://en.wikipedia.org/wiki/Big_Little_Lies_(TV_series)#:~:text=Actresses%20and%20producers%20Nicole%20Kidman%20and%20Reese%20Witherspoon%20were%20announced%20to%20have%20optioned%20the%20screen%20rights%20to,develop%20the%20project%20as%20a%20film',
+  },
+  'tv:70453': {
+    en: 'Every piece of music in Sharp Objects is diegetic: it comes from a stereo, headphones, or another source within the scene.',
+    de: 'Jedes Musikstück in Sharp Objects ist Teil der erzählten Welt: Es kommt aus einer Stereoanlage, Kopfhörern oder einer anderen Quelle innerhalb der Szene.',
+    pt: 'Toda a música de Sharp Objects faz parte do mundo da história: ela vem de um aparelho de som, de fones de ouvido ou de outra fonte dentro da cena.',
+    fr: 'Toute la musique de Sharp Objects appartient à l’univers de l’histoire : elle provient d’une chaîne stéréo, d’un casque ou d’une autre source présente dans la scène.',
+    es: 'Toda la música de Sharp Objects forma parte del mundo de la historia: procede de un equipo de sonido, unos auriculares u otra fuente dentro de la escena.',
+    it: 'Tutta la musica di Sharp Objects appartiene al mondo narrativo: proviene da uno stereo, dalle cuffie o da un’altra fonte presente nella scena.',
+    source:
+      'https://en.wikipedia.org/wiki/Sharp_Objects_(miniseries)#:~:text=All%20music%20featured%20in%20the%20series%20is%20diegetic%2C%20coming%20from%20a%20source%20%28a%20stereo%2C%20headphones%2C%20etc.%29%20within%20the%20scene',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
