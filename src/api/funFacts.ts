@@ -765,6 +765,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Mindhunter_(TV_series)#:~:text=their%20prison%20scene%20dialogues%20were%20taken%20from%20real%20interviews',
   },
+  'tv:46648': {
+    en: 'Matthew McConaughey was originally meant to play Marty Hart in True Detective, but he convinced creator Nic Pizzolatto to cast him as Rust Cohle instead.',
+    de: 'Matthew McConaughey sollte in True Detective ursprünglich Marty Hart spielen, überzeugte den Schöpfer Nic Pizzolatto aber davon, ihn stattdessen als Rust Cohle zu besetzen.',
+    pt: 'Matthew McConaughey deveria interpretar Marty Hart em True Detective, mas convenceu o criador Nic Pizzolatto a escalá-lo como Rust Cohle.',
+    fr: 'Matthew McConaughey devait initialement jouer Marty Hart dans True Detective, mais il a convaincu le créateur Nic Pizzolatto de lui confier plutôt le rôle de Rust Cohle.',
+    es: 'Matthew McConaughey iba a interpretar originalmente a Marty Hart en True Detective, pero convenció al creador Nic Pizzolatto para que le diera el papel de Rust Cohle.',
+    it: 'Matthew McConaughey avrebbe dovuto interpretare Marty Hart in True Detective, ma convinse il creatore Nic Pizzolatto ad affidargli invece il ruolo di Rust Cohle.',
+    source:
+      'https://en.wikipedia.org/wiki/True_Detective#:~:text=he%20later%20convinced%20Pizzolatto%20to%20cast%20him%20as%20Cohle',
+  },
+  'tv:60622': {
+    en: 'Long before the Fargo series premiered, a different TV pilot based on the film was made in 1997, starring Edie Falco as Marge Gunderson and directed by Kathy Bates.',
+    de: 'Lange vor dem Start der Serie Fargo entstand bereits 1997 eine andere Pilotfolge zum Film. Edie Falco spielte Marge Gunderson, Regie führte Kathy Bates.',
+    pt: 'Muito antes da estreia da série Fargo, outro piloto de TV baseado no filme foi produzido em 1997, com Edie Falco como Marge Gunderson e direção de Kathy Bates.',
+    fr: 'Bien avant le lancement de la série Fargo, un autre pilote télévisé inspiré du film a été tourné en 1997, avec Edie Falco dans le rôle de Marge Gunderson et Kathy Bates à la réalisation.',
+    es: 'Mucho antes del estreno de la serie Fargo, en 1997 se rodó otro piloto televisivo basado en la película, con Edie Falco como Marge Gunderson y Kathy Bates como directora.',
+    it: 'Molto prima del debutto della serie Fargo, nel 1997 fu girato un altro episodio pilota basato sul film, con Edie Falco nel ruolo di Marge Gunderson e Kathy Bates alla regia.',
+    source:
+      'https://en.wikipedia.org/wiki/Fargo_(TV_series)#:~:text=a%20pilot%20was%20filmed%20for%20an%20intended%20television%20series%20based%20on%20the%20film',
+  },
+  'tv:54344': {
+    en: 'The third season of The Leftovers used a different theme song for every episode because Damon Lindelof wanted the music to introduce each episode thematically.',
+    de: 'Die dritte Staffel von The Leftovers verwendete für jede Folge einen anderen Titelsong, weil Damon Lindelof die jeweilige Folge damit thematisch einleiten wollte.',
+    pt: 'A terceira temporada de The Leftovers usou uma música de abertura diferente em cada episódio porque Damon Lindelof queria que a música apresentasse o tema de cada capítulo.',
+    fr: 'La troisième saison de The Leftovers a utilisé une chanson de générique différente pour chaque épisode, car Damon Lindelof voulait que la musique en introduise le thème.',
+    es: 'La tercera temporada de The Leftovers utilizó una canción de cabecera distinta en cada episodio porque Damon Lindelof quería que la música introdujera su tema.',
+    it: 'La terza stagione di The Leftovers usò una sigla diversa per ogni episodio perché Damon Lindelof voleva che la musica ne introducesse il tema.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Leftovers_(TV_series)#:~:text=Season%203%20retains%20the%20opening%20from%20Season%202%20but%20with%20a%20different%20theme%20song%20for%20each%20episode',
+  },
+  'tv:69740': {
+    en: 'To make Ozark’s money laundering story realistic, the writers brought an FBI financial crimes agent and a hedge fund manager into the writers’ room.',
+    de: 'Damit die Geldwäsche in Ozark realistisch wirkte, holten die Autoren einen FBI Ermittler für Finanzkriminalität und einen Hedgefondsmanager in ihr Autorenzimmer.',
+    pt: 'Para tornar a lavagem de dinheiro de Ozark realista, os roteiristas levaram um agente do FBI especializado em crimes financeiros e um gestor de fundo de hedge à sala de roteiro.',
+    fr: 'Pour rendre le blanchiment d’argent d’Ozark réaliste, les scénaristes ont fait venir dans leur salle un agent du FBI spécialisé dans la criminalité financière et un gestionnaire de fonds spéculatif.',
+    es: 'Para que el blanqueo de dinero de Ozark resultara realista, los guionistas llevaron a su sala a un agente del FBI especializado en delitos financieros y a un gestor de fondos de cobertura.',
+    it: 'Per rendere realistico il riciclaggio di denaro in Ozark, gli sceneggiatori invitarono nella sala autori un agente dell’FBI specializzato in crimini finanziari e un gestore di hedge fund.',
+    source:
+      'https://en.wikipedia.org/wiki/Ozark_(TV_series)#:~:text=brought%20an%20FBI%20agent%20who%20works%20on%20financial%20crimes%20into%20the%20writers%27%20room',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
