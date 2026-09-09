@@ -525,6 +525,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Severance_(TV_series)#:~:text=The%20computers%20lacked%20an%20escape%20key%2C%20as%20a%20metaphor%20for%20the%20lack%20of%20control',
   },
+  'tv:82856': {
+    en: 'The digital scenery reflected naturally in the Mandalorian’s shiny armor during filming. With a green screen, those green reflections would have needed to be removed and replaced later.',
+    de: 'Die digitale Kulisse spiegelte sich beim Dreh ganz natürlich in der glänzenden Rüstung des Mandalorianers. Bei einem Greenscreen hätten die grünen Reflexionen später entfernt und ersetzt werden müssen.',
+    pt: 'Os cenários digitais se refletiam naturalmente na armadura brilhante do Mandaloriano durante as filmagens. Com uma tela verde, esses reflexos verdes teriam de ser removidos e substituídos depois.',
+    fr: 'Les décors numériques se reflétaient naturellement dans l’armure brillante du Mandalorien pendant le tournage. Avec un écran vert, ces reflets verts auraient dû être supprimés et remplacés ensuite.',
+    es: 'Los escenarios digitales se reflejaban de forma natural en la brillante armadura del Mandaloriano durante el rodaje. Con una pantalla verde, esos reflejos verdes habrían tenido que eliminarse y sustituirse después.',
+    it: 'Gli scenari digitali si riflettevano naturalmente nella lucida armatura del Mandaloriano durante le riprese. Con un green screen, quei riflessi verdi avrebbero dovuto essere rimossi e sostituiti in seguito.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Mandalorian#:~:text=Using%20StageCraft%2C%20the%20reflections%20in%20the%20Mandalorian%27s%20armor%20were%20already%20correct%20on%20set',
+  },
+  'tv:119051': {
+    en: 'Jenna Ortega choreographed Wednesday’s viral dance herself, drawing inspiration from Siouxsie Sioux, Bob Fosse and footage from 1980s goth clubs.',
+    de: 'Jenna Ortega choreografierte Wednesdays viralen Tanz selbst. Dabei ließ sie sich von Siouxsie Sioux, Bob Fosse und Aufnahmen aus Goth-Clubs der 1980er inspirieren.',
+    pt: 'Jenna Ortega criou a coreografia da dança viral de Wednesday. Ela se inspirou em Siouxsie Sioux, Bob Fosse e em imagens de clubes góticos dos anos 1980.',
+    fr: 'Jenna Ortega a elle-même chorégraphié la danse virale de Wednesday, en s’inspirant de Siouxsie Sioux, de Bob Fosse et d’images de clubs gothiques des années 1980.',
+    es: 'Jenna Ortega coreografió ella misma el baile viral de Wednesday, inspirándose en Siouxsie Sioux, Bob Fosse y grabaciones de clubes góticos de los años ochenta.',
+    it: 'Jenna Ortega ha coreografato personalmente il ballo virale di Wednesday, ispirandosi a Siouxsie Sioux, Bob Fosse e ai filmati dei club goth degli anni Ottanta.',
+    source:
+      'https://en.wikipedia.org/wiki/Wednesday_(TV_series)#:~:text=She%20choreographed%20her%20dance%20to%20the%20Cramps%27%20%22Goo%20Goo%20Muck%22%20herself',
+  },
+  'tv:94997': {
+    en: 'The succession conflict in House of the Dragon was inspired by the Anarchy, a real civil war between Stephen of Blois and Empress Matilda in 12th-century England.',
+    de: 'Der Thronfolgestreit in House of the Dragon wurde von der Anarchie inspiriert, einem echten Bürgerkrieg zwischen Stephan von Blois und Kaiserin Matilda im England des 12. Jahrhunderts.',
+    pt: 'O conflito sucessório de House of the Dragon foi inspirado pela Anarquia, uma guerra civil real entre Estêvão de Blois e a imperatriz Matilda na Inglaterra do século XII.',
+    fr: 'Le conflit de succession de House of the Dragon s’inspire de l’Anarchie, une véritable guerre civile entre Étienne de Blois et l’impératrice Mathilde dans l’Angleterre du XIIe siècle.',
+    es: 'El conflicto sucesorio de House of the Dragon se inspiró en la Anarquía, una guerra civil real entre Esteban de Blois y la emperatriz Matilde en la Inglaterra del siglo XII.',
+    it: 'Il conflitto per la successione di House of the Dragon è ispirato all’Anarchia, una vera guerra civile tra Stefano di Blois e l’imperatrice Matilde nell’Inghilterra del XII secolo.',
+    source:
+      'https://en.wikipedia.org/wiki/House_of_the_Dragon#:~:text=Inspiration%20for%20the%20series%20came%20from%20English%20medieval%20history%20and%20the%20Anarchy',
+  },
+  'tv:93405': {
+    en: 'The giant doll from Red Light, Green Light was based on Young-hee, a character from South Korean schoolbooks of the 1970s and 1980s. Her hairstyle was inspired by creator Hwang Dong-hyuk’s daughter.',
+    de: 'Die riesige Puppe aus Rotes Licht, grünes Licht basiert auf Young-hee, einer Figur aus südkoreanischen Schulbüchern der 1970er und 1980er. Ihre Frisur wurde von der Tochter des Schöpfers Hwang Dong-hyuk inspiriert.',
+    pt: 'A boneca gigante de Batatinha Frita 1, 2, 3 foi baseada em Young-hee, personagem de livros escolares sul-coreanos dos anos 1970 e 1980. Seu penteado foi inspirado na filha do criador Hwang Dong-hyuk.',
+    fr: 'La poupée géante d’Un, deux, trois, soleil s’inspire de Young-hee, un personnage de manuels scolaires sud-coréens des années 1970 et 1980. Sa coiffure vient de la fille du créateur Hwang Dong-hyuk.',
+    es: 'La muñeca gigante de Luz roja, luz verde se basó en Young-hee, un personaje de libros escolares surcoreanos de los años setenta y ochenta. Su peinado se inspiró en la hija del creador Hwang Dong-hyuk.',
+    it: 'La bambola gigante di Un, due, tre, stella si basa su Young-hee, un personaggio dei libri scolastici sudcoreani degli anni Settanta e Ottanta. La sua acconciatura è ispirata alla figlia del creatore Hwang Dong-hyuk.',
+    source:
+      'https://en.wikipedia.org/wiki/Squid_Game#:~:text=The%20robot%20doll%20in%20the%20first%20episode%2C%20%22Red%20Light%2C%20Green%20Light%22%2C%20was%20inspired%20by%20Young-hee',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
