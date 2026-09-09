@@ -645,6 +645,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Queen%27s_Gambit_(miniseries)#:~:text=devised%20several%20hundred%20chess%20positions%20to%20be%20used%20for%20various%20situations%20in%20the%20script',
   },
+  'tv:111803': {
+    en: 'The White Lotus began after HBO asked Mike White for an idea that could be filmed in a “bubble” environment during the COVID-19 lockdowns.',
+    de: 'The White Lotus entstand, nachdem HBO Mike White während der COVID-19-Lockdowns nach einer Idee gefragt hatte, die sich in einer abgeschotteten „Blase“ drehen ließ.',
+    pt: 'The White Lotus surgiu depois que a HBO pediu a Mike White, durante os confinamentos da COVID-19, uma ideia que pudesse ser filmada em um ambiente de “bolha”.',
+    fr: 'The White Lotus est née après que HBO a demandé à Mike White, pendant les confinements liés à la COVID-19, une idée pouvant être tournée dans un environnement « bulle ».',
+    es: 'The White Lotus surgió después de que HBO pidiera a Mike White, durante los confinamientos por la COVID-19, una idea que pudiera rodarse en un entorno de «burbuja».',
+    it: 'The White Lotus nacque dopo che HBO chiese a Mike White, durante i lockdown per il COVID-19, un’idea che potesse essere girata in un ambiente «bolla».',
+    source:
+      'https://en.wikipedia.org/wiki/The_White_Lotus#:~:text=ideas%20for%20a%20show%20that%20could%20be%20shot%20in%20a%20bubble%20environment%20under%20lockdown%20conditions',
+  },
+  'tv:83867': {
+    en: 'Andor built a practical outdoor city set that co-star Adria Arjona estimated was three to five city blocks long.',
+    de: 'Für Andor wurde eine echte Außenkulisse einer Stadt gebaut, die laut Darstellerin Adria Arjona drei bis fünf Häuserblocks lang war.',
+    pt: 'Andor construiu um cenário externo de cidade de verdade que, segundo a atriz Adria Arjona, tinha de três a cinco quarteirões de extensão.',
+    fr: 'Andor a fait construire un véritable décor de ville en extérieur qui, selon l’actrice Adria Arjona, s’étendait sur trois à cinq pâtés de maisons.',
+    es: 'Andor construyó un decorado urbano exterior real que, según la actriz Adria Arjona, medía entre tres y cinco manzanas.',
+    it: 'Per Andor fu costruito un vero set urbano all’aperto che, secondo l’attrice Adria Arjona, si estendeva per tre-cinque isolati.',
+    source:
+      'https://en.wikipedia.org/wiki/Andor#:~:text=An%20outdoor%20city%20set%2C%20which%20co%2Dstar%20Adria%20Arjona%20estimated%20to%20be%20three%20to%20five%20city%20blocks%20long%2C%20was%20built%20practically%20for%20the%20series',
+  },
+  'tv:106379': {
+    en: 'Fallout filmed its first Brotherhood of Steel base at the Utah airfield where the 509th Composite Group trained for the atomic missions of World War II.',
+    de: 'Fallout drehte die erste Basis der Stählernen Bruderschaft auf jenem Flugplatz in Utah, auf dem die 509th Composite Group für die Atommissionen des Zweiten Weltkriegs trainierte.',
+    pt: 'Fallout filmou a primeira base da Irmandade do Aço no aeródromo de Utah onde o 509th Composite Group treinou para as missões atômicas da Segunda Guerra Mundial.',
+    fr: 'Fallout a tourné la première base de la Confrérie de l’Acier sur l’aérodrome de l’Utah où le 509th Composite Group s’était entraîné pour les missions atomiques de la Seconde Guerre mondiale.',
+    es: 'Fallout rodó la primera base de la Hermandad del Acero en el aeródromo de Utah donde el 509th Composite Group se entrenó para las misiones atómicas de la Segunda Guerra Mundial.',
+    it: 'Fallout ha girato la prima base della Confraternita d’Acciaio nell’aeroporto dello Utah dove il 509th Composite Group si addestrò per le missioni atomiche della Seconda guerra mondiale.',
+    source:
+      'https://en.wikipedia.org/wiki/Fallout_(American_TV_series)#:~:text=This%20location%20has%20a%20unique%20atomic%20history%20connection%20as%20it%20is%20the%20airfield%20where%20the%20509th%20Composite%20Group%20trained%20for%20the%20atomic%20missions%20in%20World%20War%20II',
+  },
+  'tv:126308': {
+    en: 'Hiroyuki Sanada filmed for a single day in 2019 so FX could retain the rights to Shōgun while the series was being reworked.',
+    de: 'Hiroyuki Sanada drehte 2019 einen einzigen Tag, damit FX die Rechte an Shōgun behalten konnte, während die Serie überarbeitet wurde.',
+    pt: 'Hiroyuki Sanada filmou por apenas um dia em 2019 para que a FX pudesse manter os direitos de Shōgun enquanto a série era reformulada.',
+    fr: 'Hiroyuki Sanada a tourné une seule journée en 2019 afin que FX puisse conserver les droits de Shōgun pendant le remaniement de la série.',
+    es: 'Hiroyuki Sanada rodó un solo día en 2019 para que FX pudiera conservar los derechos de Shōgun mientras se reformulaba la serie.',
+    it: 'Hiroyuki Sanada girò per un solo giorno nel 2019 affinché FX potesse mantenere i diritti di Shōgun mentre la serie veniva rielaborata.',
+    source:
+      'https://en.wikipedia.org/wiki/Sh%C5%8Dgun_(2024_TV_series)#:~:text=Sanada%20did%20a%20single%20day%20of%20filming%20in%202019%20in%20order%20for%20FX%20to%20retain%20the%20rights%20to%20the%20property%20as%20the%20series%20was%20being%20retooled',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
