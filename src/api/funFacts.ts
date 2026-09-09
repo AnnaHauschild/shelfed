@@ -485,6 +485,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Sherlock_(TV_series)#:~:text=Cumberbatch%27s%20actual%20parents%2C%20are%20introduced%20as%20Sherlock%20and%20Mycroft%27s%20parents',
   },
+  'tv:42009': {
+    en: 'The title Black Mirror refers to the cold, shiny screen of a television, monitor or smartphone after it has been switched off.',
+    de: 'Der Titel Black Mirror bezeichnet den kalten, glänzenden Bildschirm eines Fernsehers, Monitors oder Smartphones, nachdem er ausgeschaltet wurde.',
+    pt: 'O título Black Mirror se refere à tela fria e brilhante de uma televisão, monitor ou smartphone depois de desligada.',
+    fr: 'Le titre Black Mirror désigne l’écran froid et brillant d’un téléviseur, d’un moniteur ou d’un smartphone une fois éteint.',
+    es: 'El título Black Mirror alude a la pantalla fría y brillante de un televisor, monitor o teléfono inteligente cuando está apagada.',
+    it: 'Il titolo Black Mirror indica lo schermo freddo e lucido di un televisore, monitor o smartphone dopo che è stato spento.',
+    source:
+      'https://en.wikipedia.org/wiki/Black_Mirror#:~:text=The%20%22black%20mirror%22%20of%20the%20title%20is%20the%20one%20you%27ll%20find%20on%20every%20wall',
+  },
+  'tv:60574': {
+    en: 'For his Northern Irish accent, New Zealand-raised Sam Neill asked James Nesbitt and Liam Neeson for help. He then had to tone it down for US audiences.',
+    de: 'Für seinen nordirischen Akzent holte sich der in Neuseeland aufgewachsene Sam Neill Hilfe von James Nesbitt und Liam Neeson. Für das US-Publikum musste er ihn anschließend abschwächen.',
+    pt: 'Para recuperar seu sotaque norte-irlandês, Sam Neill, criado na Nova Zelândia, pediu ajuda a James Nesbitt e Liam Neeson. Depois, teve de suavizá-lo para o público dos EUA.',
+    fr: 'Pour retrouver son accent nord-irlandais, Sam Neill, élevé en Nouvelle-Zélande, demanda l’aide de James Nesbitt et Liam Neeson, avant de devoir l’atténuer pour le public américain.',
+    es: 'Para recuperar su acento norirlandés, Sam Neill, criado en Nueva Zelanda, pidió ayuda a James Nesbitt y Liam Neeson; después tuvo que suavizarlo para el público estadounidense.',
+    it: 'Per ritrovare il suo accento nordirlandese, Sam Neill, cresciuto in Nuova Zelanda, chiese aiuto a James Nesbitt e Liam Neeson, per poi doverlo attenuare per il pubblico statunitense.',
+    source:
+      'https://en.wikipedia.org/wiki/Peaky_Blinders_(TV_series)#:~:text=Sam%20Neill%20enlisted%20the%20help%20of%20Northern%20Irish%20actors%20James%20Nesbitt%20and%20Liam%20Neeson',
+  },
+  'tv:65494': {
+    en: 'Buckingham Palace was assembled from several stand-ins: Lancaster House, Wrotham Park and Wilton House, while two cathedrals doubled for Westminster Abbey.',
+    de: 'Der Buckingham Palace wurde aus mehreren Drehorten zusammengesetzt: Lancaster House, Wrotham Park und Wilton House; zwei Kathedralen vertraten außerdem die Westminster Abbey.',
+    pt: 'O Palácio de Buckingham foi montado a partir de vários locais: Lancaster House, Wrotham Park e Wilton House, enquanto duas catedrais fizeram o papel da Abadia de Westminster.',
+    fr: 'Le palais de Buckingham fut reconstitué à partir de plusieurs lieux : Lancaster House, Wrotham Park et Wilton House, tandis que deux cathédrales remplacèrent l’abbaye de Westminster.',
+    es: 'El palacio de Buckingham se compuso con varios lugares: Lancaster House, Wrotham Park y Wilton House, mientras que dos catedrales hicieron de la abadía de Westminster.',
+    it: 'Buckingham Palace fu ricreato combinando Lancaster House, Wrotham Park e Wilton House, mentre due cattedrali fecero da controfigura all’abbazia di Westminster.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Crown_(TV_series)#:~:text=Lancaster%20House%2C%20Wrotham%20Park%2C%20and%20Wilton%20House%20were%20used%20to%20double%20as%20Buckingham%20Palace',
+  },
+  'tv:95396': {
+    en: 'Lumon’s retro computers really worked, but their keyboards had no Escape key. This symbolized the innies’ lack of control in the office.',
+    de: 'Lumons Retrocomputer funktionierten wirklich, doch auf ihren Tastaturen fehlte die Escape-Taste. Das versinnbildlichte die fehlende Kontrolle der Innies im Büro.',
+    pt: 'Os computadores retrô da Lumon funcionavam de verdade, mas seus teclados não tinham a tecla Escape. Isso simbolizava a falta de controle dos innies no escritório.',
+    fr: 'Les ordinateurs rétro de Lumon fonctionnaient réellement, mais leurs claviers n’avaient pas de touche Échap, métaphore du manque de contrôle des innies au bureau.',
+    es: 'Los ordenadores retro de Lumon funcionaban de verdad, pero sus teclados no tenían tecla Escape, una metáfora de la falta de control de los innies en la oficina.',
+    it: 'I computer rétro della Lumon funzionavano davvero, ma le tastiere erano prive del tasto Esc, metafora della mancanza di controllo degli innie in ufficio.',
+    source:
+      'https://en.wikipedia.org/wiki/Severance_(TV_series)#:~:text=The%20computers%20lacked%20an%20escape%20key%2C%20as%20a%20metaphor%20for%20the%20lack%20of%20control',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
