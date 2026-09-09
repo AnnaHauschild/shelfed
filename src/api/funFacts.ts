@@ -925,6 +925,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Night_Of#:~:text=James%20Gandolfini%20was%20set%20to%20star&text=Robert%20De%20Niro%20was%20set%20to%20replace%20Gandolfini&text=John%20Turturro%20replaced%20De%20Niro%20because%20of%20scheduling%20conflicts',
   },
+  'tv:1402': {
+    en: 'Every walker goes through “zombie school” to learn how to move like a zombie before appearing in The Walking Dead.',
+    de: 'Jeder Walker besucht eine „Zombie-Schule“, um vor seinem Auftritt in The Walking Dead zu lernen, wie sich ein Zombie bewegt.',
+    pt: 'Todos os figurantes que interpretam caminhantes passam por uma “escola de zumbis” para aprender a se mover como zumbis antes de aparecer em The Walking Dead.',
+    fr: 'Tous les figurants qui jouent des rôdeurs passent par une « école de zombies » pour apprendre à se déplacer comme des zombies avant d’apparaître dans The Walking Dead.',
+    es: 'Todos los extras que interpretan caminantes pasan por una «escuela de zombis» para aprender a moverse como zombis antes de aparecer en The Walking Dead.',
+    it: 'Tutte le comparse che interpretano i vaganti frequentano una “scuola per zombie” per imparare a muoversi come zombie prima di apparire in The Walking Dead.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Walking_Dead_(TV_series)#:~:text=Each%20walker%20is%20put%20through%20%22zombie%20school%22%20and%20is%20taught%20how%20to%20move%20like%20a%20zombie',
+  },
+  'tv:1425': {
+    en: 'Russia vetoed filming three House of Cards episodes inside the UN Security Council chamber at the last minute.',
+    de: 'Russland verhinderte in letzter Minute, dass drei Folgen von House of Cards im Saal des UN-Sicherheitsrats gedreht wurden.',
+    pt: 'A Rússia vetou, no último minuto, as filmagens de três episódios de House of Cards dentro da sala do Conselho de Segurança da ONU.',
+    fr: 'La Russie a opposé son veto, à la dernière minute, au tournage de trois épisodes de House of Cards dans la salle du Conseil de sécurité de l’ONU.',
+    es: 'Rusia vetó en el último momento el rodaje de tres episodios de House of Cards dentro de la sala del Consejo de Seguridad de la ONU.',
+    it: 'La Russia pose il veto all’ultimo minuto alle riprese di tre episodi di House of Cards nella sala del Consiglio di sicurezza dell’ONU.',
+    source:
+      'https://en.wikipedia.org/wiki/House_of_Cards_(American_TV_series)#:~:text=filming%20of%20three%20episodes%20in%20the%20UN%20Security%20Council%20chamber%20was%20vetoed%20by%20Russia%20at%20the%20last%20minute',
+  },
+  'tv:4087': {
+    en: 'The X-Files theme’s famous echo was an accident: frustrated composer Mark Snow put his hand and forearm on his keyboard and activated the effect by mistake.',
+    de: 'Das berühmte Echo der Titelmusik von The X-Files entstand durch Zufall: Der frustrierte Komponist Mark Snow legte Hand und Unterarm auf sein Keyboard und löste den Effekt versehentlich aus.',
+    pt: 'O famoso eco do tema de The X-Files surgiu por acaso: frustrado, o compositor Mark Snow apoiou a mão e o antebraço no teclado e ativou o efeito sem querer.',
+    fr: 'Le célèbre écho du générique de The X-Files est né par accident : frustré, le compositeur Mark Snow a posé sa main et son avant-bras sur son clavier et déclenché l’effet par inadvertance.',
+    es: 'El famoso eco de la sintonía de The X-Files surgió por accidente: frustrado, el compositor Mark Snow apoyó la mano y el antebrazo en el teclado y activó el efecto sin querer.',
+    it: 'Il celebre eco della sigla di The X-Files nacque per caso: frustrato, il compositore Mark Snow appoggiò la mano e l’avambraccio sulla tastiera e attivò l’effetto per errore.',
+    source:
+      'https://en.wikipedia.org/wiki/The_X-Files#:~:text=Snow%20created%20the%20echo%20effect%20on%20the%20track%20by%20accident&text=he%20accidentally%20activated%20an%20echo%20effect%20setting',
+  },
+  'tv:688': {
+    en: 'The White House set was fully connected, allowing The West Wing to film its trademark hallway conversations as long shots with very few cuts.',
+    de: 'Die Kulisse des Weißen Hauses war vollständig verbunden, sodass The West Wing seine typischen Gespräche auf den Fluren in langen Aufnahmen mit sehr wenigen Schnitten drehen konnte.',
+    pt: 'O cenário da Casa Branca era totalmente interligado, permitindo que The West Wing filmasse suas famosas conversas pelos corredores em planos longos com pouquíssimos cortes.',
+    fr: 'Le décor de la Maison-Blanche était entièrement relié, ce qui permettait à The West Wing de filmer ses célèbres conversations dans les couloirs en longs plans avec très peu de coupes.',
+    es: 'El plató de la Casa Blanca estaba totalmente conectado, lo que permitió a The West Wing rodar sus famosas conversaciones por los pasillos en planos largos con muy pocos cortes.',
+    it: 'Il set della Casa Bianca era completamente collegato, permettendo a The West Wing di girare le sue celebri conversazioni nei corridoi con lunghe riprese e pochissimi stacchi.',
+    source:
+      'https://en.wikipedia.org/wiki/The_West_Wing#:~:text=A%20large%2C%20fully%20connected%20set&text=shots%20with%20very%20few%20cuts%20and%20long%2C%20continuous%20master%20shots',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
