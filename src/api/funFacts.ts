@@ -565,6 +565,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Squid_Game#:~:text=The%20robot%20doll%20in%20the%20first%20episode%2C%20%22Red%20Light%2C%20Green%20Light%22%2C%20was%20inspired%20by%20Young-hee',
   },
+  'tv:4607': {
+    en: 'For the Lost score, Michael Giacchino created some of its sounds by striking suspended pieces of the plane’s fuselage.',
+    de: 'Für die Musik von Lost erzeugte Michael Giacchino einige Klänge, indem er aufgehängte Teile des Flugzeugrumpfs anschlug.',
+    pt: 'Para a trilha sonora de Lost, Michael Giacchino criou alguns sons batendo em pedaços suspensos da fuselagem do avião.',
+    fr: 'Pour la musique de Lost, Michael Giacchino a créé certains sons en frappant des morceaux suspendus du fuselage de l’avion.',
+    es: 'Para la banda sonora de Lost, Michael Giacchino creó algunos sonidos golpeando piezas suspendidas del fuselaje del avión.',
+    it: 'Per la colonna sonora di Lost, Michael Giacchino creò alcuni suoni percuotendo parti sospese della fusoliera dell’aereo.',
+    source:
+      'https://en.wikipedia.org/wiki/Lost_(TV_series)#:~:text=Giacchino%20achieved%20some%20of%20the%20sounds%20for%20the%20score%20using%20unusual%20instruments%2C%20such%20as%20striking%20suspended%20pieces%20of%20the%20plane%27s%20fuselage',
+  },
+  'tv:1405': {
+    en: 'Although Dexter is set in Miami, many of its exterior scenes were filmed in Los Angeles and Long Beach, California.',
+    de: 'Obwohl Dexter in Miami spielt, wurden viele Außenszenen in Los Angeles und Long Beach in Kalifornien gedreht.',
+    pt: 'Embora Dexter se passe em Miami, muitas de suas cenas externas foram filmadas em Los Angeles e Long Beach, na Califórnia.',
+    fr: 'Bien que Dexter se déroule à Miami, de nombreuses scènes extérieures ont été tournées à Los Angeles et Long Beach, en Californie.',
+    es: 'Aunque Dexter está ambientada en Miami, muchas de sus escenas exteriores se rodaron en Los Ángeles y Long Beach, California.',
+    it: 'Sebbene Dexter sia ambientata a Miami, molte scene in esterni furono girate a Los Angeles e Long Beach, in California.',
+    source:
+      'https://en.wikipedia.org/wiki/Dexter_(TV_series)#:~:text=Although%20the%20series%20is%20set%20in%20Miami%2C%20Florida%2C%20many%20of%20the%20exterior%20scenes%20are%20filmed%20in%20Los%20Angeles%20and%20Long%20Beach%2C%20California',
+  },
+  'tv:76479': {
+    en: 'Although The Boys is set in New York City like the comics, the series was filmed in Toronto, Canada.',
+    de: 'Obwohl The Boys wie die Comics in New York City spielt, wurde die Serie im kanadischen Toronto gedreht.',
+    pt: 'Embora The Boys se passe em Nova York, como nos quadrinhos, a série foi filmada em Toronto, no Canadá.',
+    fr: 'Bien que The Boys se déroule à New York comme les comics, la série a été tournée à Toronto, au Canada.',
+    es: 'Aunque The Boys está ambientada en Nueva York, como los cómics, la serie se rodó en Toronto, Canadá.',
+    it: 'Sebbene The Boys sia ambientata a New York come i fumetti, la serie è stata girata a Toronto, in Canada.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Boys_(TV_series)#:~:text=Although%20situated%20in%20New%20York%20City%20as%20in%20the%20comics%2C%20it%20was%20confirmed%20that%20the%20series%20would%20be%20filmed%20in%20Toronto%2C%20Canada',
+  },
+  'tv:85552': {
+    en: 'Euphoria’s second season was shot mainly on cross-processed Kodak Ektachrome film to evoke “some sort of memory of high school.”',
+    de: 'Die zweite Staffel von Euphoria wurde hauptsächlich auf crossentwickeltem Kodak-Ektachrome-Film gedreht, um „eine Art Erinnerung an die Highschool“ hervorzurufen.',
+    pt: 'A segunda temporada de Euphoria foi filmada principalmente em Kodak Ektachrome com processamento cruzado para evocar “algum tipo de memória do ensino médio”.',
+    fr: 'La deuxième saison d’Euphoria a été tournée principalement sur pellicule Kodak Ektachrome développée en traitement croisé afin d’évoquer « une sorte de souvenir du lycée ».',
+    es: 'La segunda temporada de Euphoria se rodó principalmente en película Kodak Ektachrome con procesado cruzado para evocar «algún tipo de recuerdo del instituto».',
+    it: 'La seconda stagione di Euphoria è stata girata principalmente su pellicola Kodak Ektachrome con sviluppo incrociato per evocare «una sorta di ricordo del liceo».',
+    source:
+      'https://en.wikipedia.org/wiki/Euphoria_(American_TV_series)#:~:text=The%20two%20special%20episodes%20and%20second%20season%20were%20shot%20on%2035%20mm%20movie%20film%2C%20primarily%20cross%20processed%20Kodak%27s%20Ektachrome%20stock',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
