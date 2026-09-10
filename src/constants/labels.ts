@@ -10,14 +10,3 @@ export function watchedLabel(mediaType: MediaType): string {
  * media-agnostic and identical everywhere so it fits movies, series AND books.
  */
 export const WATCHLIST_LABEL = 'Wishlist';
-
-/** Plural noun for a media type, for media-aware copy: movies / series / books. */
-export function mediaPlural(mediaType: MediaType): string {
-  return mediaType === 'tv'
-    ? 'series'
-    : mediaType === 'book'
-      ? 'books'
-      : mediaType === 'game'
-        ? 'games'
-        : 'movies';
-}

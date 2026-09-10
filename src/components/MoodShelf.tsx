@@ -26,6 +26,7 @@ import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
 import { SheetHandle, SheetView, useSheetDismiss } from '@/components/SheetHandle';
 import { useBottomInset } from '@/hooks/useBottomInset';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMood, useMoodMovies, useMoodMutations } from '@/hooks/useMoods';
 import { useShelf } from '@/hooks/useShelf';
@@ -63,6 +64,7 @@ export function MoodShelf({ moodId, onClose, sourceType = 'watched' }: Props) {
 
 function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
   const insets = useSafeAreaInsets();
+  const { text } = useLanguage();
   const { open } = useMovieDetails();
   const states = useInteractionStates();
   const { data: mood } = useMood(moodId);
@@ -132,8 +134,8 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
       {items.length === 0 ? (
         <EmptyState
           icon="sparkles-outline"
-          title="This mood is empty"
-          message="Tap the + button to add titles from your watched shelf."
+          title={text.emptyMoodTitle}
+          message={text.emptyMoodMessage}
         />
       ) : (
         <ScrollView

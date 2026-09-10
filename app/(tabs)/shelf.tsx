@@ -11,8 +11,7 @@ export default function WatchedShelfScreen() {
       accent={colors.watched}
       filterable
       moods
-      emptyTitle="Your shelf is empty"
-      emptyMessage="Swipe right on the {noun} you've already enjoyed to start building your lifetime shelf."
+      empty="shelf"
     />
   );
 }

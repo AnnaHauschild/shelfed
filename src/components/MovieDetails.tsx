@@ -7,6 +7,7 @@ import { Movie } from '@/api/types';
 import { posterUrl } from '@/api/tmdb';
 import { POSTER_SIZE, POSTER_SIZE_SMALL } from '@/constants/config';
 import { useProfile } from '@/context/ProfileProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useMovieCast } from '@/hooks/useMovieCast';
 import { useTitleMeta } from '@/hooks/useTitleMeta';
 import { useOriginalYear } from '@/hooks/useOriginalYear';
@@ -77,6 +78,7 @@ interface Props {
  */
 export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote, matchSlot, onShare }: Props) {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const accentText = { color: chrome.accent };
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [zoom, setZoom] = useState(false);
@@ -104,9 +106,7 @@ export function MovieDetails({ movie, children, dragGesture, onOpenNote, hasNote
       ? movie.overview || (gameDesc ?? '')
       : movie.overview;
   const overview =
-    description && description.length > 0
-      ? description
-      : 'No description available for this title.';
+    description && description.length > 0 ? description : text.noDescription;
 
   // Books: prefer Open Library's original publication year over the edition year.
   const displayYear = isBook ? origYear ?? movie.year : movie.year;

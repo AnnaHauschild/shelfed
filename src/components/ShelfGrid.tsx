@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
-import { mediaPlural, watchedLabel } from '@/constants/labels';
+import { watchedLabel } from '@/constants/labels';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { ShelfMenu, ShelfMenuSection } from '@/components/ShelfMenu';
 import { MoodShelf } from '@/components/MoodShelf';
@@ -20,6 +20,7 @@ import { ShelfBackground } from '@/components/ShelfBackground';
 import { ShelfRack } from '@/components/ShelfRack';
 import { Skeleton } from '@/components/Skeleton';
 import { useMediaType, useMediaTypeControls } from '@/context/MediaTypeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useShelfFilter } from '@/context/ShelfFilterProvider';
 import { useSettings } from '@/context/SettingsProvider';
 import { getSetting, setSetting } from '@/db/settings';
@@ -56,8 +57,8 @@ interface Props {
   title: string;
   icon: keyof typeof Ionicons.glyphMap;
   accent: string;
-  emptyTitle: string;
-  emptyMessage: string;
+  /** Which empty-state copy to show, looked up in the chosen language. */
+  empty: 'shelf' | 'favorites' | 'wishlist';
   /** Show genre filter chips to organise the shelf into categories. */
   filterable?: boolean;
   /** Show the “Moods” menu (personal, curated sub-shelves). Watched shelf only. */
@@ -78,13 +79,13 @@ export function ShelfGrid({
   title,
   icon,
   accent,
-  emptyTitle,
-  emptyMessage,
+  empty,
   filterable = false,
   moods = false,
 }: Props) {
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
+  const { text } = useLanguage();
   const { data, isLoading } = useShelf(type);
   const reorder = useReorderShelf(type);
   const { open } = useMovieDetails();
@@ -252,14 +253,25 @@ export function ShelfGrid({
       ) : movies.length === 0 ? (
         <EmptyState
           icon={icon}
-          title={emptyTitle}
-          message={emptyMessage.replace('{noun}', mediaPlural(mediaType))}
+          title={
+            empty === 'shelf'
+              ? text.emptyShelfTitle
+              : empty === 'favorites'
+                ? text.emptyFavoritesTitle
+                : text.emptyWishlistTitle
+          }
+          message={(empty === 'shelf'
+            ? text.emptyShelfMessage
+            : empty === 'favorites'
+              ? text.emptyFavoritesMessage
+              : text.emptyWishlistMessage
+          ).replace('{noun}', text.mediaPlural[mediaType])}
         />
       ) : visibleMovies.length === 0 ? (
         <EmptyState
           icon="pricetag-outline"
-          title="Nothing in this category"
-          message={`No ${genre} titles on this shelf yet.`}
+          title={text.emptyGenreTitle}
+          message={text.emptyGenreMessage.replace('{genre}', genre ?? '')}
         />
       ) : sort === 'custom' ? (
         <ShelfRack

@@ -32,6 +32,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { interactionRepository } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useAuth } from '@/context/AuthProvider';
 import { Avatar } from './Avatar';
 import { MovieDetails } from './MovieDetails';
@@ -85,6 +86,7 @@ export function UserShelfSheet({
   onClose: () => void;
 }) {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const qc = useQueryClient();
   const { enabled, session: authSession } = useAuth();
@@ -436,14 +438,14 @@ export function UserShelfSheet({
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          {isLoading && <Text style={styles.hint}>Loading…</Text>}
+          {isLoading && <Text style={styles.hint}>{text.loading}</Text>}
           {!isLoading && shown.length === 0 && (
             <Text style={styles.hint}>
               {matchesOnly
-                ? 'No shared titles on this list yet.'
+                ? text.noSharedTitles
                 : query.trim()
-                  ? 'No matches.'
-                  : 'Nothing here.'}
+                  ? text.noMatches
+                  : text.nothingHere}
             </Text>
           )}
           {gridEl}
