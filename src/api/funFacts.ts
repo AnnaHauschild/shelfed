@@ -124,60 +124,100 @@ const FACTS: Record<string, Localized> = {
   'movie:863': {
     en: "A stray command nearly wiped Toy Story 2 from Pixar's servers; a staffer's home backup saved it.",
     de: 'Ein Befehl löschte fast den ganzen Toy Story 2 von Pixars Servern; gerettet hat ihn die Heim-Backup-Kopie einer Mitarbeiterin.',
+    pt: 'Um comando indevido quase apagou Toy Story 2 dos servidores da Pixar; a cópia de segurança doméstica de uma funcionária o salvou.',
+    fr: 'Une commande lancée par erreur a failli effacer Toy Story 2 des serveurs de Pixar. La sauvegarde personnelle d’une employée l’a sauvé.',
+    es: 'Un comando ejecutado por error casi borró Toy Story 2 de los servidores de Pixar. La copia de seguridad doméstica de una empleada lo salvó.',
+    it: 'Un comando impartito per errore rischiò di cancellare Toy Story 2 dai server della Pixar. La copia di sicurezza domestica di una dipendente lo salvò.',
     source:
       'https://en.wikipedia.org/wiki/Toy_Story_2#:~:text=backup%20copy%20of%20the%20film%20on%20her%20home%20computer',
   },
   'movie:694': {
     en: 'For "Here\'s Johnny!" the prop door was swapped for a real one because Jack Nicholson, a trained firefighter, smashed through it too fast.',
     de: 'Für „Here’s Johnny!“ ersetzte man die Requisiten-Tür durch eine echte, weil Jack Nicholson, ausgebildeter Feuerwehrmann, sie zu schnell zertrümmerte.',
+    pt: 'Para “Here’s Johnny!”, a porta cenográfica foi trocada por uma de verdade porque Jack Nicholson, bombeiro treinado, a destruiu rápido demais.',
+    fr: 'Pour « Here’s Johnny! », la fausse porte a été remplacée par une vraie parce que Jack Nicholson, pompier de formation, la détruisait trop rapidement.',
+    es: 'Para «Here’s Johnny!», la puerta de utilería se cambió por una de verdad porque Jack Nicholson, bombero de formación, la destrozaba demasiado rápido.',
+    it: 'Per “Here’s Johnny!”, la porta di scena fu sostituita con una vera perché Jack Nicholson, pompiere addestrato, la sfondava troppo velocemente.',
     source:
       'https://en.wikipedia.org/wiki/The_Shining_(film)#:~:text=tore%20through%20it%20too%20quickly',
   },
   'movie:329': {
     en: 'The ripples in the glass of water were made by a crew member lying under the car, plucking guitar strings run through it.',
     de: 'Die Wellen im Wasserglas entstanden, weil ein Crewmitglied unter dem Auto lag und an durchgezogenen Gitarrensaiten zupfte.',
+    pt: 'As ondulações no copo de água foram produzidas por um membro da equipe deitado sob o carro, dedilhando cordas de guitarra passadas por ele.',
+    fr: 'Les ondulations dans le verre d’eau ont été produites par un membre de l’équipe allongé sous la voiture, qui pinçait des cordes de guitare passant à travers celle-ci.',
+    es: 'Las ondas del vaso de agua fueron creadas por un miembro del equipo tumbado bajo el coche, que pulsaba unas cuerdas de guitarra tendidas a través de él.',
+    it: 'Le increspature nel bicchiere d’acqua furono create da un membro della troupe sdraiato sotto l’auto, che pizzicava corde di chitarra fatte passare attraverso di essa.',
     source:
       'https://en.wikipedia.org/wiki/Jurassic_Park#:~:text=put%20a%20glass%20of%20water%20on%20his%20guitar',
   },
   'movie:630': {
     en: 'The first Tin Man had to leave the film after the aluminium dust in his make-up poisoned him, yet his singing voice stayed in the group numbers.',
     de: 'Der erste Blechmann musste den Film verlassen, weil ihn der Aluminiumstaub in seinem Make-up vergiftete; seine Singstimme blieb trotzdem in den Chorstücken.',
+    pt: 'O primeiro Homem de Lata teve de deixar o filme depois que o pó de alumínio de sua maquiagem o envenenou, mas sua voz cantada permaneceu nos números em grupo.',
+    fr: 'Le premier Homme de fer a dû quitter le film après avoir été empoisonné par la poudre d’aluminium de son maquillage, mais sa voix chantée est restée dans les numéros collectifs.',
+    es: 'El primer Hombre de Hojalata tuvo que abandonar la película después de que el polvo de aluminio de su maquillaje lo envenenara, pero su voz cantada permaneció en los números grupales.',
+    it: 'Il primo Uomo di Latta dovette lasciare il film dopo essere stato avvelenato dalla polvere di alluminio del trucco, ma la sua voce cantata rimase nei numeri di gruppo.',
     source:
       'https://en.wikipedia.org/wiki/The_Wizard_of_Oz#:~:text=toxic%20reaction%20after%20repeatedly%20inhaling',
   },
   'movie:238': {
     en: 'The horse head in the bed was real. It came from a dog food company, from an animal that was going to be slaughtered anyway.',
     de: 'Der Pferdekopf im Bett war echt. Er stammte von einer Hundefutterfirma, von einem Tier, das ohnehin geschlachtet werden sollte.',
+    pt: 'A cabeça de cavalo na cama era verdadeira. Veio de uma empresa de ração para cães e pertencia a um animal que seria abatido de qualquer maneira.',
+    fr: 'La tête de cheval dans le lit était réelle. Elle provenait d’une entreprise d’aliments pour chiens et d’un animal qui devait de toute façon être abattu.',
+    es: 'La cabeza de caballo en la cama era real. Procedía de una empresa de comida para perros y de un animal que iba a ser sacrificado de todos modos.',
+    it: 'La testa di cavallo nel letto era vera. Proveniva da un’azienda di cibo per cani e da un animale che sarebbe stato comunque macellato.',
     source:
       'https://en.wikipedia.org/wiki/The_Godfather#:~:text=obtained%20from%20a%20dog-food%20company',
   },
   'movie:278': {
     en: 'For the escape through the sewage pipe, Tim Robbins crawled through a mixture of water, chocolate syrup and sawdust.',
     de: 'Für die Flucht durch das Abwasserrohr kroch Tim Robbins durch eine Mischung aus Wasser, Schokoladensirup und Sägemehl.',
+    pt: 'Para a fuga pelo cano de esgoto, Tim Robbins rastejou por uma mistura de água, calda de chocolate e serragem.',
+    fr: 'Pour l’évasion par la canalisation d’égout, Tim Robbins a rampé dans un mélange d’eau, de sirop de chocolat et de sciure.',
+    es: 'Para la fuga por la tubería de aguas residuales, Tim Robbins se arrastró por una mezcla de agua, sirope de chocolate y serrín.',
+    it: 'Per la fuga attraverso il tubo di scarico, Tim Robbins strisciò in una miscela di acqua, sciroppo di cioccolato e segatura.',
     source:
       'https://en.wikipedia.org/wiki/The_Shawshank_Redemption#:~:text=water%2C%20chocolate%20syrup%2C%20and%20sawdust',
   },
   'movie:274': {
     en: 'It was only the third film ever to win all five major Oscars: picture, director, actor, actress and screenplay.',
     de: 'Er war erst der dritte Film überhaupt, der alle fünf großen Oscars gewann: Film, Regie, Hauptdarsteller, Hauptdarstellerin und Drehbuch.',
+    pt: 'Foi apenas o terceiro filme da história a ganhar os cinco principais Oscars: filme, direção, ator, atriz e roteiro.',
+    fr: 'Ce n’était que le troisième film de l’histoire à remporter les cinq principaux Oscars : film, réalisation, acteur, actrice et scénario.',
+    es: 'Fue apenas la tercera película de la historia en ganar los cinco Óscar principales: película, dirección, actor, actriz y guion.',
+    it: 'Fu soltanto il terzo film della storia a vincere tutti e cinque i principali Oscar: film, regia, attore, attrice e sceneggiatura.',
     source:
       'https://en.wikipedia.org/wiki/The_Silence_of_the_Lambs_(film)#:~:text=only%20the%20third%20film%20in%20history',
   },
   'movie:539': {
     en: 'It showed the first flushing toilet in mainstream American film and television. The censors objected to it.',
     de: 'Er zeigte die erste Toilettenspülung im amerikanischen Kino und Fernsehen. Die Zensur nahm daran Anstoß.',
+    pt: 'Mostrou a primeira descarga de banheiro no cinema e na televisão comerciais dos Estados Unidos. Os censores se opuseram a isso.',
+    fr: 'Il a montré la première chasse d’eau dans le cinéma et la télévision grand public américains. Les censeurs s’y sont opposés.',
+    es: 'Mostró la primera cisterna de inodoro en el cine y la televisión comerciales de Estados Unidos. Los censores se opusieron.',
+    it: 'Mostrò il primo scarico di un gabinetto nel cinema e nella televisione statunitensi destinati al grande pubblico. I censori si opposero.',
     source:
       'https://en.wikipedia.org/wiki/Psycho_(1960_film)#:~:text=No%20flushing%20toilet%20had%20appeared%20in%20mainstream',
   },
   'movie:11': {
     en: 'Tatooine was originally meant to be a jungle planet. Lucas made it a desert because he did not fancy months of shooting in the jungle.',
     de: 'Tatooine sollte ursprünglich ein Dschungelplanet sein. Lucas machte eine Wüste daraus, weil er keine Lust auf monatelange Dreharbeiten im Dschungel hatte.',
+    pt: 'Tatooine seria originalmente um planeta coberto por selvas. Lucas o transformou em um deserto porque não queria passar meses filmando na selva.',
+    fr: 'Tatooine devait initialement être une planète couverte de jungle. Lucas en a fait un désert parce qu’il ne voulait pas passer des mois à tourner dans la jungle.',
+    es: 'Tatooine iba a ser originalmente un planeta selvático. Lucas lo convirtió en un desierto porque no quería pasar meses rodando en la selva.',
+    it: 'In origine Tatooine doveva essere un pianeta ricoperto di giungla. Lucas lo trasformò in un deserto perché non voleva trascorrere mesi a girare nella giungla.',
     source:
       'https://en.wikipedia.org/wiki/Star_Wars_(film)#:~:text=Lucas%20envisioned%20Tatooine%20as%20a%20jungle%20planet',
   },
   'movie:601': {
     en: 'The film was shot under the fake title "A Boy\u2019s Life". Actors read the script behind closed doors and everyone on set needed an ID card.',
     de: 'Gedreht wurde unter dem Tarntitel „A Boy\u2019s Life\u201c. Die Schauspieler lasen das Drehbuch hinter verschlossenen Türen, alle am Set brauchten einen Ausweis.',
+    pt: 'O filme foi rodado sob o título falso “A Boy’s Life”. Os atores liam o roteiro a portas fechadas e todos no set precisavam de um cartão de identificação.',
+    fr: 'Le film a été tourné sous le faux titre « A Boy’s Life ». Les acteurs lisaient le scénario à huis clos et toute personne présente sur le plateau devait porter une carte d’identité.',
+    es: 'La película se rodó bajo el título falso «A Boy’s Life». Los actores leían el guion a puerta cerrada y todos en el set necesitaban una tarjeta de identificación.',
+    it: 'Il film fu girato con il falso titolo “A Boy’s Life”. Gli attori leggevano la sceneggiatura a porte chiuse e chiunque fosse sul set doveva avere un tesserino identificativo.',
     source:
       'https://en.wikipedia.org/wiki/E.T._the_Extra-Terrestrial#:~:text=filmed%20under%20the%20cover%20name',
   },
