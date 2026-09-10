@@ -424,60 +424,100 @@ const FACTS: Record<string, Localized> = {
   'movie:62': {
     en: 'The weightlessness was made by hanging the actors on wires from the top of the set and filming from directly below. Their own bodies hid the wires.',
     de: 'Die Schwerelosigkeit entstand, indem die Darsteller an Seilen von der Decke hingen und von unten gefilmt wurden. Ihre eigenen Körper verdeckten die Seile.',
+    pt: 'A ausência de peso foi criada suspendendo os atores em cabos no alto do cenário e filmando diretamente de baixo. Os próprios corpos deles escondiam os cabos.',
+    fr: 'L’apesanteur a été créée en suspendant les acteurs à des câbles depuis le haut du décor et en les filmant directement par dessous. Leur propre corps cachait les câbles.',
+    es: 'La ingravidez se creó colgando a los actores de cables desde la parte superior del decorado y filmando directamente desde abajo. Sus propios cuerpos ocultaban los cables.',
+    it: 'L’assenza di gravità fu creata appendendo gli attori a cavi dalla sommità del set e filmando direttamente dal basso. I loro stessi corpi nascondevano i cavi.',
     source:
       'https://en.wikipedia.org/wiki/2001:_A_Space_Odyssey#:~:text=suspending%20the%20actors%20from%20wires',
   },
   'movie:807': {
     en: 'For deeper blacks the film was put through a costly chemical process. Only a few hundred of the 2,500 cinema prints got it, so most audiences saw a different looking film.',
     de: 'Für tiefere Schwarztöne wurde das Filmmaterial aufwendig chemisch behandelt. Nur ein paar Hundert der 2.500 Kinokopien bekamen das, die meisten Zuschauer sahen also einen anders aussehenden Film.',
+    pt: 'Para obter pretos mais profundos, o filme passou por um processo químico caro. Apenas algumas centenas das 2.500 cópias para cinema receberam o tratamento, então a maioria do público viu um filme com aparência diferente.',
+    fr: 'Pour obtenir des noirs plus profonds, le film a subi un coûteux traitement chimique. Seules quelques centaines des 2 500 copies destinées aux cinémas en ont bénéficié, la plupart des spectateurs ont donc vu un film d’apparence différente.',
+    es: 'Para conseguir negros más profundos, la película se sometió a un costoso proceso químico. Solo unos cientos de las 2.500 copias para cines lo recibieron, por lo que la mayoría del público vio una película con un aspecto diferente.',
+    it: 'Per ottenere neri più profondi, la pellicola fu sottoposta a un costoso processo chimico. Solo poche centinaia delle 2.500 copie cinematografiche lo ricevettero, quindi la maggior parte del pubblico vide un film dall’aspetto diverso.',
     source:
       'https://en.wikipedia.org/wiki/Seven_(1995_film)#:~:text=only%20a%20few%20hundred%20used%20the%20process',
   },
   'movie:12': {
     en: 'The shark is named Bruce after the mechanical shark in Jaws, which that crew had nicknamed after Spielberg\u2019s lawyer.',
     de: 'Der Hai heißt Bruce, nach dem mechanischen Hai aus Der weiße Hai. Den hatte die Crew damals nach Spielbergs Anwalt benannt.',
+    pt: 'O tubarão se chama Bruce em homenagem ao tubarão mecânico de Jaws, que aquela equipe havia apelidado assim por causa do advogado de Spielberg.',
+    fr: 'Le requin s’appelle Bruce en référence au requin mécanique de Jaws, que l’équipe avait surnommé ainsi d’après l’avocat de Spielberg.',
+    es: 'El tiburón se llama Bruce por el tiburón mecánico de Jaws, al que aquel equipo había apodado así por el abogado de Spielberg.',
+    it: 'Lo squalo si chiama Bruce in omaggio allo squalo meccanico di Jaws, che quella troupe aveva soprannominato così dal nome dell’avvocato di Spielberg.',
     source:
       'https://en.wikipedia.org/wiki/Finding_Nemo#:~:text=after%20Bruce%20Ramer',
   },
   'movie:620': {
     en: 'The shoot blocked New York streets at rush hour. When angry locals asked who was responsible, a producer told them it was Francis Ford Coppola shooting another film.',
     de: 'Der Dreh blockierte New Yorker Straßen im Berufsverkehr. Als wütende Anwohner fragten, wer daran schuld sei, erzählte ein Produzent ihnen, das sei Francis Ford Coppola mit einem anderen Film.',
+    pt: 'As filmagens bloquearam ruas de Nova York no horário de pico. Quando moradores irritados perguntaram quem era o responsável, um produtor disse que era Francis Ford Coppola filmando outro longa.',
+    fr: 'Le tournage a bloqué des rues de New York à l’heure de pointe. Lorsque des habitants en colère ont demandé qui était responsable, un producteur leur a dit que Francis Ford Coppola tournait un autre film.',
+    es: 'El rodaje bloqueó calles de Nueva York en hora punta. Cuando los vecinos enfadados preguntaron quién era el responsable, un productor les dijo que era Francis Ford Coppola rodando otra película.',
+    it: 'Le riprese bloccarono alcune strade di New York durante l’ora di punta. Quando i residenti arrabbiati chiesero chi fosse il responsabile, un produttore disse loro che era Francis Ford Coppola impegnato a girare un altro film.',
     source:
       'https://en.wikipedia.org/wiki/Ghostbusters#:~:text=he%20blamed%20Francis%20Ford%20Coppola',
   },
   'movie:244786': {
     en: 'Many of the band were real music students, and the director set out to capture their genuine fear of the raging conductor. Between takes the actor was reportedly very gentle.',
     de: 'Viele in der Filmband waren echte Musikstudenten, und der Regisseur fing gezielt ihre echte Angst vor dem tobenden Dirigenten ein. Zwischen den Aufnahmen war der Darsteller angeblich ausgesprochen freundlich.',
+    pt: 'Muitos integrantes da banda eram estudantes de música de verdade, e o diretor procurou captar o medo genuíno que sentiam do maestro furioso. Entre as tomadas, o ator era, segundo relatos, muito gentil.',
+    fr: 'De nombreux membres de l’orchestre étaient de véritables étudiants en musique, et le réalisateur cherchait à saisir leur peur réelle du chef enragé. Entre les prises, l’acteur était paraît-il très aimable.',
+    es: 'Muchos integrantes de la banda eran verdaderos estudiantes de música, y el director se propuso captar su miedo genuino al director de orquesta enfurecido. Entre tomas, el actor era, según se cuenta, muy amable.',
+    it: 'Molti membri della banda erano veri studenti di musica e il regista cercò di catturare la loro autentica paura del direttore furioso. Tra una ripresa e l’altra, a quanto pare, l’attore era molto gentile.',
     source:
       'https://en.wikipedia.org/wiki/Whiplash_(2014_film)#:~:text=expressions%20of%20fear%20and%20anxiety',
   },
   'movie:745': {
     en: 'Bruce Willis took the part as compensation for a production that had collapsed with him a year earlier.',
     de: 'Bruce Willis übernahm die Rolle als Ausgleich für eine Produktion, die ein Jahr zuvor mit ihm geplatzt war.',
+    pt: 'Bruce Willis aceitou o papel como compensação por uma produção com ele que havia fracassado um ano antes.',
+    fr: 'Bruce Willis a accepté le rôle en compensation d’une production avec lui qui s’était effondrée un an plus tôt.',
+    es: 'Bruce Willis aceptó el papel como compensación por una producción con él que se había venido abajo un año antes.',
+    it: 'Bruce Willis accettò la parte come compensazione per una produzione con lui che era fallita un anno prima.',
     source:
       'https://en.wikipedia.org/wiki/The_Sixth_Sense#:~:text=compensate%20the%20studio%20for',
   },
   'movie:862': {
     en: 'Disney halted production because Woody had turned into an unpleasant tyrant. Pixar spent three months rewriting him into a leader, paid for out of Steve Jobs\u2019 own pocket.',
     de: 'Disney stoppte die Produktion, weil Woody zu einem unangenehmen Tyrannen geworden war. Pixar schrieb ihn in drei Monaten zum Anführer um, bezahlt aus Steve Jobs eigener Tasche.',
+    pt: 'A Disney interrompeu a produção porque Woody havia se tornado um tirano desagradável. A Pixar passou três meses reescrevendo o personagem como um líder, com os custos pagos pelo próprio Steve Jobs.',
+    fr: 'Disney a interrompu la production parce que Woody était devenu un tyran désagréable. Pixar a passé trois mois à le réécrire en chef, aux frais de Steve Jobs lui-même.',
+    es: 'Disney detuvo la producción porque Woody se había convertido en un tirano desagradable. Pixar pasó tres meses reescribiéndolo como un líder, con los gastos pagados por el propio Steve Jobs.',
+    it: 'Disney fermò la produzione perché Woody era diventato un tiranno sgradevole. La Pixar impiegò tre mesi per riscriverlo come leader, con i costi pagati di tasca propria da Steve Jobs.',
     source:
       'https://en.wikipedia.org/wiki/Toy_Story#:~:text=Woody%20transformed%20from%20a%20tyrant%20to%20a%20wise%20leader',
   },
   'movie:769': {
     en: 'One of the investigators is played by the real prosecutor who handled the case. He got the part after a casual remark, and his scene was improvised.',
     de: 'Einer der Ermittler wird vom echten Staatsanwalt gespielt, der den Fall damals führte. Er kam durch eine beiläufige Bemerkung zur Rolle, seine Szene war improvisiert.',
+    pt: 'Um dos investigadores é interpretado pelo promotor de verdade que cuidou do caso. Ele conseguiu o papel após um comentário casual, e sua cena foi improvisada.',
+    fr: 'L’un des enquêteurs est joué par le véritable procureur qui avait traité l’affaire. Il a obtenu le rôle après une remarque en passant, et sa scène a été improvisée.',
+    es: 'Uno de los investigadores está interpretado por el fiscal real que llevó el caso. Consiguió el papel tras un comentario casual, y su escena fue improvisada.',
+    it: 'Uno degli investigatori è interpretato dal vero procuratore che si occupò del caso. Ottenne la parte dopo un commento casuale e la sua scena fu improvvisata.',
     source:
       'https://en.wikipedia.org/wiki/Goodfellas#:~:text=cast%20on%20a%20whim',
   },
   'movie:19': {
     en: 'The vast city was built as models. Angled mirrors made the actors look as if they stood inside the tiny sets, a trick Hitchcock borrowed two years later.',
     de: 'Die riesige Stadt bestand aus Modellen. Schräg gestellte Spiegel ließen die Darsteller wirken, als stünden sie in den winzigen Kulissen. Hitchcock übernahm den Trick zwei Jahre später.',
+    pt: 'A imensa cidade foi construída como maquetes. Espelhos inclinados faziam os atores parecerem estar dentro dos cenários minúsculos, um truque que Hitchcock adotou dois anos depois.',
+    fr: 'La vaste ville a été construite sous forme de maquettes. Des miroirs inclinés donnaient l’impression que les acteurs se tenaient dans les décors miniatures, une astuce reprise par Hitchcock deux ans plus tard.',
+    es: 'La inmensa ciudad se construyó mediante maquetas. Unos espejos inclinados hacían parecer que los actores estaban dentro de los diminutos decorados, un truco que Hitchcock adoptó dos años después.',
+    it: 'La vasta città fu costruita sotto forma di modellini. Specchi inclinati facevano sembrare che gli attori si trovassero dentro i minuscoli set, un trucco che Hitchcock riprese due anni dopo.',
     source:
       'https://en.wikipedia.org/wiki/Metropolis_(1927_film)#:~:text=mirrors%20are%20used%20to%20create%20the%20illusion',
   },
   'movie:872': {
     en: 'It is often said that milk was mixed into the rain so it would show on camera. That is a myth. The effect came from backlighting.',
     de: 'Oft heißt es, dem Regen sei Milch beigemischt worden, damit man ihn besser sieht. Das ist ein Mythos, der Effekt entstand durch Gegenlicht.',
+    pt: 'Costuma-se dizer que leite foi misturado à chuva para que ela aparecesse na câmera. Isso é um mito. O efeito veio da iluminação por trás.',
+    fr: 'On dit souvent que du lait a été mélangé à la pluie pour qu’elle apparaisse à l’image. C’est un mythe. L’effet venait du contre-jour.',
+    es: 'A menudo se dice que se mezcló leche con la lluvia para que se viera en cámara. Es un mito. El efecto procedía de la iluminación a contraluz.',
+    it: 'Si dice spesso che alla pioggia fu mescolato del latte perché risultasse visibile in camera. È un mito. L’effetto derivava dalla retroilluminazione.',
     source:
       'https://en.wikipedia.org/wiki/Singin%27_in_the_Rain#:~:text=the%20rain%20was%20mixed%20with%20milk',
   },
