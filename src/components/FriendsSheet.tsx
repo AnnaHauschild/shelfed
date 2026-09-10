@@ -17,6 +17,7 @@ import { useUserSearch } from '@/hooks/useUserSearch';
 import { useBottomInset } from '@/hooks/useBottomInset';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { UserSummary } from '@/api/follows';
 import { StoryGroup } from '@/api/posts';
 import { Avatar } from './Avatar';
@@ -36,6 +37,7 @@ export function FriendsSheet({
   onClose: () => void;
 }) {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [query, setQuery] = useState('');
   const [viewUser, setViewUser] = useState<UserSummary | null>(null);
@@ -121,7 +123,7 @@ export function FriendsSheet({
             style={styles.input}
             value={query}
             onChangeText={setQuery}
-            placeholder="Find people by username"
+            placeholder={text.phFindPeople}
             placeholderTextColor={chrome.muted}
             autoCapitalize="none"
             autoCorrect={false}

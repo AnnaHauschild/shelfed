@@ -372,7 +372,7 @@ export function UserShelfSheet({
             style={styles.searchInput}
             value={query}
             onChangeText={setQuery}
-            placeholder="Search this shelf…"
+            placeholder={text.phSearchShelf}
             placeholderTextColor={chrome.muted}
             autoCorrect={false}
             returnKeyType="search"

@@ -13,6 +13,7 @@ import { PersonHit, searchPeople } from '@/api/movies';
 import { posterUrl } from '@/api/tmdb';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 
 export interface SelectedActor {
   id: string;
@@ -67,6 +68,7 @@ export function ActorFilter({ selected, onSelect }: Props) {
   const [results, setResults] = useState<PersonHit[]>([]);
   const [loading, setLoading] = useState(false);
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
 
   // Debounced live search; skipped while an actor is already selected.
@@ -117,7 +119,7 @@ export function ActorFilter({ selected, onSelect }: Props) {
           style={styles.input}
           value={query}
           onChangeText={setQuery}
-          placeholder="Search an actor…"
+          placeholder={text.phSearchActor}
           placeholderTextColor={chrome.muted}
           autoCorrect={false}
           returnKeyType="search"

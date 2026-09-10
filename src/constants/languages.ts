@@ -129,13 +129,35 @@ export interface UiText {
   greeting: string;
   setName: string;
   categoryBlurb: Record<MediaType, string>;
-  swipeHeading: Record<MediaType, string>;
   findHeading: Record<MediaType, string>;
   searchPlaceholder: Record<MediaType, string>;
   nothingFound: string;
   couldNotLoad: string;
   somethingWrong: string;
   retry: string;
+  phSearchActor: string;
+  phSearchAuthor: string;
+  phFindPeople: string;
+  phSearchShelf: string;
+  phMoodName: string;
+  phMoodExample: string;
+  phNote: string;
+  phYourName: string;
+  phSearchGifs: string;
+  phType: string;
+  phOptional: string;
+  matchTitle: string;
+  matchNice: string;
+  matchYouAnd: string;
+  /** Follows the friend names, so it carries its own leading space or comma. */
+  matchWantToSee: string;
+  matchLove: string;
+  lovesThisOne: string;
+  lovesThisMany: string;
+  lovesThisHeading: string;
+  wantsToSeeOne: string;
+  wantsToSeeMany: string;
+  wantsToSeeHeading: string;
 }
 
 export const UI_TEXT: Record<AppLanguage, UiText> = {
@@ -226,12 +248,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       book: 'Remember the books you have read',
       game: 'Log the games you have played',
     },
-    swipeHeading: {
-      movie: 'Swipe your films',
-      tv: 'Swipe your series',
-      book: 'Swipe your books',
-      game: 'Swipe your games',
-    },
     findHeading: {
       movie: 'Find any movie',
       tv: 'Find any series',
@@ -248,6 +264,28 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     couldNotLoad: 'Could not load {noun}.',
     somethingWrong: 'Something went wrong.',
     retry: 'Retry',
+    phSearchActor: 'Search an actor…',
+    phSearchAuthor: 'Search an author…',
+    phFindPeople: 'Find people by username',
+    phSearchShelf: 'Search this shelf…',
+    phMoodName: 'Mood name',
+    phMoodExample: 'e.g. 🛋️ Comfort',
+    phNote: 'Write your thoughts, favourite scenes, who you watched it with…',
+    phYourName: 'Add your name',
+    phSearchGifs: 'Search GIFs…',
+    phType: 'Type…',
+    phOptional: '(optional)',
+    matchTitle: 'It’s a Match!',
+    matchNice: 'Nice!',
+    matchYouAnd: 'You and',
+    matchWantToSee: ' both want to see',
+    matchLove: ' both love',
+    lovesThisOne: 'loves this',
+    lovesThisMany: 'love this',
+    lovesThisHeading: 'Love this',
+    wantsToSeeOne: 'wants to see this',
+    wantsToSeeMany: 'want to see this',
+    wantsToSeeHeading: 'Want to see this',
   },
   de: {
     moodsDescription:
@@ -338,12 +376,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       book: 'Bücher, die du gelesen hast',
       game: 'Spiele, die du gespielt hast',
     },
-    swipeHeading: {
-      movie: 'Wische durch Filme',
-      tv: 'Wische durch Serien',
-      book: 'Wische durch Bücher',
-      game: 'Wische durch Spiele',
-    },
     findHeading: {
       movie: 'Finde jeden Film',
       tv: 'Finde jede Serie',
@@ -360,6 +392,29 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     couldNotLoad: 'Konnte {noun} nicht laden.',
     somethingWrong: 'Etwas ist schiefgelaufen.',
     retry: 'Erneut versuchen',
+    phSearchActor: 'Schauspieler suchen…',
+    phSearchAuthor: 'Autor suchen…',
+    phFindPeople: 'Leute über den Benutzernamen finden',
+    phSearchShelf: 'In diesem Regal suchen…',
+    phMoodName: 'Name des Moods',
+    phMoodExample: 'z. B. 🛋️ Comfort',
+    phNote:
+      'Schreib deine Gedanken auf, Lieblingsszenen, mit wem du es gesehen hast…',
+    phYourName: 'Deinen Namen eintragen',
+    phSearchGifs: 'GIFs suchen…',
+    phType: 'Schreib etwas…',
+    phOptional: '(optional)',
+    matchTitle: 'Es ist ein Match!',
+    matchNice: 'Schön!',
+    matchYouAnd: 'Du und',
+    matchWantToSee: ' wollt beide sehen',
+    matchLove: ' liebt beide',
+    lovesThisOne: 'liebt das',
+    lovesThisMany: 'lieben das',
+    lovesThisHeading: 'Lieben das',
+    wantsToSeeOne: 'will das sehen',
+    wantsToSeeMany: 'wollen das sehen',
+    wantsToSeeHeading: 'Wollen das sehen',
   },
   pt: {
     moodsDescription:
@@ -451,12 +506,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       book: 'Os livros que você leu',
       game: 'Os jogos que você jogou',
     },
-    swipeHeading: {
-      movie: 'Deslize pelos filmes',
-      tv: 'Deslize pelas séries',
-      book: 'Deslize pelos livros',
-      game: 'Deslize pelos jogos',
-    },
     findHeading: {
       movie: 'Encontre qualquer filme',
       tv: 'Encontre qualquer série',
@@ -473,6 +522,29 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     couldNotLoad: 'Não foi possível carregar {noun}.',
     somethingWrong: 'Algo deu errado.',
     retry: 'Tentar de novo',
+    phSearchActor: 'Buscar ator…',
+    phSearchAuthor: 'Buscar autor…',
+    phFindPeople: 'Encontrar pessoas pelo nome de usuário',
+    phSearchShelf: 'Buscar nesta estante…',
+    phMoodName: 'Nome do mood',
+    phMoodExample: 'ex. 🛋️ Comfort',
+    phNote:
+      'Escreva o que achou, cenas favoritas, com quem você viu…',
+    phYourName: 'Coloque seu nome',
+    phSearchGifs: 'Buscar GIFs…',
+    phType: 'Digite…',
+    phOptional: '(opcional)',
+    matchTitle: 'É um Match!',
+    matchNice: 'Legal!',
+    matchYouAnd: 'Você e',
+    matchWantToSee: ' querem ver',
+    matchLove: ' amam',
+    lovesThisOne: 'ama isto',
+    lovesThisMany: 'amam isto',
+    lovesThisHeading: 'Amam isto',
+    wantsToSeeOne: 'quer ver isto',
+    wantsToSeeMany: 'querem ver isto',
+    wantsToSeeHeading: 'Querem ver isto',
   },
   fr: {
     moodsDescription:
@@ -564,12 +636,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       book: 'Les livres que tu as lus',
       game: 'Les jeux auxquels tu as joué',
     },
-    swipeHeading: {
-      movie: 'Balaie tes films',
-      tv: 'Balaie tes séries',
-      book: 'Balaie tes livres',
-      game: 'Balaie tes jeux',
-    },
     findHeading: {
       movie: 'Trouve n’importe quel film',
       tv: 'Trouve n’importe quelle série',
@@ -586,6 +652,29 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     couldNotLoad: 'Impossible de charger {noun}.',
     somethingWrong: 'Quelque chose s’est mal passé.',
     retry: 'Réessayer',
+    phSearchActor: 'Chercher un acteur…',
+    phSearchAuthor: 'Chercher un auteur…',
+    phFindPeople: 'Trouver des gens par nom d’utilisateur',
+    phSearchShelf: 'Chercher sur cette étagère…',
+    phMoodName: 'Nom du mood',
+    phMoodExample: 'ex. 🛋️ Comfort',
+    phNote:
+      'Écris ce que tu en as pensé, tes scènes préférées, avec qui tu l’as vu…',
+    phYourName: 'Indique ton nom',
+    phSearchGifs: 'Chercher des GIF…',
+    phType: 'Écris…',
+    phOptional: '(facultatif)',
+    matchTitle: 'C’est un Match !',
+    matchNice: 'Super !',
+    matchYouAnd: 'Toi et',
+    matchWantToSee: ', vous voulez voir',
+    matchLove: ', vous aimez tous les deux',
+    lovesThisOne: 'aime ça',
+    lovesThisMany: 'aiment ça',
+    lovesThisHeading: 'Aiment ça',
+    wantsToSeeOne: 'veut voir ça',
+    wantsToSeeMany: 'veulent voir ça',
+    wantsToSeeHeading: 'Veulent voir ça',
   },
   es: {
     moodsDescription:
@@ -677,12 +766,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       book: 'Los libros que has leído',
       game: 'Los juegos a los que has jugado',
     },
-    swipeHeading: {
-      movie: 'Desliza por tus películas',
-      tv: 'Desliza por tus series',
-      book: 'Desliza por tus libros',
-      game: 'Desliza por tus juegos',
-    },
     findHeading: {
       movie: 'Encuentra cualquier película',
       tv: 'Encuentra cualquier serie',
@@ -699,6 +782,29 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     couldNotLoad: 'No se pudieron cargar {noun}.',
     somethingWrong: 'Algo ha salido mal.',
     retry: 'Reintentar',
+    phSearchActor: 'Buscar un actor…',
+    phSearchAuthor: 'Buscar un autor…',
+    phFindPeople: 'Buscar personas por nombre de usuario',
+    phSearchShelf: 'Buscar en esta estantería…',
+    phMoodName: 'Nombre del mood',
+    phMoodExample: 'p. ej. 🛋️ Comfort',
+    phNote:
+      'Escribe lo que piensas, tus escenas favoritas, con quién lo viste…',
+    phYourName: 'Pon tu nombre',
+    phSearchGifs: 'Buscar GIFs…',
+    phType: 'Escribe…',
+    phOptional: '(opcional)',
+    matchTitle: '¡Es un Match!',
+    matchNice: '¡Genial!',
+    matchYouAnd: 'Tú y',
+    matchWantToSee: ', queréis verlo los dos',
+    matchLove: ', os encanta a los dos',
+    lovesThisOne: 'le encanta',
+    lovesThisMany: 'les encanta',
+    lovesThisHeading: 'Les encanta',
+    wantsToSeeOne: 'quiere verlo',
+    wantsToSeeMany: 'quieren verlo',
+    wantsToSeeHeading: 'Quieren verlo',
   },
   it: {
     moodsDescription:
@@ -789,12 +895,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       book: 'I libri che hai letto',
       game: 'I giochi a cui hai giocato',
     },
-    swipeHeading: {
-      movie: 'Scorri i tuoi film',
-      tv: 'Scorri le tue serie',
-      book: 'Scorri i tuoi libri',
-      game: 'Scorri i tuoi giochi',
-    },
     findHeading: {
       movie: 'Trova qualsiasi film',
       tv: 'Trova qualsiasi serie',
@@ -811,6 +911,29 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     couldNotLoad: 'Non è stato possibile caricare {noun}.',
     somethingWrong: 'Qualcosa è andato storto.',
     retry: 'Riprova',
+    phSearchActor: 'Cerca un attore…',
+    phSearchAuthor: 'Cerca un autore…',
+    phFindPeople: 'Trova persone dal nome utente',
+    phSearchShelf: 'Cerca in questa libreria…',
+    phMoodName: 'Nome del mood',
+    phMoodExample: 'es. 🛋️ Comfort',
+    phNote:
+      'Scrivi cosa ne pensi, le scene preferite, con chi l’hai visto…',
+    phYourName: 'Inserisci il tuo nome',
+    phSearchGifs: 'Cerca GIF…',
+    phType: 'Scrivi…',
+    phOptional: '(facoltativo)',
+    matchTitle: 'È un Match!',
+    matchNice: 'Bello!',
+    matchYouAnd: 'Tu e',
+    matchWantToSee: ', volete vederlo entrambi',
+    matchLove: ', lo amate entrambi',
+    lovesThisOne: 'lo ama',
+    lovesThisMany: 'lo amano',
+    lovesThisHeading: 'Lo amano',
+    wantsToSeeOne: 'vuole vederlo',
+    wantsToSeeMany: 'vogliono vederlo',
+    wantsToSeeHeading: 'Vogliono vederlo',
   },
 };
 

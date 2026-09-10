@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AuthorHit, searchAuthors } from '@/api/googleBooks';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 
 export interface SelectedAuthor {
   key: string;
@@ -33,6 +34,7 @@ export function AuthorFilter({ selected, onSelect }: Props) {
   const [results, setResults] = useState<AuthorHit[]>([]);
   const [loading, setLoading] = useState(false);
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
 
   // Debounced live search; skipped while an author is already selected.
@@ -83,7 +85,7 @@ export function AuthorFilter({ selected, onSelect }: Props) {
           style={styles.input}
           value={query}
           onChangeText={setQuery}
-          placeholder="Search an author…"
+          placeholder={text.phSearchAuthor}
           placeholderTextColor={chrome.muted}
           autoCorrect={false}
           returnKeyType="search"

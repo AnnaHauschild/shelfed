@@ -96,7 +96,7 @@ export function SettingsSheet({
   // With an account the username is the name, so the free-text field is hidden.
   const { enabled: authEnabled, session } = useAuth();
   const signedIn = authEnabled && !!session;
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, text } = useLanguage();
   const { theme, setTheme } = useTheme();
   const chrome = useThemeChrome();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
@@ -214,7 +214,7 @@ export function SettingsSheet({
                     value={draft}
                     onChangeText={setDraft}
                     onBlur={commitName}
-                    placeholder="Add your name"
+                    placeholder={text.phYourName}
                     placeholderTextColor={colors.textOnDarkMuted}
                     autoCapitalize="words"
                     maxLength={40}

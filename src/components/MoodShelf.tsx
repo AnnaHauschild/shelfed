@@ -223,7 +223,7 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
               style={styles.renameInput}
               value={renameText}
               onChangeText={setRenameText}
-              placeholder="Mood name"
+              placeholder={text.phMoodName}
               placeholderTextColor={colors.textOnDarkMuted}
               maxLength={40}
               autoFocus

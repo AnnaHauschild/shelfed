@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '@/api/types';
 import { useNote, useSaveNote } from '@/hooks/useNotes';
+import { useLanguage } from '@/context/LanguageProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
 // Warm sticky-note paper tones (kept local — this is the only post-it surface).
@@ -30,6 +31,7 @@ interface Props {
  * close (Done or tapping outside); an empty note is cleared.
  */
 export function NoteSheet({ movie, visible, onClose }: Props) {
+  const { text: ui } = useLanguage();
   const { data: saved } = useNote(movie?.id ?? '', movie?.mediaType ?? 'movie');
   const save = useSaveNote();
   const [text, setText] = useState('');
@@ -67,7 +69,7 @@ export function NoteSheet({ movie, visible, onClose }: Props) {
           style={styles.input}
           value={text}
           onChangeText={setText}
-          placeholder="Write your thoughts, favourite scenes, who you watched it with…"
+          placeholder={ui.phNote}
           placeholderTextColor={NOTE_INK_MUTED}
           multiline
           autoFocus

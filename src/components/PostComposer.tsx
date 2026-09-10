@@ -33,6 +33,7 @@ import { GifResult, hasGiphyKey, searchGifs } from '@/api/giphy';
 import { POSTER_SIZE } from '@/constants/config';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { PosterImage } from './PosterImage';
 import {
   EditableOverlay,
@@ -70,6 +71,7 @@ export function PostComposer({
   onClose: () => void;
 }) {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const create = useCreatePost();
@@ -288,7 +290,7 @@ export function PostComposer({
               style={[styles.input, captionTextStyle(captionStyle, INK, 16)]}
               value={caption}
               onChangeText={setCaption}
-              placeholder="(optional)"
+              placeholder={text.phOptional}
               placeholderTextColor="rgba(42,32,24,0.45)"
               multiline
               maxLength={280}
@@ -365,7 +367,7 @@ export function PostComposer({
                   style={styles.gifSearch}
                   value={gifQuery}
                   onChangeText={setGifQuery}
-                  placeholder="Search GIFs…"
+                  placeholder={text.phSearchGifs}
                   placeholderTextColor={chrome.muted}
                   autoFocus
                   returnKeyType="search"
@@ -410,7 +412,7 @@ export function PostComposer({
               multiline
               value={editing.text}
               onChangeText={(t) => update(editing.id, { text: t })}
-              placeholder="Type…"
+              placeholder={text.phType}
               placeholderTextColor="rgba(255,255,255,0.6)"
               maxLength={120}
               style={[

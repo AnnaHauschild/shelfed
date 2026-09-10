@@ -150,7 +150,7 @@ export function ShelfMenu({
                 style={styles.input}
                 value={name}
                 onChangeText={setName}
-                placeholder="e.g. 🛋️ Comfort"
+                placeholder={text.phMoodExample}
                 placeholderTextColor={colors.textOnDarkMuted}
                 maxLength={40}
                 autoFocus

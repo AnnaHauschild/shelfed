@@ -6,6 +6,7 @@ import { Movie } from '@/api/types';
 import { useFilmMatchGroups } from '@/hooks/useFilmMatchGroups';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 
 interface Group {
   users: UserSummary[];
@@ -20,6 +21,7 @@ interface Group {
 export function FilmMatch({ movie }: { movie: Movie }) {
   const { data } = useFilmMatchGroups(movie.id, movie.mediaType);
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const [popup, setPopup] = useState<Group | null>(null);
 
@@ -28,17 +30,17 @@ export function FilmMatch({ movie }: { movie: Movie }) {
       users: data?.favorite ?? [],
       icon: 'heart' as const,
       color: colors.favorite,
-      verbOne: 'loves this',
-      verbMany: 'love this',
-      heading: 'Love this',
+      verbOne: text.lovesThisOne,
+      verbMany: text.lovesThisMany,
+      heading: text.lovesThisHeading,
     },
     {
       users: data?.watchlist ?? [],
       icon: 'star' as const,
       color: colors.star,
-      verbOne: 'wants to see this',
-      verbMany: 'want to see this',
-      heading: 'Want to see this',
+      verbOne: text.wantsToSeeOne,
+      verbMany: text.wantsToSeeMany,
+      heading: text.wantsToSeeHeading,
     },
   ].filter((g) => g.users.length > 0);
 

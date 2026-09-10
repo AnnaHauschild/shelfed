@@ -6,6 +6,7 @@ import { UserSummary } from '@/api/follows';
 import { POSTER_SIZE_SMALL } from '@/constants/config';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { PosterImage } from './PosterImage';
 
 export interface MatchInfo {
@@ -23,6 +24,7 @@ export function MatchModal({
   onClose: () => void;
 }) {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   if (!info) return null;
   const { movie, friends, kind } = info;
   const names = friends
@@ -30,7 +32,7 @@ export function MatchModal({
     .map((f) => `@${f.username}`)
     .join(', ');
   const extra = friends.length > 3 ? ` +${friends.length - 3}` : '';
-  const feeling = kind === 'watchlist' ? 'both want to see' : 'both love';
+  const feeling = kind === 'watchlist' ? text.matchWantToSee : text.matchLove;
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
@@ -39,7 +41,7 @@ export function MatchModal({
           entering={ZoomIn.springify().damping(14)}
           style={[styles.card, { backgroundColor: chrome.background, borderColor: chrome.accent }]}
         >
-          <Text style={[styles.title, { color: chrome.accent }]}>It&apos;s a Match!</Text>
+          <Text style={[styles.title, { color: chrome.accent }]}>{text.matchTitle}</Text>
           <View style={styles.posterWrap}>
             <PosterImage
               posterPath={movie.posterPath}
@@ -52,11 +54,11 @@ export function MatchModal({
             </View>
           </View>
           <Text style={styles.sub}>
-            You and{' '}
+            {text.matchYouAnd}{' '}
             <Text style={[styles.who, { color: chrome.accent }]}>
               {names}
               {extra}
-            </Text>{' '}
+            </Text>
             {feeling}
           </Text>
           <Text style={styles.filmTitle} numberOfLines={2}>
@@ -66,7 +68,7 @@ export function MatchModal({
             style={[styles.button, { backgroundColor: chrome.accent }]}
             onPress={onClose}
           >
-            <Text style={[styles.buttonText, { color: chrome.onAccent }]}>Nice!</Text>
+            <Text style={[styles.buttonText, { color: chrome.onAccent }]}>{text.matchNice}</Text>
           </Pressable>
         </Animated.View>
       </Pressable>

@@ -293,7 +293,15 @@ export default function DiscoverScreen() {
   const [screenH, setScreenH] = useState(0);
   const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
   const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
-  const tagline = text.swipeHeading[mediaType];
+  // Part of the wooden header band, treated as a slogan and left in English.
+  const tagline =
+    mediaType === 'tv'
+      ? 'Swipe your series'
+      : mediaType === 'book'
+        ? 'Swipe your books'
+        : mediaType === 'game'
+          ? 'Swipe your games'
+          : 'Swipe your films';
 
   return (
     <View
