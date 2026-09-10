@@ -339,6 +339,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Apocalypse_Now#:~:text=had%20gotten%20the%20go-ahead%20to%20make',
   },
+  'movie:9552': {
+    en: "The sound of Regan's head turning was created by twisting a leather wallet.",
+    de: 'Das Geräusch von Regans sich drehendem Kopf entstand durch das Verdrehen einer Lederbrieftasche.',
+    pt: 'O som da cabeça de Regan girando foi criado torcendo uma carteira de couro.',
+    fr: 'Le bruit de la tête de Regan qui tourne fut créé en tordant un portefeuille en cuir.',
+    es: 'El sonido de la cabeza de Regan girando se creó retorciendo una cartera de cuero.',
+    it: 'Il suono della testa di Regan che ruota fu creato torcendo un portafoglio di pelle.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Exorcist#:~:text=twisting%20a%20leather%20wallet',
+  },
+  'movie:15': {
+    en: "Make-up artist Maurice Seiderman created the look of skin pores on Kane's face using a negative cast made from an orange peel.",
+    de: 'Maskenbildner Maurice Seiderman erzeugte die Hautporen in Kanes Gesicht mit einem Negativabdruck einer Orangenschale.',
+    pt: 'O maquiador Maurice Seiderman criou a aparência dos poros no rosto de Kane com um molde negativo feito de casca de laranja.',
+    fr: 'Le maquilleur Maurice Seiderman créa l’apparence des pores sur le visage de Kane avec une empreinte négative faite à partir d’une peau d’orange.',
+    es: 'El maquillador Maurice Seiderman creó la apariencia de los poros en el rostro de Kane con un molde negativo hecho de cáscara de naranja.',
+    it: 'Il truccatore Maurice Seiderman creò l’aspetto dei pori sul viso di Kane con un calco negativo ricavato da una buccia d’arancia.',
+    source:
+      'https://en.wikipedia.org/wiki/Citizen_Kane#:~:text=negative%20cast%20made%20from%20an%20orange%20peel',
+  },
+  'movie:1018': {
+    en: 'Rebekah Del Rio sang “Llorando” for David Lynch once, unaware that he was recording her. Lynch used that very performance in the film.',
+    de: 'Rebekah Del Rio sang „Llorando“ nur einmal für David Lynch, ohne zu wissen, dass er sie aufnahm. Lynch verwendete genau diese Aufnahme im Film.',
+    pt: 'Rebekah Del Rio cantou “Llorando” uma única vez para David Lynch, sem saber que ele a estava gravando. Lynch usou justamente essa interpretação no filme.',
+    fr: 'Rebekah Del Rio chanta « Llorando » une seule fois pour David Lynch, sans savoir qu’il l’enregistrait. Lynch utilisa cette interprétation dans le film.',
+    es: 'Rebekah Del Rio cantó “Llorando” una sola vez para David Lynch, sin saber que él la estaba grabando. Lynch utilizó esa misma interpretación en la película.',
+    it: 'Rebekah Del Rio cantò “Llorando” una sola volta per David Lynch, senza sapere che lui la stava registrando. Lynch usò proprio quell’esecuzione nel film.',
+    source:
+      'https://en.wikipedia.org/wiki/Mulholland_Drive_(film)#:~:text=she%20sang%20the%20song%20for%20him%20once%20without%20knowing%20that%20he%20was%20recording%20her',
+  },
+  'movie:1091': {
+    en: "The creature effects used an unlikely mix of materials including mayonnaise, creamed corn, microwaved bubble gum and K-Y Jelly.",
+    de: 'Für die Kreatureneffekte kam eine ungewöhnliche Mischung zum Einsatz: Mayonnaise, Maiscreme, Kaugummi aus der Mikrowelle und K-Y Jelly.',
+    pt: 'Os efeitos das criaturas usaram uma mistura improvável de materiais, incluindo maionese, creme de milho, chiclete aquecido no micro-ondas e K-Y Jelly.',
+    fr: 'Les effets des créatures utilisèrent un mélange improbable de matériaux, notamment de la mayonnaise, du maïs à la crème, du chewing-gum passé au micro-ondes et du K-Y Jelly.',
+    es: 'Los efectos de las criaturas usaron una mezcla insólita de materiales, entre ellos mayonesa, crema de maíz, chicle calentado en el microondas y K-Y Jelly.',
+    it: 'Gli effetti delle creature usarono un’improbabile miscela di materiali, tra cui maionese, crema di mais, gomma da masticare scaldata al microonde e K-Y Jelly.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Thing_(1982_film)#:~:text=microwaved%20bubble%20gum',
+  },
   'tv:1399': {
     en: 'The original pilot was received so poorly at a private screening that HBO demanded about 90 percent of the episode be reshot, with changes to the cast and director.',
     de: 'Die ursprüngliche Pilotfolge kam bei einer privaten Vorführung so schlecht an, dass HBO rund 90 Prozent der Folge neu drehen ließ und Besetzung sowie Regie änderte.',
