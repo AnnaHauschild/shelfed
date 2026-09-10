@@ -1216,10 +1216,10 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Russian_Doll_(TV_series)#:~:text=Other%20contenders%20for%20the%20reset%20song%20included%20%22Not%20Tonight%22%20by%20Lil%27%20Kim%2C%20%22Crazy%20Feeling%22%20by%20Lou%20Reed%20and%20%22No%20Fun%22%20by%20the%20Stooges&text=the%20cost%20of%20using%20it%20so%20many%20times%20took%20up%20a%20significant%20portion%20of%20the%20music%20budget',
   },
   'tv:124101': {
-    en: 'Because of the COVID-19 pandemic, the Hacks cast held table reads over Zoom—and Jean Smart and Carl Clemons-Hopkins did not meet in person until minutes before filming the pilot.',
-    de: 'Wegen der COVID-19-Pandemie hielt der Cast von Hacks die Leseproben per Zoom ab – Jean Smart und Carl Clemons-Hopkins trafen sich sogar erst wenige Minuten vor dem Dreh der Pilotfolge persönlich.',
-    pt: 'Por causa da pandemia de COVID-19, o elenco de Hacks fez leituras de roteiro pelo Zoom — e Jean Smart e Carl Clemons-Hopkins só se conheceram pessoalmente minutos antes da filmagem do episódio piloto.',
-    fr: 'En raison de la pandémie de COVID-19, la distribution de Hacks a fait les lectures sur Zoom — Jean Smart et Carl Clemons-Hopkins ne se sont rencontrés en personne que quelques minutes avant le tournage du pilote.',
+    en: 'Because of the COVID-19 pandemic, the Hacks cast held table reads over Zoom. Jean Smart and Carl Clemons-Hopkins did not meet in person until minutes before filming the pilot.',
+    de: 'Wegen der COVID-19-Pandemie hielt der Cast von Hacks die Leseproben per Zoom ab. Jean Smart und Carl Clemons-Hopkins trafen sich sogar erst wenige Minuten vor dem Dreh der Pilotfolge persönlich.',
+    pt: 'Por causa da pandemia de COVID-19, o elenco de Hacks fez leituras de roteiro pelo Zoom. Jean Smart e Carl Clemons-Hopkins só se conheceram pessoalmente minutos antes da filmagem do episódio piloto.',
+    fr: 'En raison de la pandémie de COVID-19, la distribution de Hacks a fait les lectures sur Zoom. Jean Smart et Carl Clemons-Hopkins ne se sont rencontrés en personne que quelques minutes avant le tournage du pilote.',
     es: 'Debido a la pandemia de COVID-19, el reparto de Hacks hizo las lecturas por Zoom; Jean Smart y Carl Clemons-Hopkins no se conocieron en persona hasta minutos antes de rodar el episodio piloto.',
     it: 'A causa della pandemia di COVID-19, il cast di Hacks fece le letture su Zoom: Jean Smart e Carl Clemons-Hopkins si incontrarono di persona solo pochi minuti prima di girare l’episodio pilota.',
     source:
