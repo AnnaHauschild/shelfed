@@ -1,5 +1,6 @@
 /** UI language options — drives TMDB content language + a few localized hints. */
 import { getLocales } from 'expo-localization';
+import { contentLanguage } from '@/api/tmdb';
 import { MediaType } from '@/api/types';
 
 export type AppLanguage = 'en' | 'de' | 'pt' | 'fr' | 'es' | 'it';
@@ -99,6 +100,30 @@ export interface UiText {
   signOut: string;
   deleteAccount: string;
   deleteAccountConfirm: string;
+  accountIntro: string;
+  sendCode: string;
+  /** `{email}` is the address the code went to. */
+  codeSent: string;
+  verify: string;
+  changeEmail: string;
+  pickUsername: string;
+  checking: string;
+  usernameFree: string;
+  usernameTaken: string;
+  save: string;
+  privateAccount: string;
+  privateOn: string;
+  privateOff: string;
+  photoDenied: string;
+  errSendCode: string;
+  errVerifyCode: string;
+  errNotSignedIn: string;
+  errUsernameTaken: string;
+  errSaveProfile: string;
+  errDeleteAccount: string;
+  errReadImage: string;
+  errSavePhoto: string;
+  errProcessImage: string;
 }
 
 export const UI_TEXT: Record<AppLanguage, UiText> = {
@@ -156,6 +181,30 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     signOut: 'Sign out',
     deleteAccount: 'Delete account',
     deleteAccountConfirm: 'Tap again to delete for good',
+    accountIntro:
+      'Optional. Sign in to share lists and follow friends. Everything works without an account too.',
+    sendCode: 'Send code',
+    codeSent: 'We sent a 6-digit code to {email}.',
+    verify: 'Verify',
+    changeEmail: 'Change email',
+    pickUsername: 'Pick a username so friends can find you.',
+    checking: 'Checking…',
+    usernameFree: '✓ Available',
+    usernameTaken: '✗ Already taken',
+    save: 'Save',
+    privateAccount: 'Private account',
+    privateOn: 'New followers need your approval.',
+    privateOff: 'Anyone can follow and see your shelves.',
+    photoDenied: 'Photo access was denied.',
+    errSendCode: 'Could not send the code.',
+    errVerifyCode: 'That code did not work.',
+    errNotSignedIn: 'Not signed in.',
+    errUsernameTaken: 'That username is already taken.',
+    errSaveProfile: 'Could not save your profile.',
+    errDeleteAccount: 'Could not delete the account.',
+    errReadImage: 'Could not read that image.',
+    errSavePhoto: 'Could not save the photo.',
+    errProcessImage: 'Could not process the image.',
   },
   de: {
     moodsDescription:
@@ -213,6 +262,30 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     signOut: 'Abmelden',
     deleteAccount: 'Konto löschen',
     deleteAccountConfirm: 'Noch einmal tippen, dann ist es endgültig',
+    accountIntro:
+      'Freiwillig. Melde dich an, um Listen zu teilen und Freunden zu folgen. Ohne Konto funktioniert alles genauso.',
+    sendCode: 'Code senden',
+    codeSent: 'Wir haben einen sechsstelligen Code an {email} geschickt.',
+    verify: 'Bestätigen',
+    changeEmail: 'E-Mail ändern',
+    pickUsername: 'Wähle einen Benutzernamen, damit Freunde dich finden.',
+    checking: 'Wird geprüft…',
+    usernameFree: '✓ Frei',
+    usernameTaken: '✗ Schon vergeben',
+    save: 'Speichern',
+    privateAccount: 'Privates Konto',
+    privateOn: 'Neue Follower musst du bestätigen.',
+    privateOff: 'Alle dürfen dir folgen und deine Regale sehen.',
+    photoDenied: 'Der Zugriff auf deine Fotos wurde abgelehnt.',
+    errSendCode: 'Der Code konnte nicht gesendet werden.',
+    errVerifyCode: 'Dieser Code hat nicht funktioniert.',
+    errNotSignedIn: 'Nicht angemeldet.',
+    errUsernameTaken: 'Dieser Benutzername ist schon vergeben.',
+    errSaveProfile: 'Dein Profil konnte nicht gespeichert werden.',
+    errDeleteAccount: 'Das Konto konnte nicht gelöscht werden.',
+    errReadImage: 'Das Bild konnte nicht gelesen werden.',
+    errSavePhoto: 'Das Foto konnte nicht gespeichert werden.',
+    errProcessImage: 'Das Bild konnte nicht verarbeitet werden.',
   },
   pt: {
     moodsDescription:
@@ -270,6 +343,31 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     signOut: 'Sair',
     deleteAccount: 'Excluir conta',
     deleteAccountConfirm: 'Toque de novo para excluir de vez',
+    accountIntro:
+      'Opcional. Entre para compartilhar listas e seguir amigos. Tudo funciona sem conta também.',
+    sendCode: 'Enviar código',
+    codeSent: 'Enviamos um código de seis dígitos para {email}.',
+    verify: 'Confirmar',
+    changeEmail: 'Trocar e-mail',
+    pickUsername:
+      'Escolha um nome de usuário para os amigos te encontrarem.',
+    checking: 'Verificando…',
+    usernameFree: '✓ Disponível',
+    usernameTaken: '✗ Já está em uso',
+    save: 'Salvar',
+    privateAccount: 'Conta privada',
+    privateOn: 'Novos seguidores precisam da sua aprovação.',
+    privateOff: 'Qualquer pessoa pode seguir você e ver suas estantes.',
+    photoDenied: 'O acesso às suas fotos foi negado.',
+    errSendCode: 'Não foi possível enviar o código.',
+    errVerifyCode: 'Esse código não funcionou.',
+    errNotSignedIn: 'Você não está conectado.',
+    errUsernameTaken: 'Esse nome de usuário já está em uso.',
+    errSaveProfile: 'Não foi possível salvar seu perfil.',
+    errDeleteAccount: 'Não foi possível excluir a conta.',
+    errReadImage: 'Não foi possível ler essa imagem.',
+    errSavePhoto: 'Não foi possível salvar a foto.',
+    errProcessImage: 'Não foi possível processar a imagem.',
   },
   fr: {
     moodsDescription:
@@ -327,6 +425,31 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     signOut: 'Se déconnecter',
     deleteAccount: 'Supprimer le compte',
     deleteAccountConfirm: 'Touche encore une fois pour supprimer définitivement',
+    accountIntro:
+      'Facultatif. Connecte-toi pour partager des listes et suivre tes amis. Tout fonctionne aussi sans compte.',
+    sendCode: 'Envoyer le code',
+    codeSent: 'Nous avons envoyé un code à six chiffres à {email}.',
+    verify: 'Valider',
+    changeEmail: 'Changer d’adresse',
+    pickUsername:
+      'Choisis un nom d’utilisateur pour que tes amis te trouvent.',
+    checking: 'Vérification…',
+    usernameFree: '✓ Disponible',
+    usernameTaken: '✗ Déjà pris',
+    save: 'Enregistrer',
+    privateAccount: 'Compte privé',
+    privateOn: 'Les nouveaux abonnés doivent être acceptés.',
+    privateOff: 'Tout le monde peut te suivre et voir tes étagères.',
+    photoDenied: 'L’accès à tes photos a été refusé.',
+    errSendCode: 'Impossible d’envoyer le code.',
+    errVerifyCode: 'Ce code n’a pas fonctionné.',
+    errNotSignedIn: 'Tu n’es pas connecté.',
+    errUsernameTaken: 'Ce nom d’utilisateur est déjà pris.',
+    errSaveProfile: 'Impossible d’enregistrer ton profil.',
+    errDeleteAccount: 'Impossible de supprimer le compte.',
+    errReadImage: 'Impossible de lire cette image.',
+    errSavePhoto: 'Impossible d’enregistrer la photo.',
+    errProcessImage: 'Impossible de traiter l’image.',
   },
   es: {
     moodsDescription:
@@ -384,6 +507,31 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     signOut: 'Cerrar sesión',
     deleteAccount: 'Eliminar cuenta',
     deleteAccountConfirm: 'Toca otra vez para eliminarla para siempre',
+    accountIntro:
+      'Opcional. Inicia sesión para compartir listas y seguir a tus amigos. Todo funciona también sin cuenta.',
+    sendCode: 'Enviar código',
+    codeSent: 'Hemos enviado un código de seis cifras a {email}.',
+    verify: 'Verificar',
+    changeEmail: 'Cambiar el correo',
+    pickUsername:
+      'Elige un nombre de usuario para que tus amigos te encuentren.',
+    checking: 'Comprobando…',
+    usernameFree: '✓ Disponible',
+    usernameTaken: '✗ Ya está en uso',
+    save: 'Guardar',
+    privateAccount: 'Cuenta privada',
+    privateOn: 'Los nuevos seguidores necesitan tu aprobación.',
+    privateOff: 'Cualquiera puede seguirte y ver tus estanterías.',
+    photoDenied: 'Se denegó el acceso a tus fotos.',
+    errSendCode: 'No se pudo enviar el código.',
+    errVerifyCode: 'Ese código no funcionó.',
+    errNotSignedIn: 'No has iniciado sesión.',
+    errUsernameTaken: 'Ese nombre de usuario ya está en uso.',
+    errSaveProfile: 'No se pudo guardar tu perfil.',
+    errDeleteAccount: 'No se pudo eliminar la cuenta.',
+    errReadImage: 'No se pudo leer esa imagen.',
+    errSavePhoto: 'No se pudo guardar la foto.',
+    errProcessImage: 'No se pudo procesar la imagen.',
   },
   it: {
     moodsDescription:
@@ -441,5 +589,35 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     signOut: 'Esci',
     deleteAccount: 'Elimina account',
     deleteAccountConfirm: 'Tocca di nuovo per eliminarlo per sempre',
+    accountIntro:
+      'Facoltativo. Accedi per condividere le liste e seguire gli amici. Tutto funziona anche senza account.',
+    sendCode: 'Invia il codice',
+    codeSent: 'Abbiamo inviato un codice di sei cifre a {email}.',
+    verify: 'Conferma',
+    changeEmail: 'Cambia email',
+    pickUsername: 'Scegli un nome utente così gli amici ti trovano.',
+    checking: 'Controllo…',
+    usernameFree: '✓ Disponibile',
+    usernameTaken: '✗ Già in uso',
+    save: 'Salva',
+    privateAccount: 'Account privato',
+    privateOn: 'I nuovi follower devono essere approvati.',
+    privateOff: 'Chiunque può seguirti e vedere le tue librerie.',
+    photoDenied: 'L’accesso alle tue foto è stato negato.',
+    errSendCode: 'Non è stato possibile inviare il codice.',
+    errVerifyCode: 'Questo codice non ha funzionato.',
+    errNotSignedIn: 'Non hai effettuato l’accesso.',
+    errUsernameTaken: 'Questo nome utente è già in uso.',
+    errSaveProfile: 'Non è stato possibile salvare il tuo profilo.',
+    errDeleteAccount: 'Non è stato possibile eliminare l’account.',
+    errReadImage: 'Non è stato possibile leggere questa immagine.',
+    errSavePhoto: 'Non è stato possibile salvare la foto.',
+    errProcessImage: 'Non è stato possibile elaborare l’immagine.',
   },
 };
+
+/** UI text outside React, for providers that sit above the LanguageProvider. */
+export function currentUiText(): UiText {
+  const code = contentLanguage().slice(0, 2).toLowerCase();
+  return UI_TEXT[isAppLanguage(code) ? code : DEFAULT_LANGUAGE];
+}

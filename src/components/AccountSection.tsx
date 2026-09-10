@@ -14,6 +14,7 @@ import { useAuth } from '@/context/AuthProvider';
 import { useProfile } from '@/context/ProfileProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { Avatar } from './Avatar';
 
 /**
@@ -23,6 +24,7 @@ import { Avatar } from './Avatar';
  */
 export function AccountSection() {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { enabled, ready, session, email, profile, sendCode, verifyCode, signOut, saveProfile, usernameAvailable, uploadAvatar, setPrivate } =
     useAuth();
@@ -91,7 +93,7 @@ export function AccountSection() {
   const pickAvatar = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) {
-      setError('Photo access was denied.');
+      setError(text.photoDenied);
       return;
     }
     const res = await ImagePicker.launchImageLibraryAsync({
@@ -124,10 +126,7 @@ export function AccountSection() {
     return (
       <View style={styles.section}>
         {label}
-        <Text style={styles.hint}>
-          Optional. Sign in to share lists and follow friends. Everything works
-          without an account too.
-        </Text>
+        <Text style={styles.hint}>{text.accountIntro}</Text>
         {step === 'email' ? (
           <>
             <TextInput
@@ -143,7 +142,7 @@ export function AccountSection() {
             <PrimaryButton
               styles={styles}
               chrome={chrome}
-              label="Send code"
+              label={text.sendCode}
               busy={busy}
               disabled={!emailInput.includes('@')}
               onPress={async () => {
@@ -155,7 +154,7 @@ export function AccountSection() {
         ) : (
           <>
             <Text style={styles.hint}>
-              We sent a 6-digit code to {emailInput}.
+              {text.codeSent.replace('{email}', emailInput)}
             </Text>
             <TextInput
               style={styles.input}
@@ -169,13 +168,13 @@ export function AccountSection() {
             <PrimaryButton
               styles={styles}
               chrome={chrome}
-              label="Verify"
+              label={text.verify}
               busy={busy}
               disabled={code.trim().length < 6}
               onPress={() => run(() => verifyCode(emailInput, code))}
             />
             <Pressable onPress={() => setStep('email')} hitSlop={6}>
-              <Text style={styles.linkText}>Change email</Text>
+              <Text style={styles.linkText}>{text.changeEmail}</Text>
             </Pressable>
           </>
         )}
@@ -189,7 +188,7 @@ export function AccountSection() {
     return (
       <View style={styles.section}>
         {label}
-        <Text style={styles.hint}>Pick a username so friends can find you.</Text>
+        <Text style={styles.hint}>{text.pickUsername}</Text>
         <TextInput
           style={styles.input}
           value={username}
@@ -203,23 +202,25 @@ export function AccountSection() {
           maxLength={20}
         />
         {check === 'checking' && (
-          <Text style={styles.checkMuted}>Checking…</Text>
+          <Text style={styles.checkMuted}>{text.checking}</Text>
         )}
-        {check === 'free' && <Text style={styles.checkOk}>✓ Available</Text>}
+        {check === 'free' && (
+          <Text style={styles.checkOk}>{text.usernameFree}</Text>
+        )}
         {check === 'taken' && (
-          <Text style={styles.checkBad}>✗ Already taken</Text>
+          <Text style={styles.checkBad}>{text.usernameTaken}</Text>
         )}
         <PrimaryButton
           styles={styles}
           chrome={chrome}
-          label="Save"
+          label={text.save}
           busy={busy}
           disabled={username.trim().length < 3 || check !== 'free'}
           onPress={() => run(() => saveProfile(username, ''))}
         />
         {error && <Text style={styles.error}>{error}</Text>}
         <Pressable onPress={() => signOut()} hitSlop={6}>
-          <Text style={styles.linkText}>Sign out</Text>
+          <Text style={styles.linkText}>{text.signOut}</Text>
         </Pressable>
       </View>
     );
@@ -257,11 +258,9 @@ export function AccountSection() {
           color={chrome.muted}
         />
         <View style={styles.privacyText}>
-          <Text style={styles.rowText}>Private account</Text>
+          <Text style={styles.rowText}>{text.privateAccount}</Text>
           <Text style={styles.subtle}>
-            {profile?.isPrivate
-              ? 'New followers need your approval.'
-              : 'Anyone can follow and see your shelves.'}
+            {profile?.isPrivate ? text.privateOn : text.privateOff}
           </Text>
         </View>
         <Switch

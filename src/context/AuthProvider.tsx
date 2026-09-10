@@ -8,6 +8,7 @@ import {
 } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { currentUiText } from '@/constants/languages';
 import { hasSupabase, supabase } from '@/api/supabase';
 
 export interface Profile {
@@ -55,10 +56,11 @@ export function useAuth(): AuthValue {
   return ctx;
 }
 
-/** Human-readable message from a Supabase error (or a fallback). */
+/** Localized message for a Supabase failure. The raw message is English-only and
+ *  developer-facing, so it goes to the log instead of onto the screen. */
 function msg(error: unknown, fallback: string): string {
   if (error && typeof error === 'object' && 'message' in error) {
-    return String((error as { message: unknown }).message);
+    console.warn('[auth]', String((error as { message: unknown }).message));
   }
   return fallback;
 }
@@ -140,7 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: address,
       options: { shouldCreateUser: true },
     });
-    return error ? { error: msg(error, 'Could not send the code.') } : {};
+    return error ? { error: msg(error, currentUiText().errSendCode) } : {};
   }, []);
 
   const verifyCode = useCallback(async (rawEmail: string, token: string) => {
@@ -149,7 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       token: token.trim(),
       type: 'email',
     });
-    return error ? { error: msg(error, 'That code did not work.') } : {};
+    return error ? { error: msg(error, currentUiText().errVerifyCode) } : {};
   }, []);
 
   const signOut = useCallback(async () => {
@@ -159,7 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const saveProfile = useCallback(
     async (username: string, displayName: string) => {
-      if (!userId) return { error: 'Not signed in.' };
+      if (!userId) return { error: currentUiText().errNotSignedIn };
       const { error } = await supabase.from('profiles').upsert({
         id: userId,
         username: username.trim().toLowerCase(),
@@ -167,10 +169,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       if (error) {
         const taken = 'code' in error && error.code === '23505';
+        const t = currentUiText();
         return {
-          error: taken
-            ? 'That username is already taken.'
-            : msg(error, 'Could not save your profile.'),
+          error: taken ? t.errUsernameTaken : msg(error, t.errSaveProfile),
         };
       }
       await loadProfile(userId);
@@ -195,9 +196,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const deleteAccount = useCallback(async () => {
-    if (!userId) return { error: 'Not signed in.' };
+    if (!userId) return { error: currentUiText().errNotSignedIn };
     const { error } = await supabase.rpc('delete_own_account');
-    if (error) return { error: msg(error, 'Could not delete the account.') };
+    if (error) return { error: msg(error, currentUiText().errDeleteAccount) };
     await supabase.auth.signOut();
     setProfile(null);
     return {};
@@ -207,24 +208,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // by friends via the existing profiles RLS) — no storage bucket needed.
   const uploadAvatar = useCallback(
     async (uri: string) => {
-      if (!userId) return { error: 'Not signed in.' };
+      if (!userId) return { error: currentUiText().errNotSignedIn };
       try {
         const out = await manipulateAsync(uri, [{ resize: { width: 256 } }], {
           compress: 0.6,
           format: SaveFormat.JPEG,
           base64: true,
         });
-        if (!out.base64) return { error: 'Could not read that image.' };
+        if (!out.base64) return { error: currentUiText().errReadImage };
         const dataUri = `data:image/jpeg;base64,${out.base64}`;
         const { error } = await supabase
           .from('profiles')
           .update({ avatar_url: dataUri })
           .eq('id', userId);
-        if (error) return { error: msg(error, 'Could not save the photo.') };
+        if (error) return { error: msg(error, currentUiText().errSavePhoto) };
         await loadProfile(userId);
         return {};
       } catch (e) {
-        return { error: msg(e, 'Could not process the image.') };
+        return { error: msg(e, currentUiText().errProcessImage) };
       }
     },
     [userId, loadProfile],
