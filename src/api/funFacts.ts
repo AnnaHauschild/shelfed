@@ -1565,6 +1565,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Thelma_%26_Louise#:~:text=Michelle%20Pfeiffer%20and%20Jodie%20Foster%20were%20originally%20chosen%20for%20the%20leads%3B%20both%20accepted%20their%20roles%20with%20enthusiasm&text=Pfeiffer%20later%20said%20she%20regretted%20passing%20on%20the%20film',
   },
+  'movie:571': {
+    en: 'The Birds was partly inspired by a real 1961 mass bird attack in Capitola, California, which Hitchcock used as research. Toxic algae were later identified as the cause of the birds’ behavior.',
+    de: 'Der Film Die Vögel wurde teilweise von einem echten massenhaften Vogelangriff 1961 im kalifornischen Capitola inspiriert, den Hitchcock als Recherchematerial nutzte. Später wurden giftige Algen als Ursache für das Verhalten der Vögel erkannt.',
+    pt: 'The Birds foi parcialmente inspirado por um ataque real em massa de aves ocorrido em 1961 em Capitola, Califórnia, que Hitchcock usou em sua pesquisa. Mais tarde, algas tóxicas foram identificadas como a causa do comportamento das aves.',
+    fr: 'The Birds fut en partie inspiré par une véritable attaque massive d’oiseaux survenue en 1961 à Capitola, en Californie, que Hitchcock utilisa pour ses recherches. Des algues toxiques furent ensuite identifiées comme la cause du comportement des oiseaux.',
+    es: 'The Birds se inspiró en parte en un ataque masivo real de aves ocurrido en 1961 en Capitola, California, que Hitchcock utilizó para documentarse. Más tarde se identificaron algas tóxicas como la causa del comportamiento de las aves.',
+    it: 'The Birds fu in parte ispirato da un vero attacco di massa di uccelli avvenuto nel 1961 a Capitola, in California, che Hitchcock usò per le sue ricerche. In seguito furono identificate delle alghe tossiche come causa del comportamento degli uccelli.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Birds_(film)#:~:text=The%20Birds%20is%20also%20partly%20inspired%20by%20the%20true%20events%20of%20a%20mass%20bird%20attack&text=The%20real%20cause%20of%20the%20birds%27%20behavior%20was%20toxic%20algae',
+  },
+  'movie:996': {
+    en: 'Billy Wilder filmed Double Indemnity’s original gas-chamber ending over five days and spent $150,000 on it, but ultimately cut it because he felt the office farewell between Neff and Keyes was more meaningful.',
+    de: 'Billy Wilder drehte das ursprüngliche Gaskammer-Ende von Double Indemnity fünf Tage lang und gab dafür 150.000 Dollar aus. Am Ende schnitt er es dennoch heraus, weil er den Abschied zwischen Neff und Keyes im Büro für bedeutungsvoller hielt.',
+    pt: 'Billy Wilder filmou durante cinco dias o final original de Double Indemnity na câmara de gás e gastou 150 mil dólares nele, mas acabou cortando-o por considerar mais significativa a despedida entre Neff e Keyes no escritório.',
+    fr: 'Billy Wilder tourna pendant cinq jours la fin originale de Double Indemnity dans la chambre à gaz et y consacra 150 000 dollars, mais il la coupa finalement, jugeant les adieux de Neff et Keyes au bureau plus forts de sens.',
+    es: 'Billy Wilder rodó durante cinco días el final original de Double Indemnity en la cámara de gas y gastó 150.000 dólares en él, pero terminó eliminándolo porque consideraba más significativa la despedida entre Neff y Keyes en la oficina.',
+    it: 'Billy Wilder girò per cinque giorni il finale originale di Double Indemnity nella camera a gas e vi spese 150.000 dollari, ma alla fine lo tagliò perché riteneva più significativo l’addio tra Neff e Keyes in ufficio.',
+    source:
+      'https://en.wikipedia.org/wiki/Double_Indemnity#:~:text=Wilder%20shot%20for%20five%20days%20and%20spent%20%24150%2C000%20on%20the%20scene&text=You%20couldn%27t%20have%20a%20more%20meaningful%20scene%20between%20two%20men',
+  },
+  'movie:1585': {
+    en: 'For It’s a Wonderful Life, Russell Shearman developed a quieter chemical snow from water, soap flakes, foamite and sugar. Earlier movie snow used cornflakes so noisy that dialogue had to be redubbed.',
+    de: 'Für It’s a Wonderful Life entwickelte Russell Shearman einen leiseren Kunstschnee aus Wasser, Seifenflocken, Foamite und Zucker. Zuvor nutzte man beim Film Cornflakes, die so laut waren, dass Dialoge nachsynchronisiert werden mussten.',
+    pt: 'Para It’s a Wonderful Life, Russell Shearman criou uma neve química mais silenciosa com água, flocos de sabão, foamite e açúcar. Antes disso, o cinema usava flocos de milho tão barulhentos que os diálogos precisavam ser redublados.',
+    fr: 'Pour It’s a Wonderful Life, Russell Shearman mit au point une neige chimique plus silencieuse à base d’eau, de paillettes de savon, de foamite et de sucre. Auparavant, le cinéma utilisait des cornflakes si bruyants que les dialogues devaient être redoublés.',
+    es: 'Para It’s a Wonderful Life, Russell Shearman creó una nieve química más silenciosa con agua, copos de jabón, foamite y azúcar. Antes, el cine utilizaba copos de maíz tan ruidosos que los diálogos tenían que volver a grabarse.',
+    it: 'Per It’s a Wonderful Life, Russell Shearman sviluppò una neve chimica più silenziosa con acqua, scaglie di sapone, foamite e zucchero. Prima si usavano fiocchi di mais così rumorosi che i dialoghi dovevano essere ridoppiati.',
+    source:
+      'https://en.wikipedia.org/wiki/It%27s_a_Wonderful_Life#:~:text=developed%20a%20new%20compound%20using%20water%2C%20soap%20flakes%2C%20foamite%2C%20and%20sugar%20to%20create%20%22chemical%20snow%22&text=dialogue%20had%20to%20be%20redubbed%20afterwards',
+  },
+  'movie:389': {
+    en: 'To make 12 Angry Men feel increasingly claustrophobic, Sidney Lumet and cinematographer Boris Kaufman gradually used longer lenses, moved from above-eye-level views to lower camera angles, and ended with nearly everyone in close-up.',
+    de: 'Damit 12 Angry Men zunehmend klaustrophobisch wirkt, setzten Sidney Lumet und Kameramann Boris Kaufman nach und nach längere Brennweiten ein, wechselten von Perspektiven über Augenhöhe zu tieferen Kamerawinkeln und zeigten am Ende fast alle in Nahaufnahme.',
+    pt: 'Para tornar 12 Angry Men cada vez mais claustrofóbico, Sidney Lumet e o diretor de fotografia Boris Kaufman usaram lentes progressivamente mais longas, passaram de enquadramentos acima do nível dos olhos para ângulos mais baixos e terminaram com quase todos em close.',
+    fr: 'Pour rendre 12 Angry Men de plus en plus claustrophobe, Sidney Lumet et le directeur de la photographie Boris Kaufman utilisèrent des focales progressivement plus longues, passèrent de cadrages au-dessus des yeux à des angles plus bas et finirent par montrer presque tous les personnages en gros plan.',
+    es: 'Para que 12 Angry Men resultara cada vez más claustrofóbica, Sidney Lumet y el director de fotografía Boris Kaufman utilizaron lentes progresivamente más largas, pasaron de encuadres por encima de los ojos a ángulos más bajos y acabaron mostrando a casi todos en primer plano.',
+    it: 'Per rendere 12 Angry Men sempre più claustrofobico, Sidney Lumet e il direttore della fotografia Boris Kaufman usarono focali progressivamente più lunghe, passarono da inquadrature sopra il livello degli occhi ad angolazioni più basse e finirono mostrando quasi tutti in primo piano.',
+    source:
+      'https://en.wikipedia.org/wiki/12_Angry_Men#:~:text=At%20the%20beginning%20of%20the%20film%2C%20the%20cameras%20are%20positioned%20above%20eye%20level&text=create%20a%20nearly%20palpable%20sense%20of%20claustrophobia',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
