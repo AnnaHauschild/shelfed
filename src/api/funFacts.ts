@@ -965,6 +965,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_West_Wing#:~:text=A%20large%2C%20fully%20connected%20set&text=shots%20with%20very%20few%20cuts%20and%20long%2C%20continuous%20master%20shots',
   },
+  'tv:4613': {
+    en: 'Before filming Band of Brothers, military adviser Dale Dye put the actors through a ten-day boot camp that ended with parachute training.',
+    de: 'Vor den Dreharbeiten zu Band of Brothers schickte Militärberater Dale Dye die Schauspieler in ein zehntägiges Ausbildungslager, das mit Fallschirmtraining endete.',
+    pt: 'Antes das filmagens de Band of Brothers, o consultor militar Dale Dye submeteu os atores a um treinamento militar de dez dias que terminou com instrução de paraquedismo.',
+    fr: 'Avant le tournage de Band of Brothers, le conseiller militaire Dale Dye a soumis les acteurs à un camp d’entraînement de dix jours qui s’est achevé par une formation au parachutisme.',
+    es: 'Antes del rodaje de Band of Brothers, el asesor militar Dale Dye sometió a los actores a un campamento de entrenamiento de diez días que terminó con prácticas de paracaidismo.',
+    it: 'Prima delle riprese di Band of Brothers, il consulente militare Dale Dye sottopose gli attori a un campo di addestramento di dieci giorni concluso con esercitazioni di paracadutismo.',
+    source:
+      'https://en.wikipedia.org/wiki/Band_of_Brothers_(miniseries)#:~:text=instructed%20the%20actors%20in%20a%2010-day%20boot%20camp',
+  },
+  'tv:1274': {
+    en: 'After reading the first Six Feet Under draft, HBO executive Carolyn Strauss asked Alan Ball to make it more disturbing, giving him permission to take the series deeper and darker.',
+    de: 'Nachdem HBO-Managerin Carolyn Strauss den ersten Entwurf von Six Feet Under gelesen hatte, bat sie Alan Ball, ihn verstörender zu machen. Damit gab sie ihm die Freiheit, die Serie tiefgründiger und düsterer zu gestalten.',
+    pt: 'Depois de ler o primeiro rascunho de Six Feet Under, a executiva da HBO Carolyn Strauss pediu a Alan Ball que o tornasse mais perturbador, dando-lhe liberdade para aprofundar e escurecer a série.',
+    fr: 'Après avoir lu la première version de Six Feet Under, Carolyn Strauss, dirigeante de HBO, a demandé à Alan Ball de la rendre plus dérangeante, lui donnant ainsi la liberté d’approfondir et d’assombrir la série.',
+    es: 'Tras leer el primer borrador de Six Feet Under, la ejecutiva de HBO Carolyn Strauss pidió a Alan Ball que lo hiciera más perturbador, dándole libertad para profundizar y oscurecer la serie.',
+    it: 'Dopo aver letto la prima bozza di Six Feet Under, la dirigente di HBO Carolyn Strauss chiese ad Alan Ball di renderla più inquietante, dandogli la libertà di approfondire e incupire la serie.',
+    source:
+      'https://en.wikipedia.org/wiki/Six_Feet_Under_(TV_series)#:~:text=make%20it%20just%20a%20little%20more%20fucked%20up',
+  },
+  'tv:1406': {
+    en: 'David Milch originally planned to explore the rise of civilization through a story set in ancient Rome. Because HBO was already developing Rome, the network asked him to move the idea elsewhere, and it became Deadwood.',
+    de: 'David Milch wollte die Entstehung von Zivilisation ursprünglich anhand einer Geschichte im alten Rom untersuchen. Weil HBO bereits Rome entwickelte, bat der Sender ihn um einen anderen Schauplatz, und daraus entstand Deadwood.',
+    pt: 'David Milch planejava originalmente explorar o surgimento da civilização em uma história ambientada na Roma Antiga. Como a HBO já desenvolvia Rome, o canal pediu outro cenário, e a ideia se tornou Deadwood.',
+    fr: 'David Milch voulait initialement étudier la naissance de la civilisation dans une histoire située dans la Rome antique. Comme HBO développait déjà Rome, la chaîne lui a demandé de déplacer son idée, qui est devenue Deadwood.',
+    es: 'David Milch planeaba originalmente explorar el nacimiento de la civilización mediante una historia ambientada en la antigua Roma. Como HBO ya desarrollaba Rome, la cadena le pidió otro escenario, y la idea se convirtió en Deadwood.',
+    it: 'David Milch voleva inizialmente esplorare la nascita della civiltà attraverso una storia ambientata nell’antica Roma. Poiché HBO stava già sviluppando Rome, la rete gli chiese un’altra ambientazione e l’idea divenne Deadwood.',
+    source:
+      'https://en.wikipedia.org/wiki/Deadwood_(TV_series)#:~:text=he%20intended%20to%20study%20this%20within%20Roman%20civilization&text=Milch%20was%20asked%20by%20the%20network%20if%20he%20could%20stage%20the%20story%20in%20another%20place',
+  },
+  'tv:4589': {
+    en: 'Ron Howard narrated only the initial pilot of Arrested Development at first. His voice fit the show so well that the producers decided to keep him as the series narrator.',
+    de: 'Ron Howard sprach zunächst nur den Kommentar für die erste Pilotfassung von Arrested Development. Seine Stimme passte so gut zur Serie, dass die Produzenten ihn als Erzähler behielten.',
+    pt: 'No início, Ron Howard narrou apenas o piloto inicial de Arrested Development. Sua voz combinou tão bem com a série que os produtores decidiram mantê-lo como narrador.',
+    fr: 'Au départ, Ron Howard n’a assuré la narration que du pilote initial d’Arrested Development. Sa voix convenait si bien à la série que les producteurs ont décidé de le garder comme narrateur.',
+    es: 'Al principio, Ron Howard solo narró el piloto inicial de Arrested Development. Su voz encajó tan bien con la serie que los productores decidieron mantenerlo como narrador.',
+    it: 'Inizialmente Ron Howard narrò soltanto il primo episodio pilota di Arrested Development. La sua voce si adattava così bene alla serie che i produttori decisero di mantenerlo come narratore.',
+    source:
+      'https://en.wikipedia.org/wiki/Arrested_Development#:~:text=Howard%20provided%20the%20narration%20for%20the%20initial%20pilot&text=the%20decision%20was%20made%20to%20keep%20his%20voice',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
