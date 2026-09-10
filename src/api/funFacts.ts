@@ -1605,6 +1605,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/12_Angry_Men#:~:text=At%20the%20beginning%20of%20the%20film%2C%20the%20cameras%20are%20positioned%20above%20eye%20level&text=create%20a%20nearly%20palpable%20sense%20of%20claustrophobia',
   },
+  'movie:546554': {
+    en: 'Rian Johnson named the characters in Knives Out after musicians he enjoyed, including Joni Mitchell, Richard Thompson and Steely Dan’s Donald Fagen.',
+    de: 'Rian Johnson benannte die Figuren in Knives Out nach Musikern, die er mochte – darunter Joni Mitchell, Richard Thompson und Steely-Dan-Mitglied Donald Fagen.',
+    pt: 'Rian Johnson deu aos personagens de Knives Out nomes de músicos de que gostava, entre eles Joni Mitchell, Richard Thompson e Donald Fagen, do Steely Dan.',
+    fr: 'Rian Johnson donna aux personnages de Knives Out les noms de musiciens qu’il appréciait, notamment Joni Mitchell, Richard Thompson et Donald Fagen de Steely Dan.',
+    es: 'Rian Johnson puso a los personajes de Knives Out nombres de músicos que le gustaban, entre ellos Joni Mitchell, Richard Thompson y Donald Fagen, de Steely Dan.',
+    it: 'Rian Johnson diede ai personaggi di Knives Out i nomi di musicisti che apprezzava, tra cui Joni Mitchell, Richard Thompson e Donald Fagen degli Steely Dan.',
+    source:
+      'https://en.wikipedia.org/wiki/Knives_Out#:~:text=Johnson%20named%20each%20of%20the%20characters%20after%20musicians%20whose%20works%20he%20enjoyed',
+  },
+  'movie:38': {
+    en: 'Eternal Sunshine used little CGI: many effects were created in-camera. For the ocean to wash away the Montauk house, the crew built a corner of the house on the beach and let the tide rise.',
+    de: 'Eternal Sunshine setzte kaum CGI ein: Viele Effekte entstanden direkt in der Kamera. Damit das Meer das Haus in Montauk fortspülen konnte, baute die Crew eine Hausecke am Strand und ließ die Flut steigen.',
+    pt: 'Eternal Sunshine usou pouco CGI: muitos efeitos foram feitos diretamente na câmera. Para o oceano levar a casa de Montauk, a equipe construiu um canto da casa na praia e deixou a maré subir.',
+    fr: 'Eternal Sunshine utilisa peu d’images de synthèse : de nombreux effets furent réalisés directement à la prise de vues. Pour que l’océan emporte la maison de Montauk, l’équipe en construisit un angle sur la plage et laissa monter la marée.',
+    es: 'Eternal Sunshine utilizó poco CGI: muchos efectos se hicieron directamente en cámara. Para que el océano arrastrara la casa de Montauk, el equipo construyó una esquina de la casa en la playa y dejó subir la marea.',
+    it: 'Eternal Sunshine usò poca CGI: molti effetti furono realizzati direttamente in ripresa. Per far sì che l’oceano spazzasse via la casa di Montauk, la troupe ne costruì un angolo sulla spiaggia e lasciò salire la marea.',
+    source:
+      'https://en.wikipedia.org/wiki/Eternal_Sunshine_of_the_Spotless_Mind#:~:text=The%20film%20used%20minimal%20CGI%2C%20with%20many%20effects%20accomplished%20in%2Dcamera&text=building%20the%20corner%20of%20a%20house%20on%20the%20beach%20and%20allowing%20the%20tide%20to%20rise',
+  },
+  'movie:6977': {
+    en: 'No Country for Old Men contains only about 16 minutes of music, several of them during the end credits. Composer Carter Burwell used Buddhist singing bowls because most instruments did not fit his minimalist sound sculpture.',
+    de: 'No Country for Old Men enthält nur etwa 16 Minuten Musik, davon mehrere im Abspann. Komponist Carter Burwell nutzte buddhistische Klangschalen, weil die meisten Instrumente nicht zu seiner minimalistischen Klangskulptur passten.',
+    pt: 'No Country for Old Men contém apenas cerca de 16 minutos de música, vários deles nos créditos finais. O compositor Carter Burwell usou tigelas tibetanas porque a maioria dos instrumentos não combinava com sua escultura sonora minimalista.',
+    fr: 'No Country for Old Men ne contient qu’environ 16 minutes de musique, dont plusieurs pendant le générique de fin. Le compositeur Carter Burwell utilisa des bols chantants bouddhistes, car la plupart des instruments ne convenaient pas à sa sculpture sonore minimaliste.',
+    es: 'No Country for Old Men contiene solo unos 16 minutos de música, varios de ellos durante los créditos finales. El compositor Carter Burwell utilizó cuencos cantores budistas porque la mayoría de los instrumentos no encajaban en su escultura sonora minimalista.',
+    it: 'No Country for Old Men contiene solo circa 16 minuti di musica, diversi dei quali nei titoli di coda. Il compositore Carter Burwell usò campane tibetane perché la maggior parte degli strumenti non si adattava alla sua scultura sonora minimalista.',
+    source:
+      'https://en.wikipedia.org/wiki/No_Country_for_Old_Men#:~:text=he%20used%20singing%20bowls%2C%20standing%20metal%20bells%20traditionally%20employed%20in%20Buddhist%20meditation%20practice&text=The%20movie%20contains%20a%20%22mere%22%2016%20minutes%20of%20music',
+  },
+  'movie:419430': {
+    en: 'Jordan Peele himself voiced the wounded deer in Get Out. He also narrated the UNCF commercial heard in the film.',
+    de: 'Jordan Peele sprach in Get Out selbst die Laute des verletzten Hirsches ein. Auch der Sprecher des UNCF-Werbespots im Film ist er.',
+    pt: 'O próprio Jordan Peele fez os sons do cervo ferido em Get Out. Ele também narrou o comercial da UNCF ouvido no filme.',
+    fr: 'Jordan Peele produisit lui-même les cris du cerf blessé dans Get Out. Il prêta aussi sa voix à la publicité de l’UNCF entendue dans le film.',
+    es: 'El propio Jordan Peele puso voz a los sonidos del ciervo herido en Get Out. También narró el anuncio de la UNCF que se oye en la película.',
+    it: 'Jordan Peele prestò personalmente la voce ai versi del cervo ferito in Get Out. Fu sua anche la voce narrante dello spot dell’UNCF che si sente nel film.',
+    source:
+      'https://en.wikipedia.org/wiki/Get_Out#:~:text=Writer%2Ddirector%20Jordan%20Peele%20voices%20the%20sounds%20made%20by%20the%20wounded%20deer%2C%20and%20narrates%20a%20UNCF%20commercial',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
