@@ -379,6 +379,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Thing_(1982_film)#:~:text=microwaved%20bubble%20gum',
   },
+  'movie:426': {
+    en: 'After filming the famous dolly zoom on a full-sized set proved difficult, a model of the tower shaft was built and the shot was filmed horizontally.',
+    de: 'Nachdem sich der berühmte Dolly-Zoom auf einem lebensgroßen Set als schwierig erwies, baute man ein Modell des Turmschachts und filmte die Aufnahme horizontal.',
+    pt: 'Depois que filmar o famoso dolly zoom em um cenário em tamanho real se mostrou difícil, foi construída uma maquete do poço da torre e a tomada foi filmada na horizontal.',
+    fr: 'Le célèbre travelling compensé étant difficile à filmer sur un décor grandeur nature, une maquette de la cage de la tour fut construite et le plan fut tourné à l’horizontale.',
+    es: 'Como resultó difícil filmar el famoso dolly zoom en un decorado de tamaño real, se construyó una maqueta del hueco de la torre y la toma se rodó en horizontal.',
+    it: 'Poiché filmare il celebre dolly zoom su un set a grandezza naturale si rivelò difficile, fu costruito un modello del vano della torre e la ripresa venne girata in orizzontale.',
+    source:
+      'https://en.wikipedia.org/wiki/Vertigo_(film)#:~:text=Following%20difficulties%20filming%20the%20shot%20on%20a%20full-sized%20set%2C%20a%20model%20of%20the%20tower%20shaft%20was%20constructed%2C%20and%20the%20dolly%20zoom%20was%20filmed%20horizontally',
+  },
+  'movie:840': {
+    en: 'The mothership miniature hides a tiny R2-D2 and a pea-sized TIE fighter, plus a mailbox, a great white shark, a Volkswagen bus and a small graveyard.',
+    de: 'Im Miniaturmodell des Mutterschiffs verstecken sich ein winziger R2-D2 und ein erbsengroßer TIE-Jäger – außerdem ein Briefkasten, ein Weißer Hai, ein VW-Bus und ein kleiner Friedhof.',
+    pt: 'A miniatura da nave-mãe esconde um pequeno R2-D2 e um caça TIE do tamanho de uma ervilha, além de uma caixa de correio, um tubarão-branco, uma Kombi Volkswagen e um pequeno cemitério.',
+    fr: 'La maquette du vaisseau-mère cache un minuscule R2-D2 et un chasseur TIE de la taille d’un petit pois, ainsi qu’une boîte aux lettres, un grand requin blanc, un minibus Volkswagen et un petit cimetière.',
+    es: 'La miniatura de la nave nodriza esconde un diminuto R2-D2 y un caza TIE del tamaño de un guisante, además de un buzón, un tiburón blanco, una furgoneta Volkswagen y un pequeño cementerio.',
+    it: 'Il modellino dell’astronave madre nasconde un minuscolo R2-D2 e un caccia TIE grande quanto un pisello, oltre a una cassetta delle lettere, un grande squalo bianco, un furgone Volkswagen e un piccolo cimitero.',
+    source:
+      'https://en.wikipedia.org/wiki/Close_Encounters_of_the_Third_Kind#:~:text=As%20a%20subtle%20in-joke,small%20graveyard',
+  },
+  'movie:679': {
+    en: 'The nuclear explosion of the colony in the finale was created simply by shining a light bulb through cotton.',
+    de: 'Die nukleare Explosion der Kolonie im Finale entstand ganz einfach, indem eine Glühbirne durch Watte leuchtete.',
+    pt: 'A explosão nuclear da colônia no final foi criada simplesmente fazendo uma lâmpada brilhar através de algodão.',
+    fr: 'L’explosion nucléaire de la colonie dans le final fut créée simplement en faisant briller une ampoule à travers du coton.',
+    es: 'La explosión nuclear de la colonia en el final se creó simplemente haciendo brillar una bombilla a través de algodón.',
+    it: 'L’esplosione nucleare della colonia nel finale fu creata semplicemente facendo brillare una lampadina attraverso del cotone.',
+    source:
+      'https://en.wikipedia.org/wiki/Aliens_(film)#:~:text=The%20nuclear%20explosion%20of%20the%20colony%20in%20the%20finale%20was%20created%20by%20shining%20a%20light%20bulb%20through%20cotton',
+  },
+  'movie:792': {
+    en: 'Before filming, the principal actors completed 30 days of immersive military-style training with foxholes, forced marches and nighttime ambushes.',
+    de: 'Vor dem Dreh absolvierten die Hauptdarsteller 30 Tage intensives Militärtraining mit Schützenlöchern, Gewaltmärschen und nächtlichen Hinterhalten.',
+    pt: 'Antes das filmagens, os atores principais fizeram 30 dias de treinamento militar imersivo, com trincheiras, marchas forçadas e emboscadas noturnas.',
+    fr: 'Avant le tournage, les acteurs principaux suivirent 30 jours d’entraînement militaire immersif, avec trous de combat, marches forcées et embuscades nocturnes.',
+    es: 'Antes del rodaje, los actores principales completaron 30 días de entrenamiento militar inmersivo, con pozos de tirador, marchas forzadas y emboscadas nocturnas.',
+    it: 'Prima delle riprese, gli attori principali completarono 30 giorni di addestramento militare immersivo, con buche da combattimento, marce forzate e imboscate notturne.',
+    source:
+      'https://en.wikipedia.org/wiki/Platoon_(film)#:~:text=Upon%20arrival%20in%20the%20Philippines,training%20regimen',
+  },
   'tv:1399': {
     en: 'The original pilot was received so poorly at a private screening that HBO demanded about 90 percent of the episode be reshot, with changes to the cast and director.',
     de: 'Die ursprüngliche Pilotfolge kam bei einer privaten Vorführung so schlecht an, dass HBO rund 90 Prozent der Folge neu drehen ließ und Besetzung sowie Regie änderte.',
