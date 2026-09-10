@@ -224,60 +224,100 @@ const FACTS: Record<string, Localized> = {
   'movie:98': {
     en: 'For the opening battle Ridley Scott burned down a piece of English forest. He had permission: the section was due to be cleared anyway.',
     de: 'Für die Eröffnungsschlacht brannte Ridley Scott ein Stück englischen Wald nieder. Mit Erlaubnis: Der Abschnitt sollte ohnehin gerodet werden.',
+    pt: 'Para a batalha inicial, Ridley Scott incendiou uma parte de uma floresta inglesa. Ele tinha permissão, pois aquela área seria desmatada de qualquer maneira.',
+    fr: 'Pour la bataille d’ouverture, Ridley Scott a incendié une partie d’une forêt anglaise. Il en avait l’autorisation, car cette zone devait de toute façon être déboisée.',
+    es: 'Para la batalla inicial, Ridley Scott incendió una parte de un bosque inglés. Tenía permiso, pues esa zona iba a ser talada de todos modos.',
+    it: 'Per la battaglia iniziale, Ridley Scott incendiò una parte di una foresta inglese. Aveva il permesso, perché quella zona doveva comunque essere disboscata.',
     source:
       'https://en.wikipedia.org/wiki/Gladiator_(2000_film)#:~:text=obtained%20permission%20to%20burn%20it%20down',
   },
   'movie:550': {
     en: 'Long before the narrator meets Tyler, he already flickers through the film in single frames, blurred in the background.',
     de: 'Lange bevor der Erzähler Tyler trifft, blitzt der schon in einzelnen Bildern auf, unscharf im Hintergrund.',
+    pt: 'Muito antes de o narrador conhecer Tyler, ele já aparece brevemente no filme em quadros isolados, desfocado ao fundo.',
+    fr: 'Bien avant que le narrateur ne rencontre Tyler, celui-ci apparaît déjà furtivement dans des images isolées du film, flou à l’arrière-plan.',
+    es: 'Mucho antes de que el narrador conozca a Tyler, este ya aparece fugazmente en la película en fotogramas aislados, desenfocado al fondo.',
+    it: 'Molto prima che il narratore incontri Tyler, lui appare già fugacemente nel film in singoli fotogrammi, sfocato sullo sfondo.',
     source:
       'https://en.wikipedia.org/wiki/Fight_Club#:~:text=single%20frames%20for%20subliminal%20effect',
   },
   'movie:157336': {
     en: 'The robots TARS and CASE were real props, physically operated on set by actor Bill Irwin, who was then digitally erased.',
     de: 'Die Roboter TARS und CASE waren echte Requisiten, die Schauspieler Bill Irwin am Set führte. Er wurde danach digital wegretuschiert.',
+    pt: 'Os robôs TARS e CASE eram objetos cenográficos reais, operados fisicamente no set pelo ator Bill Irwin, que depois foi apagado digitalmente.',
+    fr: 'Les robots TARS et CASE étaient de véritables accessoires, manœuvrés physiquement sur le plateau par l’acteur Bill Irwin, qui a ensuite été effacé numériquement.',
+    es: 'Los robots TARS y CASE eran objetos de utilería reales, manejados físicamente en el set por el actor Bill Irwin, que después fue borrado digitalmente.',
+    it: 'I robot TARS e CASE erano veri oggetti di scena, manovrati fisicamente sul set dall’attore Bill Irwin, che fu poi cancellato digitalmente.',
     source:
       'https://en.wikipedia.org/wiki/Interstellar_(film)#:~:text=physically%20controlled%20both%20robots',
   },
   'movie:496243': {
     en: 'Both homes were sets. The Kims\u2019 semi-basement flat and its street were built from scratch, partly so they could be flooded.',
     de: 'Beide Wohnungen waren Kulissen. Die Souterrainwohnung der Kims und ihre Straße wurden neu gebaut, auch damit man sie fluten konnte.',
+    pt: 'As duas casas eram cenários. O apartamento semienterrado dos Kim e sua rua foram construídos do zero, em parte para que pudessem ser inundados.',
+    fr: 'Les deux logements étaient des décors. L’appartement en sous-sol des Kim et sa rue ont été entièrement construits, notamment pour pouvoir être inondés.',
+    es: 'Ambas viviendas eran decorados. El piso semisótano de los Kim y su calle se construyeron desde cero, en parte para poder inundarlos.',
+    it: 'Entrambe le abitazioni erano set. L’appartamento seminterrato dei Kim e la sua strada furono costruiti da zero, in parte per poterli allagare.',
     source:
       'https://en.wikipedia.org/wiki/Parasite_(2019_film)#:~:text=necessity%20for%20the%20flooding%20scenes',
   },
   'movie:85': {
     en: 'In the bazaar a swordsman shows off his blade work and Indy just pulls his gun. The long fight was rehearsed for weeks, but Harrison Ford was ill with dysentery.',
     de: 'Auf dem Basar führt ein Schwertkämpfer seine Säbelkünste vor, Indy zieht einfach die Pistole. Der lange Kampf war wochenlang einstudiert, aber Harrison Ford war an Ruhr erkrankt.',
+    pt: 'No bazar, um espadachim exibe sua habilidade com a lâmina e Indy simplesmente saca a arma. A longa luta havia sido ensaiada durante semanas, mas Harrison Ford estava com disenteria.',
+    fr: 'Dans le bazar, un épéiste fait étalage de son adresse et Indy sort simplement son arme. Le long combat avait été répété pendant des semaines, mais Harrison Ford souffrait de dysenterie.',
+    es: 'En el bazar, un espadachín exhibe su habilidad con la espada e Indy simplemente saca su pistola. La larga pelea se había ensayado durante semanas, pero Harrison Ford tenía disentería.',
+    it: 'Nel bazar, uno spadaccino mostra la sua abilità con la lama e Indy si limita a estrarre la pistola. Il lungo combattimento era stato provato per settimane, ma Harrison Ford aveva la dissenteria.',
     source:
       'https://en.wikipedia.org/wiki/Raiders_of_the_Lost_Ark#:~:text=shorten%20the%20fight%20scene%20significantly',
   },
   'movie:8587': {
     en: 'A wildlife expert brought live lions into the studio so the animators could see how the real animals move.',
     de: 'Ein Tierexperte brachte lebende Löwen ins Studio, damit die Zeichner sehen konnten, wie sich die echten Tiere bewegen.',
+    pt: 'Um especialista em vida selvagem levou leões vivos ao estúdio para que os animadores pudessem ver como os animais reais se movem.',
+    fr: 'Un spécialiste de la faune a amené des lions vivants dans le studio afin que les animateurs puissent observer les mouvements des vrais animaux.',
+    es: 'Un experto en fauna llevó leones vivos al estudio para que los animadores pudieran ver cómo se mueven los animales reales.',
+    it: 'Un esperto di fauna selvatica portò leoni vivi nello studio affinché gli animatori potessero vedere come si muovono gli animali veri.',
     source:
       'https://en.wikipedia.org/wiki/The_Lion_King#:~:text=with%20an%20assortment%20of%20lions',
   },
   'movie:280': {
     en: 'The shape-shifting liquid metal villain is on screen for only about five minutes in total. Rendering 15 seconds of him could take ten days.',
     de: 'Der flüssige Metallgegner, der jede Gestalt annehmen kann, ist zusammengerechnet nur etwa fünf Minuten zu sehen. Für 15 Sekunden davon rechneten die Computer bis zu zehn Tage.',
+    pt: 'O vilão de metal líquido que muda de forma aparece na tela por apenas cerca de cinco minutos no total. A renderização de 15 segundos dele podia levar dez dias.',
+    fr: 'Le méchant en métal liquide capable de changer de forme n’apparaît à l’écran que pendant environ cinq minutes au total. Le rendu de 15 secondes pouvait prendre dix jours.',
+    es: 'El villano de metal líquido que cambia de forma aparece en pantalla solo unos cinco minutos en total. Renderizar 15 segundos podía llevar diez días.',
+    it: 'Il cattivo di metallo liquido capace di cambiare forma appare sullo schermo solo per circa cinque minuti complessivi. La renderizzazione di 15 secondi poteva richiedere dieci giorni.',
     source:
       'https://en.wikipedia.org/wiki/Terminator_2:_Judgment_Day#:~:text=rendering%2015%20seconds%20of%20footage%20took%20up%20to%20ten%20days',
   },
   'movie:771': {
     en: 'Joe Pesci deliberately kept his distance from Macaulay Culkin off camera so the hostility between them would stay believable.',
     de: 'Joe Pesci ging Macaulay Culkin abseits der Kamera bewusst aus dem Weg, damit die Feindschaft zwischen beiden glaubwürdig blieb.',
+    pt: 'Joe Pesci manteve distância de Macaulay Culkin deliberadamente fora das câmeras para que a hostilidade entre eles continuasse convincente.',
+    fr: 'Joe Pesci a délibérément gardé ses distances avec Macaulay Culkin hors caméra afin que leur hostilité reste crédible.',
+    es: 'Joe Pesci se mantuvo deliberadamente alejado de Macaulay Culkin fuera de cámara para que la hostilidad entre ambos siguiera siendo creíble.',
+    it: 'Joe Pesci mantenne deliberatamente le distanze da Macaulay Culkin fuori dalla scena affinché l’ostilità tra loro rimanesse credibile.',
     source:
       'https://en.wikipedia.org/wiki/Home_Alone#:~:text=intentionally%20limited%20my%20interactions%20with%20him',
   },
   'movie:387': {
     en: 'One morning the U-boat mock-up was no longer in the harbour. It had been rented out to Steven Spielberg, filming Raiders of the Lost Ark nearby, and nobody had told the crew.',
     de: 'Eines Morgens lag die U-Boot-Attrappe nicht mehr im Hafen. Sie war an Steven Spielberg vermietet worden, der nebenan Jäger des verlorenen Schatzes drehte. Nur hatte das niemand der Crew gesagt.',
+    pt: 'Certa manhã, a réplica do submarino não estava mais no porto. Ela havia sido alugada a Steven Spielberg, que filmava Raiders of the Lost Ark nas proximidades, e ninguém havia avisado a equipe.',
+    fr: 'Un matin, la maquette du sous-marin avait disparu du port. Elle avait été louée à Steven Spielberg, qui tournait Raiders of the Lost Ark à proximité, sans que personne en ait informé l’équipe.',
+    es: 'Una mañana, la maqueta del submarino ya no estaba en el puerto. Se la habían alquilado a Steven Spielberg, que rodaba Raiders of the Lost Ark cerca, y nadie había avisado al equipo.',
+    it: 'Una mattina, il modello del sommergibile non era più nel porto. Era stato noleggiato a Steven Spielberg, che girava Raiders of the Lost Ark nelle vicinanze, e nessuno aveva avvisato la troupe.',
     source:
       'https://en.wikipedia.org/wiki/Das_Boot#:~:text=had%20rented%20the%20mock-up%20for%20his%20own%20film',
   },
   'movie:129': {
     en: 'The bathhouse goes back to a real one from Miyazaki\u2019s childhood, where a small door beside a tub always made him wonder what was behind it.',
     de: 'Das Badehaus geht auf ein echtes aus Miyazakis Kindheit zurück. Neben einer Wanne war eine kleine Tür, hinter der er als Kind immer etwas vermutete.',
+    pt: 'A casa de banhos remonta a uma verdadeira da infância de Miyazaki, onde uma pequena porta ao lado de uma banheira sempre o fazia imaginar o que havia atrás dela.',
+    fr: 'L’établissement de bains remonte à un véritable lieu de l’enfance de Miyazaki, où une petite porte près d’une baignoire lui faisait toujours se demander ce qui se trouvait derrière.',
+    es: 'La casa de baños se remonta a una real de la infancia de Miyazaki, donde una pequeña puerta junto a una bañera siempre le hacía preguntarse qué había detrás.',
+    it: 'Lo stabilimento termale risale a uno vero dell’infanzia di Miyazaki, dove una piccola porta accanto a una vasca gli faceva sempre chiedere cosa ci fosse dietro.',
     source:
       'https://en.wikipedia.org/wiki/Spirited_Away#:~:text=small%20door%20next%20to%20one%20of%20the%20bathtubs',
   },
