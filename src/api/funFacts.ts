@@ -1005,6 +1005,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Arrested_Development#:~:text=Howard%20provided%20the%20narration%20for%20the%20initial%20pilot&text=the%20decision%20was%20made%20to%20keep%20his%20voice',
   },
+  'tv:1891': {
+    en: 'Many background performers in Rome practiced the jobs they portrayed in real life. For example, the actor playing a street butcher was actually a butcher.',
+    de: 'Viele Komparsen in Rome übten die dargestellten Berufe auch im echten Leben aus. Der Darsteller eines Straßenmetzgers war zum Beispiel tatsächlich Metzger.',
+    pt: 'Muitos figurantes de Rome exerciam na vida real as profissões que interpretavam. Por exemplo, o ator que fazia um açougueiro de rua era realmente açougueiro.',
+    fr: 'De nombreux figurants de Rome exerçaient réellement les métiers qu’ils représentaient. Par exemple, l’acteur jouant un boucher de rue était véritablement boucher.',
+    es: 'Muchos figurantes de Rome ejercían en la vida real los oficios que representaban. Por ejemplo, el actor que hacía de carnicero callejero era realmente carnicero.',
+    it: 'Molte comparse di Rome svolgevano davvero i mestieri che interpretavano. Per esempio, l’attore che impersonava un macellaio di strada era realmente un macellaio.',
+    source:
+      'https://en.wikipedia.org/wiki/Rome_(TV_series)#:~:text=was%20in%20fact%20a%20real-life%20butcher',
+  },
+  'tv:16997': {
+    en: 'The Pacific was initially estimated to cost $100 million, but its final cost exceeded $200 million, making it the most expensive television miniseries ever created at the time.',
+    de: 'Für The Pacific waren zunächst 100 Millionen Dollar veranschlagt. Am Ende kostete die Produktion mehr als 200 Millionen Dollar und war damals die teuerste je gedrehte TV-Miniserie.',
+    pt: 'The Pacific teve um orçamento inicial estimado em 100 milhões de dólares, mas acabou custando mais de 200 milhões e se tornou a minissérie de televisão mais cara já produzida até então.',
+    fr: 'Le budget initial de The Pacific était estimé à 100 millions de dollars, mais la production a finalement coûté plus de 200 millions, ce qui en faisait alors la mini-série télévisée la plus chère jamais créée.',
+    es: 'El presupuesto inicial de The Pacific se estimó en 100 millones de dólares, pero acabó costando más de 200 millones y se convirtió entonces en la miniserie de televisión más cara jamás creada.',
+    it: 'Il costo iniziale di The Pacific era stimato in 100 milioni di dollari, ma alla fine superò i 200 milioni, rendendola all’epoca la miniserie televisiva più costosa mai realizzata.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Pacific_(miniseries)#:~:text=Originally%20the%20project%20was%20estimated%20at%20%24100%20million%20to%20produce&text=making%20The%20Pacific%20the%20most%20expensive%20television%20miniseries%20ever%20created%20at%20the%20time',
+  },
+  'tv:1972': {
+    en: 'The opening theme of Battlestar Galactica is a new-age-influenced version of the Gayatri Mantra, a Hindu hymn dedicated to the solar deity Savitr.',
+    de: 'Die Titelmusik von Battlestar Galactica ist eine vom New Age beeinflusste Version des Gayatri-Mantras, einer hinduistischen Hymne an die Sonnengottheit Savitr.',
+    pt: 'O tema de abertura de Battlestar Galactica é uma versão do Gayatri Mantra com influência new age, um hino hindu dedicado à divindade solar Savitr.',
+    fr: 'Le générique de Battlestar Galactica est une version du Gayatri Mantra influencée par le new age, un hymne hindou dédié à la divinité solaire Savitr.',
+    es: 'La sintonía de apertura de Battlestar Galactica es una versión del Gayatri Mantra con influencias new age, un himno hindú dedicado a la deidad solar Savitr.',
+    it: 'La sigla di Battlestar Galactica è una versione del Gayatri Mantra influenzata dalla new age, un inno induista dedicato alla divinità solare Savitr.',
+    source:
+      'https://en.wikipedia.org/wiki/Battlestar_Galactica_(2004_TV_series)#:~:text=The%20opening%20theme%20is%20a%20new-age-inflected%20version%20of%20the%20Gayatri%20Mantra&text=a%20Hindu%20hymn%20dedicated%20to%20the%20solar%20deity%20Savitr',
+  },
+  'tv:4608': {
+    en: '30 Rock once built an elaborate set that took three days to construct for only six seconds of screen time.',
+    de: '30 Rock baute einmal eine aufwendige Kulisse, deren Errichtung drei Tage dauerte und die nur sechs Sekunden lang im Bild war.',
+    pt: '30 Rock construiu certa vez um cenário elaborado que levou três dias para ficar pronto e apareceu na tela por apenas seis segundos.',
+    fr: '30 Rock a un jour construit un décor élaboré dont la réalisation a pris trois jours pour seulement six secondes à l’écran.',
+    es: '30 Rock construyó una vez un elaborado decorado que tardó tres días en completarse para aparecer en pantalla solo seis segundos.',
+    it: '30 Rock costruì una volta un set elaborato che richiese tre giorni di lavoro per appena sei secondi sullo schermo.',
+    source:
+      'https://en.wikipedia.org/wiki/30_Rock#:~:text=once%20using%20a%20set%20that%20took%20three%20days%20to%20build%20for%20only%20six%20seconds%20of%20screen%20time',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
