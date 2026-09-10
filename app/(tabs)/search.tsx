@@ -18,6 +18,7 @@ import { useThemeChrome } from '@/context/ThemeProvider';
 import { MediaSwitcher } from '@/components/MediaSwitcher';
 import { PosterImage } from '@/components/PosterImage';
 import { useMediaType } from '@/context/MediaTypeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
@@ -31,6 +32,7 @@ export default function SearchScreen() {
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
   const chrome = useThemeChrome();
+  const { text: ui } = useLanguage();
   const [text, setText] = useState('');
   const [query, setQuery] = useState('');
 
@@ -51,14 +53,7 @@ export default function SearchScreen() {
   const [screenH, setScreenH] = useState(0);
   const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
   const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
-  const tagline =
-    mediaType === 'tv'
-      ? 'Find any series'
-      : mediaType === 'book'
-        ? 'Find any book'
-        : mediaType === 'game'
-          ? 'Find any game'
-          : 'Find any movie';
+  const tagline = ui.findHeading[mediaType];
 
   return (
     <Pressable
@@ -78,15 +73,7 @@ export default function SearchScreen() {
         <TextInput
           value={text}
           onChangeText={setText}
-          placeholder={
-            mediaType === 'tv'
-              ? 'Find a series by title…'
-              : mediaType === 'book'
-                ? 'Find a book by title…'
-                : mediaType === 'game'
-                  ? 'Find a game by title…'
-                  : 'Find a movie by title…'
-          }
+          placeholder={ui.searchPlaceholder[mediaType]}
           placeholderTextColor={colors.textOnDarkMuted}
           style={styles.input}
           autoCorrect={false}

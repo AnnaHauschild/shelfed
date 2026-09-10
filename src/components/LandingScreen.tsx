@@ -18,6 +18,7 @@ import { useAuth } from '@/context/AuthProvider';
 import { useFollows } from '@/hooks/useFollows';
 import { useBottomInset } from '@/hooks/useBottomInset';
 import { useSettings } from '@/context/SettingsProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { absoluteFill, colors, fonts, radius, spacing } from '@/theme';
 import { AboutModal } from './AboutModal';
 import { ShelfBackground } from './ShelfBackground';
@@ -29,7 +30,6 @@ import { StoryGroup } from '@/api/posts';
 interface Category {
   type: MediaType | null;
   label: string;
-  blurb: string;
   icon: keyof typeof Ionicons.glyphMap;
   accent: string;
   disabled?: boolean;
@@ -43,28 +43,24 @@ const CATEGORIES: Category[] = [
   {
     type: 'movie',
     label: 'Movies',
-    blurb: 'Recall the films of a lifetime',
     icon: 'film',
     accent: colors.maroon,
   },
   {
     type: 'tv',
     label: 'Series',
-    blurb: 'Track the shows you have binged',
     icon: 'tv',
     accent: colors.watched,
   },
   {
     type: 'book',
     label: 'Books',
-    blurb: 'Remember the books you have read',
     icon: 'book',
     accent: colors.amber,
   },
   {
     type: 'game',
     label: 'Games',
-    blurb: 'Log the games you have played',
     icon: 'game-controller',
     accent: colors.rust,
   },
@@ -76,6 +72,7 @@ const CATEGORIES: Category[] = [
  */
 export function LandingScreen() {
   const insets = useSafeAreaInsets();
+  const { text } = useLanguage();
   const { choose } = useMediaTypeControls();
   const { displayName } = useProfile();
   const { enabled, session, profile } = useAuth();
@@ -106,7 +103,7 @@ export function LandingScreen() {
       <FeatureHeader
         height={headerHeight}
         topInset={insets.top}
-        tagline="Your lifelong collection."
+        tagline={text.landingTagline}
         scale={0.55}
       />
 
@@ -130,7 +127,9 @@ export function LandingScreen() {
               <Ionicons name="person-circle-outline" size={18} color={colors.textOnPaper} />
             )}
             <Text style={styles.profileText}>
-              {displayName ? `Hi, ${displayName}` : 'Tap to set your name'}
+              {displayName
+                ? text.greeting.replace('{name}', displayName)
+                : text.setName}
             </Text>
             <Ionicons name="pencil" size={12} color={colors.textOnPaperMuted} />
           </Pressable>
@@ -153,7 +152,12 @@ export function LandingScreen() {
 
         <View style={styles.cards}>
           {CATEGORIES.map((c) => (
-            <CategoryCard key={c.label} category={c} onPick={choose} />
+            <CategoryCard
+              key={c.label}
+              category={c}
+              blurb={c.type ? text.categoryBlurb[c.type] : ''}
+              onPick={choose}
+            />
           ))}
         </View>
 
@@ -181,9 +185,11 @@ export function LandingScreen() {
 
 function CategoryCard({
   category,
+  blurb,
   onPick,
 }: {
   category: Category;
+  blurb: string;
   onPick: (type: MediaType) => void;
 }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -210,7 +216,7 @@ function CategoryCard({
         </View>
         <View style={styles.cardText}>
           <Text style={styles.cardLabel}>{category.label}</Text>
-          <Text style={styles.cardBlurb}>{category.blurb}</Text>
+          <Text style={styles.cardBlurb}>{blurb}</Text>
         </View>
         {!category.disabled && (
           <Ionicons

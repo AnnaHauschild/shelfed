@@ -28,6 +28,7 @@ import { ShelfBackground } from '@/components/ShelfBackground';
 import { FeatureHeader } from '@/components/FeatureHeader';
 import { SwipeDeck } from '@/components/SwipeDeck';
 import { useMediaType, useMediaTypeControls } from '@/context/MediaTypeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useGenres } from '@/hooks/useGenres';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useInteractionStates } from '@/hooks/useInteractionStates';
@@ -48,6 +49,7 @@ const SWIPE_HINT_KEY = 'swipeHintSeenV2';
 export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
   const mediaType = useMediaType();
+  const { text } = useLanguage();
   const { chosen } = useMediaTypeControls();
   const [genres, setGenres] = useState<string[]>([]);
   const [era, setEra] = useState<string | null>(null);
@@ -230,14 +232,7 @@ export default function DiscoverScreen() {
   // user knows how to unlock the full catalog.
   const isDemo = !hasTmdbToken();
 
-  const noun =
-    mediaType === 'tv'
-      ? 'series'
-      : mediaType === 'book'
-        ? 'books'
-        : mediaType === 'game'
-          ? 'games'
-          : 'movies';
+  const noun = text.mediaPlural[mediaType];
   const emptyIcon: keyof typeof Ionicons.glyphMap =
     mediaType === 'tv'
       ? 'tv-outline'
@@ -298,14 +293,7 @@ export default function DiscoverScreen() {
   const [screenH, setScreenH] = useState(0);
   const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
   const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
-  const tagline =
-    mediaType === 'tv'
-      ? 'Swipe your series'
-      : mediaType === 'book'
-        ? 'Swipe your books'
-        : mediaType === 'game'
-          ? 'Swipe your games'
-          : 'Swipe your films';
+  const tagline = text.swipeHeading[mediaType];
 
   return (
     <View
@@ -342,7 +330,7 @@ export default function DiscoverScreen() {
         ) : movies.length === 0 ? (
           <Centered>
             <Ionicons name={emptyIcon} size={48} color={colors.border} />
-            <Text style={styles.muted}>No {noun} found right now.</Text>
+            <Text style={styles.muted}>{text.nothingFound}</Text>
           </Centered>
         ) : (
           <>
@@ -480,6 +468,7 @@ function SetupOrError({
 }) {
   const isToken =
     error instanceof TmdbError && /access token/i.test(error.message);
+  const { text } = useLanguage();
 
   return (
     <Centered>
@@ -489,16 +478,18 @@ function SetupOrError({
         color={colors.border}
       />
       <Text style={styles.errorTitle}>
-        {isToken ? 'Add your TMDB token' : `Could not load ${noun}`}
+        {isToken
+          ? 'Add your TMDB token'
+          : text.couldNotLoad.replace('{noun}', noun)}
       </Text>
       <Text style={styles.muted}>
         {isToken
           ? 'Copy .env.example to .env, paste your TMDB read access token, then restart the dev server.'
-          : (error as Error)?.message ?? 'Something went wrong.'}
+          : text.somethingWrong}
       </Text>
       {!isToken && (
         <Pressable style={styles.retry} onPress={onRetry}>
-          <Text style={styles.retryText}>Retry</Text>
+          <Text style={styles.retryText}>{text.retry}</Text>
         </Pressable>
       )}
     </Centered>

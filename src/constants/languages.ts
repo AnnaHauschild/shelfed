@@ -124,6 +124,18 @@ export interface UiText {
   errReadImage: string;
   errSavePhoto: string;
   errProcessImage: string;
+  landingTagline: string;
+  /** `{name}` is the display name. */
+  greeting: string;
+  setName: string;
+  categoryBlurb: Record<MediaType, string>;
+  swipeHeading: Record<MediaType, string>;
+  findHeading: Record<MediaType, string>;
+  searchPlaceholder: Record<MediaType, string>;
+  nothingFound: string;
+  couldNotLoad: string;
+  somethingWrong: string;
+  retry: string;
 }
 
 export const UI_TEXT: Record<AppLanguage, UiText> = {
@@ -205,6 +217,37 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Could not read that image.',
     errSavePhoto: 'Could not save the photo.',
     errProcessImage: 'Could not process the image.',
+    landingTagline: 'Your lifelong collection.',
+    greeting: 'Hi, {name}',
+    setName: 'Tap to set your name',
+    categoryBlurb: {
+      movie: 'Recall the films of a lifetime',
+      tv: 'Track the shows you have binged',
+      book: 'Remember the books you have read',
+      game: 'Log the games you have played',
+    },
+    swipeHeading: {
+      movie: 'Swipe your films',
+      tv: 'Swipe your series',
+      book: 'Swipe your books',
+      game: 'Swipe your games',
+    },
+    findHeading: {
+      movie: 'Find any movie',
+      tv: 'Find any series',
+      book: 'Find any book',
+      game: 'Find any game',
+    },
+    searchPlaceholder: {
+      movie: 'Find a movie by title…',
+      tv: 'Find a series by title…',
+      book: 'Find a book by title…',
+      game: 'Find a game by title…',
+    },
+    nothingFound: 'Nothing found right now.',
+    couldNotLoad: 'Could not load {noun}.',
+    somethingWrong: 'Something went wrong.',
+    retry: 'Retry',
   },
   de: {
     moodsDescription:
@@ -286,6 +329,37 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Das Bild konnte nicht gelesen werden.',
     errSavePhoto: 'Das Foto konnte nicht gespeichert werden.',
     errProcessImage: 'Das Bild konnte nicht verarbeitet werden.',
+    landingTagline: 'Deine Sammlung fürs Leben.',
+    greeting: 'Hallo, {name}',
+    setName: 'Tippe, um deinen Namen zu setzen',
+    categoryBlurb: {
+      movie: 'Die Filme deines Lebens',
+      tv: 'Serien, die du verschlungen hast',
+      book: 'Bücher, die du gelesen hast',
+      game: 'Spiele, die du gespielt hast',
+    },
+    swipeHeading: {
+      movie: 'Wische durch Filme',
+      tv: 'Wische durch Serien',
+      book: 'Wische durch Bücher',
+      game: 'Wische durch Spiele',
+    },
+    findHeading: {
+      movie: 'Finde jeden Film',
+      tv: 'Finde jede Serie',
+      book: 'Finde jedes Buch',
+      game: 'Finde jedes Spiel',
+    },
+    searchPlaceholder: {
+      movie: 'Film nach Titel suchen…',
+      tv: 'Serie nach Titel suchen…',
+      book: 'Buch nach Titel suchen…',
+      game: 'Spiel nach Titel suchen…',
+    },
+    nothingFound: 'Gerade nichts gefunden.',
+    couldNotLoad: 'Konnte {noun} nicht laden.',
+    somethingWrong: 'Etwas ist schiefgelaufen.',
+    retry: 'Erneut versuchen',
   },
   pt: {
     moodsDescription:
@@ -368,6 +442,37 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Não foi possível ler essa imagem.',
     errSavePhoto: 'Não foi possível salvar a foto.',
     errProcessImage: 'Não foi possível processar a imagem.',
+    landingTagline: 'Sua coleção para a vida toda.',
+    greeting: 'Oi, {name}',
+    setName: 'Toque para colocar seu nome',
+    categoryBlurb: {
+      movie: 'Os filmes de uma vida',
+      tv: 'As séries que você maratonou',
+      book: 'Os livros que você leu',
+      game: 'Os jogos que você jogou',
+    },
+    swipeHeading: {
+      movie: 'Deslize pelos filmes',
+      tv: 'Deslize pelas séries',
+      book: 'Deslize pelos livros',
+      game: 'Deslize pelos jogos',
+    },
+    findHeading: {
+      movie: 'Encontre qualquer filme',
+      tv: 'Encontre qualquer série',
+      book: 'Encontre qualquer livro',
+      game: 'Encontre qualquer jogo',
+    },
+    searchPlaceholder: {
+      movie: 'Buscar filme pelo título…',
+      tv: 'Buscar série pelo título…',
+      book: 'Buscar livro pelo título…',
+      game: 'Buscar jogo pelo título…',
+    },
+    nothingFound: 'Nada encontrado no momento.',
+    couldNotLoad: 'Não foi possível carregar {noun}.',
+    somethingWrong: 'Algo deu errado.',
+    retry: 'Tentar de novo',
   },
   fr: {
     moodsDescription:
@@ -450,6 +555,37 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Impossible de lire cette image.',
     errSavePhoto: 'Impossible d’enregistrer la photo.',
     errProcessImage: 'Impossible de traiter l’image.',
+    landingTagline: 'Ta collection de toute une vie.',
+    greeting: 'Salut, {name}',
+    setName: 'Touche pour indiquer ton nom',
+    categoryBlurb: {
+      movie: 'Les films de toute une vie',
+      tv: 'Les séries que tu as dévorées',
+      book: 'Les livres que tu as lus',
+      game: 'Les jeux auxquels tu as joué',
+    },
+    swipeHeading: {
+      movie: 'Balaie tes films',
+      tv: 'Balaie tes séries',
+      book: 'Balaie tes livres',
+      game: 'Balaie tes jeux',
+    },
+    findHeading: {
+      movie: 'Trouve n’importe quel film',
+      tv: 'Trouve n’importe quelle série',
+      book: 'Trouve n’importe quel livre',
+      game: 'Trouve n’importe quel jeu',
+    },
+    searchPlaceholder: {
+      movie: 'Chercher un film par titre…',
+      tv: 'Chercher une série par titre…',
+      book: 'Chercher un livre par titre…',
+      game: 'Chercher un jeu par titre…',
+    },
+    nothingFound: 'Rien trouvé pour le moment.',
+    couldNotLoad: 'Impossible de charger {noun}.',
+    somethingWrong: 'Quelque chose s’est mal passé.',
+    retry: 'Réessayer',
   },
   es: {
     moodsDescription:
@@ -532,6 +668,37 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'No se pudo leer esa imagen.',
     errSavePhoto: 'No se pudo guardar la foto.',
     errProcessImage: 'No se pudo procesar la imagen.',
+    landingTagline: 'Tu colección para toda la vida.',
+    greeting: 'Hola, {name}',
+    setName: 'Toca para poner tu nombre',
+    categoryBlurb: {
+      movie: 'Las películas de tu vida',
+      tv: 'Las series que has devorado',
+      book: 'Los libros que has leído',
+      game: 'Los juegos a los que has jugado',
+    },
+    swipeHeading: {
+      movie: 'Desliza por tus películas',
+      tv: 'Desliza por tus series',
+      book: 'Desliza por tus libros',
+      game: 'Desliza por tus juegos',
+    },
+    findHeading: {
+      movie: 'Encuentra cualquier película',
+      tv: 'Encuentra cualquier serie',
+      book: 'Encuentra cualquier libro',
+      game: 'Encuentra cualquier juego',
+    },
+    searchPlaceholder: {
+      movie: 'Buscar una película por título…',
+      tv: 'Buscar una serie por título…',
+      book: 'Buscar un libro por título…',
+      game: 'Buscar un juego por título…',
+    },
+    nothingFound: 'No se ha encontrado nada ahora mismo.',
+    couldNotLoad: 'No se pudieron cargar {noun}.',
+    somethingWrong: 'Algo ha salido mal.',
+    retry: 'Reintentar',
   },
   it: {
     moodsDescription:
@@ -613,6 +780,37 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Non è stato possibile leggere questa immagine.',
     errSavePhoto: 'Non è stato possibile salvare la foto.',
     errProcessImage: 'Non è stato possibile elaborare l’immagine.',
+    landingTagline: 'La tua collezione di una vita.',
+    greeting: 'Ciao, {name}',
+    setName: 'Tocca per inserire il tuo nome',
+    categoryBlurb: {
+      movie: 'I film di una vita',
+      tv: 'Le serie che hai divorato',
+      book: 'I libri che hai letto',
+      game: 'I giochi a cui hai giocato',
+    },
+    swipeHeading: {
+      movie: 'Scorri i tuoi film',
+      tv: 'Scorri le tue serie',
+      book: 'Scorri i tuoi libri',
+      game: 'Scorri i tuoi giochi',
+    },
+    findHeading: {
+      movie: 'Trova qualsiasi film',
+      tv: 'Trova qualsiasi serie',
+      book: 'Trova qualsiasi libro',
+      game: 'Trova qualsiasi gioco',
+    },
+    searchPlaceholder: {
+      movie: 'Cerca un film per titolo…',
+      tv: 'Cerca una serie per titolo…',
+      book: 'Cerca un libro per titolo…',
+      game: 'Cerca un gioco per titolo…',
+    },
+    nothingFound: 'Al momento non è stato trovato nulla.',
+    couldNotLoad: 'Non è stato possibile caricare {noun}.',
+    somethingWrong: 'Qualcosa è andato storto.',
+    retry: 'Riprova',
   },
 };
 
