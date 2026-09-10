@@ -1125,6 +1125,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Curb_Your_Enthusiasm#:~:text=contains%20raw%20footage%20from%20the%20filming%20of%20an%20episode%20of%20season%204%20at%20Dodger%20Stadium&text=helped%20to%20inadvertently%20exonerate%20Juan%20Catalan%2C%20who%20was%20accused%20of%20murder%20and%20faced%20the%20death%20penalty',
   },
+  'tv:65495': {
+    en: 'Atlanta had an all-Black writing staff, something that was virtually unheard of in American television at the time.',
+    de: 'Atlanta hatte ein ausschließlich schwarzes Autorenteam, was damals im amerikanischen Fernsehen so gut wie unbekannt war.',
+    pt: 'Atlanta tinha uma equipe de roteiristas formada exclusivamente por pessoas negras, algo praticamente inédito na televisão americana da época.',
+    fr: 'Atlanta disposait d’une équipe de scénaristes entièrement noire, une situation pratiquement sans précédent dans la télévision américaine de l’époque.',
+    es: 'Atlanta contó con un equipo de guionistas formado íntegramente por personas negras, algo prácticamente inaudito en la televisión estadounidense de la época.',
+    it: 'Atlanta aveva un gruppo di sceneggiatori composto interamente da persone nere, una cosa praticamente senza precedenti nella televisione americana dell’epoca.',
+    source:
+      'https://en.wikipedia.org/wiki/Atlanta_(TV_series)#:~:text=The%20series%20is%20also%20notable%20for%20having%20an%20all-Black%20writing%20staff%2C%20which%20was%20virtually%20unheard%20of%20in%20American%20television',
+  },
+  'tv:61222': {
+    en: 'The idea for BoJack Horseman began while Raphael Bob-Waksberg lived in what he called a glorified closet in a Hollywood Hills mansion, feeling simultaneously on top of the world and more isolated than ever.',
+    de: 'Die Idee zu BoJack Horseman entstand, als Raphael Bob-Waksberg in dem wohnte, was er als verherrlichten Abstellraum in einer Villa in den Hollywood Hills bezeichnete, und sich zugleich wie auf dem Gipfel der Welt und isolierter denn je fühlte.',
+    pt: 'A ideia de BoJack Horseman surgiu quando Raphael Bob-Waksberg morava no que chamou de um armário glorificado em uma mansão nas Hollywood Hills e se sentia, ao mesmo tempo, no topo do mundo e mais isolado do que nunca.',
+    fr: 'L’idée de BoJack Horseman est née lorsque Raphael Bob-Waksberg vivait dans ce qu’il appelait un placard glorifié au sein d’une villa des Hollywood Hills, tout en se sentant au sommet du monde et plus isolé que jamais.',
+    es: 'La idea de BoJack Horseman nació cuando Raphael Bob-Waksberg vivía en lo que describió como un armario glorificado dentro de una mansión de Hollywood Hills y se sentía a la vez en la cima del mundo y más aislado que nunca.',
+    it: 'L’idea di BoJack Horseman nacque mentre Raphael Bob-Waksberg viveva in quello che definì un ripostiglio glorificato in una villa sulle Hollywood Hills, sentendosi allo stesso tempo in cima al mondo e più isolato che mai.',
+    source:
+      'https://en.wikipedia.org/wiki/BoJack_Horseman#:~:text=living%20in%20what%20he%20described%20as%20%22a%20glorified%20closet%20in%20a%20beautiful%20mansion%22&text=simultaneously%20on%20top%20of%20the%20world%20and%20never%20more%20isolated%20and%20alone',
+  },
+  'tv:60573': {
+    en: 'The Weissman score used in Silicon Valley to compare data compression did not exist before the series. A Stanford professor and graduate student created it at the producers’ request.',
+    de: 'Der in Silicon Valley verwendete Weissman-Score zum Vergleich von Datenkompression existierte vor der Serie nicht. Ein Stanford-Professor und ein Student entwickelten ihn auf Wunsch der Produzenten.',
+    pt: 'A pontuação Weissman usada em Silicon Valley para comparar compressão de dados não existia antes da série. Um professor de Stanford e um estudante de pós-graduação a criaram a pedido dos produtores.',
+    fr: 'Le score de Weissman utilisé dans Silicon Valley pour comparer la compression de données n’existait pas avant la série. Un professeur de Stanford et un étudiant de cycle supérieur l’ont créé à la demande des producteurs.',
+    es: 'La puntuación Weissman utilizada en Silicon Valley para comparar la compresión de datos no existía antes de la serie. Un profesor de Stanford y un estudiante de posgrado la crearon a petición de los productores.',
+    it: 'Il punteggio Weissman usato in Silicon Valley per confrontare la compressione dei dati non esisteva prima della serie. Un professore di Stanford e uno studente post-laurea lo crearono su richiesta dei produttori.',
+    source:
+      'https://en.wikipedia.org/wiki/Silicon_Valley_(TV_series)#:~:text=The%20show%20refers%20to%20a%20metric%20in%20comparing%20the%20compression%20rates%20of%20applications%20called%20the%20Weissman%20score%2C%20which%20did%20not%20exist%20before%20the%20show%27s%20run&text=at%20the%20request%20of%20the%20show%27s%20producers',
+  },
+  'tv:1435': {
+    en: 'The Good Wife was conceived after its creators noticed that many wives standing beside politicians during public sex scandals were lawyers who had paused their own careers for their husbands.',
+    de: 'Die Idee zu The Good Wife entstand, nachdem die Serienschöpfer bemerkten, dass viele Ehefrauen an der Seite von Politikern bei öffentlichen Sexskandalen selbst Juristinnen waren, die ihre Karriere für ihre Männer unterbrochen hatten.',
+    pt: 'The Good Wife foi concebida depois que seus criadores perceberam que muitas esposas ao lado de políticos durante escândalos sexuais públicos eram advogadas que haviam interrompido a própria carreira pelos maridos.',
+    fr: 'The Good Wife a été imaginée après que ses créateurs eurent remarqué que de nombreuses épouses aux côtés de politiciens lors de scandales sexuels publics étaient des avocates qui avaient interrompu leur propre carrière pour leur mari.',
+    es: 'The Good Wife se concibió después de que sus creadores observaran que muchas esposas al lado de políticos durante escándalos sexuales públicos eran abogadas que habían aparcado su propia carrera por sus maridos.',
+    it: 'The Good Wife fu ideata dopo che i suoi creatori notarono che molte mogli al fianco di politici durante scandali sessuali pubblici erano avvocate che avevano sospeso la propria carriera per il marito.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Good_Wife#:~:text=They%20were%20further%20intrigued%20by%20the%20fact%20that%20many%20of%20the%20wives%20were%20lawyers%20who%20had%20halted%20their%20personal%20careers%20for%20the%20sake%20of%20their%20husbands%27%20professional%20ambitions',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
