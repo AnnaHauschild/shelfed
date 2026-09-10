@@ -24,60 +24,100 @@ const FACTS: Record<string, Localized> = {
   'movie:155': {
     en: 'Heath Ledger shut himself in a hotel room for weeks and kept a Joker diary to build the character.',
     de: 'Heath Ledger verzog sich wochenlang allein in ein Hotelzimmer und führte ein Joker-Tagebuch, um die Rolle zu finden.',
+    pt: 'Heath Ledger se isolou em um quarto de hotel durante semanas e manteve um diário do Coringa para construir o personagem.',
+    fr: 'Heath Ledger s’est enfermé dans une chambre d’hôtel pendant des semaines et a tenu un journal du Joker pour construire le personnage.',
+    es: 'Heath Ledger se encerró en una habitación de hotel durante semanas y llevó un diario del Joker para construir el personaje.',
+    it: 'Heath Ledger si chiuse in una stanza d’albergo per settimane e tenne un diario del Joker per costruire il personaggio.',
     source:
       'https://en.wikipedia.org/wiki/The_Dark_Knight#:~:text=Joker%20diary',
   },
   'movie:597': {
     en: 'The nude drawing of Rose was made by director James Cameron himself, not by Leonardo DiCaprio.',
     de: 'Die Aktzeichnung von Rose stammt von Regisseur James Cameron selbst, nicht von Leonardo DiCaprio.',
+    pt: 'O desenho nu de Rose foi feito pelo próprio diretor James Cameron, não por Leonardo DiCaprio.',
+    fr: 'Le dessin de Rose nue a été réalisé par le réalisateur James Cameron lui-même, et non par Leonardo DiCaprio.',
+    es: 'El dibujo de Rose desnuda fue realizado por el propio director James Cameron, no por Leonardo DiCaprio.',
+    it: 'Il disegno di Rose nuda fu realizzato dallo stesso regista James Cameron, non da Leonardo DiCaprio.',
     source:
       'https://en.wikipedia.org/wiki/Titanic_(1997_film)#:~:text=Cameron%20sketched%20Jack',
   },
   'movie:121': {
     en: 'Viggo Mortensen really broke two toes kicking an orc helmet, and that exact take is the one used in the film.',
     de: 'Viggo Mortensen brach sich beim Tritt gegen einen Ork-Helm tatsächlich zwei Zehen, und genau diese Aufnahme kam in den Film.',
+    pt: 'Viggo Mortensen realmente quebrou dois dedos do pé ao chutar um capacete de orc, e essa tomada exata foi usada no filme.',
+    fr: 'Viggo Mortensen s’est réellement cassé deux orteils en donnant un coup de pied dans un casque d’orque, et cette prise précise est celle utilisée dans le film.',
+    es: 'Viggo Mortensen se rompió de verdad dos dedos del pie al patear un casco de orco, y esa toma exacta es la que se utilizó en la película.',
+    it: 'Viggo Mortensen si ruppe davvero due dita del piede dando un calcio a un elmo da orco, e nel film fu usata proprio quella ripresa.',
     source:
       'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Two_Towers#:~:text=broke%20two%20toes%20when%20he%20kicked%20an%20Orc%20helmet',
   },
   'movie:578': {
     en: 'The mechanical shark kept breaking down, so Spielberg barely showed it, which made the film scarier.',
     de: 'Der mechanische Hai streikte ständig, also zeigte Spielberg ihn kaum, was den Film gerade dadurch spannender machte.',
+    pt: 'O tubarão mecânico quebrava constantemente, então Spielberg quase não o mostrou, o que tornou o filme mais assustador.',
+    fr: 'Le requin mécanique tombait sans cesse en panne, alors Spielberg l’a très peu montré, ce qui a rendu le film plus effrayant.',
+    es: 'El tiburón mecánico se averiaba constantemente, así que Spielberg apenas lo mostró, lo que hizo que la película resultara más aterradora.',
+    it: 'Lo squalo meccanico continuava a guastarsi, quindi Spielberg lo mostrò a malapena, rendendo il film più spaventoso.',
     source:
       'https://en.wikipedia.org/wiki/Jaws_(film)#:~:text=unreliable%20mechanical%20sharks',
   },
   'movie:603': {
     en: 'The green code is made of mirrored Japanese characters, letters and digits. Its designer likes to say it consists of Japanese sushi recipes.',
     de: 'Der grüne Code besteht aus gespiegelten japanischen Schriftzeichen, Buchstaben und Ziffern. Sein Gestalter sagt gern, er bestehe aus japanischen Sushi-Rezepten.',
+    pt: 'O código verde é formado por caracteres japoneses espelhados, letras e algarismos. Seu criador gosta de dizer que ele consiste em receitas japonesas de sushi.',
+    fr: 'Le code vert est composé de caractères japonais inversés, de lettres et de chiffres. Son créateur aime dire qu’il est constitué de recettes japonaises de sushis.',
+    es: 'El código verde está compuesto por caracteres japoneses reflejados, letras y dígitos. A su diseñador le gusta decir que consiste en recetas japonesas de sushi.',
+    it: 'Il codice verde è composto da caratteri giapponesi specchiati, lettere e cifre. Il suo creatore ama dire che consiste in ricette giapponesi di sushi.',
     source:
       'https://en.wikipedia.org/wiki/The_Matrix#:~:text=made%20out%20of%20Japanese%20sushi%20recipes',
   },
   'movie:105': {
     en: 'Marty McFly was filmed for weeks with Eric Stoltz before he was recast with Michael J. Fox.',
     de: 'Marty McFly wurde zuerst wochenlang mit Eric Stoltz gedreht, bevor man ihn durch Michael J. Fox ersetzte.',
+    pt: 'Marty McFly foi filmado durante semanas com Eric Stoltz antes de o papel ser atribuído novamente a Michael J. Fox.',
+    fr: 'Marty McFly a été filmé pendant des semaines avec Eric Stoltz avant que le rôle ne soit réattribué à Michael J. Fox.',
+    es: 'Marty McFly fue filmado durante semanas con Eric Stoltz antes de que el papel se reasignara a Michael J. Fox.',
+    it: 'Marty McFly fu filmato per settimane con Eric Stoltz prima che il ruolo venisse riassegnato a Michael J. Fox.',
     source:
       'https://en.wikipedia.org/wiki/Back_to_the_Future#:~:text=Eric%20Stoltz%20was%20cast%20as%20Marty',
   },
   'movie:348': {
     en: 'For the chestburster scene the cast was not told how bloody it would get, so their shock is real.',
     de: 'Bei der Chestburster-Szene wussten die Darsteller nicht, wie blutig es wird, daher ist ihr Entsetzen echt.',
+    pt: 'Para a cena do chestburster, o elenco não foi informado de quanto sangue haveria, por isso seu choque é real.',
+    fr: 'Pour la scène du chestburster, les acteurs n’ont pas été informés de la quantité de sang qui allait jaillir, leur stupeur est donc réelle.',
+    es: 'Para la escena del chestburster, al reparto no se le dijo cuánta sangre habría, por lo que su conmoción es real.',
+    it: 'Per la scena del chestburster, al cast non fu detto quanto sangue ci sarebbe stato, quindi il loro shock è reale.',
     source:
       'https://en.wikipedia.org/wiki/Alien_(film)#:~:text=not%20been%20told%20that%20fake%20blood',
   },
   'movie:27205': {
     en: 'The rotating hallway fight was shot in a real, physically spinning set, not with CGI.',
     de: 'Der rotierende Hotelflur war ein echtes, sich drehendes Set, kein CGI.',
+    pt: 'A luta no corredor giratório foi filmada em um cenário real que girava fisicamente, não com computação gráfica.',
+    fr: 'Le combat dans le couloir rotatif a été tourné dans un véritable décor qui tournait physiquement, sans images de synthèse.',
+    es: 'La pelea del pasillo giratorio se rodó en un decorado real que giraba físicamente, no con imágenes generadas por computadora.',
+    it: 'Il combattimento nel corridoio rotante fu girato in un vero set che ruotava fisicamente, non con immagini generate al computer.',
     source:
       'https://en.wikipedia.org/wiki/Inception#:~:text=giant%20hamster%20wheel',
   },
   'movie:13': {
     en: 'Tom Hanks took no salary and chose profit participation instead, earning far more in the end.',
     de: 'Tom Hanks verzichtete auf Gage und nahm stattdessen Gewinnbeteiligung, und verdiente damit am Ende ein Vielfaches.',
+    pt: 'Tom Hanks não recebeu salário e escolheu uma participação nos lucros, ganhando muito mais no final.',
+    fr: 'Tom Hanks n’a reçu aucun salaire et a choisi à la place une participation aux bénéfices, gagnant finalement beaucoup plus.',
+    es: 'Tom Hanks no cobró salario y eligió en su lugar una participación en los beneficios, con lo que acabó ganando mucho más.',
+    it: 'Tom Hanks non ricevette alcun compenso e scelse invece una partecipazione agli utili, guadagnando infine molto di più.',
     source:
       'https://en.wikipedia.org/wiki/Forrest_Gump#:~:text=gross%20receipts%20instead%20of%20a%20salary',
   },
   'movie:680': {
     en: 'The adrenaline-shot scene was inspired by a true story from a Scorsese documentary, in which a man really revived an overdose victim with a shot to the heart.',
     de: 'Die Adrenalinspritzen-Szene beruht auf einer wahren Geschichte aus einer Scorsese-Doku, in der ein Mann ein Überdosis-Opfer wirklich mit einem Stich ins Herz wiederbelebte.',
+    pt: 'A cena da injeção de adrenalina foi inspirada por uma história real de um documentário de Scorsese, na qual um homem realmente reanimou uma vítima de overdose com uma injeção no coração.',
+    fr: 'La scène de l’injection d’adrénaline a été inspirée par une histoire vraie tirée d’un documentaire de Scorsese, dans laquelle un homme a réellement ranimé une victime de surdose avec une injection dans le cœur.',
+    es: 'La escena de la inyección de adrenalina se inspiró en una historia real de un documental de Scorsese, en la que un hombre reanimó de verdad a una víctima de sobredosis con una inyección en el corazón.',
+    it: 'La scena dell’iniezione di adrenalina fu ispirata da una storia vera tratta da un documentario di Scorsese, in cui un uomo rianimò davvero una vittima di overdose con un’iniezione al cuore.',
     source:
       'https://en.wikipedia.org/wiki/Pulp_Fiction#:~:text=adrenaline%20scene%20was%20inspired',
   },
