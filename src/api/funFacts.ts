@@ -1045,6 +1045,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/30_Rock#:~:text=once%20using%20a%20set%20that%20took%20three%20days%20to%20build%20for%20only%20six%20seconds%20of%20screen%20time',
   },
+  'tv:1414': {
+    en: 'The Shield creator Shawn Ryan based the pilot’s ending on an alternate ending he had imagined for Donnie Brasco, in which Al Pacino’s mobster shoots Johnny Depp’s undercover agent because he knew his identity all along.',
+    de: 'Der Schöpfer von The Shield, Shawn Ryan, übernahm das Ende der Pilotfolge aus einem alternativen Ende, das er sich für Donnie Brasco ausgedacht hatte: Al Pacinos Mafioso erschießt Johnny Depps Undercoveragenten, weil er dessen Identität die ganze Zeit kannte.',
+    pt: 'Shawn Ryan, criador de The Shield, baseou o final do episódio piloto em um desfecho alternativo que havia imaginado para Donnie Brasco: o mafioso de Al Pacino atira no agente infiltrado de Johnny Depp porque sempre soube sua identidade.',
+    fr: 'Shawn Ryan, créateur de The Shield, a fondé la fin du pilote sur une fin alternative qu’il avait imaginée pour Donnie Brasco : le mafieux d’Al Pacino abat l’agent infiltré de Johnny Depp parce qu’il connaissait son identité depuis le début.',
+    es: 'Shawn Ryan, creador de The Shield, basó el final del piloto en un desenlace alternativo que había imaginado para Donnie Brasco: el mafioso de Al Pacino dispara al agente encubierto de Johnny Depp porque siempre conoció su identidad.',
+    it: 'Shawn Ryan, creatore di The Shield, basò il finale dell’episodio pilota su un finale alternativo che aveva immaginato per Donnie Brasco: il mafioso di Al Pacino spara all’agente sotto copertura di Johnny Depp perché ne conosceva da sempre l’identità.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Shield#:~:text=Ryan%20had%20the%20idea%20of%20an%20alternate%20ending%20to%20Donnie%20Brasco&text=He%20used%20this%20ending%20idea%20in%20the%20pilot%20for%20The%20Shield',
+  },
+  'tv:4278': {
+    en: 'Friday Night Lights was filmed without rehearsal or extensive blocking. Three camera operators followed the actors instead, and first takes usually made the final cut.',
+    de: 'Friday Night Lights wurde ohne Proben oder umfangreiche Bewegungsplanung gedreht. Stattdessen folgten drei Kameraleute den Schauspielern, und meist landete schon die erste Aufnahme in der fertigen Folge.',
+    pt: 'Friday Night Lights foi filmada sem ensaios nem marcações extensas. Três operadores de câmera acompanhavam os atores, e geralmente a primeira tomada entrava no corte final.',
+    fr: 'Friday Night Lights était tournée sans répétitions ni mise en place détaillée. Trois cadreurs suivaient plutôt les acteurs, et les premières prises finissaient généralement dans le montage final.',
+    es: 'Friday Night Lights se rodaba sin ensayos ni una planificación exhaustiva de movimientos. Tres operadores de cámara seguían a los actores, y las primeras tomas solían acabar en el montaje final.',
+    it: 'Friday Night Lights veniva girata senza prove né una pianificazione dettagliata dei movimenti. Tre operatori seguivano invece gli attori e di solito le prime riprese finivano nel montaggio definitivo.',
+    source:
+      'https://en.wikipedia.org/wiki/Friday_Night_Lights_(TV_series)#:~:text=This%20freedom%20was%20complemented%20by%20filming%20without%20rehearsal%20and%20without%20extensive%20blocking&text=The%20first%20takes%20usually%20made%20the%20final%20cut',
+  },
+  'tv:1436': {
+    en: 'Boyd Crowder was supposed to die in the Justified pilot, but the character was kept after test audiences liked Walton Goggins’ performance. Goggins became a main cast member from season two.',
+    de: 'Boyd Crowder sollte in der Pilotfolge von Justified sterben. Weil das Testpublikum Walton Goggins’ Darstellung mochte, blieb die Figur jedoch erhalten, und Goggins gehörte ab Staffel zwei zur Hauptbesetzung.',
+    pt: 'Boyd Crowder deveria morrer no episódio piloto de Justified, mas o personagem foi mantido porque o público de teste gostou da atuação de Walton Goggins. A partir da segunda temporada, Goggins integrou o elenco principal.',
+    fr: 'Boyd Crowder devait mourir dans le pilote de Justified, mais le personnage a été conservé après que le public test eut apprécié la prestation de Walton Goggins. Dès la deuxième saison, Goggins a rejoint la distribution principale.',
+    es: 'Boyd Crowder debía morir en el piloto de Justified, pero conservaron al personaje porque al público de prueba le gustó la interpretación de Walton Goggins. Desde la segunda temporada, Goggins formó parte del reparto principal.',
+    it: 'Boyd Crowder avrebbe dovuto morire nell’episodio pilota di Justified, ma il personaggio fu mantenuto perché il pubblico di prova apprezzò l’interpretazione di Walton Goggins. Dalla seconda stagione, Goggins entrò nel cast principale.',
+    source:
+      'https://en.wikipedia.org/wiki/Justified_(TV_series)#:~:text=The%20character%20of%20Boyd%20was%20intended%20to%20die%20in%20the%20pilot%20episode&text=Goggins%20was%20promoted%20to%20main%20cast%20from%20season%202%20onward',
+  },
+  'tv:17967': {
+    en: 'Treme’s title card changed with each season to mirror New Orleans’ recovery: it progressed from a mold damaged backdrop to a newly painted white wall that actor Clarke Peters finished by hand.',
+    de: 'Die Titelkarte von Treme veränderte sich mit jeder Staffel und spiegelte so den Wiederaufbau von New Orleans wider: Auf einen schimmelgeschädigten Hintergrund folgte schließlich eine frisch gestrichene weiße Wand, der Schauspieler Clarke Peters von Hand den letzten Schliff gab.',
+    pt: 'O cartão de título de Treme mudava a cada temporada para refletir a recuperação de Nova Orleans: passou de um fundo danificado por mofo a uma parede branca recém pintada, finalizada à mão pelo ator Clarke Peters.',
+    fr: 'Le carton titre de Treme changeait à chaque saison pour refléter la reconstruction de La Nouvelle Orléans : le fond abîmé par la moisissure a fini par devenir un mur blanc fraîchement peint, auquel l’acteur Clarke Peters a apporté les dernières touches à la main.',
+    es: 'La tarjeta del título de Treme cambiaba cada temporada para reflejar la recuperación de Nueva Orleans: pasó de un fondo dañado por el moho a una pared blanca recién pintada, rematada a mano por el actor Clarke Peters.',
+    it: 'Il cartello del titolo di Treme cambiava a ogni stagione per riflettere la rinascita di New Orleans: da uno sfondo danneggiato dalla muffa passò infine a una parete bianca appena dipinta, rifinita a mano dall’attore Clarke Peters.',
+    source:
+      'https://en.wikipedia.org/wiki/Treme_(TV_series)#:~:text=The%20Treme%20title%20card%20evolves%20with%20each%20season%2C%20to%20evoke%20the%20recovery%20of%20New%20Orleans&text=Clarke%20Peters%20provided%20the%20hand-brushed%20finishing%20touches',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
