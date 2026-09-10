@@ -390,14 +390,14 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Vertigo_(film)#:~:text=Following%20difficulties%20filming%20the%20shot%20on%20a%20full-sized%20set%2C%20a%20model%20of%20the%20tower%20shaft%20was%20constructed%2C%20and%20the%20dolly%20zoom%20was%20filmed%20horizontally',
   },
   'movie:840': {
-    en: 'The mothership miniature hides a tiny R2-D2 and a pea-sized TIE fighter, plus a mailbox, a great white shark, a Volkswagen bus and a small graveyard.',
-    de: 'Im Miniaturmodell des Mutterschiffs verstecken sich ein winziger R2-D2 und ein erbsengroßer TIE-Jäger – außerdem ein Briefkasten, ein Weißer Hai, ein VW-Bus und ein kleiner Friedhof.',
-    pt: 'A miniatura da nave-mãe esconde um pequeno R2-D2 e um caça TIE do tamanho de uma ervilha, além de uma caixa de correio, um tubarão-branco, uma Kombi Volkswagen e um pequeno cemitério.',
-    fr: 'La maquette du vaisseau-mère cache un minuscule R2-D2 et un chasseur TIE de la taille d’un petit pois, ainsi qu’une boîte aux lettres, un grand requin blanc, un minibus Volkswagen et un petit cimetière.',
-    es: 'La miniatura de la nave nodriza esconde un diminuto R2-D2 y un caza TIE del tamaño de un guisante, además de un buzón, un tiburón blanco, una furgoneta Volkswagen y un pequeño cementerio.',
-    it: 'Il modellino dell’astronave madre nasconde un minuscolo R2-D2 e un caccia TIE grande quanto un pisello, oltre a una cassetta delle lettere, un grande squalo bianco, un furgone Volkswagen e un piccolo cimitero.',
+    en: 'The mothership miniature hides a tiny R2-D2 on its underside and a pea-sized TIE fighter on one of its projecting structures.',
+    de: 'Im Miniaturmodell des Mutterschiffs verstecken sich ein winziger R2-D2 an der Unterseite und ein erbsengroßer TIE-Jäger an einem der herausragenden Bauteile.',
+    pt: 'A miniatura da nave-mãe esconde um pequeno R2-D2 na parte inferior e um caça TIE do tamanho de uma ervilha em uma de suas estruturas salientes.',
+    fr: 'La maquette du vaisseau-mère cache un minuscule R2-D2 sous sa coque et un chasseur TIE de la taille d’un petit pois au bout de l’une de ses structures saillantes.',
+    es: 'La miniatura de la nave nodriza esconde un diminuto R2-D2 en la parte inferior y un caza TIE del tamaño de un guisante al final de una de sus estructuras salientes.',
+    it: 'Il modellino dell’astronave madre nasconde un minuscolo R2-D2 sul lato inferiore e un caccia TIE grande quanto un pisello all’estremità di una delle strutture sporgenti.',
     source:
-      'https://en.wikipedia.org/wiki/Close_Encounters_of_the_Third_Kind#:~:text=As%20a%20subtle%20in-joke,small%20graveyard',
+      'https://en.wikipedia.org/wiki/Close_Encounters_of_the_Third_Kind#:~:text=put%20a%20small%20R2-D2%20model%20onto%20the%20underside%20of%20the%20mothership',
   },
   'movie:679': {
     en: 'The nuclear explosion of the colony in the finale was created simply by shining a light bulb through cotton.',
@@ -410,14 +410,14 @@ const FACTS: Record<string, Localized> = {
       'https://en.wikipedia.org/wiki/Aliens_(film)#:~:text=The%20nuclear%20explosion%20of%20the%20colony%20in%20the%20finale%20was%20created%20by%20shining%20a%20light%20bulb%20through%20cotton',
   },
   'movie:792': {
-    en: 'Before filming, the principal actors completed 30 days of immersive military-style training with foxholes, forced marches and nighttime ambushes.',
-    de: 'Vor dem Dreh absolvierten die Hauptdarsteller 30 Tage intensives Militärtraining mit Schützenlöchern, Gewaltmärschen und nächtlichen Hinterhalten.',
-    pt: 'Antes das filmagens, os atores principais fizeram 30 dias de treinamento militar imersivo, com trincheiras, marchas forçadas e emboscadas noturnas.',
-    fr: 'Avant le tournage, les acteurs principaux suivirent 30 jours d’entraînement militaire immersif, avec trous de combat, marches forcées et embuscades nocturnes.',
-    es: 'Antes del rodaje, los actores principales completaron 30 días de entrenamiento militar inmersivo, con pozos de tirador, marchas forzadas y emboscadas nocturnas.',
-    it: 'Prima delle riprese, gli attori principali completarono 30 giorni di addestramento militare immersivo, con buche da combattimento, marce forzate e imboscate notturne.',
+    en: 'Before filming, the principal actors completed an immersive 30-day military-style training regimen led by Vietnam War veteran Dale Dye.',
+    de: 'Vor dem Dreh absolvierten die Hauptdarsteller ein intensives 30-tägiges Militärtraining unter der Leitung des Vietnamkriegsveteranen Dale Dye.',
+    pt: 'Antes das filmagens, os atores principais fizeram um treinamento militar imersivo de 30 dias liderado pelo veterano da Guerra do Vietnã Dale Dye.',
+    fr: 'Avant le tournage, les acteurs principaux suivirent un entraînement militaire immersif de 30 jours dirigé par Dale Dye, vétéran de la guerre du Viêt Nam.',
+    es: 'Antes del rodaje, los actores principales completaron un entrenamiento militar inmersivo de 30 días dirigido por el veterano de la guerra de Vietnam Dale Dye.',
+    it: 'Prima delle riprese, gli attori principali completarono un addestramento militare immersivo di 30 giorni guidato dal veterano della guerra del Vietnam Dale Dye.',
     source:
-      'https://en.wikipedia.org/wiki/Platoon_(film)#:~:text=Upon%20arrival%20in%20the%20Philippines,training%20regimen',
+      'https://en.wikipedia.org/wiki/Platoon_(film)#:~:text=immersive%2030-day%20military-style%20training%20regimen',
   },
   'tv:1399': {
     en: 'The original pilot was received so poorly at a private screening that HBO demanded about 90 percent of the episode be reshot, with changes to the cast and director.',
