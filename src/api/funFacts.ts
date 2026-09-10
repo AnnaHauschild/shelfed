@@ -419,6 +419,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Platoon_(film)#:~:text=immersive%2030-day%20military-style%20training%20regimen',
   },
+  'movie:268': {
+    en: 'For the interiors of Axis Chemicals, Batman reused the power-plant and alien-nest sets from Aliens.',
+    de: 'Für die Innenräume von Axis Chemicals wurden in Batman die Kraftwerks- und Aliennest-Kulissen aus Aliens wiederverwendet.',
+    pt: 'Para os interiores da Axis Chemicals, Batman reutilizou os cenários da usina e do ninho alienígena de Aliens.',
+    fr: 'Pour les intérieurs d’Axis Chemicals, Batman réutilisa les décors de la centrale et du nid extraterrestre d’Aliens.',
+    es: 'Para los interiores de Axis Chemicals, Batman reutilizó los decorados de la central y del nido alienígena de Aliens.',
+    it: 'Per gli interni della Axis Chemicals, Batman riutilizzò i set della centrale e del nido alieno di Aliens.',
+    source:
+      'https://en.wikipedia.org/wiki/Batman_(1989_film)#:~:text=the%20power%20plant%20and%20alien%20nest%20sets%20from%20Aliens',
+  },
+  'movie:22': {
+    en: 'Of the film’s 600 visual-effects shots, 250 were used simply to remove modern sailboats from the image.',
+    de: 'Von den 600 visuellen Effektaufnahmen des Films dienten 250 allein dazu, moderne Segelboote aus dem Bild zu entfernen.',
+    pt: 'Das 600 tomadas de efeitos visuais do filme, 250 serviram apenas para remover veleiros modernos da imagem.',
+    fr: 'Sur les 600 plans à effets visuels du film, 250 servirent simplement à retirer des voiliers modernes de l’image.',
+    es: 'De las 600 tomas de efectos visuales de la película, 250 se usaron únicamente para eliminar veleros modernos de la imagen.',
+    it: 'Delle 600 inquadrature con effetti visivi del film, 250 servirono soltanto a rimuovere moderne barche a vela dall’immagine.',
+    source:
+      'https://en.wikipedia.org/wiki/Pirates_of_the_Caribbean:_The_Curse_of_the_Black_Pearl#:~:text=There%20were%20600%20visual%20effects%20shots%2C%20250%20of%20which%20involved%20merely%20removing%20modern%20sailboats',
+  },
+  'movie:19995': {
+    en: 'Before soundstage filming began, James Cameron sent the cast to Hawaii so they could get a feel for a rainforest setting.',
+    de: 'Bevor die Dreharbeiten im Studio begannen, schickte James Cameron die Besetzung nach Hawaii, damit sie ein Gefühl für die Umgebung eines Regenwaldes bekam.',
+    pt: 'Antes do início das filmagens em estúdio, James Cameron enviou o elenco ao Havaí para que conhecesse a sensação de estar em uma floresta tropical.',
+    fr: 'Avant le début du tournage en studio, James Cameron envoya les acteurs à Hawaï pour qu’ils s’imprègnent d’un environnement de forêt tropicale.',
+    es: 'Antes de comenzar el rodaje en estudio, James Cameron envió al reparto a Hawái para que experimentara el entorno de una selva tropical.',
+    it: 'Prima dell’inizio delle riprese in studio, James Cameron mandò il cast alle Hawaii perché potesse familiarizzare con l’ambiente di una foresta pluviale.',
+    source:
+      'https://en.wikipedia.org/wiki/Avatar_(2009_film)#:~:text=Cameron%20sent%20the%20cast%20to%20Hawaii%20to%20get%20a%20feel%20for%20a%20rainforest%20setting',
+  },
+  'movie:49026': {
+    en: 'Hans Zimmer crowdsourced online recordings of the “Deshi Basara” chant for use in the film’s score.',
+    de: 'Hans Zimmer sammelte per Crowdsourcing Online-Aufnahmen des „Deshi Basara“-Gesangs für die Filmmusik.',
+    pt: 'Hans Zimmer recorreu ao crowdsourcing para reunir gravações on-line do canto “Deshi Basara” para a trilha sonora do filme.',
+    fr: 'Hans Zimmer fit appel au crowdsourcing pour recueillir en ligne des enregistrements du chant « Deshi Basara » destinés à la musique du film.',
+    es: 'Hans Zimmer recurrió al crowdsourcing para reunir grabaciones en línea del canto «Deshi Basara» para la banda sonora de la película.',
+    it: 'Hans Zimmer ricorse al crowdsourcing per raccogliere online registrazioni del canto «Deshi Basara» da usare nella colonna sonora del film.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Dark_Knight_Rises#:~:text=Zimmer%20crowdsourced%20online%20audio%20recordings%20of%20the%20chant%20to%20be%20used%20in%20the%20film%27s%20score',
+  },
   'tv:1399': {
     en: 'The original pilot was received so poorly at a private screening that HBO demanded about 90 percent of the episode be reshot, with changes to the cast and director.',
     de: 'Die ursprüngliche Pilotfolge kam bei einer privaten Vorführung so schlecht an, dass HBO rund 90 Prozent der Folge neu drehen ließ und Besetzung sowie Regie änderte.',
