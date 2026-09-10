@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 import { useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
  */
 export function AboutModal({ visible, onClose }: Props) {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const version = Constants.expoConfig?.version ?? '';
   // Was hardcoded, so it kept claiming 1.0.0 on devices that were fully
   // up to date. The update line tells apart the store build from an OTA.
@@ -68,10 +70,7 @@ export function AboutModal({ visible, onClose }: Props) {
           </Section>
 
           <Section label="Privacy">
-            <Text style={styles.body}>
-              Shelfed stores all your shelves, watchlists and your name on your device only.
-              Nothing is sent to a Shelfed server. There isn't one.
-            </Text>
+            <Text style={styles.body}>{text.privacyNote}</Text>
           </Section>
 
           <Text style={styles.version}>Version {version}</Text>
