@@ -26,6 +26,7 @@ import {
 import type { InteractionType } from '@/repositories';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 
 // Every cache that reflects shelf / mood / stats / note content.
 const CACHE_KEYS = [
@@ -58,6 +59,7 @@ const MEDIA: { type: MediaType; label: string }[] = [
 /** "Reset" options in Settings: clear selected shelves, or wipe everything. */
 export function DataActions() {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { userId } = useAuth();
   const qc = useQueryClient();
@@ -73,9 +75,7 @@ export function DataActions() {
   const invalidate = () =>
     CACHE_KEYS.forEach((key) => qc.invalidateQueries({ queryKey: [key] }));
 
-  const cloudNote = userId
-    ? ' on this device and in the cloud'
-    : ' on this device';
+  const cloudNote = userId ? text.scopeDeviceAndCloud : text.scopeDevice;
 
   const toggle = (t: InteractionType) =>
     setSelected((prev) => {
@@ -131,25 +131,28 @@ export function DataActions() {
     const shelfNames = chosen.map((s) => s.label).join(', ');
     const mediaNames =
       chosenMedia.length === MEDIA.length
-        ? 'all categories'
+        ? text.allCategories
         : chosenMedia.map((m) => m.label).join(', ');
     Alert.alert(
-      'Clear shelves?',
-      `This empties ${shelfNames} for ${mediaNames}${cloudNote}.`,
+      text.clearShelvesTitle,
+      text.clearShelvesMessage
+        .replace('{shelves}', shelfNames)
+        .replace('{media}', mediaNames)
+        .replace('{where}', cloudNote),
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Clear', style: 'destructive', onPress: clearSelected },
+        { text: text.cancel, style: 'cancel' },
+        { text: text.clear, style: 'destructive', onPress: clearSelected },
       ],
     );
   };
 
   const confirmResetAll = () =>
     Alert.alert(
-      'Reset everything?',
-      `This permanently deletes all shelves, moods, notes and episode progress${cloudNote}. This cannot be undone.`,
+      text.resetAllTitle,
+      text.resetAllMessage.replace('{where}', cloudNote),
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Reset', style: 'destructive', onPress: resetEverything },
+        { text: text.cancel, style: 'cancel' },
+        { text: text.reset, style: 'destructive', onPress: resetEverything },
       ],
     );
 
@@ -163,7 +166,7 @@ export function DataActions() {
         disabled={busy !== null}
       >
         <Ionicons name="refresh-outline" size={18} color={chrome.muted} />
-        <Text style={styles.rowText}>Clear shelves…</Text>
+        <Text style={styles.rowText}>{text.clearShelvesRow}</Text>
         <Ionicons
           name={shelvesOpen ? 'chevron-up' : 'chevron-down'}
           size={16}
@@ -174,9 +177,7 @@ export function DataActions() {
 
       {shelvesOpen && (
         <View style={styles.panel}>
-          <Text style={styles.hint}>
-            Choose which shelves and categories to empty.
-          </Text>
+          <Text style={styles.hint}>{text.clearShelvesHint}</Text>
           <Text style={styles.subLabel}>Lists</Text>
           <View style={styles.chips}>
             {SHELVES.map((s) => {
@@ -227,7 +228,7 @@ export function DataActions() {
             {busy === 'shelves' ? (
               <ActivityIndicator color={chrome.onAccent} size="small" />
             ) : (
-              <Text style={styles.clearBtnText}>Clear selected</Text>
+              <Text style={styles.clearBtnText}>{text.clearSelected}</Text>
             )}
           </Pressable>
         </View>
@@ -240,7 +241,7 @@ export function DataActions() {
       >
         <Ionicons name="trash-bin-outline" size={18} color={colors.favorite} />
         <Text style={[styles.rowText, { color: colors.favorite }]}>
-          Reset everything
+          {text.resetEverything}
         </Text>
         {busy === 'all' && (
           <ActivityIndicator color={colors.favorite} size="small" />

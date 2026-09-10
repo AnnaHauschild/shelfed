@@ -4,10 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthProvider';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 
 /** Sign out + delete account, pinned to the very bottom of Settings. */
 export function AccountActions() {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeStyles(chrome), [chrome]);
   const { enabled, session, signOut, deleteAccount } = useAuth();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -32,12 +34,12 @@ export function AccountActions() {
     <View style={styles.wrap}>
       <Pressable style={styles.row} onPress={() => signOut()}>
         <Ionicons name="log-out-outline" size={18} color={chrome.muted} />
-        <Text style={styles.rowText}>Sign out</Text>
+        <Text style={styles.rowText}>{text.signOut}</Text>
       </Pressable>
       <Pressable style={styles.row} onPress={del} disabled={busy}>
         <Ionicons name="trash-outline" size={18} color={colors.favorite} />
         <Text style={[styles.rowText, { color: colors.favorite }]}>
-          {confirmDelete ? 'Tap again to permanently delete' : 'Delete account'}
+          {confirmDelete ? text.deleteAccountConfirm : text.deleteAccount}
         </Text>
         {busy && (
           <ActivityIndicator color={colors.favorite} size="small" />

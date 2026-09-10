@@ -48,6 +48,7 @@ import {
 } from './StoryOverlays';
 import { colors, fonts, radius, spacing } from '@/theme';
 import { ThemeChrome, useThemeChrome } from '@/context/ThemeProvider';
+import { useLanguage } from '@/context/LanguageProvider';
 import { Avatar } from './Avatar';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
@@ -151,6 +152,7 @@ export function StoryViewer({
   onClose: () => void;
 }) {
   const chrome = useThemeChrome();
+  const { text } = useLanguage();
   const styles = useMemo(() => makeViewerStyles(chrome), [chrome]);
   const insets = useSafeAreaInsets();
   const { toggleWatchlist, toggleFavorite } = useInteractions();
@@ -258,10 +260,10 @@ export function StoryViewer({
   const confirmDelete = useCallback(() => {
     if (!item) return;
     pause();
-    Alert.alert('Delete this story?', 'It will be removed for everyone.', [
-      { text: 'Cancel', style: 'cancel', onPress: resume },
+    Alert.alert(text.deleteStoryTitle, text.deleteStoryMessage, [
+      { text: text.cancel, style: 'cancel', onPress: resume },
       {
-        text: 'Delete',
+        text: text.delete,
         style: 'destructive',
         onPress: () => {
           const id = item.id;
@@ -285,7 +287,7 @@ export function StoryViewer({
         },
       },
     ]);
-  }, [item, pause, resume, del, pi, posts.length, gi, groups, visibleCount, onClose]);
+  }, [item, pause, resume, del, pi, posts.length, gi, groups, visibleCount, onClose, text]);
 
   // Open the full details card ON TOP of the story (paused), so closing it
   // returns to the story rather than the home page.

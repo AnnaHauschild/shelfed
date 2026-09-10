@@ -72,6 +72,33 @@ export interface UiText {
   nothingHere: string;
   loading: string;
   noDescription: string;
+  /** Alert buttons. Translated even though they are short: this is where a
+   *  misread word costs real data. */
+  cancel: string;
+  delete: string;
+  clear: string;
+  reset: string;
+  /** `{where}` in the two messages below. */
+  scopeDevice: string;
+  scopeDeviceAndCloud: string;
+  allCategories: string;
+  clearShelvesRow: string;
+  clearShelvesHint: string;
+  clearShelvesTitle: string;
+  /** `{shelves}`, `{media}` and `{where}` are filled in. */
+  clearShelvesMessage: string;
+  clearSelected: string;
+  resetEverything: string;
+  resetAllTitle: string;
+  resetAllMessage: string;
+  /** `{name}` is the mood the user is about to delete. */
+  deleteMoodTitle: string;
+  deleteMoodMessage: string;
+  deleteStoryTitle: string;
+  deleteStoryMessage: string;
+  signOut: string;
+  deleteAccount: string;
+  deleteAccountConfirm: string;
 }
 
 export const UI_TEXT: Record<AppLanguage, UiText> = {
@@ -105,6 +132,30 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     nothingHere: 'Nothing here.',
     loading: 'Loading…',
     noDescription: 'No description available for this title.',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    clear: 'Clear',
+    reset: 'Reset',
+    scopeDevice: 'on this device',
+    scopeDeviceAndCloud: 'on this device and in the cloud',
+    allCategories: 'all categories',
+    clearShelvesRow: 'Clear shelves…',
+    clearShelvesHint: 'Choose which shelves and categories to empty.',
+    clearShelvesTitle: 'Clear shelves?',
+    clearShelvesMessage: 'This empties {shelves} for {media} {where}.',
+    clearSelected: 'Clear selected',
+    resetEverything: 'Reset everything',
+    resetAllTitle: 'Reset everything?',
+    resetAllMessage:
+      'This permanently deletes all shelves, moods, notes and episode progress {where}. This cannot be undone.',
+    deleteMoodTitle: 'Delete “{name}”?',
+    deleteMoodMessage:
+      'This removes the mood only. Your titles stay on your shelf.',
+    deleteStoryTitle: 'Delete this story?',
+    deleteStoryMessage: 'It will be removed for everyone.',
+    signOut: 'Sign out',
+    deleteAccount: 'Delete account',
+    deleteAccountConfirm: 'Tap again to delete for good',
   },
   de: {
     moodsDescription:
@@ -138,6 +189,30 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     nothingHere: 'Hier ist nichts.',
     loading: 'Wird geladen…',
     noDescription: 'Für diesen Titel gibt es keine Beschreibung.',
+    cancel: 'Abbrechen',
+    delete: 'Löschen',
+    clear: 'Leeren',
+    reset: 'Zurücksetzen',
+    scopeDevice: 'auf diesem Gerät',
+    scopeDeviceAndCloud: 'auf diesem Gerät und in der Cloud',
+    allCategories: 'alle Kategorien',
+    clearShelvesRow: 'Regale leeren…',
+    clearShelvesHint: 'Wähle aus, welche Regale und Kategorien geleert werden.',
+    clearShelvesTitle: 'Regale leeren?',
+    clearShelvesMessage: 'Das leert {shelves} für {media} {where}.',
+    clearSelected: 'Auswahl leeren',
+    resetEverything: 'Alles zurücksetzen',
+    resetAllTitle: 'Alles zurücksetzen?',
+    resetAllMessage:
+      'Das löscht endgültig alle Regale, Moods, Notizen und den Serienfortschritt {where}. Das lässt sich nicht rückgängig machen.',
+    deleteMoodTitle: '„{name}“ löschen?',
+    deleteMoodMessage:
+      'Das entfernt nur den Mood. Deine Titel bleiben in deinem Regal.',
+    deleteStoryTitle: 'Diese Story löschen?',
+    deleteStoryMessage: 'Sie verschwindet für alle.',
+    signOut: 'Abmelden',
+    deleteAccount: 'Konto löschen',
+    deleteAccountConfirm: 'Noch einmal tippen, dann ist es endgültig',
   },
   pt: {
     moodsDescription:
@@ -170,6 +245,31 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     nothingHere: 'Não há nada aqui.',
     loading: 'Carregando…',
     noDescription: 'Não há descrição para este título.',
+    cancel: 'Cancelar',
+    delete: 'Excluir',
+    clear: 'Esvaziar',
+    reset: 'Redefinir',
+    scopeDevice: 'neste aparelho',
+    scopeDeviceAndCloud: 'neste aparelho e na nuvem',
+    allCategories: 'todas as categorias',
+    clearShelvesRow: 'Esvaziar estantes…',
+    clearShelvesHint:
+      'Escolha quais estantes e categorias devem ser esvaziadas.',
+    clearShelvesTitle: 'Esvaziar estantes?',
+    clearShelvesMessage: 'Isto esvazia {shelves} para {media} {where}.',
+    clearSelected: 'Esvaziar seleção',
+    resetEverything: 'Redefinir tudo',
+    resetAllTitle: 'Redefinir tudo?',
+    resetAllMessage:
+      'Isto apaga definitivamente todas as estantes, os moods, as notas e o progresso das séries {where}. Não dá para desfazer.',
+    deleteMoodTitle: 'Excluir “{name}”?',
+    deleteMoodMessage:
+      'Isto remove apenas o mood. Seus títulos continuam na sua estante.',
+    deleteStoryTitle: 'Excluir esta story?',
+    deleteStoryMessage: 'Ela some para todo mundo.',
+    signOut: 'Sair',
+    deleteAccount: 'Excluir conta',
+    deleteAccountConfirm: 'Toque de novo para excluir de vez',
   },
   fr: {
     moodsDescription:
@@ -203,6 +303,30 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     nothingHere: 'Il n’y a rien ici.',
     loading: 'Chargement…',
     noDescription: 'Aucune description disponible pour ce titre.',
+    cancel: 'Annuler',
+    delete: 'Supprimer',
+    clear: 'Vider',
+    reset: 'Réinitialiser',
+    scopeDevice: 'sur cet appareil',
+    scopeDeviceAndCloud: 'sur cet appareil et dans le cloud',
+    allCategories: 'toutes les catégories',
+    clearShelvesRow: 'Vider les étagères…',
+    clearShelvesHint: 'Choisis les étagères et les catégories à vider.',
+    clearShelvesTitle: 'Vider les étagères ?',
+    clearShelvesMessage: 'Cela vide {shelves} pour {media} {where}.',
+    clearSelected: 'Vider la sélection',
+    resetEverything: 'Tout réinitialiser',
+    resetAllTitle: 'Tout réinitialiser ?',
+    resetAllMessage:
+      'Cela supprime définitivement toutes les étagères, les moods, les notes et la progression des séries {where}. C’est irréversible.',
+    deleteMoodTitle: 'Supprimer « {name} » ?',
+    deleteMoodMessage:
+      'Cela retire seulement le mood. Tes titres restent sur ton étagère.',
+    deleteStoryTitle: 'Supprimer cette story ?',
+    deleteStoryMessage: 'Elle disparaîtra pour tout le monde.',
+    signOut: 'Se déconnecter',
+    deleteAccount: 'Supprimer le compte',
+    deleteAccountConfirm: 'Touche encore une fois pour supprimer définitivement',
   },
   es: {
     moodsDescription:
@@ -236,6 +360,30 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     nothingHere: 'Aquí no hay nada.',
     loading: 'Cargando…',
     noDescription: 'No hay descripción para este título.',
+    cancel: 'Cancelar',
+    delete: 'Eliminar',
+    clear: 'Vaciar',
+    reset: 'Restablecer',
+    scopeDevice: 'en este dispositivo',
+    scopeDeviceAndCloud: 'en este dispositivo y en la nube',
+    allCategories: 'todas las categorías',
+    clearShelvesRow: 'Vaciar estanterías…',
+    clearShelvesHint: 'Elige qué estanterías y categorías se vacían.',
+    clearShelvesTitle: '¿Vaciar las estanterías?',
+    clearShelvesMessage: 'Esto vacía {shelves} para {media} {where}.',
+    clearSelected: 'Vaciar la selección',
+    resetEverything: 'Restablecer todo',
+    resetAllTitle: '¿Restablecer todo?',
+    resetAllMessage:
+      'Esto borra definitivamente todas las estanterías, los moods, las notas y el progreso de las series {where}. No se puede deshacer.',
+    deleteMoodTitle: '¿Eliminar “{name}”?',
+    deleteMoodMessage:
+      'Esto quita solo el mood. Tus títulos siguen en tu estantería.',
+    deleteStoryTitle: '¿Eliminar esta story?',
+    deleteStoryMessage: 'Desaparece para todo el mundo.',
+    signOut: 'Cerrar sesión',
+    deleteAccount: 'Eliminar cuenta',
+    deleteAccountConfirm: 'Toca otra vez para eliminarla para siempre',
   },
   it: {
     moodsDescription:
@@ -269,5 +417,29 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     nothingHere: 'Qui non c’è niente.',
     loading: 'Caricamento…',
     noDescription: 'Nessuna descrizione disponibile per questo titolo.',
+    cancel: 'Annulla',
+    delete: 'Elimina',
+    clear: 'Svuota',
+    reset: 'Reimposta',
+    scopeDevice: 'su questo dispositivo',
+    scopeDeviceAndCloud: 'su questo dispositivo e nel cloud',
+    allCategories: 'tutte le categorie',
+    clearShelvesRow: 'Svuota le librerie…',
+    clearShelvesHint: 'Scegli quali librerie e categorie svuotare.',
+    clearShelvesTitle: 'Svuotare le librerie?',
+    clearShelvesMessage: 'Questo svuota {shelves} per {media} {where}.',
+    clearSelected: 'Svuota la selezione',
+    resetEverything: 'Reimposta tutto',
+    resetAllTitle: 'Reimpostare tutto?',
+    resetAllMessage:
+      'Questo elimina definitivamente tutte le librerie, i mood, le note e i progressi delle serie {where}. Non si può annullare.',
+    deleteMoodTitle: 'Eliminare “{name}”?',
+    deleteMoodMessage:
+      'Questo rimuove solo il mood. I tuoi titoli restano nella tua libreria.',
+    deleteStoryTitle: 'Eliminare questa story?',
+    deleteStoryMessage: 'Sparirà per tutti.',
+    signOut: 'Esci',
+    deleteAccount: 'Elimina account',
+    deleteAccountConfirm: 'Tocca di nuovo per eliminarlo per sempre',
   },
 };

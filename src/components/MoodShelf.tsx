@@ -95,12 +95,12 @@ function MoodShelfBody({ moodId, onClose, sourceType = 'watched' }: Props) {
     if (!mood) return;
     setOptionsOpen(false);
     Alert.alert(
-      `Delete "${mood.name}"?`,
-      'This removes the mood shelf. Your titles stay on your main shelf.',
+      text.deleteMoodTitle.replace('{name}', mood.name),
+      text.deleteMoodMessage,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: text.cancel, style: 'cancel' },
         {
-          text: 'Delete',
+          text: text.delete,
           style: 'destructive',
           onPress: async () => {
             await deleteMood(mood.id);
