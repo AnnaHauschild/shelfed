@@ -1725,6 +1725,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Ex_Machina_(film)#:~:text=Fifteen%20thousand%20tungsten%20pea%20bulb%20lights%20were%20installed%20into%20the%20sets%20to%20avoid%20the%20fluorescent%20light%20often%20used%20in%20science-fiction%20films',
   },
+  'movie:531428': {
+    en: 'Artist Hélène Delmaire created the paintings and sketches for Portrait of a Lady on Fire, painting 16 hours a day during filming. Her hands also appear in the film.',
+    de: 'Die Künstlerin Hélène Delmaire schuf die Gemälde und Skizzen für Portrait of a Lady on Fire und malte während der Dreharbeiten täglich 16 Stunden. Auch ihre Hände sind im Film zu sehen.',
+    pt: 'A artista Hélène Delmaire criou as pinturas e os esboços de Portrait of a Lady on Fire, pintando 16 horas por dia durante as filmagens. Suas mãos também aparecem no filme.',
+    fr: 'L’artiste Hélène Delmaire réalisa les peintures et les croquis de Portrait of a Lady on Fire, travaillant 16 heures par jour pendant le tournage. Ses mains apparaissent également dans le film.',
+    es: 'La artista Hélène Delmaire creó las pinturas y los bocetos de Portrait of a Lady on Fire, pintando 16 horas al día durante el rodaje. Sus manos también aparecen en la película.',
+    it: 'L’artista Hélène Delmaire realizzò i dipinti e gli schizzi di Portrait of a Lady on Fire, dipingendo 16 ore al giorno durante le riprese. Nel film compaiono anche le sue mani.',
+    source:
+      'https://en.wikipedia.org/wiki/Portrait_of_a_Lady_on_Fire#:~:text=The%20paintings%20and%20sketches%20in%20the%20film%20are%20by%20artist%20H%C3%A9l%C3%A8ne%20Delmaire&text=She%20painted%20for%2016%20hours%20every%20day%20during%20the%20course%20of%20filming&text=Her%20hands%20are%20also%20featured%20in%20the%20film',
+  },
+  'movie:375262': {
+    en: 'Before filming The Favourite, the cast rehearsed serious scenes while tying themselves into knots, hopping between carpet tiles, or writhing on the floor.',
+    de: 'Vor den Dreharbeiten zu The Favourite probte die Besetzung ernste Szenen, während sie sich verknotete, von Teppichfliese zu Teppichfliese sprang oder sich auf dem Boden wand.',
+    pt: 'Antes das filmagens de The Favourite, o elenco ensaiou cenas sérias enquanto se contorcia, pulava entre placas de carpete ou se revolvia no chão.',
+    fr: 'Avant le tournage de The Favourite, les acteurs répétèrent des scènes sérieuses en se contorsionnant, en sautant d’une dalle de moquette à l’autre ou en se roulant par terre.',
+    es: 'Antes del rodaje de The Favourite, el reparto ensayó escenas serias mientras se retorcía, saltaba entre baldosas de moqueta o se revolcaba por el suelo.',
+    it: 'Prima delle riprese di The Favourite, il cast provò scene serie mentre si contorceva, saltava da una piastrella di moquette all’altra o si dimenava sul pavimento.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Favourite_(2018_film)#:~:text=The%20actors%20%22delivered%20their%20lines%20while%20trying%20to%20tie%20themselves%20in%20knots%2C%20jumping%20from%20carpet%20tile%20to%20carpet%20tile%2C%20or%20writhing%20around%20on%20the%20floor%22',
+  },
+  'movie:915935': {
+    en: 'Anatomy of a Fall was meant to use “Jolene” in the scene where Samuel blasts music, but the production could not secure the rights, so it used “P.I.M.P.” instead.',
+    de: 'In Anatomy of a Fall sollte Samuel ursprünglich „Jolene“ laut aufdrehen. Da die Produktion die Rechte nicht bekam, wurde stattdessen „P.I.M.P.“ verwendet.',
+    pt: 'Anatomy of a Fall usaria originalmente “Jolene” na cena em que Samuel aumenta o volume da música, mas a produção não conseguiu os direitos e usou “P.I.M.P.” no lugar.',
+    fr: 'Dans Anatomy of a Fall, Samuel devait initialement écouter « Jolene » à plein volume. La production n’ayant pas obtenu les droits, le morceau fut remplacé par « P.I.M.P. ».',
+    es: 'Anatomy of a Fall iba a usar «Jolene» en la escena en la que Samuel pone la música a todo volumen, pero la producción no consiguió los derechos y utilizó «P.I.M.P.» en su lugar.',
+    it: 'In Anatomy of a Fall, Samuel avrebbe dovuto ascoltare “Jolene” ad alto volume, ma la produzione non riuscì a ottenere i diritti e usò “P.I.M.P.” al suo posto.',
+    source:
+      'https://en.wikipedia.org/wiki/Anatomy_of_a_Fall#:~:text=The%20original%20song%20meant%20for%20the%20scene%20where%20the%20character%20Samuel%20blasts%20on%20his%20stereo%20on%20the%20day%20he%20dies%20was%20%22Jolene%22%2C%20but%20as%20the%20film%20was%20unable%20to%20acquire%20the%20rights%2C%20the%20song%20%22P.I.M.P.%22%20was%20used',
+  },
+  'movie:965150': {
+    en: 'Frankie Corio was selected from more than 800 applicants for Aftersun. She and Paul Mescal then spent its two-week rehearsal period together at a holiday resort to make their bond more authentic.',
+    de: 'Frankie Corio wurde für Aftersun aus mehr als 800 Bewerberinnen ausgewählt. Anschließend verbrachte sie die zweiwöchige Probenzeit mit Paul Mescal in einer Ferienanlage, um ihre Verbindung authentischer wirken zu lassen.',
+    pt: 'Frankie Corio foi escolhida entre mais de 800 candidatas para Aftersun. Depois, ela e Paul Mescal passaram as duas semanas de ensaios juntos em um resort para tornar sua relação mais autêntica.',
+    fr: 'Frankie Corio fut choisie parmi plus de 800 candidates pour Aftersun. Elle passa ensuite les deux semaines de répétitions avec Paul Mescal dans un complexe de vacances afin de rendre leur relation plus authentique.',
+    es: 'Frankie Corio fue elegida entre más de 800 candidatas para Aftersun. Después, ella y Paul Mescal pasaron las dos semanas de ensayos juntos en un complejo vacacional para que su relación resultara más auténtica.',
+    it: 'Frankie Corio fu scelta tra oltre 800 candidate per Aftersun. In seguito, lei e Paul Mescal trascorsero le due settimane di prove insieme in un villaggio turistico per rendere più autentico il loro rapporto.',
+    source:
+      'https://en.wikipedia.org/wiki/Aftersun#:~:text=Frankie%20Corio%20was%20one%20of%20over%20800%20applicants%20before%20being%20cast&text=During%20the%20two-week%20rehearsal%20period%20Corio%20and%20Mescal%20spent%20time%20at%20a%20holiday%20resort%20in%20order%20to%20make%20their%20dynamic%20more%20authentic',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
