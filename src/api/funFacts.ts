@@ -524,18 +524,30 @@ const FACTS: Record<string, Localized> = {
   'movie:808': {
     en: 'Mike Myers had already recorded the whole part when he asked to do it again in a Scottish accent. The studio agreed and scrapped finished animation for it.',
     de: 'Mike Myers hatte die Rolle schon komplett eingesprochen, als er darum bat, sie noch einmal mit schottischem Akzent zu machen. Das Studio stimmte zu und verwarf dafür fertige Animation.',
+    pt: 'Mike Myers já havia gravado todo o papel quando pediu para fazê-lo novamente com sotaque escocês. O estúdio concordou e descartou animações prontas para isso.',
+    fr: 'Mike Myers avait déjà enregistré tout le rôle lorsqu’il a demandé à le refaire avec un accent écossais. Le studio a accepté et a abandonné des séquences d’animation déjà terminées pour cela.',
+    es: 'Mike Myers ya había grabado todo el papel cuando pidió repetirlo con acento escocés. El estudio aceptó y descartó animaciones terminadas para hacerlo.',
+    it: 'Mike Myers aveva già registrato tutta la parte quando chiese di rifarla con accento scozzese. Lo studio accettò e per questo scartò animazioni già completate.',
     source:
       'https://en.wikipedia.org/wiki/Shrek#:~:text=re-record%20all%20of%20his%20lines%20with%20a',
   },
   'movie:120': {
     en: 'The costume department deliberately wore the clothing out so it would look old and used. Around 19,000 costumes were made.',
     de: 'Die Kostümabteilung trug die Kleidung gezielt ab, damit sie alt und benutzt aussieht. Rund 19.000 Kostüme entstanden so.',
+    pt: 'O departamento de figurino desgastou as roupas de propósito para que parecessem velhas e usadas. Cerca de 19.000 trajes foram feitos.',
+    fr: 'Le service des costumes a délibérément usé les vêtements pour leur donner un aspect ancien et déjà porté. Environ 19 000 costumes ont été fabriqués.',
+    es: 'El departamento de vestuario desgastó deliberadamente la ropa para que pareciera vieja y usada. Se confeccionaron unos 19.000 trajes.',
+    it: 'Il reparto costumi consumò deliberatamente gli abiti perché sembrassero vecchi e usati. Furono realizzati circa 19.000 costumi.',
     source:
       'https://en.wikipedia.org/wiki/The_Lord_of_the_Rings:_The_Fellowship_of_the_Ring#:~:text=wearing%20them%20out%20for%20an%20impression%20of%20age',
   },
   'movie:28': {
     en: 'Coppola offered the direction to George Lucas first. Lucas was busy with another project: he had just been given the go-ahead for Star Wars.',
     de: 'Coppola bot George Lucas die Regie an. Der war mit einem anderen Projekt beschäftigt: Er hatte gerade grünes Licht für Star Wars bekommen.',
+    pt: 'Coppola ofereceu primeiro a direção a George Lucas. Lucas estava ocupado com outro projeto: acabara de receber sinal verde para Star Wars.',
+    fr: 'Coppola a d’abord proposé la réalisation à George Lucas. Lucas était occupé par un autre projet : il venait de recevoir le feu vert pour Star Wars.',
+    es: 'Coppola ofreció primero la dirección a George Lucas. Lucas estaba ocupado con otro proyecto: acababan de darle luz verde para Star Wars.',
+    it: 'Coppola offrì inizialmente la regia a George Lucas. Lucas era impegnato con un altro progetto: aveva appena ricevuto il via libera per Star Wars.',
     source:
       'https://en.wikipedia.org/wiki/Apocalypse_Now#:~:text=had%20gotten%20the%20go-ahead%20to%20make',
   },
@@ -742,42 +754,70 @@ const FACTS: Record<string, Localized> = {
   'tv:1396': {
     en: 'Bryan Cranston almost lost the part. The network knew him only as the goofy dad from Malcolm in the Middle and offered Walter White to John Cusack and Matthew Broderick first. Both said no, and only then was Cranston cast.',
     de: 'Bryan Cranston hätte die Rolle fast nicht bekommen. Der Sender kannte ihn nur als albernen Vater aus Malcolm mittendrin und bot Walter White zuerst John Cusack und Matthew Broderick an. Beide sagten ab, erst danach bekam Cranston die Rolle.',
+    pt: 'Bryan Cranston quase não conseguiu o papel. O canal só o conhecia como o pai pateta de Malcolm in the Middle e ofereceu Walter White primeiro a John Cusack e Matthew Broderick. Ambos recusaram, e só então Cranston foi escolhido.',
+    fr: 'Bryan Cranston a failli ne pas obtenir le rôle. La chaîne ne le connaissait que comme le père loufoque de Malcolm in the Middle et a d’abord proposé Walter White à John Cusack et Matthew Broderick. Tous deux ont refusé, et Cranston a seulement alors été choisi.',
+    es: 'Bryan Cranston estuvo a punto de no conseguir el papel. La cadena solo lo conocía como el padre bobalicón de Malcolm in the Middle y ofreció primero a Walter White a John Cusack y Matthew Broderick. Ambos rechazaron la oferta, y solo entonces eligieron a Cranston.',
+    it: 'Bryan Cranston rischiò di non ottenere la parte. L’emittente lo conosceva solo come il padre buffo di Malcolm in the Middle e offrì prima Walter White a John Cusack e Matthew Broderick. Entrambi rifiutarono e solo allora fu scelto Cranston.',
     source:
       'https://en.wikipedia.org/wiki/Breaking_Bad#:~:text=John%20Cusack%20and%20Matthew%20Broderick',
   },
   'tv:1398': {
     en: 'Steven Van Zandt, the guitarist from Bruce Springsteen\u2019s E Street Band, had never acted before and auditioned for Tony. HBO wanted an experienced actor, so a new role was written for him instead.',
     de: 'Steven Van Zandt, Gitarrist aus Bruce Springsteens E Street Band, hatte nie zuvor gespielt und sprach für Tony vor. HBO wollte einen erfahrenen Darsteller, also schrieb man ihm eine eigene Rolle.',
+    pt: 'Steven Van Zandt, guitarrista da E Street Band de Bruce Springsteen, nunca havia atuado e fez teste para Tony. A HBO queria um ator experiente, então um novo papel foi escrito para ele.',
+    fr: 'Steven Van Zandt, le guitariste du E Street Band de Bruce Springsteen, n’avait jamais joué auparavant et a auditionné pour Tony. HBO voulait un acteur expérimenté, alors un nouveau rôle a été écrit pour lui.',
+    es: 'Steven Van Zandt, el guitarrista de la E Street Band de Bruce Springsteen, nunca había actuado e hizo una prueba para Tony. HBO quería un actor con experiencia, así que escribieron un nuevo papel para él.',
+    it: 'Steven Van Zandt, il chitarrista della E Street Band di Bruce Springsteen, non aveva mai recitato prima e fece un provino per Tony. HBO voleva un attore esperto, così gli fu scritto un nuovo ruolo.',
     source:
       'https://en.wikipedia.org/wiki/The_Sopranos#:~:text=had%20never%20acted%20before',
   },
   'tv:66732': {
     en: 'About 15 networks turned the show down. They all thought a story carried by children would not work and asked for the kids to be dropped.',
     de: 'Rund 15 Sender lehnten die Serie ab. Alle hielten eine Geschichte mit Kindern als Hauptfiguren für unmöglich und wollten die Kinder herausstreichen.',
+    pt: 'Cerca de 15 canais recusaram a série. Todos achavam que uma história conduzida por crianças não funcionaria e pediram que elas fossem retiradas.',
+    fr: 'Environ 15 chaînes ont refusé la série. Elles pensaient toutes qu’une histoire portée par des enfants ne fonctionnerait pas et ont demandé que les enfants soient supprimés.',
+    es: 'Unas 15 cadenas rechazaron la serie. Todas pensaban que una historia protagonizada por niños no funcionaría y pidieron que se eliminara a los niños.',
+    it: 'Circa 15 emittenti rifiutarono la serie. Tutte pensavano che una storia portata avanti da bambini non avrebbe funzionato e chiesero di eliminare i ragazzi.',
     source:
       'https://en.wikipedia.org/wiki/Stranger_Things#:~:text=about%2015%20cable%20networks',
   },
   'tv:87108': {
     en: 'The score contains no ordinary instruments. The composer recorded sounds inside a real decommissioned nuclear plant and built the music entirely from them.',
     de: 'Die Musik enthält keine gewöhnlichen Instrumente. Die Komponistin nahm Geräusche in einem stillgelegten Kernkraftwerk auf und baute die Musik allein daraus.',
+    pt: 'A trilha sonora não contém instrumentos comuns. A compositora gravou sons dentro de uma usina nuclear de verdade já desativada e criou a música inteiramente a partir deles.',
+    fr: 'La musique ne contient aucun instrument ordinaire. La compositrice a enregistré des sons dans une véritable centrale nucléaire désaffectée et a entièrement construit la musique à partir de ces sons.',
+    es: 'La banda sonora no contiene instrumentos convencionales. La compositora grabó sonidos dentro de una central nuclear real fuera de servicio y creó la música íntegramente a partir de ellos.',
+    it: 'La colonna sonora non contiene strumenti comuni. La compositrice registrò suoni dentro una vera centrale nucleare dismessa e costruì la musica interamente a partire da essi.',
     source:
       'https://en.wikipedia.org/wiki/Chernobyl_(miniseries)#:~:text=recordings%20from%20the%20power%20plant',
   },
   'tv:1668': {
     en: 'The fountain from the opening titles is not in New York. The show was never filmed there. That scene was shot on a studio lot in California at four in the morning, on an unusually cold night.',
     de: 'Der Brunnen aus dem Vorspann steht nicht in New York. Dort wurde nie gedreht. Die Szene entstand auf einem Studiogelände in Kalifornien, morgens um vier und in ungewöhnlicher Kälte.',
+    pt: 'A fonte da abertura não fica em Nova York. A série nunca foi filmada lá. A cena foi gravada em um terreno de estúdio na Califórnia às quatro da manhã, em uma noite excepcionalmente fria.',
+    fr: 'La fontaine du générique ne se trouve pas à New York. La série n’y a jamais été tournée. Cette scène a été filmée sur le terrain d’un studio en Californie à quatre heures du matin, pendant une nuit exceptionnellement froide.',
+    es: 'La fuente de los títulos de apertura no está en Nueva York. La serie nunca se rodó allí. Esa escena se filmó en las instalaciones de un estudio en California a las cuatro de la mañana, durante una noche inusualmente fría.',
+    it: 'La fontana dei titoli di apertura non si trova a New York. La serie non fu mai girata lì. Quella scena fu ripresa nell’area di uno studio in California alle quattro del mattino, durante una notte insolitamente fredda.',
     source:
       'https://en.wikipedia.org/wiki/Friends#:~:text=The%20opening%20title%20sequence%20was%20filmed%20in%20a%20fountain',
   },
   'tv:1920': {
     en: 'The terrifying Bob was the set dresser. Lynch filmed him on a whim, then a camera operator reported a ruined shot because the man was accidentally caught in a mirror. Lynch kept it and built a character around him.',
     de: 'Der furchteinflößende Bob war der Ausstatter der Serie. Lynch filmte ihn spontan, dann meldete ein Kameramann eine verdorbene Aufnahme, weil der Mann versehentlich in einem Spiegel zu sehen war. Lynch behielt sie und machte eine Figur aus ihm.',
+    pt: 'O aterrorizante Bob era o decorador do cenário. Lynch o filmou por impulso, então um operador de câmera relatou uma tomada estragada porque o homem aparecera acidentalmente em um espelho. Lynch manteve a cena e criou um personagem em torno dele.',
+    fr: 'Le terrifiant Bob était le décorateur du plateau. Lynch l’a filmé sur un coup de tête, puis un cadreur a signalé qu’un plan était gâché parce que cet homme apparaissait accidentellement dans un miroir. Lynch l’a conservé et a construit un personnage autour de lui.',
+    es: 'El aterrador Bob era el decorador del plató. Lynch lo filmó por impulso, y después un operador de cámara informó de que una toma se había arruinado porque el hombre aparecía accidentalmente en un espejo. Lynch la conservó y creó un personaje a su alrededor.',
+    it: 'Il terrificante Bob era l’arredatore del set. Lynch lo filmò d’impulso, poi un operatore di ripresa segnalò che un’inquadratura era rovinata perché l’uomo era comparso per errore in uno specchio. Lynch la mantenne e costruì un personaggio intorno a lui.',
     source:
       'https://en.wikipedia.org/wiki/Twin_Peaks#:~:text=reflected%20in%20the%20mirror',
   },
   'tv:456': {
     en: 'Matt Groening invented the family in minutes, waiting in a producer\u2019s lobby before the pitch. He named the characters after his own relatives and changed only his own name: Bart is an anagram of brat.',
     de: 'Matt Groening erfand die Familie in wenigen Minuten, während er vor dem Termin im Vorzimmer eines Produzenten wartete. Er benannte die Figuren nach seinen eigenen Verwandten und änderte nur seinen eigenen Namen: Bart ist ein Anagramm des englischen Wortes für Gör.',
+    pt: 'Matt Groening inventou a família em poucos minutos enquanto esperava na recepção de um produtor antes da apresentação. Ele deu aos personagens os nomes dos próprios parentes e mudou apenas o seu: Bart é um anagrama de brat.',
+    fr: 'Matt Groening a inventé la famille en quelques minutes, alors qu’il attendait dans le hall d’un producteur avant de présenter son projet. Il a donné aux personnages les noms de ses propres proches et n’a changé que le sien : Bart est une anagramme de brat.',
+    es: 'Matt Groening inventó la familia en unos minutos mientras esperaba en la recepción de un productor antes de presentar el proyecto. Puso a los personajes los nombres de sus propios familiares y solo cambió el suyo: Bart es un anagrama de brat.',
+    it: 'Matt Groening inventò la famiglia in pochi minuti, mentre aspettava nell’atrio di un produttore prima di presentare il progetto. Diede ai personaggi i nomi dei propri familiari e cambiò soltanto il suo: Bart è un anagramma di brat.',
     source:
       'https://en.wikipedia.org/wiki/The_Simpsons#:~:text=named%20the%20characters%20after%20his%20own%20family%20members',
   },
