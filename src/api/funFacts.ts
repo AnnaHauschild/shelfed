@@ -1525,6 +1525,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Dr._Strangelove#:~:text=Kubrick%20talked%20Scott%20into%20doing%20absurd%20%22practice%22%20takes%2C%20which%20Kubrick%20told%20Scott%20would%20never%20be%20used%2C%20as%20a%20way%20to%20warm%20up%20for%20the%20%22real%22%20takes&text=Kubrick%20used%20many%20of%20these%20%22practice%22%20takes%20in%20the%20final%20film%2C%20rather%20than%20the%20more%20restrained%20ones',
   },
+  'movie:424': {
+    en: 'Sid Sheinberg greenlit Schindler’s List on the condition that Steven Spielberg make Jurassic Park first. Spielberg said Sheinberg knew that after directing Schindler he would not have been able to make Jurassic Park.',
+    de: 'Sid Sheinberg gab Schindlers Liste nur unter der Bedingung grünes Licht, dass Steven Spielberg zuerst Jurassic Park drehte. Spielberg sagte, Sheinberg habe gewusst, dass er Jurassic Park nach Schindlers Liste nicht mehr hätte drehen können.',
+    pt: 'Sid Sheinberg deu sinal verde a Schindler’s List com a condição de que Steven Spielberg fizesse Jurassic Park primeiro. Spielberg disse que Sheinberg sabia que, depois de dirigir Schindler, ele não teria conseguido fazer Jurassic Park.',
+    fr: 'Sid Sheinberg donna son feu vert à Schindler’s List à condition que Steven Spielberg réalise d’abord Jurassic Park. Spielberg expliqua que Sheinberg savait qu’après avoir tourné Schindler, il n’aurait pas pu faire Jurassic Park.',
+    es: 'Sid Sheinberg dio luz verde a Schindler’s List con la condición de que Steven Spielberg rodara primero Jurassic Park. Spielberg dijo que Sheinberg sabía que, después de dirigir Schindler, no habría podido hacer Jurassic Park.',
+    it: 'Sid Sheinberg diede il via libera a Schindler’s List a condizione che Steven Spielberg girasse prima Jurassic Park. Spielberg disse che Sheinberg sapeva che, dopo aver diretto Schindler, non sarebbe riuscito a realizzare Jurassic Park.',
+    source:
+      'https://en.wikipedia.org/wiki/Schindler%27s_List#:~:text=Sid%20Sheinberg%20greenlit%20the%20film%20on%20condition%20that%20Spielberg%20made%20Jurassic%20Park%20first&text=He%20knew%20that%20once%20I%20had%20directed%20Schindler%20I%20wouldn%27t%20be%20able%20to%20do%20Jurassic%20Park',
+  },
+  'movie:223': {
+    en: 'Rebecca used two miniatures of Manderley: a large model for closer views such as the fire through its windows, and a half-size version for long shots and the film’s opening because the larger one could not fit the full house and grounds in frame.',
+    de: 'Für Rebecca entstanden zwei Miniaturen von Manderley: ein großes Modell für nähere Aufnahmen wie das Feuer hinter den Fenstern und eine halb so große Version für Totalen und den Filmanfang, weil Haus und Gelände beim größeren Modell nicht vollständig ins Bild passten.',
+    pt: 'Rebecca usou duas miniaturas de Manderley: uma grande para planos mais próximos, como o fogo visto pelas janelas, e outra com metade do tamanho para planos gerais e a abertura do filme, pois a maior não permitia enquadrar toda a casa e o terreno.',
+    fr: 'Rebecca utilisa deux miniatures de Manderley : une grande pour les vues rapprochées, comme les flammes aux fenêtres, et une version deux fois plus petite pour les plans d’ensemble et l’ouverture du film, car la première ne permettait pas de cadrer toute la demeure et son parc.',
+    es: 'Rebecca utilizó dos miniaturas de Manderley: una grande para planos cercanos, como el fuego visto por las ventanas, y otra de la mitad de tamaño para planos generales y el inicio de la película, ya que la mayor no permitía encuadrar toda la casa y los terrenos.',
+    it: 'Per Rebecca furono create due miniature di Manderley: una grande per le inquadrature ravvicinate, come le fiamme attraverso le finestre, e una di metà grandezza per i campi lunghi e l’apertura del film, perché con la prima non si riuscivano a inquadrare l’intera casa e il parco.',
+    source:
+      'https://en.wikipedia.org/wiki/Rebecca_(1940_film)#:~:text=Two%20miniatures%20of%20Manderley%20were%20created&text=This%20half%2Dsize%20miniature%20was%20used%20for%20the%20opening%20of%20the%20film',
+  },
+  'movie:804': {
+    en: 'Gregory Peck’s Roman Holiday contract gave him solo star billing while newcomer Audrey Hepburn was to appear much less prominently. Halfway through filming, Peck asked director William Wyler to give her equal billing—an almost unheard-of Hollywood gesture.',
+    de: 'Gregory Pecks Vertrag für Roman Holiday sicherte ihm die alleinige Spitzenposition zu, während die Newcomerin Audrey Hepburn deutlich weniger prominent genannt werden sollte. Nach der Hälfte der Dreharbeiten bat Peck Regisseur William Wyler, ihr gleichwertige Nennung zu geben – eine in Hollywood nahezu beispiellose Geste.',
+    pt: 'O contrato de Gregory Peck para Roman Holiday lhe garantia destaque exclusivo, enquanto a estreante Audrey Hepburn apareceria com bem menos proeminência. Na metade das filmagens, Peck pediu ao diretor William Wyler que desse a ela o mesmo destaque — um gesto quase inédito em Hollywood.',
+    fr: 'Le contrat de Gregory Peck pour Roman Holiday lui garantissait d’être seul en tête d’affiche, tandis que la débutante Audrey Hepburn devait être créditée bien moins en vue. À mi-tournage, Peck demanda au réalisateur William Wyler de lui accorder la même place — un geste presque inédit à Hollywood.',
+    es: 'El contrato de Gregory Peck para Roman Holiday le otorgaba en solitario la máxima posición en los créditos, mientras que la debutante Audrey Hepburn aparecería mucho menos destacada. A mitad del rodaje, Peck pidió al director William Wyler que le diera la misma categoría, un gesto casi inaudito en Hollywood.',
+    it: 'Il contratto di Gregory Peck per Roman Holiday gli garantiva da solo il primo posto nei titoli, mentre l’esordiente Audrey Hepburn doveva comparire con molto meno risalto. A metà delle riprese, Peck chiese al regista William Wyler di darle pari rilievo: un gesto quasi inaudito a Hollywood.',
+    source:
+      'https://en.wikipedia.org/wiki/Roman_Holiday#:~:text=Peck%27s%20contract%20gave%20him%20solo%20star%20billing%2C%20with%20newcomer%20Hepburn%20listed%20much%20less%20prominently%20in%20the%20credits&text=Halfway%20through%20the%20filming%2C%20Peck%20suggested%20to%20Wyler%20that%20he%20elevate%20her%20to%20equal%20billing',
+  },
+  'movie:1541': {
+    en: 'Michelle Pfeiffer and Jodie Foster originally accepted the lead roles in Thelma & Louise with enthusiasm, but both dropped out during pre-production. Pfeiffer later said she regretted passing on the film.',
+    de: 'Michelle Pfeiffer und Jodie Foster nahmen die Hauptrollen in Thelma & Louise ursprünglich begeistert an, stiegen aber beide während der Vorproduktion aus. Pfeiffer sagte später, sie habe es bereut, auf den Film verzichtet zu haben.',
+    pt: 'Michelle Pfeiffer e Jodie Foster aceitaram originalmente com entusiasmo os papéis principais de Thelma & Louise, mas ambas desistiram durante a pré-produção. Pfeiffer disse mais tarde que se arrependeu de ter deixado o filme passar.',
+    fr: 'Michelle Pfeiffer et Jodie Foster avaient d’abord accepté avec enthousiasme les rôles principaux de Thelma & Louise, mais toutes deux se retirèrent pendant la préproduction. Pfeiffer déclara ensuite avoir regretté d’avoir laissé passer le film.',
+    es: 'Michelle Pfeiffer y Jodie Foster aceptaron originalmente con entusiasmo los papeles protagonistas de Thelma & Louise, pero ambas abandonaron durante la preproducción. Pfeiffer dijo después que lamentaba haber dejado pasar la película.',
+    it: 'Michelle Pfeiffer e Jodie Foster accettarono inizialmente con entusiasmo i ruoli da protagoniste in Thelma & Louise, ma entrambe lasciarono il progetto durante la pre-produzione. Pfeiffer disse in seguito di essersi pentita di aver rinunciato al film.',
+    source:
+      'https://en.wikipedia.org/wiki/Thelma_%26_Louise#:~:text=Michelle%20Pfeiffer%20and%20Jodie%20Foster%20were%20originally%20chosen%20for%20the%20leads%3B%20both%20accepted%20their%20roles%20with%20enthusiasm&text=Pfeiffer%20later%20said%20she%20regretted%20passing%20on%20the%20film',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
