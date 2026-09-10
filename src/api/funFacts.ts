@@ -1645,6 +1645,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Get_Out#:~:text=Writer%2Ddirector%20Jordan%20Peele%20voices%20the%20sounds%20made%20by%20the%20wounded%20deer%2C%20and%20narrates%20a%20UNCF%20commercial',
   },
+  'movie:329865': {
+    en: 'The asteroid 15 Eunomia inspired the appearance of the heptapod spacecraft in Arrival.',
+    de: 'Der Asteroid 15 Eunomia inspirierte das Aussehen der Heptapoden-Raumschiffe in Arrival.',
+    pt: 'O asteroide 15 Eunomia inspirou a aparência das naves dos heptápodes em Arrival.',
+    fr: 'L’astéroïde 15 Eunomia inspira l’apparence des vaisseaux heptapodes dans Arrival.',
+    es: 'El asteroide 15 Eunomia inspiró el aspecto de las naves de los heptápodos en Arrival.',
+    it: 'L’asteroide 15 Eunomia ispirò l’aspetto delle astronavi degli eptapodi in Arrival.',
+    source:
+      'https://en.wikipedia.org/wiki/Arrival_(film)#:~:text=is%20the%20inspiration%20for%20the%20look%20of%20the%20heptapod%20ships',
+  },
+  'movie:376867': {
+    en: 'Barry Jenkins kept the three actors who played Chiron in Moonlight from meeting until filming was over, so they would not imitate one another.',
+    de: 'Barry Jenkins ließ die drei Chiron-Darsteller in Moonlight erst nach den Dreharbeiten aufeinandertreffen, damit sie einander nicht nachahmten.',
+    pt: 'Barry Jenkins impediu que os três atores que interpretaram Chiron em Moonlight se conhecessem antes do fim das filmagens, para que não imitassem uns aos outros.',
+    fr: 'Barry Jenkins empêcha les trois acteurs incarnant Chiron dans Moonlight de se rencontrer avant la fin du tournage, afin qu’ils ne s’imitent pas.',
+    es: 'Barry Jenkins evitó que los tres actores que interpretaron a Chiron en Moonlight se conocieran hasta después del rodaje, para que no se imitaran entre sí.',
+    it: 'Barry Jenkins impedì ai tre attori che interpretarono Chiron in Moonlight di incontrarsi prima della fine delle riprese, affinché non si imitassero a vicenda.',
+    source:
+      'https://en.wikipedia.org/wiki/Moonlight_(2016_film)#:~:text=the%20three%20actors%20for%20Chiron%20did%20not%20meet%20each%20other%20until%20after%20filming%20to%20avoid%20any%20imitations%20of%20one%20another',
+  },
+  'movie:1417': {
+    en: 'During production of Pan’s Labyrinth, Guillermo del Toro accidentally left a notebook containing twenty years of ideas and drawings in a London taxi. The driver returned it two days later.',
+    de: 'Während der Produktion von Pans Labyrinth ließ Guillermo del Toro versehentlich ein Notizbuch mit Ideen und Zeichnungen aus zwanzig Jahren in einem Londoner Taxi liegen. Der Fahrer brachte es zwei Tage später zurück.',
+    pt: 'Durante a produção de Pan’s Labyrinth, Guillermo del Toro deixou por engano em um táxi de Londres um caderno com vinte anos de ideias e desenhos. O motorista o devolveu dois dias depois.',
+    fr: 'Pendant la production de Pan’s Labyrinth, Guillermo del Toro oublia dans un taxi londonien un carnet réunissant vingt ans d’idées et de dessins. Le chauffeur le lui rendit deux jours plus tard.',
+    es: 'Durante la producción de Pan’s Labyrinth, Guillermo del Toro dejó por accidente en un taxi de Londres un cuaderno con veinte años de ideas y dibujos. El taxista se lo devolvió dos días después.',
+    it: 'Durante la produzione di Pan’s Labyrinth, Guillermo del Toro lasciò per errore su un taxi londinese un quaderno contenente vent’anni di idee e disegni. Il tassista glielo restituì due giorni dopo.',
+    source:
+      'https://en.wikipedia.org/wiki/Pan%27s_Labyrinth#:~:text=At%20one%20point%20during%20production%2C%20he%20left%20the%20notebook%20in%20a%20taxi&text=the%20cabbie%20returned%20it%20to%20him%20two%20days%20later',
+  },
+  'movie:9693': {
+    en: 'During one of Children of Men’s complex long takes, blood splattered onto the camera lens. Cinematographer Emmanuel Lubezki convinced Alfonso Cuarón to leave it in the film.',
+    de: 'Während einer der aufwendigen langen Einstellungen in Children of Men spritzte Blut auf die Kameralinse. Kameramann Emmanuel Lubezki überzeugte Alfonso Cuarón, es im Film zu belassen.',
+    pt: 'Durante um dos complexos planos longos de Children of Men, sangue respingou na lente da câmera. O diretor de fotografia Emmanuel Lubezki convenceu Alfonso Cuarón a manter a imagem no filme.',
+    fr: 'Pendant l’un des longs plans complexes de Children of Men, du sang éclaboussa l’objectif. Le directeur de la photographie Emmanuel Lubezki convainquit Alfonso Cuarón de conserver la prise dans le film.',
+    es: 'Durante uno de los complejos planos largos de Children of Men, la sangre salpicó el objetivo de la cámara. El director de fotografía Emmanuel Lubezki convenció a Alfonso Cuarón para dejar la toma en la película.',
+    it: 'Durante uno dei complessi piani sequenza di Children of Men, del sangue schizzò sull’obiettivo. Il direttore della fotografia Emmanuel Lubezki convinse Alfonso Cuarón a lasciare la ripresa nel film.',
+    source:
+      'https://en.wikipedia.org/wiki/Children_of_Men#:~:text=In%20the%20middle%20of%20one%20shot%2C%20blood%20splattered%20onto%20the%20lens&text=convinced%20the%20director%20to%20leave%20it%20in',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
