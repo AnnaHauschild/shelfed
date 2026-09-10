@@ -481,7 +481,7 @@ const FACTS: Record<string, Localized> = {
   },
   'movie:857': {
     en: 'Steven Spielberg deliberately excluded Matt Damon from the main cast’s six-day boot camp so that the other actors would resent him and his character.',
-    de: 'Steven Spielberg schloss Matt Damon bewusst vom sechstägigen Bootcamp der Hauptbesetzung aus, damit die anderen Schauspieler ihn und seine Figur ablehnten.',
+    de: 'Steven Spielberg ließ Matt Damon bewusst nicht am sechstägigen Bootcamp der Hauptbesetzung teilnehmen. So sollten die anderen Schauspieler ihm und seiner Figur gegenüber echten Groll entwickeln.',
     pt: 'Steven Spielberg excluiu deliberadamente Matt Damon do treinamento militar de seis dias do elenco principal para que os outros atores ressentissem dele e de seu personagem.',
     fr: 'Steven Spielberg exclut délibérément Matt Damon du stage militaire de six jours suivi par les acteurs principaux afin que les autres lui en veuillent, ainsi qu’à son personnage.',
     es: 'Steven Spielberg excluyó deliberadamente a Matt Damon del campamento militar de seis días del reparto principal para que los demás actores sintieran resentimiento hacia él y su personaje.',
@@ -491,7 +491,7 @@ const FACTS: Record<string, Localized> = {
   },
   'movie:281957': {
     en: 'The Revenant was shot using natural light, and reaching its remote locations and returning from them could consume 40 percent of the filming day.',
-    de: 'The Revenant wurde mit natürlichem Licht gedreht; allein das Erreichen und Verlassen der abgelegenen Drehorte konnte 40 Prozent eines Drehtags beanspruchen.',
+    de: 'The Revenant wurde mit natürlichem Licht an so abgelegenen Orten gedreht, dass allein die Hin- und Rückwege rund 40 Prozent eines Drehtags beanspruchten.',
     pt: 'The Revenant foi filmado com luz natural, e chegar às locações remotas e voltar delas podia consumir 40 por cento do dia de filmagem.',
     fr: 'The Revenant fut tourné en lumière naturelle, et les trajets aller-retour vers ses lieux reculés pouvaient prendre 40 pour cent d’une journée de tournage.',
     es: 'The Revenant se rodó con luz natural, y llegar a sus remotas localizaciones y regresar de ellas podía consumir el 40 por ciento de la jornada de rodaje.',
