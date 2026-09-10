@@ -1205,6 +1205,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Abbott_Elementary#:~:text=Brunson%20said%20that%20her%20mother%27s%2040-year%20career%20as%20a%20schoolteacher%20inspired%20her%20to%20create%20Abbott%20Elementary%2C%20named%20after%20Joyce%20Abbott%2C%20one%20of%20her%20favorite%20elementary%20school%20teachers',
   },
+  'tv:84977': {
+    en: 'Russian Doll nearly used Lil’ Kim, Lou Reed or the Stooges for Nadia’s musical reset. Harry Nilsson’s “Gotta Get Up” won out, despite its repeated use consuming a significant part of the music budget.',
+    de: 'Für Nadias musikalischen Neustart in Russian Doll waren auch Songs von Lil’ Kim, Lou Reed und den Stooges im Rennen. Trotz erheblicher Kosten für die vielen Einsätze fiel die Wahl auf Harry Nilssons „Gotta Get Up“.',
+    pt: 'Russian Doll quase usou Lil’ Kim, Lou Reed ou os Stooges para o reinício musical de Nadia. “Gotta Get Up”, de Harry Nilsson, foi a escolhida, apesar de seu uso repetido consumir uma parte significativa do orçamento musical.',
+    fr: 'Russian Doll a failli utiliser Lil’ Kim, Lou Reed ou les Stooges pour le thème de réinitialisation de Nadia. « Gotta Get Up » de Harry Nilsson l’a emporté, malgré le coût important de ses nombreuses utilisations pour le budget musical.',
+    es: 'Russian Doll casi utilizó a Lil’ Kim, Lou Reed o los Stooges para el reinicio musical de Nadia. Finalmente se eligió “Gotta Get Up”, de Harry Nilsson, pese a que su uso repetido consumió una parte importante del presupuesto musical.',
+    it: 'Russian Doll prese in considerazione Lil’ Kim, Lou Reed e gli Stooges per il reset musicale di Nadia. Alla fine fu scelta “Gotta Get Up” di Harry Nilsson, nonostante i ripetuti utilizzi assorbissero una parte significativa del budget musicale.',
+    source:
+      'https://en.wikipedia.org/wiki/Russian_Doll_(TV_series)#:~:text=Other%20contenders%20for%20the%20reset%20song%20included%20%22Not%20Tonight%22%20by%20Lil%27%20Kim%2C%20%22Crazy%20Feeling%22%20by%20Lou%20Reed%20and%20%22No%20Fun%22%20by%20the%20Stooges&text=the%20cost%20of%20using%20it%20so%20many%20times%20took%20up%20a%20significant%20portion%20of%20the%20music%20budget',
+  },
+  'tv:124101': {
+    en: 'Because of the COVID-19 pandemic, the Hacks cast held table reads over Zoom—and Jean Smart and Carl Clemons-Hopkins did not meet in person until minutes before filming the pilot.',
+    de: 'Wegen der COVID-19-Pandemie hielt der Cast von Hacks die Leseproben per Zoom ab – Jean Smart und Carl Clemons-Hopkins trafen sich sogar erst wenige Minuten vor dem Dreh der Pilotfolge persönlich.',
+    pt: 'Por causa da pandemia de COVID-19, o elenco de Hacks fez leituras de roteiro pelo Zoom — e Jean Smart e Carl Clemons-Hopkins só se conheceram pessoalmente minutos antes da filmagem do episódio piloto.',
+    fr: 'En raison de la pandémie de COVID-19, la distribution de Hacks a fait les lectures sur Zoom — Jean Smart et Carl Clemons-Hopkins ne se sont rencontrés en personne que quelques minutes avant le tournage du pilote.',
+    es: 'Debido a la pandemia de COVID-19, el reparto de Hacks hizo las lecturas por Zoom; Jean Smart y Carl Clemons-Hopkins no se conocieron en persona hasta minutos antes de rodar el episodio piloto.',
+    it: 'A causa della pandemia di COVID-19, il cast di Hacks fece le letture su Zoom: Jean Smart e Carl Clemons-Hopkins si incontrarono di persona solo pochi minuti prima di girare l’episodio pilota.',
+    source:
+      'https://en.wikipedia.org/wiki/Hacks#:~:text=Because%20of%20the%20COVID-19%20pandemic%2C%20actors%20held%20table%20reads%20over%20Zoom&text=did%20not%20even%20meet%20each%20other%20in%20person%20until%20minutes%20before%20the%20pilot%20was%20filmed',
+  },
+  'tv:67883': {
+    en: 'The success of Insecure’s soundtrack led Issa Rae to establish her own record label, Raedio, in partnership with Atlantic Records.',
+    de: 'Der Erfolg des Soundtracks von Insecure führte dazu, dass Issa Rae gemeinsam mit Atlantic Records ihr eigenes Plattenlabel Raedio gründete.',
+    pt: 'O sucesso da trilha sonora de Insecure levou Issa Rae a fundar sua própria gravadora, Raedio, em parceria com a Atlantic Records.',
+    fr: 'Le succès de la bande originale d’Insecure a conduit Issa Rae à créer son propre label, Raedio, en partenariat avec Atlantic Records.',
+    es: 'El éxito de la banda sonora de Insecure llevó a Issa Rae a fundar su propio sello discográfico, Raedio, en colaboración con Atlantic Records.',
+    it: 'Il successo della colonna sonora di Insecure portò Issa Rae a fondare la propria etichetta discografica, Raedio, in collaborazione con Atlantic Records.',
+    source:
+      'https://en.wikipedia.org/wiki/Insecure_(TV_series)#:~:text=The%20success%20of%20the%20soundtrack%20lead%20to%20Rae%20establishing%20her%20own%20record%20label%2C%20Raedio%2C%20in%20partnership%20with%20Atlantic%20Records',
+  },
+  'tv:95215': {
+    en: 'Reservation Dogs was the first show with an entirely Native writers’ room. By season two, every member of the Indigenous sketch-comedy group the 1491s had worked on the series.',
+    de: 'Reservation Dogs war die erste Serie mit einem ausschließlich indigenen Writers’ Room. Bis zur zweiten Staffel hatten alle Mitglieder der indigenen Sketch-Comedy-Gruppe 1491s an der Serie mitgearbeitet.',
+    pt: 'Reservation Dogs foi a primeira série com uma sala de roteiristas inteiramente indígena. Na segunda temporada, todos os integrantes do grupo indígena de comédia 1491s já haviam trabalhado na série.',
+    fr: 'Reservation Dogs fut la première série dotée d’une équipe de scénaristes entièrement autochtone. Dès la deuxième saison, tous les membres de la troupe de sketchs autochtone 1491s avaient travaillé sur la série.',
+    es: 'Reservation Dogs fue la primera serie con una sala de guionistas íntegramente indígena. Para la segunda temporada, todos los miembros del grupo indígena de comedia 1491s habían trabajado en la serie.',
+    it: 'Reservation Dogs fu la prima serie con una squadra di sceneggiatori interamente nativa. Entro la seconda stagione, tutti i membri del gruppo di sketch comedy indigeno 1491s avevano lavorato alla serie.',
+    source:
+      'https://en.wikipedia.org/wiki/Reservation_Dogs#:~:text=It%27s%20the%20first%20show%20to%20feature%20an%20entirely%20Native%20writers%27%20room&text=all%20of%20the%201491s%20worked%20on%20Reservation%20Dogs%20as%20writers%20and%20actors%2C%20directors%2C%20or%20producers',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
