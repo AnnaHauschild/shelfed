@@ -1445,6 +1445,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Better_Things_(TV_series)#:~:text=The%20story%20is%20semi-autobiographically%20based%20on%20Adlon%27s%20life&text=The%20show%20is%20named%20after%20the%20song%20%22Better%20Things%22%20by%20The%20Kinks',
   },
+  'movie:185': {
+    en: 'Malcolm McDowell scratched a cornea and was temporarily blinded while filming A Clockwork Orange’s Ludovico scene. The doctor beside him on camera was a real physician tasked with keeping his forced-open eyes from drying.',
+    de: 'Beim Dreh der Ludovico-Szene in A Clockwork Orange verletzte sich Malcolm McDowell an der Hornhaut und war vorübergehend blind. Der Arzt neben ihm war ein echter Mediziner, der verhindern sollte, dass seine offengehaltenen Augen austrockneten.',
+    pt: 'Durante as filmagens da cena de Ludovico em A Clockwork Orange, Malcolm McDowell arranhou uma córnea e ficou temporariamente cego. O médico ao seu lado era um profissional de verdade, encarregado de impedir que seus olhos, mantidos abertos à força, ressecassem.',
+    fr: 'Pendant le tournage de la scène de Ludovico dans A Clockwork Orange, Malcolm McDowell s’est éraflé la cornée et a été temporairement aveugle. Le médecin à ses côtés était un vrai praticien chargé d’empêcher ses yeux maintenus ouverts de se dessécher.',
+    es: 'Durante el rodaje de la escena de Ludovico en A Clockwork Orange, Malcolm McDowell se arañó una córnea y quedó temporalmente ciego. El médico que aparecía a su lado era un profesional real encargado de evitar que sus ojos, mantenidos abiertos a la fuerza, se secaran.',
+    it: 'Durante le riprese della scena Ludovico in A Clockwork Orange, Malcolm McDowell si graffiò una cornea e rimase temporaneamente cieco. Il medico accanto a lui era un vero dottore, incaricato di impedire che gli occhi tenuti aperti a forza si seccassero.',
+    source:
+      'https://en.wikipedia.org/wiki/A_Clockwork_Orange_(film)#:~:text=During%20the%20filming%20of%20the%20Ludovico%20technique%20scene%2C%20McDowell%20scratched%20a%20cornea%20and%20was%20temporarily%20blinded&text=was%20a%20real%20physician%20present%20to%20prevent%20the%20actor%27s%20eyes%20from%20drying',
+  },
+  'movie:239': {
+    en: 'Some Like It Hot’s closing line, “Well, nobody’s perfect,” was only a placeholder: Billy Wilder and I. A. L. Diamond planned to replace it once they devised something better, but never did.',
+    de: 'Der Schlusssatz von Some Like It Hot, „Nobody is perfect“, war nur als Platzhalter gedacht: Billy Wilder und I. A. L. Diamond wollten ihn ersetzen, sobald ihnen etwas Besseres einfiel – doch dazu kam es nie.',
+    pt: 'A frase final de Some Like It Hot, “Well, nobody’s perfect”, era apenas provisória: Billy Wilder e I. A. L. Diamond pretendiam substituí-la quando encontrassem algo melhor, mas nunca encontraram.',
+    fr: 'La dernière réplique de Some Like It Hot, « Well, nobody’s perfect », n’était qu’un texte provisoire : Billy Wilder et I. A. L. Diamond comptaient la remplacer lorsqu’ils trouveraient mieux, mais cela n’arriva jamais.',
+    es: 'La frase final de Some Like It Hot, «Well, nobody’s perfect», era solo provisional: Billy Wilder e I. A. L. Diamond pensaban sustituirla cuando se les ocurriera algo mejor, pero nunca lo hicieron.',
+    it: 'La battuta finale di Some Like It Hot, «Well, nobody’s perfect», era soltanto provvisoria: Billy Wilder e I. A. L. Diamond volevano sostituirla quando avessero trovato qualcosa di meglio, ma non accadde mai.',
+    source:
+      'https://en.wikipedia.org/wiki/Some_Like_It_Hot#:~:text=Diamond%20and%20Wilder%20put%20it%20in%20the%20script%20as%20a%20%22placeholder%22%20until%20they%20could%20come%20up%20with%20something%20better%2C%20but%20they%20never%20did',
+  },
+  'movie:164': {
+    en: 'After Breakfast at Tiffany’s test preview, Paramount production head Martin Rankin wanted “Moon River” replaced with music sung by somebody else. Producers Richard Shepherd and Martin Jurow refused.',
+    de: 'Nach der Testvorführung von Breakfast at Tiffany’s wollte Paramount-Produktionschef Martin Rankin „Moon River“ durch Musik ersetzen lassen, die jemand anderes sang. Die Produzenten Richard Shepherd und Martin Jurow lehnten das ab.',
+    pt: 'Após a pré-estreia de Breakfast at Tiffany’s, Martin Rankin, chefe de produção da Paramount, quis substituir “Moon River” por uma música cantada por outra pessoa. Os produtores Richard Shepherd e Martin Jurow se recusaram.',
+    fr: 'Après la projection test de Breakfast at Tiffany’s, Martin Rankin, directeur de la production de Paramount, voulut remplacer « Moon River » par une chanson interprétée par quelqu’un d’autre. Les producteurs Richard Shepherd et Martin Jurow refusèrent.',
+    es: 'Tras el pase de prueba de Breakfast at Tiffany’s, Martin Rankin, jefe de producción de Paramount, quiso sustituir «Moon River» por música cantada por otra persona. Los productores Richard Shepherd y Martin Jurow se negaron.',
+    it: 'Dopo la proiezione di prova di Breakfast at Tiffany’s, Martin Rankin, responsabile della produzione Paramount, volle sostituire «Moon River» con musica cantata da qualcun altro. I produttori Richard Shepherd e Martin Jurow si rifiutarono.',
+    source:
+      'https://en.wikipedia.org/wiki/Breakfast_at_Tiffany%27s_(film)#:~:text=After%20the%20film%27s%20test%20preview%20in%20San%20Francisco%2C%20Martin%20Rankin%2C%20Paramount%27s%20head%20of%20production%2C%20wanted%20%22Moon%20River%22%20replaced%20with%20music%20sung%20by%20somebody%20else&text=Shepherd%20claimed%20he%20and%20Jurow%20refused%20to%20replace%20it',
+  },
+  'movie:654': {
+    en: 'After Marlon Brando initially declined On the Waterfront, Frank Sinatra had a handshake deal and even attended a costume fitting to play Terry Malloy. Within a week of reconsidering, Brando signed for the role instead.',
+    de: 'Nachdem Marlon Brando On the Waterfront zunächst abgelehnt hatte, erhielt Frank Sinatra per Handschlag die Rolle des Terry Malloy und nahm sogar an einer Kostümanprobe teil. Doch als Brando seine Absage überdachte, unterschrieb er innerhalb einer Woche für die Rolle.',
+    pt: 'Depois que Marlon Brando inicialmente recusou On the Waterfront, Frank Sinatra fechou um acordo de aperto de mão e chegou a fazer uma prova de figurino para interpretar Terry Malloy. Porém, ao reconsiderar, Brando assinou para o papel em menos de uma semana.',
+    fr: 'Après le refus initial de Marlon Brando de jouer dans On the Waterfront, Frank Sinatra conclut un accord verbal et participa même à un essayage pour incarner Terry Malloy. Mais Brando revint sur sa décision et signa pour le rôle en moins d’une semaine.',
+    es: 'Después de que Marlon Brando rechazara inicialmente On the Waterfront, Frank Sinatra cerró un acuerdo de palabra e incluso acudió a una prueba de vestuario para interpretar a Terry Malloy. Sin embargo, Brando reconsideró su negativa y firmó para el papel en menos de una semana.',
+    it: 'Dopo che Marlon Brando rifiutò inizialmente On the Waterfront, Frank Sinatra raggiunse un accordo sulla parola e partecipò perfino a una prova costume per interpretare Terry Malloy. Brando però cambiò idea e firmò per il ruolo nel giro di una settimana.',
+    source:
+      'https://en.wikipedia.org/wiki/On_the_Waterfront#:~:text=Marlon%20Brando%20initially%20declined%20the%20role%20of%20Terry%20Malloy&text=Within%20a%20week%2C%20Brando%20signed%20a%20contract%20to%20perform%20in%20the%20film',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
