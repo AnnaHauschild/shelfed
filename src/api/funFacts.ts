@@ -1685,6 +1685,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Children_of_Men#:~:text=In%20the%20middle%20of%20one%20shot%2C%20blood%20splattered%20onto%20the%20lens&text=convinced%20the%20director%20to%20leave%20it%20in',
   },
+  'movie:37799': {
+    en: 'The opening scene of The Social Network, in which Mark Zuckerberg talks with his girlfriend, took 99 takes to complete.',
+    de: 'Für die Eröffnungsszene von The Social Network, in der Mark Zuckerberg mit seiner Freundin spricht, waren 99 Takes nötig.',
+    pt: 'A cena de abertura de The Social Network, em que Mark Zuckerberg conversa com a namorada, precisou de 99 tomadas para ser concluída.',
+    fr: 'La scène d’ouverture de The Social Network, dans laquelle Mark Zuckerberg parle avec sa petite amie, nécessita 99 prises.',
+    es: 'La escena inicial de The Social Network, en la que Mark Zuckerberg habla con su novia, necesitó 99 tomas para completarse.',
+    it: 'La scena iniziale di The Social Network, in cui Mark Zuckerberg parla con la sua ragazza, richiese 99 ciak.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Social_Network#:~:text=The%20first%20scene%20in%20the%20film%2C%20where%20Zuckerberg%20is%20with%20his%20girlfriend%2C%20took%2099%20takes%20to%20finish',
+  },
+  'movie:545611': {
+    en: 'Everything Everywhere All at Once’s visual effects were produced in-house by a team of only eight artists using Adobe After Effects and Premiere Pro.',
+    de: 'Die visuellen Effekte von Everything Everywhere All at Once entstanden intern bei einem Team aus nur acht Künstlern mit Adobe After Effects und Premiere Pro.',
+    pt: 'Os efeitos visuais de Everything Everywhere All at Once foram produzidos internamente por uma equipe de apenas oito artistas usando Adobe After Effects e Premiere Pro.',
+    fr: 'Les effets visuels d’Everything Everywhere All at Once furent réalisés en interne par une équipe de seulement huit artistes avec Adobe After Effects et Premiere Pro.',
+    es: 'Los efectos visuales de Everything Everywhere All at Once se produjeron internamente con un equipo de solo ocho artistas que utilizó Adobe After Effects y Premiere Pro.',
+    it: 'Gli effetti visivi di Everything Everywhere All at Once furono realizzati internamente da un team di soli otto artisti usando Adobe After Effects e Premiere Pro.',
+    source:
+      'https://en.wikipedia.org/wiki/Everything_Everywhere_All_at_Once#:~:text=Instead%2C%20the%20filmmakers%20assembled%20a%20small%20team%20of%20eight%20artists%20headed%20by%20Zak%20Stoltz%2C%20who%20produced%20visual%20effects%20using%20Adobe%20After%20Effects%20and%20Adobe%20Premiere%20Pro',
+  },
+  'movie:152601': {
+    en: 'While filming Her, Samantha Morton performed the operating system’s voice from a small soundproof booth, and she and Joaquin Phoenix avoided seeing each other on set.',
+    de: 'Beim Dreh von Her sprach Samantha Morton die Stimme des Betriebssystems aus einer kleinen schallisolierten Kabine ein; sie und Joaquin Phoenix vermieden es, einander am Set zu sehen.',
+    pt: 'Durante as filmagens de Her, Samantha Morton interpretou a voz do sistema operacional em uma pequena cabine à prova de som, e ela e Joaquin Phoenix evitaram se ver no set.',
+    fr: 'Pendant le tournage de Her, Samantha Morton interpréta la voix du système d’exploitation depuis une petite cabine insonorisée, et Joaquin Phoenix et elle évitèrent de se voir sur le plateau.',
+    es: 'Durante el rodaje de Her, Samantha Morton interpretó la voz del sistema operativo desde una pequeña cabina insonorizada, y ella y Joaquin Phoenix evitaron verse en el set.',
+    it: 'Durante le riprese di Her, Samantha Morton interpretò la voce del sistema operativo da una piccola cabina insonorizzata, mentre lei e Joaquin Phoenix evitarono di vedersi sul set.',
+    source:
+      'https://en.wikipedia.org/wiki/Her_(2013_film)#:~:text=During%20production%20of%20the%20film%2C%20actress%20Samantha%20Morton%20performed%20the%20role%20of%20Samantha%20by%20acting%20on%20set%20%22in%20a%20four-by-four%20carpeted%20soundproof%20booth%20made%20of%20black%20painted%20plywood%20and%20soft%2C%20noise-muffling%20fabric.%22&text=At%20Jonze%27s%20suggestion%2C%20she%20and%20Joaquin%20Phoenix%20avoided%20seeing%20each%20other%20on%20set%20during%20filming',
+  },
+  'movie:264660': {
+    en: 'Ex Machina’s sets contained 15,000 tungsten pea bulbs, installed to avoid the fluorescent lighting often used in science-fiction films.',
+    de: 'In den Kulissen von Ex Machina wurden 15.000 kleine Wolframglühlampen installiert, um das in Science-Fiction-Filmen häufig verwendete Leuchtstofflicht zu vermeiden.',
+    pt: 'Os cenários de Ex Machina receberam 15 mil pequenas lâmpadas de tungstênio para evitar a iluminação fluorescente frequentemente usada em filmes de ficção científica.',
+    fr: 'Les décors d’Ex Machina furent équipés de 15 000 petites ampoules au tungstène afin d’éviter l’éclairage fluorescent souvent employé dans les films de science-fiction.',
+    es: 'En los decorados de Ex Machina se instalaron 15.000 pequeñas bombillas de tungsteno para evitar la iluminación fluorescente habitual en las películas de ciencia ficción.',
+    it: 'Nei set di Ex Machina furono installate 15.000 piccole lampadine al tungsteno per evitare l’illuminazione fluorescente spesso usata nei film di fantascienza.',
+    source:
+      'https://en.wikipedia.org/wiki/Ex_Machina_(film)#:~:text=Fifteen%20thousand%20tungsten%20pea%20bulb%20lights%20were%20installed%20into%20the%20sets%20to%20avoid%20the%20fluorescent%20light%20often%20used%20in%20science-fiction%20films',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
