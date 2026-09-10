@@ -1165,6 +1165,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Good_Wife#:~:text=They%20were%20further%20intrigued%20by%20the%20fact%20that%20many%20of%20the%20wives%20were%20lawyers%20who%20had%20halted%20their%20personal%20careers%20for%20the%20sake%20of%20their%20husbands%27%20professional%20ambitions',
   },
+  'tv:73107': {
+    en: 'NoHo Hank was originally supposed to be killed by Barry in the pilot, but Anthony Carrigan’s performance impressed the creators so much that they made him a series regular.',
+    de: 'NoHo Hank sollte ursprünglich schon in der Pilotfolge von Barry getötet werden. Anthony Carrigans Darstellung beeindruckte die Serienschöpfer jedoch so sehr, dass sie ihn zur Hauptfigur machten.',
+    pt: 'NoHo Hank deveria originalmente ser morto por Barry no episódio piloto, mas a atuação de Anthony Carrigan impressionou tanto os criadores que eles o tornaram parte do elenco regular.',
+    fr: 'À l’origine, NoHo Hank devait être tué par Barry dans l’épisode pilote, mais la prestation d’Anthony Carrigan impressionna tellement les créateurs qu’ils en firent un personnage régulier.',
+    es: 'En un principio, NoHo Hank iba a morir a manos de Barry en el episodio piloto, pero la interpretación de Anthony Carrigan impresionó tanto a los creadores que lo convirtieron en personaje habitual.',
+    it: 'In origine NoHo Hank doveva essere ucciso da Barry nell’episodio pilota, ma l’interpretazione di Anthony Carrigan colpì così tanto gli autori che lo resero un personaggio fisso.',
+    source:
+      'https://en.wikipedia.org/wiki/Barry_(TV_series)#:~:text=Originally%20planned%20to%20be%20killed%20by%20Barry%20in%20the%20pilot%20episode%2C%20Hank%20was%20made%20a%20series%20regular%20after%20Carrigan%27s%20performance%20impressed%20the%20show%27s%20creators',
+  },
+  'tv:61662': {
+    en: 'When networks urged the creators of Schitt’s Creek to change its title, the Levys brought phone-book pages to CBC showing real people with the surname Schitt—and kept the name.',
+    de: 'Als Sender die Schöpfer von Schitt’s Creek zu einem anderen Titel drängten, brachten die Levys dem CBC Telefonbuchseiten mit echten Trägern des Nachnamens Schitt – und behielten den Namen.',
+    pt: 'Quando emissoras pressionaram os criadores de Schitt’s Creek a mudar o título, os Levy levaram à CBC páginas de uma lista telefônica com pessoas reais de sobrenome Schitt — e mantiveram o nome.',
+    fr: 'Lorsque des chaînes poussèrent les créateurs de Schitt’s Creek à changer le titre, les Levy apportèrent à CBC des pages d’annuaire montrant de vraies personnes portant le nom Schitt — et conservèrent le titre.',
+    es: 'Cuando varias cadenas instaron a los creadores de Schitt’s Creek a cambiar el título, los Levy llevaron a CBC páginas de una guía telefónica con personas reales de apellido Schitt y conservaron el nombre.',
+    it: 'Quando alcune emittenti spinsero gli autori di Schitt’s Creek a cambiare il titolo, i Levy portarono alla CBC pagine dell’elenco telefonico con persone reali di cognome Schitt e mantennero il nome.',
+    source:
+      'https://en.wikipedia.org/wiki/Schitt%27s_Creek#:~:text=To%20prove%20their%20point%2C%20they%20brought%20pages%20copied%20from%20a%20phone%20book%20to%20the%20CBC%20showing%20listings%20for%20individuals%20with%20the%20%22Schitt%22%20surname&text=allowed%20the%20Levys%20to%20keep%20the%20original%20title',
+  },
+  'tv:64254': {
+    en: 'Aziz Ansari’s real-life parents, Shoukath and Fatima, play his character Dev’s parents in Master of None.',
+    de: 'Aziz Ansaris echte Eltern Shoukath und Fatima spielen in Master of None die Eltern seiner Figur Dev.',
+    pt: 'Os pais de Aziz Ansari na vida real, Shoukath e Fatima, interpretam os pais de seu personagem Dev em Master of None.',
+    fr: 'Les véritables parents d’Aziz Ansari, Shoukath et Fatima, jouent les parents de son personnage Dev dans Master of None.',
+    es: 'Los padres de Aziz Ansari en la vida real, Shoukath y Fatima, interpretan a los padres de su personaje Dev en Master of None.',
+    it: 'I veri genitori di Aziz Ansari, Shoukath e Fatima, interpretano i genitori del suo personaggio Dev in Master of None.',
+    source:
+      'https://en.wikipedia.org/wiki/Master_of_None#:~:text=Ansari%27s%20real-life%20parents%20Shoukath%20and%20Fatima%2C%20who%20play%20Dev%27s%20parents',
+  },
+  'tv:125935': {
+    en: 'Quinta Brunson named Abbott Elementary after Joyce Abbott, one of her favorite elementary-school teachers; her mother’s 40-year teaching career inspired the series.',
+    de: 'Quinta Brunson benannte Abbott Elementary nach Joyce Abbott, einer ihrer Lieblingslehrerinnen aus der Grundschule; die 40-jährige Lehrerinnenlaufbahn ihrer Mutter inspirierte die Serie.',
+    pt: 'Quinta Brunson batizou Abbott Elementary em homenagem a Joyce Abbott, uma de suas professoras favoritas do ensino fundamental; os 40 anos de carreira docente de sua mãe inspiraram a série.',
+    fr: 'Quinta Brunson a nommé Abbott Elementary en hommage à Joyce Abbott, l’une de ses institutrices préférées ; les quarante ans de carrière d’enseignante de sa mère ont inspiré la série.',
+    es: 'Quinta Brunson llamó Abbott Elementary así por Joyce Abbott, una de sus maestras favoritas de primaria; los 40 años de carrera docente de su madre inspiraron la serie.',
+    it: 'Quinta Brunson chiamò Abbott Elementary in onore di Joyce Abbott, una delle sue insegnanti preferite delle elementari; i quarant’anni di carriera di sua madre come insegnante ispirarono la serie.',
+    source:
+      'https://en.wikipedia.org/wiki/Abbott_Elementary#:~:text=Brunson%20said%20that%20her%20mother%27s%2040-year%20career%20as%20a%20schoolteacher%20inspired%20her%20to%20create%20Abbott%20Elementary%2C%20named%20after%20Joyce%20Abbott%2C%20one%20of%20her%20favorite%20elementary%20school%20teachers',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
