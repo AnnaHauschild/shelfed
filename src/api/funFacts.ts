@@ -824,24 +824,40 @@ const FACTS: Record<string, Localized> = {
   'tv:1400': {
     en: 'The network\u2019s own test report called the pilot weak. One viewer wrote that you cannot get excited about two guys going to the laundromat. Years later the creators hung that report in a bathroom on the set.',
     de: 'Der eigene Testbericht des Senders nannte die Pilotfolge schwach. Ein Zuschauer schrieb, für zwei Männer im Waschsalon könne man sich nicht begeistern. Jahre später hängten die Macher diesen Bericht im Bad des Studios auf.',
+    pt: 'O próprio relatório de teste do canal classificou o episódio piloto como fraco. Um espectador escreveu que não era possível se empolgar com dois caras indo à lavanderia. Anos depois, os criadores penduraram o relatório em um banheiro do estúdio.',
+    fr: 'Le propre rapport de test de la chaîne qualifiait le pilote de faible. Un spectateur avait écrit qu’il était impossible de s’enthousiasmer pour deux types allant à la laverie. Des années plus tard, les créateurs ont accroché ce rapport dans des toilettes sur le plateau.',
+    es: 'El propio informe de prueba de la cadena calificó el piloto de flojo. Un espectador escribió que era imposible entusiasmarse con dos tipos que iban a la lavandería. Años después, los creadores colgaron aquel informe en un baño del plató.',
+    it: 'Il rapporto di prova della stessa emittente definì debole il pilot. Uno spettatore scrisse che non era possibile entusiasmarsi per due uomini che andavano in lavanderia. Anni dopo, gli autori appesero quel rapporto in un bagno sul set.',
     source:
       'https://en.wikipedia.org/wiki/Seinfeld#:~:text=hung%20it%20in%20a%20bathroom%20on%20the%20set',
   },
   'tv:70523': {
     en: 'The town of Winden does not exist, and neither does its nuclear plant. Everything was filmed in and around Berlin, and the reactor towers were added by computer.',
     de: 'Den Ort Winden gibt es nicht, das Kernkraftwerk auch nicht. Gedreht wurde alles in und um Berlin, und die Reaktortürme wurden am Computer eingefügt.',
+    pt: 'A cidade de Winden não existe, nem sua usina nuclear. Tudo foi filmado em Berlim e nos arredores, e as torres dos reatores foram adicionadas por computador.',
+    fr: 'La ville de Winden n’existe pas, pas plus que sa centrale nucléaire. Tout a été filmé à Berlin et dans ses environs, et les tours des réacteurs ont été ajoutées par ordinateur.',
+    es: 'La localidad de Winden no existe, ni tampoco su central nuclear. Todo se rodó en Berlín y sus alrededores, y las torres de los reactores se añadieron por ordenador.',
+    it: 'La città di Winden non esiste e nemmeno la sua centrale nucleare. Tutto fu girato a Berlino e nei dintorni, mentre le torri dei reattori furono aggiunte al computer.',
     source:
       'https://en.wikipedia.org/wiki/Dark_(TV_series)#:~:text=nuclear%20reactor%20towers%20were%20computer-animated',
   },
   'tv:1438': {
     en: 'The gentle deacon was played by a real drug lord. Little Melvin Williams went to prison in the 1980s through an investigation one of the show\u2019s own writers had worked on. Years later the same show cast him as a man of the church.',
     de: 'Der freundliche Diakon wurde von einem echten Drogenboss gespielt. Little Melvin Williams kam in den Achtzigern ins Gefängnis, durch Ermittlungen, an denen einer der Autoren der Serie selbst beteiligt war. Jahre später besetzte ihn dieselbe Serie als Mann der Kirche.',
+    pt: 'O gentil diácono foi interpretado por um verdadeiro traficante. Little Melvin Williams foi para a prisão na década de 1980 por causa de uma investigação na qual um dos próprios roteiristas da série havia trabalhado. Anos depois, a mesma série o escalou como um homem da igreja.',
+    fr: 'Le doux diacre était joué par un véritable baron de la drogue. Little Melvin Williams est allé en prison dans les années 1980 à la suite d’une enquête à laquelle l’un des scénaristes de la série avait personnellement participé. Des années plus tard, cette même série lui a confié le rôle d’un homme d’Église.',
+    es: 'El amable diácono fue interpretado por un verdadero narcotraficante. Little Melvin Williams fue a prisión en la década de 1980 por una investigación en la que había trabajado uno de los propios guionistas de la serie. Años después, esa misma serie le dio el papel de un hombre de la Iglesia.',
+    it: 'Il mite diacono fu interpretato da un vero signore della droga. Little Melvin Williams finì in prigione negli anni Ottanta in seguito a un’indagine alla quale aveva lavorato uno degli stessi sceneggiatori della serie. Anni dopo, quella stessa serie lo scelse per interpretare un uomo di Chiesa.',
     source:
       'https://en.wikipedia.org/wiki/The_Wire#:~:text=had%20a%20recurring%20role%20as%20a%20deacon',
   },
   'tv:2316': {
     en: 'Phyllis was not an actress. She worked in casting and only read the lines opposite the people auditioning. The director of the pilot liked her so much that he gave her a part in the show.',
     de: 'Phyllis war keine Schauspielerin. Sie arbeitete im Casting und las nur die Gegenparts für die Leute vor, die sich bewarben. Dem Regisseur der Pilotfolge gefiel sie so gut, dass er ihr selbst eine Rolle gab.',
+    pt: 'Phyllis não era atriz. Ela trabalhava na seleção do elenco e apenas lia as falas contrárias às das pessoas que faziam teste. O diretor do episódio piloto gostou tanto dela que lhe deu um papel na série.',
+    fr: 'Phyllis n’était pas actrice. Elle travaillait au casting et donnait seulement la réplique aux personnes qui auditionnaient. Le réalisateur du pilote l’a tellement appréciée qu’il lui a donné un rôle dans la série.',
+    es: 'Phyllis no era actriz. Trabajaba en el proceso de selección del reparto y solo daba la réplica a quienes hacían las pruebas. Al director del piloto le gustó tanto que le dio un papel en la serie.',
+    it: 'Phyllis non era un’attrice. Lavorava al casting e si limitava a dare la battuta alle persone che facevano i provini. Il regista del pilot la apprezzò così tanto da assegnarle una parte nella serie.',
     source:
       'https://en.wikipedia.org/wiki/The_Office_(American_TV_series)#:~:text=read%20with%20other%20actors%20auditioning%20so%20much%20that%20he%20cast',
   },
