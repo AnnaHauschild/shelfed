@@ -1085,6 +1085,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Treme_(TV_series)#:~:text=The%20Treme%20title%20card%20evolves%20with%20each%20season%2C%20to%20evoke%20the%20recovery%20of%20New%20Orleans&text=Clarke%20Peters%20provided%20the%20hand-brushed%20finishing%20touches',
   },
+  'tv:2947': {
+    en: 'Before filming Veep began, the cast spent several months rehearsing so the actors would become comfortable improvising with one another.',
+    de: 'Bevor die Dreharbeiten zu Veep begannen, probte die Besetzung mehrere Monate lang, damit sich die Schauspieler beim gemeinsamen Improvisieren wohlfühlten.',
+    pt: 'Antes do início das filmagens de Veep, o elenco ensaiou durante vários meses para que os atores se sentissem à vontade improvisando juntos.',
+    fr: 'Avant le début du tournage de Veep, la distribution a répété pendant plusieurs mois afin que les acteurs soient à l’aise pour improviser ensemble.',
+    es: 'Antes de comenzar el rodaje de Veep, el reparto ensayó durante varios meses para que los actores se sintieran cómodos improvisando juntos.',
+    it: 'Prima dell’inizio delle riprese di Veep, il cast provò per diversi mesi affinché gli attori si sentissero a proprio agio nell’improvvisare insieme.',
+    source:
+      'https://en.wikipedia.org/wiki/Veep#:~:text=filming%20for%20the%20series%20began%20in%20October%202011%20in%20Baltimore&text=after%20several%20months%20of%20rehearsal%20designed%20to%20get%20the%20actors%20comfortable%20improvising%20with%20one%20another',
+  },
+  'tv:18347': {
+    en: 'Dan Harmon devised Community from his own life: he enrolled in a community-college Spanish class to save a relationship, joined a study group and unexpectedly became close to people with whom he had little in common.',
+    de: 'Dan Harmon entwickelte Community aus seinem eigenen Leben: Um eine Beziehung zu retten, belegte er einen Spanischkurs an einem Community College, schloss sich einer Lerngruppe an und freundete sich unerwartet mit Menschen an, mit denen er wenig gemeinsam hatte.',
+    pt: 'Dan Harmon criou Community a partir da própria vida: matriculou-se em uma aula de espanhol numa faculdade comunitária para salvar um relacionamento, entrou em um grupo de estudos e, inesperadamente, tornou-se amigo de pessoas com quem tinha pouco em comum.',
+    fr: 'Dan Harmon a imaginé Community à partir de sa propre vie : pour sauver une relation, il s’est inscrit à un cours d’espagnol dans un community college, a rejoint un groupe d’étude et s’est lié contre toute attente avec des personnes avec lesquelles il avait peu en commun.',
+    es: 'Dan Harmon ideó Community a partir de su propia vida: para salvar una relación, se matriculó en una clase de español de un community college, se unió a un grupo de estudio y, contra todo pronóstico, entabló amistad con personas con las que tenía poco en común.',
+    it: 'Dan Harmon ideò Community partendo dalla propria vita: per salvare una relazione si iscrisse a un corso di spagnolo in un community college, entrò in un gruppo di studio e, inaspettatamente, strinse amicizia con persone con cui aveva poco in comune.',
+    source:
+      'https://en.wikipedia.org/wiki/Community_(TV_series)#:~:text=Harmon%20based%20the%20premise%20of%20Community%20on%20his%20own%20experiences&text=became%20close%20friends%20with%20the%20members%2C%20with%20whom%20he%20had%20very%20little%20in%20common',
+  },
+  'tv:8592': {
+    en: 'Ron Swanson’s anti-government convictions were inspired by creator Michael Schur meeting a real libertarian government official who admitted, “I don’t really believe in the mission of my job.”',
+    de: 'Ron Swansons staatsfeindliche Überzeugungen entstanden, nachdem Serienschöpfer Michael Schur einen echten libertären Behördenmitarbeiter traf, der zugab: „Ich glaube nicht wirklich an den Auftrag meiner Arbeit.“',
+    pt: 'As convicções antigoverno de Ron Swanson foram inspiradas pelo encontro do criador Michael Schur com uma autoridade governamental libertária de verdade, que admitiu: “Eu realmente não acredito na missão do meu trabalho.”',
+    fr: 'Les convictions antigouvernementales de Ron Swanson ont été inspirées par la rencontre du créateur Michael Schur avec un véritable responsable gouvernemental libertarien, qui lui a avoué : « Je ne crois pas vraiment à la mission de mon travail. »',
+    es: 'Las convicciones antigubernamentales de Ron Swanson se inspiraron en el encuentro del creador Michael Schur con un funcionario público libertario real, quien admitió: «No creo realmente en la misión de mi trabajo».',
+    it: 'Le convinzioni antigovernative di Ron Swanson nacquero dall’incontro del creatore Michael Schur con un vero funzionario pubblico libertario, che ammise: «Non credo davvero nella missione del mio lavoro».',
+    source:
+      'https://en.wikipedia.org/wiki/Parks_and_Recreation#:~:text=the%20inspiration%20for%20Ron%20Swanson%27s%20anti-government%20convictions%20came%20from%20a%20real-life%20encounter%20Schur%20had%20in%20Burbank&text=I%20don%27t%20really%20believe%20in%20the%20mission%20of%20my%20job',
+  },
+  'tv:4546': {
+    en: 'Raw footage filmed for Curb Your Enthusiasm at Dodger Stadium inadvertently gave murder suspect Juan Catalan an alibi, helping to exonerate him while he faced the death penalty.',
+    de: 'Rohmaterial, das für Curb Your Enthusiasm im Dodger Stadium gedreht wurde, lieferte dem Mordverdächtigen Juan Catalan unbeabsichtigt ein Alibi und half so, ihn zu entlasten, während ihm die Todesstrafe drohte.',
+    pt: 'Imagens brutas filmadas para Curb Your Enthusiasm no Dodger Stadium deram involuntariamente um álibi ao suspeito de assassinato Juan Catalan e ajudaram a inocentá-lo quando ele enfrentava a pena de morte.',
+    fr: 'Des images brutes tournées pour Curb Your Enthusiasm au Dodger Stadium ont fourni par hasard un alibi à Juan Catalan, soupçonné de meurtre, et ont contribué à le disculper alors qu’il risquait la peine de mort.',
+    es: 'Imágenes sin editar rodadas para Curb Your Enthusiasm en el Dodger Stadium proporcionaron por casualidad una coartada al sospechoso de asesinato Juan Catalan y ayudaron a exonerarlo cuando se enfrentaba a la pena de muerte.',
+    it: 'Le riprese grezze realizzate per Curb Your Enthusiasm al Dodger Stadium fornirono involontariamente un alibi al sospettato di omicidio Juan Catalan e contribuirono a scagionarlo mentre rischiava la pena di morte.',
+    source:
+      'https://en.wikipedia.org/wiki/Curb_Your_Enthusiasm#:~:text=contains%20raw%20footage%20from%20the%20filming%20of%20an%20episode%20of%20season%204%20at%20Dodger%20Stadium&text=helped%20to%20inadvertently%20exonerate%20Juan%20Catalan%2C%20who%20was%20accused%20of%20murder%20and%20faced%20the%20death%20penalty',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
