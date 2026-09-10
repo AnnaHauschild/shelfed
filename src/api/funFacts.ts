@@ -1245,6 +1245,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/Reservation_Dogs#:~:text=It%27s%20the%20first%20show%20to%20feature%20an%20entirely%20Native%20writers%27%20room&text=all%20of%20the%201491s%20worked%20on%20Reservation%20Dogs%20as%20writers%20and%20actors%2C%20directors%2C%20or%20producers',
   },
+  'tv:70796': {
+    en: 'The Marvelous Mrs. Maisel filmed the Gaslight Club exterior at 96 St. Mark’s Place, the same building pictured on the cover of Led Zeppelin’s Physical Graffiti.',
+    de: 'The Marvelous Mrs. Maisel drehte die Außenansicht des Gaslight Club am 96 St. Mark’s Place. Dasselbe Gebäude ist auf dem Cover von Led Zeppelins Physical Graffiti zu sehen.',
+    pt: 'The Marvelous Mrs. Maisel filmou o exterior do Gaslight Club no número 96 da St. Mark’s Place, o mesmo edifício retratado na capa de Physical Graffiti, do Led Zeppelin.',
+    fr: 'The Marvelous Mrs. Maisel a filmé l’extérieur du Gaslight Club au 96 St. Mark’s Place, le même immeuble qui figure sur la pochette de Physical Graffiti de Led Zeppelin.',
+    es: 'The Marvelous Mrs. Maisel rodó el exterior del Gaslight Club en el número 96 de St. Mark’s Place, el mismo edificio que aparece en la portada de Physical Graffiti de Led Zeppelin.',
+    it: 'The Marvelous Mrs. Maisel girò gli esterni del Gaslight Club al 96 di St. Mark’s Place, lo stesso edificio raffigurato sulla copertina di Physical Graffiti dei Led Zeppelin.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Marvelous_Mrs._Maisel#:~:text=Exterior%20shots%20for%20the%20Gaslight%20Club%20were%20filmed%20in%20October%202016%20outside%2096%20St.%20Mark%27s%20Place%20in%20the%20East%20Village%2C%20the%20building%20featured%20on%20the%20cover%20of%20Led%20Zeppelin%27s%201975%20album%20Physical%20Graffiti',
+  },
+  'tv:76148': {
+    en: 'Derry Girls creator Lisa McGee based events on her own life, including writing a letter to Chelsea Clinton. Chelsea later appeared in the series as herself.',
+    de: 'Derry-Girls-Schöpferin Lisa McGee griff Ereignisse aus ihrem eigenen Leben auf, darunter einen Brief an Chelsea Clinton. Chelsea trat später in der Serie als sie selbst auf.',
+    pt: 'Lisa McGee, criadora de Derry Girls, baseou acontecimentos em sua própria vida, inclusive uma carta que escreveu a Chelsea Clinton. Chelsea mais tarde apareceu na série como ela mesma.',
+    fr: 'Lisa McGee, créatrice de Derry Girls, s’est inspirée d’événements de sa propre vie, notamment d’une lettre écrite à Chelsea Clinton. Chelsea est ensuite apparue dans son propre rôle dans la série.',
+    es: 'Lisa McGee, creadora de Derry Girls, se basó en hechos de su propia vida, como una carta que escribió a Chelsea Clinton. Chelsea apareció después como ella misma en la serie.',
+    it: 'Lisa McGee, creatrice di Derry Girls, si ispirò a eventi della propria vita, tra cui una lettera scritta a Chelsea Clinton. Chelsea apparve poi nella serie nei panni di sé stessa.',
+    source:
+      'https://en.wikipedia.org/wiki/Derry_Girls#:~:text=Lisa%20McGee%20based%20events%20in%20the%20programme%20on%20her%20own%20life%2C%20such%20as%20writing%20a%20letter%20to%20the%20Clintons%27%20daughter%2C%20Chelsea&text=Chelsea%20Clinton%20as%20herself',
+  },
+  'tv:83631': {
+    en: 'Nadja’s supernatural appearance beside Jenna in a park used no CGI: Natasia Demetriou hid behind a tree and stepped out as the camera tracked past it.',
+    de: 'Für Nadjas übernatürliches Auftauchen neben Jenna in einem Park wurde kein CGI verwendet: Natasia Demetriou versteckte sich hinter einem Baum und trat im richtigen Moment hervor, während die Kamera vorbeifuhr.',
+    pt: 'A aparição sobrenatural de Nadja ao lado de Jenna em um parque não usou CGI: Natasia Demetriou se escondeu atrás de uma árvore e saiu no momento certo enquanto a câmera passava.',
+    fr: 'L’apparition surnaturelle de Nadja aux côtés de Jenna dans un parc n’a utilisé aucune image de synthèse : Natasia Demetriou s’est cachée derrière un arbre et en est sortie au bon moment pendant le travelling.',
+    es: 'La aparición sobrenatural de Nadja junto a Jenna en un parque no usó CGI: Natasia Demetriou se escondió detrás de un árbol y salió en el momento preciso mientras la cámara pasaba.',
+    it: 'L’apparizione soprannaturale di Nadja accanto a Jenna in un parco non usò CGI: Natasia Demetriou si nascose dietro un albero e uscì al momento giusto mentre la cinepresa passava.',
+    source:
+      'https://en.wikipedia.org/wiki/What_We_Do_in_the_Shadows_(TV_series)#:~:text=That%20was%20all%20just%20done%20completely%20the%20old%20fashioned%20way%20where%20Natasia%20was%20hiding%20behind%20a%20tree%20and%20the%20camera%20was%20tracking%20along%20and%20at%20the%20right%20moment%2C%20she%20walked%20out%20from%20behind%20a%20tree',
+  },
+  'tv:66859': {
+    en: 'Better Things is semi-autobiographically based on Pamela Adlon’s life, and takes its title from the Kinks song “Better Things.”',
+    de: 'Better Things basiert teilweise autobiografisch auf Pamela Adlons Leben und ist nach dem gleichnamigen Song der Kinks benannt.',
+    pt: 'Better Things é uma obra semiautobiográfica baseada na vida de Pamela Adlon e recebeu o nome da canção homônima dos Kinks.',
+    fr: 'Better Things s’inspire de manière semi-autobiographique de la vie de Pamela Adlon et tire son titre de la chanson du même nom des Kinks.',
+    es: 'Better Things se basa de forma semiautobiográfica en la vida de Pamela Adlon y toma su título de la canción homónima de los Kinks.',
+    it: 'Better Things si basa in modo semi-autobiografico sulla vita di Pamela Adlon e prende il titolo dall’omonima canzone dei Kinks.',
+    source:
+      'https://en.wikipedia.org/wiki/Better_Things_(TV_series)#:~:text=The%20story%20is%20semi-autobiographically%20based%20on%20Adlon%27s%20life&text=The%20show%20is%20named%20after%20the%20song%20%22Better%20Things%22%20by%20The%20Kinks',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
