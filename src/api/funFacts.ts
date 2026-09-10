@@ -1485,6 +1485,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/On_the_Waterfront#:~:text=Marlon%20Brando%20initially%20declined%20the%20role%20of%20Terry%20Malloy&text=Within%20a%20week%2C%20Brando%20signed%20a%20contract%20to%20perform%20in%20the%20film',
   },
+  'movie:963': {
+    en: 'The scene in The Maltese Falcon in which Gutman explains the Falcon’s history was filmed as an unbroken seven-minute take. After two days of rehearsal, a single mistake meant starting the elaborate camera movement all over again.',
+    de: 'Die Szene in The Maltese Falcon, in der Gutman die Geschichte des Falken erzählt, wurde als ununterbrochene siebenminütige Einstellung gedreht. Nach zwei Probentagen bedeutete ein einziger Fehler, dass die aufwendige Kamerafahrt von vorn beginnen musste.',
+    pt: 'A cena de The Maltese Falcon em que Gutman conta a história do Falcão foi filmada em um plano contínuo de sete minutos. Após dois dias de ensaios, um único erro obrigava a recomeçar todo o elaborado movimento de câmera.',
+    fr: 'La scène de The Maltese Falcon dans laquelle Gutman raconte l’histoire du Faucon fut filmée en un plan ininterrompu de sept minutes. Après deux jours de répétitions, la moindre erreur obligeait à reprendre depuis le début cet élaboré mouvement de caméra.',
+    es: 'La escena de The Maltese Falcon en la que Gutman cuenta la historia del Halcón se rodó como una toma ininterrumpida de siete minutos. Tras dos días de ensayos, un solo error obligaba a comenzar de nuevo todo el elaborado movimiento de cámara.',
+    it: 'La scena di The Maltese Falcon in cui Gutman racconta la storia del Falcone fu girata in un’unica ripresa ininterrotta di sette minuti. Dopo due giorni di prove, un solo errore costringeva a ricominciare da capo l’elaborato movimento di macchina.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Maltese_Falcon_(1941_film)#:~:text=Roger%20Ebert%20describes%20this%20scene%20as%20%22an%20astonishing%20unbroken%20seven%2Dminute%20take%22&text=We%20rehearsed%20two%20days&text=One%20miss%20and%20we%20had%20to%20begin%20all%20over%20again',
+  },
+  'movie:567': {
+    en: 'Rear Window’s uninterrupted 90-second opening, which introduces Jefferies and his neighborhood, required extensive rehearsals and ten takes over half a day of filming.',
+    de: 'Die ununterbrochene 90-sekündige Eröffnung von Rear Window, die Jefferies und seine Nachbarschaft vorstellt, erforderte zahlreiche Proben und zehn Takes während eines halben Drehtags.',
+    pt: 'A abertura ininterrupta de 90 segundos de Rear Window, que apresenta Jefferies e sua vizinhança, exigiu muitos ensaios e dez tomadas ao longo de meio dia de filmagem.',
+    fr: 'L’ouverture ininterrompue de 90 secondes de Rear Window, qui présente Jefferies et son voisinage, nécessita de nombreuses répétitions et dix prises pendant une demi-journée de tournage.',
+    es: 'La apertura ininterrumpida de 90 segundos de Rear Window, que presenta a Jefferies y su vecindario, requirió numerosos ensayos y diez tomas durante medio día de rodaje.',
+    it: 'L’apertura ininterrotta di 90 secondi di Rear Window, che presenta Jefferies e il suo vicinato, richiese molte prove e dieci ciak nell’arco di mezza giornata di riprese.',
+    source:
+      'https://en.wikipedia.org/wiki/Rear_Window#:~:text=The%20famous%20uninterrupted%2090%20second%20scene%20at%20the%20beginning%20of%20the%20film%20in%20which%20the%20main%20character%20Jefferies%20and%20his%20neighbourhood%20are%20introduced%20to%20the%20viewer%20was%20created%20with%20meticulous%20care&text=It%20required%20a%20lot%20of%20rehearsals%20and%20ten%20takes%20during%20half%20a%20day%20of%20filming%20before%20it%20was%20completed',
+  },
+  'movie:213': {
+    en: 'After U.N. authorities denied permission to film on or near their property for North by Northwest, Hitchcock had Cary Grant arrive outside the General Assembly Building by taxi while a hidden camera crew secretly captured the scene.',
+    de: 'Nachdem die UN Dreharbeiten auf oder nahe ihrem Gelände für North by Northwest untersagt hatten, ließ Hitchcock Cary Grant vor dem Gebäude der Generalversammlung aus einem Taxi steigen, während ein verstecktes Kamerateam die Szene heimlich filmte.',
+    pt: 'Depois que a ONU negou permissão para filmar em sua propriedade ou nas proximidades para North by Northwest, Hitchcock fez Cary Grant chegar de táxi diante do edifício da Assembleia Geral enquanto uma equipe escondida registrava a cena secretamente.',
+    fr: 'Après le refus de l’ONU d’autoriser le tournage sur sa propriété ou à proximité pour North by Northwest, Hitchcock fit arriver Cary Grant en taxi devant le bâtiment de l’Assemblée générale tandis qu’une équipe cachée filmait secrètement la scène.',
+    es: 'Después de que la ONU negara permiso para rodar en su propiedad o cerca de ella para North by Northwest, Hitchcock hizo que Cary Grant llegara en taxi ante el edificio de la Asamblea General mientras un equipo oculto filmaba la escena en secreto.',
+    it: 'Dopo che l’ONU negò il permesso di girare nella sua proprietà o nelle vicinanze per North by Northwest, Hitchcock fece arrivare Cary Grant in taxi davanti al Palazzo dell’Assemblea generale mentre una troupe nascosta filmava segretamente la scena.',
+    source:
+      'https://en.wikipedia.org/wiki/North_by_Northwest#:~:text=The%20scene%20of%20Cary%20Grant%20going%20to%20the%20United%20Nations%20in%20New%20York%20was%20filmed%20illicitly%20because%2C%20after%20reviewing%20the%20script%2C%20U.N.%20authorities%20denied%20permission%20to%20film%20on%20or%20near%20its%20property&text=After%20two%20failed%20attempts%20to%20get%20the%20required%20shots%2C%20Hitchcock%20had%20Grant%20pull%20up%20in%20a%20taxicab%20right%20outside%20the%20General%20Assembly%20Building%20while%20a%20hidden%20camera%20crew%20filmed%20him',
+  },
+  'movie:935': {
+    en: 'For Dr. Strangelove, Stanley Kubrick told George C. Scott that his absurdly exaggerated “practice” takes would never be used. Kubrick then chose many of them for the final film instead of Scott’s more restrained takes.',
+    de: 'Für Dr. Strangelove sagte Stanley Kubrick George C. Scott, seine absurd übertriebenen „Probetakes“ würden niemals verwendet. Anschließend nahm Kubrick viele davon anstelle von Scotts zurückhaltenderen Takes in den fertigen Film auf.',
+    pt: 'Em Dr. Strangelove, Stanley Kubrick disse a George C. Scott que suas tomadas de “ensaio”, absurdamente exageradas, jamais seriam usadas. Depois, Kubrick escolheu muitas delas para o filme final em vez das tomadas mais contidas de Scott.',
+    fr: 'Pour Dr. Strangelove, Stanley Kubrick assura à George C. Scott que ses prises d’« essai », volontairement outrancières, ne seraient jamais utilisées. Kubrick en choisit ensuite beaucoup pour le montage final à la place des prises plus retenues de Scott.',
+    es: 'Para Dr. Strangelove, Stanley Kubrick le dijo a George C. Scott que sus «tomas de ensayo», absurdamente exageradas, nunca se usarían. Después, Kubrick eligió muchas de ellas para la película final en lugar de las tomas más contenidas de Scott.',
+    it: 'Per Dr. Strangelove, Stanley Kubrick disse a George C. Scott che le sue assurde ed esagerate riprese di «prova» non sarebbero mai state usate. Kubrick ne scelse poi molte per il film definitivo al posto delle interpretazioni più misurate di Scott.',
+    source:
+      'https://en.wikipedia.org/wiki/Dr._Strangelove#:~:text=Kubrick%20talked%20Scott%20into%20doing%20absurd%20%22practice%22%20takes%2C%20which%20Kubrick%20told%20Scott%20would%20never%20be%20used%2C%20as%20a%20way%20to%20warm%20up%20for%20the%20%22real%22%20takes&text=Kubrick%20used%20many%20of%20these%20%22practice%22%20takes%20in%20the%20final%20film%2C%20rather%20than%20the%20more%20restrained%20ones',
+  },
 };
 
 /** A fun fact for this title in the app language (English fallback), or null. */
