@@ -103,7 +103,7 @@ export function LandingScreen() {
       <FeatureHeader
         height={headerHeight}
         topInset={insets.top}
-        tagline={text.landingTagline}
+        tagline="Your lifelong collection."
         scale={0.55}
       />
 

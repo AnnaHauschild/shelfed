@@ -124,12 +124,10 @@ export interface UiText {
   errReadImage: string;
   errSavePhoto: string;
   errProcessImage: string;
-  landingTagline: string;
   /** `{name}` is the display name. */
   greeting: string;
   setName: string;
   categoryBlurb: Record<MediaType, string>;
-  findHeading: Record<MediaType, string>;
   searchPlaceholder: Record<MediaType, string>;
   nothingFound: string;
   couldNotLoad: string;
@@ -239,7 +237,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Could not read that image.',
     errSavePhoto: 'Could not save the photo.',
     errProcessImage: 'Could not process the image.',
-    landingTagline: 'Your lifelong collection.',
     greeting: 'Hi, {name}',
     setName: 'Tap to set your name',
     categoryBlurb: {
@@ -247,12 +244,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       tv: 'Track the shows you have binged',
       book: 'Remember the books you have read',
       game: 'Log the games you have played',
-    },
-    findHeading: {
-      movie: 'Find any movie',
-      tv: 'Find any series',
-      book: 'Find any book',
-      game: 'Find any game',
     },
     searchPlaceholder: {
       movie: 'Find a movie by title…',
@@ -367,7 +358,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Das Bild konnte nicht gelesen werden.',
     errSavePhoto: 'Das Foto konnte nicht gespeichert werden.',
     errProcessImage: 'Das Bild konnte nicht verarbeitet werden.',
-    landingTagline: 'Deine Sammlung fürs Leben.',
     greeting: 'Hallo, {name}',
     setName: 'Tippe, um deinen Namen zu setzen',
     categoryBlurb: {
@@ -375,12 +365,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       tv: 'Serien, die du verschlungen hast',
       book: 'Bücher, die du gelesen hast',
       game: 'Spiele, die du gespielt hast',
-    },
-    findHeading: {
-      movie: 'Finde jeden Film',
-      tv: 'Finde jede Serie',
-      book: 'Finde jedes Buch',
-      game: 'Finde jedes Spiel',
     },
     searchPlaceholder: {
       movie: 'Film nach Titel suchen…',
@@ -497,7 +481,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Não foi possível ler essa imagem.',
     errSavePhoto: 'Não foi possível salvar a foto.',
     errProcessImage: 'Não foi possível processar a imagem.',
-    landingTagline: 'Sua coleção para a vida toda.',
     greeting: 'Oi, {name}',
     setName: 'Toque para colocar seu nome',
     categoryBlurb: {
@@ -505,12 +488,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       tv: 'As séries que você maratonou',
       book: 'Os livros que você leu',
       game: 'Os jogos que você jogou',
-    },
-    findHeading: {
-      movie: 'Encontre qualquer filme',
-      tv: 'Encontre qualquer série',
-      book: 'Encontre qualquer livro',
-      game: 'Encontre qualquer jogo',
     },
     searchPlaceholder: {
       movie: 'Buscar filme pelo título…',
@@ -627,7 +604,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Impossible de lire cette image.',
     errSavePhoto: 'Impossible d’enregistrer la photo.',
     errProcessImage: 'Impossible de traiter l’image.',
-    landingTagline: 'Ta collection de toute une vie.',
     greeting: 'Salut, {name}',
     setName: 'Touche pour indiquer ton nom',
     categoryBlurb: {
@@ -635,12 +611,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       tv: 'Les séries que tu as dévorées',
       book: 'Les livres que tu as lus',
       game: 'Les jeux auxquels tu as joué',
-    },
-    findHeading: {
-      movie: 'Trouve n’importe quel film',
-      tv: 'Trouve n’importe quelle série',
-      book: 'Trouve n’importe quel livre',
-      game: 'Trouve n’importe quel jeu',
     },
     searchPlaceholder: {
       movie: 'Chercher un film par titre…',
@@ -757,7 +727,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'No se pudo leer esa imagen.',
     errSavePhoto: 'No se pudo guardar la foto.',
     errProcessImage: 'No se pudo procesar la imagen.',
-    landingTagline: 'Tu colección para toda la vida.',
     greeting: 'Hola, {name}',
     setName: 'Toca para poner tu nombre',
     categoryBlurb: {
@@ -765,12 +734,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       tv: 'Las series que has devorado',
       book: 'Los libros que has leído',
       game: 'Los juegos a los que has jugado',
-    },
-    findHeading: {
-      movie: 'Encuentra cualquier película',
-      tv: 'Encuentra cualquier serie',
-      book: 'Encuentra cualquier libro',
-      game: 'Encuentra cualquier juego',
     },
     searchPlaceholder: {
       movie: 'Buscar una película por título…',
@@ -886,7 +849,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
     errReadImage: 'Non è stato possibile leggere questa immagine.',
     errSavePhoto: 'Non è stato possibile salvare la foto.',
     errProcessImage: 'Non è stato possibile elaborare l’immagine.',
-    landingTagline: 'La tua collezione di una vita.',
     greeting: 'Ciao, {name}',
     setName: 'Tocca per inserire il tuo nome',
     categoryBlurb: {
@@ -894,12 +856,6 @@ export const UI_TEXT: Record<AppLanguage, UiText> = {
       tv: 'Le serie che hai divorato',
       book: 'I libri che hai letto',
       game: 'I giochi a cui hai giocato',
-    },
-    findHeading: {
-      movie: 'Trova qualsiasi film',
-      tv: 'Trova qualsiasi serie',
-      book: 'Trova qualsiasi libro',
-      game: 'Trova qualsiasi gioco',
     },
     searchPlaceholder: {
       movie: 'Cerca un film per titolo…',

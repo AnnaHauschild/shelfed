@@ -53,7 +53,15 @@ export default function SearchScreen() {
   const [screenH, setScreenH] = useState(0);
   const shelfRow = screenH > 0 ? (screenH - 12) / 5 : 0;
   const headerHeight = screenH > 0 ? Math.round(6 + shelfRow) : insets.top + 150;
-  const tagline = ui.findHeading[mediaType];
+  // Part of the wooden header band, treated as a slogan and left in English.
+  const tagline =
+    mediaType === 'tv'
+      ? 'Find any series'
+      : mediaType === 'book'
+        ? 'Find any book'
+        : mediaType === 'game'
+          ? 'Find any game'
+          : 'Find any movie';
 
   return (
     <Pressable
