@@ -324,60 +324,100 @@ const FACTS: Record<string, Localized> = {
   'movie:194': {
     en: 'The part was written for English actress Emily Watson. Her French was not strong enough and she was booked elsewhere, so the role became French.',
     de: 'Die Rolle war für die englische Schauspielerin Emily Watson geschrieben. Ihr Französisch reichte nicht und sie war anderweitig gebunden, also wurde Amélie Französin.',
+    pt: 'O papel foi escrito para a atriz inglesa Emily Watson. Seu francês não era bom o bastante e ela tinha outro compromisso, então a personagem se tornou francesa.',
+    fr: 'Le rôle a été écrit pour l’actrice anglaise Emily Watson. Son français n’était pas assez bon et elle était engagée ailleurs, le personnage est donc devenu français.',
+    es: 'El papel fue escrito para la actriz inglesa Emily Watson. Su francés no era lo bastante bueno y tenía otro compromiso, así que el personaje pasó a ser francés.',
+    it: 'La parte fu scritta per l’attrice inglese Emily Watson. Il suo francese non era abbastanza buono e lei aveva già un altro impegno, quindi il personaggio divenne francese.',
     source:
       'https://en.wikipedia.org/wiki/Am%C3%A9lie#:~:text=for%20the%20English%20actress%20Emily%20Watson',
   },
   'movie:104': {
     en: 'The names in the closing credits scroll downwards. Normally credits travel up the screen.',
     de: 'Die Namen im Abspann wandern nach unten. Normalerweise laufen sie nach oben aus dem Bild.',
+    pt: 'Os nomes nos créditos finais rolam para baixo. Normalmente, os créditos sobem pela tela.',
+    fr: 'Les noms du générique de fin défilent vers le bas. Habituellement, un générique monte à l’écran.',
+    es: 'Los nombres de los créditos finales se desplazan hacia abajo. Normalmente, los créditos suben por la pantalla.',
+    it: 'I nomi nei titoli di coda scorrono verso il basso. Normalmente i titoli scorrono verso l’alto sullo schermo.',
     source:
       'https://de.wikipedia.org/wiki/Lola_rennt#:~:text=l%C3%A4uft%20von%20oben%20nach%20unten',
   },
   'movie:613': {
     en: 'The ruined Berlin is mostly Saint Petersburg. A run-down industrial district by a canal stood in for the bombed capital.',
     de: 'Das zerstörte Berlin ist zum großen Teil Sankt Petersburg. Ein heruntergekommenes Industrieviertel am Kanal spielte die zerbombte Hauptstadt.',
+    pt: 'A Berlim em ruínas é, em grande parte, São Petersburgo. Um distrito industrial degradado junto a um canal representou a capital bombardeada.',
+    fr: 'Le Berlin en ruines est en grande partie Saint-Pétersbourg. Un quartier industriel délabré au bord d’un canal a représenté la capitale bombardée.',
+    es: 'El Berlín en ruinas es en gran parte San Petersburgo. Un distrito industrial deteriorado junto a un canal representó la capital bombardeada.',
+    it: 'La Berlino in rovina è in gran parte San Pietroburgo. Un quartiere industriale degradato accanto a un canale rappresentò la capitale bombardata.',
     source:
       'https://en.wikipedia.org/wiki/Downfall_(2004_film)#:~:text=used%20to%20portray%20the%20historical%20setting%20in%20Berlin',
   },
   'movie:76341': {
     en: 'The guitarist strapped to the front of the war rig plays a real instrument that really shoots flames. None of his scenes are computer generated.',
     de: 'Der Gitarrist, der vorn am Kriegstruck hängt, spielt ein echtes Instrument, das wirklich Feuer speit. Keine seiner Szenen entstand am Computer.',
+    pt: 'O guitarrista preso à frente do veículo de guerra toca um instrumento de verdade que realmente lança chamas. Nenhuma de suas cenas foi gerada por computador.',
+    fr: 'Le guitariste attaché à l’avant du véhicule de guerre joue d’un véritable instrument qui projette réellement des flammes. Aucune de ses scènes n’a été générée par ordinateur.',
+    es: 'El guitarrista sujeto a la parte delantera del vehículo de guerra toca un instrumento real que lanza llamas de verdad. Ninguna de sus escenas fue generada por computadora.',
+    it: 'Il chitarrista legato alla parte anteriore del veicolo da guerra suona uno strumento vero che spara davvero fiamme. Nessuna delle sue scene fu generata al computer.',
     source:
       'https://en.wikipedia.org/wiki/Mad_Max:_Fury_Road#:~:text=guitar%20shoots%20fire',
   },
   'movie:289': {
     en: 'The plane in the farewell scene is a cardboard model, made to look bigger by small extras standing around it. The famous fog hides that it is fake.',
     de: 'Das Flugzeug in der Abschiedsszene ist ein Pappmodell. Kleinwüchsige Statisten daneben ließen es größer wirken, der berühmte Nebel verdeckte den Rest.',
+    pt: 'O avião na cena de despedida é um modelo de papelão, feito para parecer maior com figurantes de baixa estatura ao redor. A famosa neblina esconde que ele é falso.',
+    fr: 'L’avion de la scène d’adieu est une maquette en carton, rendue plus grande par des figurants de petite taille placés autour. Le célèbre brouillard dissimule le fait qu’il est faux.',
+    es: 'El avión de la escena de despedida es una maqueta de cartón, hecha para parecer más grande con extras de baja estatura a su alrededor. La famosa niebla oculta que es falso.',
+    it: 'L’aereo nella scena dell’addio è un modello di cartone, fatto sembrare più grande grazie a comparse di bassa statura intorno. La famosa nebbia nasconde che è finto.',
     source:
       'https://en.wikipedia.org/wiki/Casablanca_(film)#:~:text=proportionate%20cardboard%20plane',
   },
   'movie:78': {
     en: 'The sunny landscape shots in the original ending are leftover aerial footage Stanley Kubrick had filmed for The Shining.',
     de: 'Die sonnigen Landschaftsaufnahmen im ursprünglichen Ende sind übrig gebliebene Luftaufnahmen, die Stanley Kubrick für Shining gedreht hatte.',
+    pt: 'As imagens de paisagens ensolaradas no final original são filmagens aéreas restantes que Stanley Kubrick havia feito para The Shining.',
+    fr: 'Les plans de paysages ensoleillés de la fin originale sont des prises de vue aériennes inutilisées que Stanley Kubrick avait filmées pour The Shining.',
+    es: 'Las imágenes de paisajes soleados del final original son tomas aéreas sobrantes que Stanley Kubrick había filmado para The Shining.',
+    it: 'Le riprese dei paesaggi soleggiati nel finale originale sono immagini aeree inutilizzate che Stanley Kubrick aveva girato per The Shining.',
     source:
       'https://en.wikipedia.org/wiki/Blade_Runner#:~:text=surplus%20helicopter%20aerial%20photography',
   },
   'movie:37165': {
     en: 'The first version of the script was called The Malcolm Show. It was a science fiction thriller set in New York, not a comedy.',
     de: 'Die erste Fassung des Drehbuchs hieß The Malcolm Show. Sie war ein Science-Fiction-Thriller, der in New York spielte, keine Komödie.',
+    pt: 'A primeira versão do roteiro se chamava The Malcolm Show. Era um suspense de ficção científica ambientado em Nova York, não uma comédia.',
+    fr: 'La première version du scénario s’intitulait The Malcolm Show. C’était un thriller de science-fiction situé à New York, et non une comédie.',
+    es: 'La primera versión del guion se titulaba The Malcolm Show. Era un thriller de ciencia ficción ambientado en Nueva York, no una comedia.',
+    it: 'La prima versione della sceneggiatura si intitolava The Malcolm Show. Era un thriller di fantascienza ambientato a New York, non una commedia.',
     source:
       'https://en.wikipedia.org/wiki/The_Truman_Show#:~:text=with%20the%20story%20set%20in%20New%20York%20City',
   },
   'movie:671': {
     en: 'An American boy was seen as the favourite to play Harry. Rowling insisted on British actors and rang the director to make sure he was not cast.',
     de: 'Als Favorit für die Harry-Rolle galt ein amerikanischer Junge. Rowling bestand auf britischen Darstellern und rief den Regisseur an, damit er ihn nicht besetzt.',
+    pt: 'Um garoto americano era considerado o favorito para interpretar Harry. Rowling insistiu em atores britânicos e telefonou ao diretor para garantir que ele não fosse escalado.',
+    fr: 'Un garçon américain était considéré comme le favori pour jouer Harry. Rowling a insisté pour avoir des acteurs britanniques et a appelé le réalisateur pour vérifier qu’il ne serait pas choisi.',
+    es: 'Un chico estadounidense era considerado el favorito para interpretar a Harry. Rowling insistió en contar con actores británicos y llamó al director para asegurarse de que no fuera elegido.',
+    it: 'Un ragazzo americano era considerato il favorito per interpretare Harry. Rowling insistette su attori britannici e telefonò al regista per assicurarsi che non venisse scelto.',
     source:
       'https://en.wikipedia.org/wiki/Harry_Potter_and_the_Philosopher%27s_Stone_(film)#:~:text=even%20called%20Columbus%20to%20confirm',
   },
   'movie:338': {
     en: 'Filming at the dacha was called off once because of rain and another time because a pack of wild boar had wrecked the garden.',
     de: 'Der Dreh an der Datsche fiel einmal wegen Regen aus und ein anderes Mal, weil eine Rotte Wildschweine den Garten verwüstet hatte.',
+    pt: 'As filmagens na dacha foram canceladas uma vez por causa da chuva e outra porque um bando de javalis havia destruído o jardim.',
+    fr: 'Le tournage à la datcha a été annulé une fois à cause de la pluie et une autre fois parce qu’une harde de sangliers avait ravagé le jardin.',
+    es: 'El rodaje en la dacha se canceló una vez por la lluvia y otra porque una piara de jabalíes había destrozado el jardín.',
+    it: 'Le riprese alla dacia furono annullate una volta per la pioggia e un’altra perché un branco di cinghiali aveva devastato il giardino.',
     source:
       'https://de.wikipedia.org/wiki/Good_Bye,_Lenin!#:~:text=Rotte%20Wildschweine',
   },
   'movie:120467': {
     en: 'The hotel lobby is an empty department store in Görlitz in eastern Germany. Wes Anderson even considered buying the building to save it from demolition.',
     de: 'Die Hotelhalle ist ein leerstehendes Kaufhaus in Görlitz. Wes Anderson überlegte sogar, das Gebäude zu kaufen, um es vor dem Abriss zu retten.',
+    pt: 'O saguão do hotel é uma loja de departamentos vazia em Görlitz, no leste da Alemanha. Wes Anderson chegou a considerar comprar o prédio para salvá-lo da demolição.',
+    fr: 'Le hall de l’hôtel est un grand magasin vide situé à Görlitz, dans l’est de l’Allemagne. Wes Anderson a même envisagé d’acheter le bâtiment pour le sauver de la démolition.',
+    es: 'El vestíbulo del hotel es un gran almacén vacío de Görlitz, en el este de Alemania. Wes Anderson incluso consideró comprar el edificio para salvarlo de la demolición.',
+    it: 'La hall dell’hotel è un grande magazzino vuoto a Görlitz, nella Germania orientale. Wes Anderson valutò perfino di acquistare l’edificio per salvarlo dalla demolizione.',
     source:
       'https://en.wikipedia.org/wiki/The_Grand_Budapest_Hotel#:~:text=considered%20buying%20the%20Warenhaus%20to%20save%20it',
   },
