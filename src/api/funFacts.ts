@@ -459,6 +459,46 @@ const FACTS: Record<string, Localized> = {
     source:
       'https://en.wikipedia.org/wiki/The_Dark_Knight_Rises#:~:text=Zimmer%20crowdsourced%20online%20audio%20recordings%20of%20the%20chant%20to%20be%20used%20in%20the%20film%27s%20score',
   },
+  'movie:510': {
+    en: 'During rehearsals, the cast observed patients’ daily routines and group therapy; Jack Nicholson and Louise Fletcher also witnessed electroconvulsive therapy.',
+    de: 'Während der Proben beobachtete die Besetzung den Alltag und die Gruppentherapie von Patienten; Jack Nicholson und Louise Fletcher erlebten außerdem eine Elektrokrampftherapie mit.',
+    pt: 'Durante os ensaios, o elenco observou a rotina diária e a terapia em grupo dos pacientes; Jack Nicholson e Louise Fletcher também presenciaram uma eletroconvulsoterapia.',
+    fr: 'Pendant les répétitions, les acteurs observèrent le quotidien et les séances de thérapie de groupe des patients ; Jack Nicholson et Louise Fletcher assistèrent également à une électroconvulsivothérapie.',
+    es: 'Durante los ensayos, el reparto observó la rutina diaria y la terapia de grupo de los pacientes; Jack Nicholson y Louise Fletcher también presenciaron una terapia electroconvulsiva.',
+    it: 'Durante le prove, il cast osservò la routine quotidiana e la terapia di gruppo dei pazienti; Jack Nicholson e Louise Fletcher assistettero anche a una terapia elettroconvulsivante.',
+    source:
+      'https://en.wikipedia.org/wiki/One_Flew_Over_the_Cuckoo%27s_Nest_(film)#:~:text=The%20cast%20watched%20the%20patients%20in%20their%20daily%20routine%20and%20at%20group%20therapy,being%20performed%20on%20a%20patient',
+  },
+  'movie:1924': {
+    en: 'Christopher Reeve refused to wear a muscle suit and instead trained until his weight rose from 188 to 212 pounds during production.',
+    de: 'Christopher Reeve lehnte einen Muskelanzug ab und trainierte stattdessen so lange, bis sein Gewicht während der Produktion von 188 auf 212 Pfund stieg.',
+    pt: 'Christopher Reeve recusou usar um traje musculoso e preferiu treinar até seu peso aumentar de 188 para 212 libras durante a produção.',
+    fr: 'Christopher Reeve refusa de porter un costume rembourré et préféra s’entraîner jusqu’à passer de 188 à 212 livres pendant la production.',
+    es: 'Christopher Reeve se negó a usar un traje musculoso y prefirió entrenar hasta que su peso aumentó de 188 a 212 libras durante la producción.',
+    it: 'Christopher Reeve rifiutò di indossare un costume muscoloso e preferì allenarsi finché il suo peso passò da 188 a 212 libbre durante la produzione.',
+    source:
+      'https://en.wikipedia.org/wiki/Superman_(1978_film)#:~:text=He%20was%20told%20to%20wear%20a%20%22muscle%20suit%22%20to%20produce%20the%20desired%20muscular%20physique%2C%20but%20Reeve%20refused,Reeve%20went%20from%20188%20pounds%20(85%20kg)%20to%20212%20pounds%20(96%20kg)%20during%20pre-production%20and%20filming',
+  },
+  'movie:857': {
+    en: 'Steven Spielberg deliberately excluded Matt Damon from the main cast’s six-day boot camp so that the other actors would resent him and his character.',
+    de: 'Steven Spielberg schloss Matt Damon bewusst vom sechstägigen Bootcamp der Hauptbesetzung aus, damit die anderen Schauspieler ihn und seine Figur ablehnten.',
+    pt: 'Steven Spielberg excluiu deliberadamente Matt Damon do treinamento militar de seis dias do elenco principal para que os outros atores ressentissem dele e de seu personagem.',
+    fr: 'Steven Spielberg exclut délibérément Matt Damon du stage militaire de six jours suivi par les acteurs principaux afin que les autres lui en veuillent, ainsi qu’à son personnage.',
+    es: 'Steven Spielberg excluyó deliberadamente a Matt Damon del campamento militar de seis días del reparto principal para que los demás actores sintieran resentimiento hacia él y su personaje.',
+    it: 'Steven Spielberg escluse deliberatamente Matt Damon dai sei giorni di addestramento militare del cast principale affinché gli altri attori provassero risentimento verso di lui e il suo personaggio.',
+    source:
+      'https://en.wikipedia.org/wiki/Saving_Private_Ryan#:~:text=Spielberg%20kept%20Damon%20out%20of%20the%20boot%20camp%20because%20he%20wanted%20the%20other%20actors%20to%20resent%20him%20and%20his%20character',
+  },
+  'movie:281957': {
+    en: 'The Revenant was shot using natural light, and reaching its remote locations and returning from them could consume 40 percent of the filming day.',
+    de: 'The Revenant wurde mit natürlichem Licht gedreht; allein das Erreichen und Verlassen der abgelegenen Drehorte konnte 40 Prozent eines Drehtags beanspruchen.',
+    pt: 'The Revenant foi filmado com luz natural, e chegar às locações remotas e voltar delas podia consumir 40 por cento do dia de filmagem.',
+    fr: 'The Revenant fut tourné en lumière naturelle, et les trajets aller-retour vers ses lieux reculés pouvaient prendre 40 pour cent d’une journée de tournage.',
+    es: 'The Revenant se rodó con luz natural, y llegar a sus remotas localizaciones y regresar de ellas podía consumir el 40 por ciento de la jornada de rodaje.',
+    it: 'The Revenant fu girato con luce naturale, e raggiungere le location remote e tornare indietro poteva assorbire il 40 per cento della giornata di riprese.',
+    source:
+      'https://en.wikipedia.org/wiki/The_Revenant_(2015_film)#:~:text=shot%20the%20film%20using%20natural%20lighting,we%20have%20already%20spent%2040%25%20of%20the%20day',
+  },
   'tv:1399': {
     en: 'The original pilot was received so poorly at a private screening that HBO demanded about 90 percent of the episode be reshot, with changes to the cast and director.',
     de: 'Die ursprüngliche Pilotfolge kam bei einer privaten Vorführung so schlecht an, dass HBO rund 90 Prozent der Folge neu drehen ließ und Besetzung sowie Regie änderte.',
